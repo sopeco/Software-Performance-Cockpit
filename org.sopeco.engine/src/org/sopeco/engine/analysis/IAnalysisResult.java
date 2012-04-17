@@ -1,4 +1,4 @@
-package org.sopeco.core.analysis;
+package org.sopeco.engine.analysis;
 
 public interface IAnalysisResult {
 

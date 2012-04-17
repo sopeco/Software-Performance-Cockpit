@@ -1,8 +1,8 @@
-package org.sopeco.core.experimentseries;
+package org.sopeco.engine.experimentseries;
 
 import org.sopeco.core.model.configuration.environment.ParameterDefinition;
 import org.sopeco.core.model.configuration.measurements.ParameterValueAssignment;
-import org.sopeco.core.registry.ISoPeCoExtension;
+import org.sopeco.engine.registry.ISoPeCoExtension;
 
 /**
  * Plugin interface that determines the values of a parameter based on its configuration.

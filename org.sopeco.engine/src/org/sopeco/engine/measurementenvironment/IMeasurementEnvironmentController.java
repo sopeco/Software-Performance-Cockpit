@@ -1,10 +1,10 @@
-package org.sopeco.core.measurementenvironment;
+package org.sopeco.engine.measurementenvironment;
 
 import java.util.List;
 
-import org.sopeco.core.experimentseries.ParameterValue;
 import org.sopeco.core.model.configuration.environment.ParameterDefinition;
 import org.sopeco.core.model.configuration.measurements.ExperimentTerminationCondition;
+import org.sopeco.engine.experimentseries.ParameterValue;
 
 public interface IMeasurementEnvironmentController {
 	

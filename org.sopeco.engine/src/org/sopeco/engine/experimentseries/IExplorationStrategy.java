@@ -1,12 +1,12 @@
-package org.sopeco.core.experimentseries;
+package org.sopeco.engine.experimentseries;
 
 import java.util.List;
 
-import org.sopeco.core.analysis.IAnalysisManager;
-import org.sopeco.core.experiment.IExperimentController;
 import org.sopeco.core.model.configuration.measurements.ExperimentSeriesDefinition;
 import org.sopeco.core.persistence.IPersistenceProvider;
-import org.sopeco.core.registry.ISoPeCoExtension;
+import org.sopeco.engine.analysis.IAnalysisManager;
+import org.sopeco.engine.experiment.IExperimentController;
+import org.sopeco.engine.registry.ISoPeCoExtension;
 
 /**
  * Plugin interface for exploration strategies.  

@@ -1,9 +1,8 @@
 /**
  * 
  */
-package org.sopeco.example.plugins.kernel;
+package org.sopeco.engine.registry;
 
-import org.sopeco.core.registry.PluginRegistry;
 
 /**
  * A sample kernel for SoPeCo plugin-based architecture.

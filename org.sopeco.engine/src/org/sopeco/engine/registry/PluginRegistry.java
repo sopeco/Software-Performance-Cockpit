@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.sopeco.core.registry;
+package org.sopeco.engine.registry;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,7 +10,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-import org.sopeco.example.plugins.exploration.ExplorationStrategy;
+import org.sopeco.core.model.configuration.measurements.ExplorationStrategy;
 
 /**
  * A sample plugin registry.

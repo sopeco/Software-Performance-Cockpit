@@ -1,4 +1,4 @@
-package org.sopeco.core.experimentseries;
+package org.sopeco.engine.experimentseries;
 
 import org.sopeco.core.model.configuration.measurements.ExperimentSeriesDefinition;
 

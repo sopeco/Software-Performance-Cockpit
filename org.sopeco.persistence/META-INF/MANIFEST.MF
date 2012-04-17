@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: org.sopeco.core.persistence.jpa
+Bundle-Name: org.sopeco.model
 Bundle-SymbolicName: org.sopeco.persistence
 Bundle-Version: 0.1.0.qualifier
 JPA-PersistenceUnits: sopeco
@@ -13,4 +13,4 @@ Bundle-ClassPath: lib/eclipselink.jar,
  lib/derby.jar
 Import-Package: junit.framework,
  org.junit;version="4.8.2"
-Require-Bundle: org.sopeco.model;bundle-version="1.0.0"
+Require-Bundle: org.sopeco.model;bundle-version="0.2.0"

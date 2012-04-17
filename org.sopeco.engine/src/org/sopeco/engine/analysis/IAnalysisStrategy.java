@@ -1,6 +1,6 @@
-package org.sopeco.core.analysis;
+package org.sopeco.engine.analysis;
 
-import org.sopeco.core.registry.ISoPeCoExtension;
+import org.sopeco.engine.registry.ISoPeCoExtension;
 
 
 public interface IAnalysisStrategy extends ISoPeCoExtension {

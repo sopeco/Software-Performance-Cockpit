@@ -1,4 +1,4 @@
-package org.sopeco.core.registry;
+package org.sopeco.engine.registry;
 
 public interface ISoPeCoExtension {
 	
