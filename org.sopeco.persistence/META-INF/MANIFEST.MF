@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.sopeco.core.persistence.jpa
+Bundle-SymbolicName: org.sopeco.persistence
+Bundle-Version: 0.1.0.qualifier
+JPA-PersistenceUnits: sopeco
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: lib/eclipselink.jar,
+ lib/javax.persistence_1.0.0.jar,
+ lib/javax.persistence_2.0.3.v201010191057.jar,
+ .,
+ lib/derby.jar
+Import-Package: junit.framework,
+ org.junit;version="4.8.2"
+Require-Bundle: org.sopeco.model;bundle-version="1.0.0"

@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SoPeCo Kernel
+Bundle-SymbolicName: org.sopeco.engine;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.sopeco.example.plugins.kernel.Activator
+Import-Package: org.osgi.framework;version="1.3.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.sopeco.example.plugins.exploration;bundle-version="1.0.0",
+ org.eclipse.core.runtime;bundle-version="3.7.0",
+ org.sopeco.model;bundle-version="1.0.0"
+Export-Package: org.sopeco.example.plugins.kernel
