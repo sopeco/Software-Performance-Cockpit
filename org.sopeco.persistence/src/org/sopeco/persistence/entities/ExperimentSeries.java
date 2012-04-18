@@ -11,7 +11,7 @@ import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
 
 public class ExperimentSeries {
 	
-	private String experimentSeriesDefinitionId;
+	private String name;
 
 	@ManyToOne
 	private ScenarioInstance scenarioInstance;
@@ -22,13 +22,13 @@ public class ExperimentSeries {
 	@OneToMany(mappedBy = "ExperimentSeries")
 	private List<ExperimentSeriesRun> experimentSeriesRuns = new ArrayList<ExperimentSeriesRun>();
 	
-	public String getExperimentSeriesDefinitionId() {
-		return experimentSeriesDefinitionId;
+	public String getName() {
+		return name;
 	}
 
 
-	public void setExperimentSeriesDefinitionId(String experimentSeriesDefinitionId) {
-		this.experimentSeriesDefinitionId = experimentSeriesDefinitionId;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 
