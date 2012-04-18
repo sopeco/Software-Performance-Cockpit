@@ -4,9 +4,5 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
-	<classpathentry kind="lib" path="lib/eclipselink.jar"/>
-	<classpathentry kind="lib" path="lib/javax.persistence_1.0.0.jar"/>
-	<classpathentry kind="lib" path="lib/javax.persistence_2.0.3.v201010191057.jar"/>
-	<classpathentry kind="lib" path="lib/derby.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

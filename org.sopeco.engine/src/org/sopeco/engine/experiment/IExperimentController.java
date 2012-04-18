@@ -4,7 +4,6 @@ import java.net.URI;
 import java.util.List;
 
 import org.sopeco.core.model.configuration.measurements.ExperimentTerminationCondition;
-import org.sopeco.core.persistence.IPersistenceProvider;
 import org.sopeco.engine.experimentseries.ParameterValue;
 
 

@@ -12,7 +12,7 @@
 
 	<groupId>org.sopeco.core</groupId>
 	<artifactId>org.sopeco.core.parent</artifactId>
-	<version>0.1.0-SNAPSHOT</version>
+	<version>0.2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Software Performance Cockpit - Core</name>
@@ -21,41 +21,10 @@
 		<module>../org.sopeco.core.target</module>
 		<module>../org.sopeco.core.feature</module>
 		<module>../org.sopeco.core.updatesite</module>
-		<module>../org.sopeco.core.common</module>
-		<module>../org.sopeco.core.persistence</module>
-		<module>../org.sopeco.core.experiment</module>
-		<module>../org.sopeco.core.experiment.interfaces</module>
-		<module>../org.sopeco.core.satellite.interfaces</module>
-		<module>../org.sopeco.satellite.adapter.interfaces</module>
-		<module>../org.sopeco.satellite</module>
-		<module>../org.sopeco.analysis.controller</module>
-		<module>../org.sopeco.analysis.interfaces</module>
-		<module>../org.sopeco.analysis.results</module>
-		<module>../org.sopeco.experimentseries</module>
-		<module>../org.sopeco.experimentseries.exploration.interfaces</module>
-		<module>../org.sopeco.export.interfaces</module>
-		<module>../org.sopeco.export.controller</module>
-
-		<module>../org.sopeco.validation</module>
-		<module>../org.sopeco.validation.interfaces</module>
-		<module>../org.sopeco.analysis.plugin.rstatistics</module>
-
-		<module>../org.sopeco.core.emfutils</module>
-		<module>../org.sopeco.core.edit</module>
-		<module>../org.sopeco.core.editor</module>
-
-		<module>../org.sopeco.persistence.visualisation</module>
-		<module>../org.sopeco.persistence.visualisation.model</module>
-		<module>../org.sopeco.persistence.visualisation.edit</module>
-		<module>../org.sopeco.persistence.visualisation.editor</module>
-
-		<module>../org.sopeco.export.plugin.csv</module>
-		<module>../org.sopeco.experimentseries.exploration.fullexploration</module>
-		<module>../org.sopeco.experimentseries.exploration.adaptivebd</module>
-		<module>../org.sopeco.maincontroller</module>
-
-		<!-- <module>../org.sopeco.core.edit.extended</module> -->
-
+		<module>../org.sopeco.core</module>
+		<module>../org.sopeco.persistence</module>
+		<module>../org.sopeco.engine</module>
+		<module>../org.sopeco.model</module>
 	</modules>
 
 
