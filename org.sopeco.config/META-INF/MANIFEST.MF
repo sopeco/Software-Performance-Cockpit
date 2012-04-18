@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: org.sopeco.config
+Bundle-SymbolicName: org.sopeco.config
+Bundle-Version: 0.2.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.apache.commons.logging;bundle-version="1.0.4",
+ org.apache.commons.cli;bundle-version="1.2.0"
+Export-Package: org.sopeco.config

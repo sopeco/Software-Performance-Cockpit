@@ -1,0 +1,50 @@
+/**
+ * 
+ */
+package org.sopeco.config;
+
+/**
+ * Interface to the SoPeCo global configuration component.
+ * 
+ * @author Roozbeh Farahbod
+ *
+ */
+public interface IConfiguration {
+
+	/**
+	 * Returns the configured value of the given property in SoPeCo. 
+	 * 
+	 * It first looks up the current SoPeCo configuration, if there 
+	 * is no value defined there, looks up the system properties, 
+	 * if no value is defined there, then loads it from the default values; 
+	 * in case of no default value, returns null.
+	 * 
+	 * @param key property key
+	 */
+	public Object getProperty(String key);
+
+	/**
+	 * Sets the value of a property for the current run.
+	 * 
+	 * @param key property key
+	 * @param value property value
+	 */
+	public void setProperty(String key, Object value);
+	
+	/**
+	 * Returns the default value (ignoring the current runtime configuration)
+	 * for a given property. 
+	 * 
+	 * @param key porperty key
+	 */
+	public Object getDefaultValue(String key);
+
+	/**
+	 * Processes the given command line arguments, the effects of which will
+	 * reflect in the global property values.
+	 * 
+	 * @param args command line arguments
+	 */
+	public void processCommandLineArguments(String[] args);
+	
+}
