@@ -1,28 +1,13 @@
-/**
- * 
- */
 package org.sopeco.engine.registry;
 
 
 /**
- * A sample kernel for SoPeCo plugin-based architecture.
+ * This class is the access point to plugin registry and global configuration 
+ * parameters. 
  * 
- * @author d057134
+ * @author Roozbeh Farahbod
  *
  */
 public class Kernel {
 
-	private PluginRegistry pluginRegistry;
-	
-	/**
-	 * Initializes the Kernel.
-	 */
-	public void initialize() {
-		this.pluginRegistry = new PluginRegistry();
-		this.pluginRegistry.initialize();
-	}
-	
-	public PluginRegistry getPluginRegistry()  {
-		return pluginRegistry;
-	}
 }

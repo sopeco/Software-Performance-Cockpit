@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension-point id="org.sopeco.example.plugins.eps.explorationstrategy" name="Exploration Strategy" schema="schema/org.sopeco.example.plugins.eps.explorationstrategy.exsd"/>
+   <extension-point id="org.sopeco.engine.experimentseries.explorationstrategy" name="Exploration Strategy" schema="schema/org.sopeco.engine.experimentseries.explorationstrategy.exsd"/>
+   <extension-point id="org.sopeco.engine.analysis.analysisstrategy" name="Analysis Strategy" schema="schema/org.sopeco.engine.analysis.analysisstrategy.exsd"/>
+   <extension-point id="org.sopeco.engine.experimentseries.parametervariation" name="Parameter Variation" schema="schema/org.sopeco.engine.experimentseries.parametervariation.exsd"/>
 
 </plugin>

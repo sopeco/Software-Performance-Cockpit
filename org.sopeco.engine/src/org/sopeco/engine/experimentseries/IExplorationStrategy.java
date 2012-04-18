@@ -3,8 +3,6 @@ package org.sopeco.engine.experimentseries;
 import java.util.List;
 
 import org.sopeco.core.model.configuration.measurements.ExperimentSeriesDefinition;
-import org.sopeco.core.persistence.IPersistenceProvider;
-import org.sopeco.engine.analysis.IAnalysisManager;
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.registry.ISoPeCoExtension;
 

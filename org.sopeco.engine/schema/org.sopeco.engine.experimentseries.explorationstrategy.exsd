@@ -1,12 +1,12 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.sopeco.example.plugins.kernel" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.sopeco.engine" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.sopeco.example.plugins.kernel" id="org.sopeco.example.plugins.eps.explorationstrategy" name="Exploration Strategy"/>
+         <meta.schema plugin="org.sopeco.engine" id="org.sopeco.engine.experimentseries.explorationstrategy" name="Exploration Strategy"/>
       </appinfo>
       <documentation>
-         This extension points allows plugins to extend SoPeCo with new exploration strategies.
+         This is the extension point for new exploration strategies that can be used in experiment series. 
       </documentation>
    </annotation>
 
@@ -55,7 +55,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.sopeco.example.plugins.exploration.ExplorationStrategy"/>
+                  <meta.attribute kind="java" basedOn=":org.sopeco.engine.experimentseries.IExplorationStrategy"/>
                </appinfo>
             </annotation>
          </attribute>
