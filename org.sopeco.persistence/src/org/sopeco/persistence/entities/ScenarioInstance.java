@@ -23,7 +23,7 @@ public class ScenarioInstance {
 	private String measurementEnvironmentUrl;
 	
 	@OneToMany(mappedBy = "ScenarioInstance")
-	private List<ExperimentSeriesRun> experimentSeries = new ArrayList<ExperimentSeriesRun>();
+	private List<ExperimentSeries> experimentSeries = new ArrayList<ExperimentSeries>();
 	
 	public String getName() {
 		return name;
@@ -47,7 +47,7 @@ public class ScenarioInstance {
 	public Long getId() {
 		return id;
 	}
-	public List<ExperimentSeriesRun> getExperimentSeries() {
+	public List<ExperimentSeries> getExperimentSeries() {
 		return experimentSeries;
 	}
 	
