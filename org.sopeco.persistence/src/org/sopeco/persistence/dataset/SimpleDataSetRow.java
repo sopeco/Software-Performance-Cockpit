@@ -1,11 +1,9 @@
 package org.sopeco.persistence.dataset;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.sopeco.configuration.parameter.ParameterRole;
-import org.sopeco.configuration.parameter.ParameterUsage;
+import org.sopeco.model.configuration.environment.ParameterDefinition;
 
 /**
  * Row of a DataSet.
@@ -13,12 +11,16 @@ import org.sopeco.configuration.parameter.ParameterUsage;
  * @author Jens Happe
  * 
  */
-@SuppressWarnings("unchecked")
 public class SimpleDataSetRow implements Serializable {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
 	 * ParameterValues of the row.
 	 */
+	@SuppressWarnings({ "rawtypes" })
 	private List<ParameterValue> parameterValues;
 
 	/**
@@ -26,6 +28,7 @@ public class SimpleDataSetRow implements Serializable {
 	 * 
 	 * @param parameterValues
 	 */
+	@SuppressWarnings("rawtypes")
 	protected SimpleDataSetRow(List<ParameterValue> parameterValues) {
 		super();
 		this.parameterValues = parameterValues;
@@ -34,6 +37,7 @@ public class SimpleDataSetRow implements Serializable {
 	/**
 	 * @return The ParameterValues of this row.
 	 */
+	@SuppressWarnings("rawtypes")
 	public List<ParameterValue> getRowValues() {
 		return parameterValues;
 	}
@@ -43,7 +47,8 @@ public class SimpleDataSetRow implements Serializable {
 	 *            Parameter of interest.
 	 * @return The value of a particular parameter in this row.
 	 */
-	public ParameterValue getParameterValue(ParameterUsage parameter) {
+	@SuppressWarnings("rawtypes")
+	public ParameterValue getParameterValue(ParameterDefinition parameter) {
 		for (ParameterValue pv : parameterValues) {
 			if (pv.getParameter().equals(parameter)) {
 				return pv;
@@ -86,13 +91,13 @@ public class SimpleDataSetRow implements Serializable {
 	}
 
 	public boolean equalIndependentParameterValues(SimpleDataSetRow other,
-			ParameterUsage dependentParameter) {
+			ParameterDefinition dependentParameter) {
 		for (ParameterValue<?> pv : this.getRowValues()) {
 			try {
 				ParameterValue<?> otherValue = other.getParameterValue(pv
 						.getParameter());
-				if (otherValue.getParameter().getID()
-						.equals(dependentParameter.getID())) {
+				if (otherValue.getParameter().getFullName()
+						.equals(dependentParameter.getFullName())) {
 					continue;
 				}
 				if (!otherValue.getValue().equals(pv.getValue())) {
@@ -107,7 +112,7 @@ public class SimpleDataSetRow implements Serializable {
 	}
 
 	public boolean equalIndependentParameterValues(SimpleDataSetRow other,
-			List<ParameterUsage> dependentParameters) {
+			List<ParameterDefinition> dependentParameters) {
 		for (ParameterValue<?> pv : this.getRowValues()) {
 			try {
 				ParameterValue<?> otherValue = other.getParameterValue(pv

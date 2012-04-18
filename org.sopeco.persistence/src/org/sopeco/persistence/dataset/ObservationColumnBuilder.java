@@ -1,16 +1,15 @@
-package org.sopeco.persistence.dataset.util;
+package org.sopeco.persistence.dataset;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sopeco.configuration.parameter.ParameterUsage;
-import org.sopeco.persistence.dataset.DataSetInputColumn;
+import org.sopeco.model.configuration.environment.ParameterDefinition;
 
-public class InputColumnBuilder<T> {
+@SuppressWarnings({"unchecked", "rawtypes"})
+public class ObservationColumnBuilder<T> {
+	private DataSetObservationColumn<T> column;
 
-	private DataSetInputColumn<T> column;
-
-	public InputColumnBuilder() {
+	public ObservationColumnBuilder() {
 	}
 
 	/**
@@ -22,8 +21,8 @@ public class InputColumnBuilder<T> {
 	 * @param parameter
 	 *            Parameter for which new data will be provided.
 	 */
-	public void setParameter(ParameterUsage parameter) {
-		column = new DataSetInputColumn<T>(parameter, new ArrayList<T>());
+	public void setParameter(ParameterDefinition parameter) {
+		column = new DataSetObservationColumn<T>(parameter, new ArrayList());
 
 	}
 
@@ -34,11 +33,25 @@ public class InputColumnBuilder<T> {
 	 * @param value
 	 *            Value to be added.
 	 */
-	public void addValue(T value) {
+	public void addParameterValueList(ParameterValueList<T> value) {
 		if (column == null) {
 			throw new IllegalStateException("The row must be started first.");
 		}
-		column.getValueList().add(value);
+		column.getValueLists().add(value);
+	}
+	
+	/**
+	 * Adds a new value to the column under construction (created by
+	 * startColumn).
+	 * 
+	 * @param value
+	 *            Value to be added.
+	 */
+	public void addValueList(List<T> values) {
+		if (column == null) {
+			throw new IllegalStateException("The row must be started first.");
+		}
+		column.addValues(values);
 	}
 
 	/**
@@ -48,18 +61,18 @@ public class InputColumnBuilder<T> {
 	 * @param valueList
 	 *            Values to be added.
 	 */
-	public void addValueList(List<T> valueList) {
+	public void addValueLists(List<ParameterValueList<T>> valueLists) {
 		if (column == null) {
 			throw new IllegalStateException("The row must be started first.");
 		}
-		column.getValueList().addAll(valueList);
+		column.getValueLists().addAll(valueLists);
 	}
 
 	/**
 	 * Finish the column under construction and add it to the newly created
 	 * DataSet.
 	 */
-	public DataSetInputColumn<T> createColumn() {
+	public DataSetObservationColumn<T> createColumn() {
 		if (column == null) {
 			throw new IllegalStateException("The row must be started first.");
 		}

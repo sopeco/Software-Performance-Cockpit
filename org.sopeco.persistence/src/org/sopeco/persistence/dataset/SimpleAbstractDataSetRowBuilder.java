@@ -1,4 +1,4 @@
-package org.sopeco.persistence.dataset.util;
+package org.sopeco.persistence.dataset;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,9 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.sopeco.persistence.dataset.ParameterValue;
-import org.sopeco.persistence.dataset.SimpleDataSet;
-import org.sopeco.persistence.dataset.SimpleDataSetColumn;
 
 /**
  * Abstract class for row based SimpleDataSet builder. Current implementations
@@ -17,7 +14,7 @@ import org.sopeco.persistence.dataset.SimpleDataSetColumn;
  * @author Jens Happe
  * 
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"rawtypes"})
 public abstract class SimpleAbstractDataSetRowBuilder {
 
 	/**
@@ -43,7 +40,7 @@ public abstract class SimpleAbstractDataSetRowBuilder {
 		boolean isValid = row.size() == columnMap.size();
 
 		for (ParameterValue value : row) {
-			if (!columnMap.containsKey(value.getParameter().getID())) {
+			if (!columnMap.containsKey(value.getParameter().getFullName())) {
 				isValid = false;
 				break;
 			}

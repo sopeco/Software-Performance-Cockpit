@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.sopeco.configuration.parameter.ParameterType;
-import org.sopeco.configuration.parameter.ParameterUsage;
-import org.sopeco.persistence.dataset.util.ParameterValueFactory;
+import org.sopeco.model.configuration.environment.ParameterDefinition;
+import org.sopeco.persistence.dataset.util.ParameterType;
+import org.sopeco.persistence.dataset.util.ParameterUtil;
 
 /**
  * DataSetColumn represents a column in a DataSet consisting of a parameter and
@@ -24,9 +24,14 @@ public class SimpleDataSetColumn<T> implements Iterable<ParameterValue<T>>,
 		Serializable {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Parameter / identifier of the column in the DataSet.
 	 */
-	private ParameterUsage parameter;
+	private ParameterDefinition parameter;
 
 	/**
 	 * Values associated to the parameter.
@@ -39,7 +44,7 @@ public class SimpleDataSetColumn<T> implements Iterable<ParameterValue<T>>,
 	 * @param parameter
 	 * @param valueList
 	 */
-	protected SimpleDataSetColumn(ParameterUsage parameter, List<T> valueList) {
+	protected SimpleDataSetColumn(ParameterDefinition parameter, List<T> valueList) {
 		super();
 		this.parameter = parameter;
 		this.valueList = valueList;
@@ -48,7 +53,7 @@ public class SimpleDataSetColumn<T> implements Iterable<ParameterValue<T>>,
 	/**
 	 * @return Parameter / Identifier of the column.
 	 */
-	public ParameterUsage getParameter() {
+	public ParameterDefinition getParameter() {
 		return parameter;
 	}
 
@@ -75,6 +80,7 @@ public class SimpleDataSetColumn<T> implements Iterable<ParameterValue<T>>,
 	 *            Row of interest.
 	 * @return Value at the given row.
 	 */
+	@SuppressWarnings("unchecked")
 	public ParameterValue<T> getParameterValue(int row) {
 		if (row >= this.valueList.size())
 			throw new IllegalArgumentException(
@@ -90,6 +96,7 @@ public class SimpleDataSetColumn<T> implements Iterable<ParameterValue<T>>,
 	 *            Row of interest.
 	 * @return Value at the given row.
 	 */
+	@SuppressWarnings("unchecked")
 	public List<ParameterValue<?>> getParameterValues() {
 
 		List<ParameterValue<?>> result = new ArrayList<ParameterValue<?>>();
@@ -126,7 +133,7 @@ public class SimpleDataSetColumn<T> implements Iterable<ParameterValue<T>>,
 		};
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({ "rawtypes" })
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof SimpleDataSetColumn) {
@@ -153,11 +160,11 @@ public class SimpleDataSetColumn<T> implements Iterable<ParameterValue<T>>,
 		double min = Double.MAX_VALUE;
 		if (getValueList().size() > 0) {
 			for (T value : getValueList()) {
-				if (parameter.getType().equals(ParameterType.DOUBLE)) {
+				if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.DOUBLE)) {
 					if ((Double) value < min) {
 						min = (Double) value;
 					}
-				} else if (parameter.getType().equals(ParameterType.INTEGER)) {
+				} else if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.INTEGER)) {
 					if (((Integer) value).doubleValue() < min) {
 						min = ((Integer) value).doubleValue();
 					}
@@ -174,11 +181,11 @@ public class SimpleDataSetColumn<T> implements Iterable<ParameterValue<T>>,
 		double max = Double.MIN_VALUE;
 		if (getValueList().size() > 0) {
 			for (T value : getValueList()) {
-				if (parameter.getType().equals(ParameterType.DOUBLE)) {
+				if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.DOUBLE)) {
 					if ((Double) value > max) {
 						max = (Double) value;
 					}
-				} else if (parameter.getType().equals(ParameterType.INTEGER)) {
+				} else if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.INTEGER)) {
 					if (((Integer) value).doubleValue() > max) {
 						max = ((Integer) value).doubleValue();
 					}
@@ -197,6 +204,7 @@ public class SimpleDataSetColumn<T> implements Iterable<ParameterValue<T>>,
 		return valueSet;
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public SimpleDataSetColumn<T> getCopy() {
 		SimpleDataSetColumn<T> copy = new SimpleDataSetColumn<T>(parameter,
 				new ArrayList());

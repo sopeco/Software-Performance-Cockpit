@@ -1,4 +1,4 @@
-package org.sopeco.persistence.dataset.util;
+package org.sopeco.persistence.dataset;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -6,12 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.sopeco.configuration.parameter.ParameterUsage;
-import org.sopeco.persistence.dataset.DataSetAggregated;
-import org.sopeco.persistence.dataset.DataSetInputColumn;
-import org.sopeco.persistence.dataset.DataSetObservationColumn;
-import org.sopeco.persistence.dataset.ParameterValue;
-import org.sopeco.persistence.dataset.ParameterValueList;
+import org.sopeco.model.configuration.environment.ParameterDefinition;
 
 /**
  * Abstract class for row based DataSet builder. Current implementations are
@@ -20,17 +15,17 @@ import org.sopeco.persistence.dataset.ParameterValueList;
  * @author Jens Happe
  * 
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"rawtypes"})
 public abstract class AbstractDataSetRowBuilder {
 
 	/**
 	 * Columns of the new DataSet.
 	 */
-	protected Map<ParameterUsage, DataSetInputColumn> inputColumnMap = new HashMap<ParameterUsage, DataSetInputColumn>();
+	protected Map<ParameterDefinition, DataSetInputColumn> inputColumnMap = new HashMap<ParameterDefinition, DataSetInputColumn>();
 	/**
 	 * Columns of the new DataSet.
 	 */
-	protected Map<ParameterUsage, DataSetObservationColumn> observationColumnMap = new HashMap<ParameterUsage, DataSetObservationColumn>();
+	protected Map<ParameterDefinition, DataSetObservationColumn> observationColumnMap = new HashMap<ParameterDefinition, DataSetObservationColumn>();
 
 	/**
 	 * Constructor.

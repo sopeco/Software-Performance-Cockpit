@@ -2,14 +2,15 @@ package org.sopeco.persistence.dataset;
 
 import java.io.Serializable;
 
-import org.sopeco.configuration.parameter.ParameterType;
-import org.sopeco.configuration.parameter.ParameterUsage;
-import org.sopeco.persistence.dataset.util.ParameterValueFactory;
+
+import org.sopeco.model.configuration.environment.ParameterDefinition;
+import org.sopeco.persistence.dataset.util.ParameterType;
+import org.sopeco.persistence.dataset.util.ParameterUtil;
 
 /**
  * A value associated to a particular parameter.
  * 
- * @author Jens Happe
+ * @author Jens Happe, Dennis Westermann
  * 
  * @param <T>
  *            Type of the value.
@@ -21,37 +22,37 @@ public class ParameterValue<T> implements Serializable,
 	 * 
 	 */
 	private static final long serialVersionUID = 448079727442973952L;
-	private ParameterUsage parameter;
+	private ParameterDefinition parameter;
 	private T value;
 
-	protected ParameterValue(ParameterUsage parameter, T value) {
+	protected ParameterValue(ParameterDefinition parameter, T value) {
 		super();
 		validate(parameter, value);
 		this.parameter = parameter;
 		this.value = value;
 	}
 
-	private void validate(ParameterUsage parameter, Object value) {
-		if (parameter.getType().equals(ParameterType.DOUBLE)
+	private void validate(ParameterDefinition parameter, Object value) {
+		if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.DOUBLE)
 				&& !(value instanceof Double)) {
 			throw new IllegalArgumentException(
 					"Invalid value type for parameter " + parameter);
-		} else if (parameter.getType().equals(ParameterType.INTEGER)
+		} else if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.INTEGER)
 				&& !(value instanceof Integer)) {
 			throw new IllegalArgumentException(
 					"Invalid value type for parameter " + parameter);
-		} else if (parameter.getType().equals(ParameterType.STRING)
+		} else if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.STRING)
 				&& !(value instanceof String)) {
 			throw new IllegalArgumentException(
 					"Invalid value type for parameter " + parameter);
-		} else if (parameter.getType().equals(ParameterType.BOOLEAN)
+		} else if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.BOOLEAN)
 				&& !(value instanceof Boolean)) {
 			throw new IllegalArgumentException(
 					"Invalid value type for parameter " + parameter);
 		}
 	}
 
-	public ParameterUsage getParameter() {
+	public ParameterDefinition getParameter() {
 		return parameter;
 	}
 
@@ -60,8 +61,9 @@ public class ParameterValue<T> implements Serializable,
 	}
 
 	public void setValue(Object value) {
+		@SuppressWarnings("unchecked")
 		T convertedValue = (T) ParameterValueFactory.convertValue(value,
-				parameter.getType());
+				ParameterUtil.getTypeEnumeration(parameter.getType()));
 		this.value = convertedValue;
 	}
 
@@ -137,23 +139,23 @@ public class ParameterValue<T> implements Serializable,
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
-	public boolean isDefaultValue() {
-		T defaultValue = null; 
-		if (parameter.getParameterDefinition().getDefaultValue() == null){
-			if (value instanceof Double) {
-				defaultValue = (T)new Double(0.0);
-			} else if (value instanceof Integer) {
-				defaultValue = (T)new Integer(0);
-			} else if (value instanceof Boolean) {
-				defaultValue = (T)new Boolean(false);
-			} else if (value instanceof String) {
-				defaultValue = (T)"";
-			}
-			
-		} else {
-			defaultValue = (T)ParameterValueFactory.convertValue(parameter.getParameterDefinition().getDefaultValue(), parameter.getType());
-		}
-		return value.equals(defaultValue);
-	}
+//	@SuppressWarnings("unchecked")
+//	public boolean isDefaultValue() {
+//		T defaultValue = null; 
+//		if (parameter.getParameterDefinition().getDefaultValue() == null){
+//			if (value instanceof Double) {
+//				defaultValue = (T)new Double(0.0);
+//			} else if (value instanceof Integer) {
+//				defaultValue = (T)new Integer(0);
+//			} else if (value instanceof Boolean) {
+//				defaultValue = (T)new Boolean(false);
+//			} else if (value instanceof String) {
+//				defaultValue = (T)"";
+//			}
+//			
+//		} else {
+//			defaultValue = (T)ParameterValueFactory.convertValue(parameter.getParameterDefinition().getDefaultValue(), parameter.getType());
+//		}
+//		return value.equals(defaultValue);
+//	}
 }

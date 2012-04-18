@@ -4,33 +4,33 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sopeco.configuration.parameter.ParameterType;
-import org.sopeco.configuration.parameter.ParameterUsage;
-import org.sopeco.persistence.dataset.ParameterValue;
-import org.sopeco.persistence.dataset.ParameterValueFactory;
+import org.sopeco.model.configuration.environment.ParameterDefinition;
+import org.sopeco.persistence.dataset.util.ParameterType;
+import org.sopeco.persistence.dataset.util.ParameterUtil;
 
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class ParameterValueList<T> implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = -6730179918476230975L;
-	private ParameterUsage parameter;
+	private ParameterDefinition parameter;
 	private List<T> values;
 
-	protected ParameterValueList(ParameterUsage parameter) {
+	protected ParameterValueList(ParameterDefinition parameter) {
 		super();
 		this.parameter = parameter;
 		values = new ArrayList<T>();
 	}
 
-	public ParameterValueList(ParameterUsage parameter, List<T> values) {
+	public ParameterValueList(ParameterDefinition parameter, List<T> values) {
 		super();
 		this.parameter = parameter;
 		this.values = values;
 	}
 
-	public ParameterUsage getParameter() {
+	public ParameterDefinition getParameter() {
 		return parameter;
 	}
 
@@ -42,9 +42,9 @@ public class ParameterValueList<T> implements Serializable {
 		double mean = 0.0;
 		if (getValues().size() > 0) {
 			for (T value : getValues()) {
-				if (parameter.getType().equals(ParameterType.DOUBLE)) {
+				if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.DOUBLE)) {
 					mean += (Double) value;
-				} else if (parameter.getType().equals(ParameterType.INTEGER)) {
+				} else if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.INTEGER)) {
 					mean += ((Integer) value).doubleValue();
 				} else
 					throw new IllegalStateException(
@@ -62,14 +62,14 @@ public class ParameterValueList<T> implements Serializable {
 	public void merge(ParameterValueList other) {
 		if (!parameter.equals(other.getParameter())) {
 			throw new IllegalArgumentException(
-					"Cannot merge ParameterValueLists of different parameterUsages!");
+					"Cannot merge ParameterValueLists of different ParameterDefinitions!");
 		}
 		this.values.addAll(other.getValues());
 	}
 
 	protected void addValue(Object value) {
 		T convertedValue = (T) ParameterValueFactory.convertValue(value,
-				parameter.getType());
+				ParameterUtil.getTypeEnumeration(parameter.getType()));
 		this.values.add(convertedValue);
 	}
 

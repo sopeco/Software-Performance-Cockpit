@@ -7,11 +7,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.sopeco.configuration.parameter.ParameterRole;
-import org.sopeco.configuration.parameter.ParameterType;
-import org.sopeco.configuration.parameter.ParameterUsage;
-import org.sopeco.persistence.dataset.ParameterValue;
-import org.sopeco.persistence.dataset.ParameterValueFactory;
+import org.sopeco.model.configuration.environment.ParameterDefinition;
+import org.sopeco.model.configuration.environment.ParameterRole;
+import org.sopeco.persistence.dataset.util.ParameterType;
+import org.sopeco.persistence.dataset.util.ParameterUtil;
 
 /**
  * DataSetColumn represents a column in a DataSet consisting of a parameter and
@@ -22,9 +21,14 @@ import org.sopeco.persistence.dataset.ParameterValueFactory;
  * @param <T>
  *            Type of the column's data.
  */
+@SuppressWarnings({"unchecked","rawtypes"})
 public class DataSetInputColumn<T> extends AbstractDataSetColumn<T> implements
 		Iterable<ParameterValue<T>>, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/**
 	 * Values associated to the parameter.
 	 */
@@ -36,7 +40,7 @@ public class DataSetInputColumn<T> extends AbstractDataSetColumn<T> implements
 	 * @param parameter
 	 * @param valueList
 	 */
-	protected DataSetInputColumn(ParameterUsage parameter, List<T> valueList) {
+	protected DataSetInputColumn(ParameterDefinition parameter, List<T> valueList) {
 		super();
 		if (!parameter.getRole().equals(ParameterRole.INPUT)) {
 			throw new IllegalArgumentException(
@@ -58,6 +62,7 @@ public class DataSetInputColumn<T> extends AbstractDataSetColumn<T> implements
 	 *            Row of interest.
 	 * @return Value at the given row.
 	 */
+	
 	public ParameterValue<T> getParameterValue(int row) {
 		if (row >= this.valueList.size())
 			throw new IllegalArgumentException(
@@ -109,7 +114,7 @@ public class DataSetInputColumn<T> extends AbstractDataSetColumn<T> implements
 		};
 	}
 
-	@SuppressWarnings("unchecked")
+
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof DataSetInputColumn) {
@@ -136,11 +141,11 @@ public class DataSetInputColumn<T> extends AbstractDataSetColumn<T> implements
 		double min = Double.MAX_VALUE;
 		if (getValueList().size() > 0) {
 			for (T value : getValueList()) {
-				if (parameter.getType().equals(ParameterType.DOUBLE)) {
+				if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.DOUBLE)) {
 					if ((Double) value < min) {
 						min = (Double) value;
 					}
-				} else if (parameter.getType().equals(ParameterType.INTEGER)) {
+				} else if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.INTEGER)) {
 					if (((Integer) value).doubleValue() < min) {
 						min = ((Integer) value).doubleValue();
 					}
@@ -157,11 +162,11 @@ public class DataSetInputColumn<T> extends AbstractDataSetColumn<T> implements
 		double max = Double.MIN_VALUE;
 		if (getValueList().size() > 0) {
 			for (T value : getValueList()) {
-				if (parameter.getType().equals(ParameterType.DOUBLE)) {
+				if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.DOUBLE)) {
 					if ((Double) value > max) {
 						max = (Double) value;
 					}
-				} else if (parameter.getType().equals(ParameterType.INTEGER)) {
+				} else if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.INTEGER)) {
 					if (((Integer) value).doubleValue() > max) {
 						max = ((Integer) value).doubleValue();
 					}

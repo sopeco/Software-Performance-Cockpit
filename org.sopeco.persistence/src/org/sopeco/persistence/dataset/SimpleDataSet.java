@@ -9,14 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.sopeco.configuration.parameter.ParameterRole;
-import org.sopeco.configuration.parameter.ParameterUsage;
-import org.sopeco.configuration.persistence.impl.IDataSetImpl;
-import org.sopeco.persistence.advanced.DataSetAggregated;
-import org.sopeco.persistence.advanced.DataSetAppender;
-import org.sopeco.persistence.advanced.DataSetRowBuilder;
-import org.sopeco.persistence.dataset.util.SimpleDataSetColumnBuilder;
-import org.sopeco.persistence.dataset.util.SimpleDataSetRowBuilder;
+import org.sopeco.model.configuration.environment.ParameterDefinition;
+import org.sopeco.model.configuration.environment.ParameterRole;
 
 /**
  * A SimpleDataSet is a column-based storage for data. It contains the values
@@ -27,19 +21,24 @@ import org.sopeco.persistence.dataset.util.SimpleDataSetRowBuilder;
  * @author Jens Happe
  * 
  */
-@SuppressWarnings("unchecked")
-public class SimpleDataSet extends IDataSetImpl implements
+@SuppressWarnings({"rawtypes"})
+public class SimpleDataSet implements
 		Iterable<SimpleDataSetRow>, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Data in form of columns associated to a parameter.
 	 */
-	private Map<ParameterUsage, SimpleDataSetColumn> columnMap;
+	private Map<ParameterDefinition, SimpleDataSetColumn> columnMap;
 
 	/**
 	 * Indexes of the columns represented by the according parameter
 	 */
-	private Map<Integer, ParameterUsage> parameterIndexes;
+	private Map<Integer, ParameterDefinition> parameterIndexes;
 
 	/**
 	 * Size (number of rows) in the SimpleDataSet.
@@ -60,8 +59,8 @@ public class SimpleDataSet extends IDataSetImpl implements
 			String id) {
 		super();
 		this.id = id;
-		this.columnMap = new HashMap<ParameterUsage, SimpleDataSetColumn>();
-		this.parameterIndexes = new HashMap<Integer, ParameterUsage>();
+		this.columnMap = new HashMap<ParameterDefinition, SimpleDataSetColumn>();
+		this.parameterIndexes = new HashMap<Integer, ParameterDefinition>();
 		this.size = size;
 		int index = 0;
 		for (SimpleDataSetColumn column : columnList) {
@@ -76,7 +75,7 @@ public class SimpleDataSet extends IDataSetImpl implements
 	 *            Parameter whose column / data is of interest.
 	 * @return The column containing the data for the given parameter.
 	 */
-	public SimpleDataSetColumn getColumn(ParameterUsage parameter) {
+	public SimpleDataSetColumn getColumn(ParameterDefinition parameter) {
 		if (columnMap.containsKey(parameter)) {
 			return columnMap.get(parameter);
 		}
@@ -104,7 +103,7 @@ public class SimpleDataSet extends IDataSetImpl implements
 	 *            row of interest.
 	 * @return The ParameterValue at (parameter, row).
 	 */
-	public ParameterValue get(ParameterUsage parameter, int row) {
+	public ParameterValue get(ParameterDefinition parameter, int row) {
 		return getColumn(parameter).getParameterValue(row);
 	}
 
@@ -139,7 +138,7 @@ public class SimpleDataSet extends IDataSetImpl implements
 	 * @return True, if the SimpleDataSet contains a column for that Parameter,
 	 *         false otherwise.
 	 */
-	public boolean contains(ParameterUsage parameter) {
+	public boolean contains(ParameterDefinition parameter) {
 		return columnMap.containsKey(parameter);
 	}
 
@@ -153,8 +152,8 @@ public class SimpleDataSet extends IDataSetImpl implements
 	/**
 	 * @return Parameters used in this dataset.
 	 */
-	public Collection<ParameterUsage> getParameters() {
-		return new ArrayList<ParameterUsage>(columnMap.keySet());
+	public Collection<ParameterDefinition> getParameters() {
+		return new ArrayList<ParameterDefinition>(columnMap.keySet());
 	}
 
 	/**
@@ -216,23 +215,23 @@ public class SimpleDataSet extends IDataSetImpl implements
 		return resultList;
 	}
 
-	SimpleDataSet getSubSet(ParameterUsage xParameter, ParameterUsage yParameter) {
+	SimpleDataSet getSubSet(ParameterDefinition xParameter, ParameterDefinition yParameter) {
 		SimpleDataSetColumnBuilder builder = new SimpleDataSetColumnBuilder();
 		builder.addColumn(getColumn(xParameter));
 		builder.addColumn(getColumn(yParameter));
 		return builder.createDataSet();
 	}
 
-	public SimpleDataSet getSubSet(Collection<ParameterUsage> parameterList) {
+	public SimpleDataSet getSubSet(Collection<ParameterDefinition> parameterList) {
 		SimpleDataSetColumnBuilder builder = new SimpleDataSetColumnBuilder();
-		for (ParameterUsage p : parameterList) {
+		for (ParameterDefinition p : parameterList) {
 			builder.addColumn(getColumn(p));
 		}
 		return builder.createDataSet();
 	}
 
-	public List<ParameterUsage> getVariedParameters() {
-		List<ParameterUsage> parameterList = new ArrayList<ParameterUsage>();
+	public List<ParameterDefinition> getVariedParameters() {
+		List<ParameterDefinition> parameterList = new ArrayList<ParameterDefinition>();
 		for (SimpleDataSetColumn<?> column : getColumns()) {
 			if (column.isVaried()) {
 				parameterList.add(column.getParameter());
@@ -245,12 +244,12 @@ public class SimpleDataSet extends IDataSetImpl implements
 		return getSubSet(getVariedParameters());
 	}
 
-	public SimpleDataSet select(Map<ParameterUsage, Object> selectionMap) {
+	public SimpleDataSet select(Map<ParameterDefinition, Object> selectionMap) {
 		SimpleDataSetRowBuilder builder = new SimpleDataSetRowBuilder();
 
 		for (SimpleDataSetRow row : this) {
 			boolean equals = true;
-			for (Entry<ParameterUsage, Object> entry : selectionMap.entrySet()) {
+			for (Entry<ParameterDefinition, Object> entry : selectionMap.entrySet()) {
 				ParameterValue<?> value = row.getParameterValue(entry.getKey());
 				if (!entry.getValue().equals(value.getValue())) {
 					equals = false;
@@ -277,14 +276,14 @@ public class SimpleDataSet extends IDataSetImpl implements
 	// return true;
 	// }
 
-	private boolean containsParameter(String parameterId) {
-		for (SimpleDataSetColumn<?> c : this.getColumns()) {
-			if (c.getParameter().getID().equals(parameterId)) {
-				return true;
-			}
-		}
-		return false;
-	}
+//	private boolean containsParameter(String parameterId) {
+//		for (SimpleDataSetColumn<?> c : this.getColumns()) {
+//			if (c.getParameter().getFullName().equals(parameterId)) {
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 
 	@Override
 	public String toString() {
@@ -333,9 +332,6 @@ public class SimpleDataSet extends IDataSetImpl implements
 					builder.addInputParameterValue(pv.getParameter(), pv.getValue());
 				}else if(pv.getParameter().getRole().equals(ParameterRole.OBSERVATION)){
 					builder.addObservationParameterValue(pv.getParameter(), pv.getValue());
-				}
-				else if(pv.getParameter().getRole().equals(ParameterRole.OBSERVABLE_TIME_SERIES)){
-					builder.addTimeSeriesValue(pv.getParameter(), pv.getValue(), 0.0);
 				}
 			}
 			builder.finishRow();

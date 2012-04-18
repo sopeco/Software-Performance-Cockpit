@@ -1,13 +1,10 @@
-package org.sopeco.persistence.dataset.util;
+package org.sopeco.persistence.dataset;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.sopeco.configuration.parameter.ParameterUsage;
-import org.sopeco.persistence.dataset.ParameterValue;
-import org.sopeco.persistence.dataset.SimpleDataSetColumn;
-import org.sopeco.persistence.dataset.SimpleDataSetRow;
+import org.sopeco.model.configuration.environment.ParameterDefinition;
 
 /**
  * Builder for DataSets using rows.
@@ -15,7 +12,7 @@ import org.sopeco.persistence.dataset.SimpleDataSetRow;
  * @author Jens Happe
  * 
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class SimpleDataSetRowBuilder extends SimpleAbstractDataSetRowBuilder {
 
 	/**
@@ -41,7 +38,7 @@ public class SimpleDataSetRowBuilder extends SimpleAbstractDataSetRowBuilder {
 	 * @param value
 	 *            Value for the parameter in the new row.
 	 */
-	public void addParameterValue(ParameterUsage parameter, Object value) {
+	public void addParameterValue(ParameterDefinition parameter, Object value) {
 		if (nextRow == null) {
 			throw new IllegalStateException("The row must be started first.");
 		}
@@ -74,14 +71,14 @@ public class SimpleDataSetRowBuilder extends SimpleAbstractDataSetRowBuilder {
 			for (ParameterValue value : row) {
 				SimpleDataSetColumn colum = new SimpleDataSetColumn(
 						value.getParameter(), new ArrayList());
-				columnMap.put(value.getParameter().getID(), colum);
+				columnMap.put(value.getParameter().getFullName(), colum);
 			}
 		}
 
 		checkParameters(row);
 		for (ParameterValue value : row) {
 			SimpleDataSetColumn column = columnMap.get(value.getParameter()
-					.getID());
+					.getFullName());
 			column.getValueList().add(value.getValue());
 		}
 	}

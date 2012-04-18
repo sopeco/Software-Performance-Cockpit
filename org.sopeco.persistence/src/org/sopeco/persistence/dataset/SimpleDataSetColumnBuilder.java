@@ -1,4 +1,4 @@
-package org.sopeco.persistence.dataset.util;
+package org.sopeco.persistence.dataset;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,9 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.sopeco.configuration.parameter.ParameterUsage;
-import org.sopeco.persistence.dataset.SimpleDataSet;
-import org.sopeco.persistence.dataset.SimpleDataSetColumn;
+import org.sopeco.model.configuration.environment.ParameterDefinition;
+
 
 /**
  * Builder for DataSets from the column perspective.
@@ -17,18 +16,18 @@ import org.sopeco.persistence.dataset.SimpleDataSetColumn;
  * @author Jens Happe
  * 
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class SimpleDataSetColumnBuilder {
 
 	/**
 	 * Columns of the new DataSet.
 	 */
-	private Map<ParameterUsage, SimpleDataSetColumn> columnMap = new HashMap<ParameterUsage, SimpleDataSetColumn>();
+	private Map<ParameterDefinition, SimpleDataSetColumn> columnMap = new HashMap<ParameterDefinition, SimpleDataSetColumn>();
 
 	/**
 	 * Indexes of the columns represented by the according parameter
 	 */
-	private Map<Integer, ParameterUsage> parameterIndexes = new HashMap<Integer, ParameterUsage>();
+	private Map<Integer, ParameterDefinition> parameterIndexes = new HashMap<Integer, ParameterDefinition>();
 
 	/**
 	 * Column under construction using methods startColumn, addValue,
@@ -124,7 +123,7 @@ public class SimpleDataSetColumnBuilder {
 	 * @param parameter
 	 *            Parameter for which new data will be provided.
 	 */
-	public void startColumn(ParameterUsage parameter) {
+	public void startColumn(ParameterDefinition parameter) {
 		nextColumn = new SimpleDataSetColumn(parameter, new ArrayList());
 
 	}

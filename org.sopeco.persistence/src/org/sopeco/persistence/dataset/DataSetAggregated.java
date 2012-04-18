@@ -9,15 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.sopeco.configuration.parameter.ParameterRole;
-import org.sopeco.configuration.parameter.ParameterUsage;
-import org.sopeco.configuration.persistence.impl.IDataSetImpl;
-import org.sopeco.persistence.dataset.ParameterValue;
-import org.sopeco.persistence.dataset.SimpleDataSet;
-import org.sopeco.persistence.dataset.SimpleDataSetColumn;
-import org.sopeco.persistence.dataset.SimpleDataSetRowBuilder;
-import org.sopeco.persistence.dataset.util.DataSetColumnBuilder;
-import org.sopeco.persistence.dataset.util.DataSetRowBuilder;
+import org.sopeco.model.configuration.environment.ParameterDefinition;
+import org.sopeco.model.configuration.environment.ParameterRole;
 
 /**
  * A DataSet is a column-based storage for data. It contains the values
@@ -28,25 +21,31 @@ import org.sopeco.persistence.dataset.util.DataSetRowBuilder;
  * @author Jens Happe
  * 
  */
-@SuppressWarnings("unchecked")
-public class DataSetAggregated extends IDataSetImpl implements
+@SuppressWarnings({"unchecked", "rawtypes"})
+public class DataSetAggregated implements
 		Iterable<DataSetRow>, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Data in form of columns associated to a input parameter.
 	 */
 
-	private Map<ParameterUsage, DataSetInputColumn> inputColumnMap;
+	
+	private Map<ParameterDefinition, DataSetInputColumn> inputColumnMap;
 
 	/**
 	 * Data in form of columns associated to a observation parameter.
 	 */
-	private Map<ParameterUsage, DataSetObservationColumn> observationColumnMap;
+	private Map<ParameterDefinition, DataSetObservationColumn> observationColumnMap;
 
 	// /**
 	// * Indexes of the columns represented by the according parameter
 	// */
-	// private Map<Integer, ParameterUsage> parameterIndexes;
+	// private Map<Integer, ParameterDefinition> parameterIndexes;
 
 	/**
 	 * Size (number of rows) in the DataSet.
@@ -68,9 +67,9 @@ public class DataSetAggregated extends IDataSetImpl implements
 			String id) {
 		super();
 		this.id = id;
-		this.inputColumnMap = new HashMap<ParameterUsage, DataSetInputColumn>();
-		this.observationColumnMap = new HashMap<ParameterUsage, DataSetObservationColumn>();
-		// this.parameterIndexes = new HashMap<Integer, ParameterUsage>();
+		this.inputColumnMap = new HashMap<ParameterDefinition, DataSetInputColumn>();
+		this.observationColumnMap = new HashMap<ParameterDefinition, DataSetObservationColumn>();
+		// this.parameterIndexes = new HashMap<Integer, ParameterDefinition>();
 		this.size = size;
 		// int index = 0;
 		for (DataSetInputColumn column : inputColumns) {
@@ -90,7 +89,7 @@ public class DataSetAggregated extends IDataSetImpl implements
 	 *            Parameter whose column / data is of interest.
 	 * @return The column containing the data for the given parameter.
 	 */
-	public AbstractDataSetColumn getColumn(ParameterUsage parameter) {
+	public AbstractDataSetColumn getColumn(ParameterDefinition parameter) {
 		if (inputColumnMap.containsKey(parameter)) {
 			return inputColumnMap.get(parameter);
 		}
@@ -128,15 +127,15 @@ public class DataSetAggregated extends IDataSetImpl implements
 	/**
 	 * @return All columns held by the dataset.
 	 */
-	public DataSetInputColumn getInputColumn(ParameterUsage parameterUsage) {
-		return inputColumnMap.get(parameterUsage);
+	public DataSetInputColumn getInputColumn(ParameterDefinition parameter) {
+		return inputColumnMap.get(parameter);
 	}
 
 	/**
 	 * @return All columns held by the dataset.
 	 */
-	public DataSetObservationColumn getObservationColumn(ParameterUsage parameterUsage) {
-		return observationColumnMap.get(parameterUsage);
+	public DataSetObservationColumn getObservationColumn(ParameterDefinition parameter) {
+		return observationColumnMap.get(parameter);
 	}
 
 	/**
@@ -148,7 +147,7 @@ public class DataSetAggregated extends IDataSetImpl implements
 	 *            row of interest.
 	 * @return The ParameterValue at (parameter, row).
 	 */
-	public ParameterValue getInputValue(ParameterUsage parameter, int row) {
+	public ParameterValue getInputValue(ParameterDefinition parameter, int row) {
 		if (!parameter.getRole().equals(ParameterRole.INPUT)
 				|| !(getColumn(parameter) instanceof DataSetInputColumn)) {
 			throw new IllegalArgumentException(
@@ -167,9 +166,9 @@ public class DataSetAggregated extends IDataSetImpl implements
 	 *            row of interest.
 	 * @return The ParameterValue at (parameter, row).
 	 */
-	public ParameterValueList getObservationValues(ParameterUsage parameter,
+	public ParameterValueList getObservationValues(ParameterDefinition parameter,
 			int row) {
-		if ((!parameter.getRole().equals(ParameterRole.OBSERVATION)&& !parameter.getRole().equals(ParameterRole.OBSERVABLE_TIME_SERIES))
+		if ((!parameter.getRole().equals(ParameterRole.OBSERVATION))
 				|| !(getColumn(parameter) instanceof DataSetObservationColumn)) {
 			throw new IllegalArgumentException(
 					"Parameter must be an input parameter!");
@@ -218,7 +217,7 @@ public class DataSetAggregated extends IDataSetImpl implements
 	 * @return True, if the DataSet contains a column for that Parameter, false
 	 *         otherwise.
 	 */
-	public boolean contains(ParameterUsage parameter) {
+	public boolean contains(ParameterDefinition parameter) {
 		return inputColumnMap.containsKey(parameter)
 				|| observationColumnMap.containsKey(parameter);
 	}
@@ -233,8 +232,8 @@ public class DataSetAggregated extends IDataSetImpl implements
 	/**
 	 * @return Parameters used in this dataset.
 	 */
-	public Collection<ParameterUsage> getParameterUsages() {
-		ArrayList<ParameterUsage> result = new ArrayList<ParameterUsage>();
+	public Collection<ParameterDefinition> getParameterDefinitions() {
+		ArrayList<ParameterDefinition> result = new ArrayList<ParameterDefinition>();
 		result.addAll(inputColumnMap.keySet());
 		result.addAll(observationColumnMap.keySet());
 		return result;
@@ -301,24 +300,24 @@ public class DataSetAggregated extends IDataSetImpl implements
 		return resultList;
 	}
 
-	DataSetAggregated getSubSet(ParameterUsage xParameter,
-			ParameterUsage yParameter) {
+	DataSetAggregated getSubSet(ParameterDefinition xParameter,
+			ParameterDefinition yParameter) {
 		DataSetColumnBuilder builder = new DataSetColumnBuilder();
 		builder.addColumn(getColumn(xParameter));
 		builder.addColumn(getColumn(yParameter));
 		return builder.createDataSet();
 	}
 
-	public DataSetAggregated getSubSet(Collection<ParameterUsage> parameterList) {
+	public DataSetAggregated getSubSet(Collection<ParameterDefinition> parameterList) {
 		DataSetColumnBuilder builder = new DataSetColumnBuilder();
-		for (ParameterUsage p : parameterList) {
+		for (ParameterDefinition p : parameterList) {
 			builder.addColumn(getColumn(p));
 		}
 		return builder.createDataSet();
 	}
 
-	public List<ParameterUsage> getVariedInputParameters() {
-		List<ParameterUsage> parameterList = new ArrayList<ParameterUsage>();
+	public List<ParameterDefinition> getVariedInputParameters() {
+		List<ParameterDefinition> parameterList = new ArrayList<ParameterDefinition>();
 		for (DataSetInputColumn<?> column : getInputColumns()) {
 			if (column.isVaried()) {
 				parameterList.add(column.getParameter());
@@ -331,12 +330,12 @@ public class DataSetAggregated extends IDataSetImpl implements
 		return getSubSet(getVariedInputParameters());
 	}
 
-	public DataSetAggregated select(Map<ParameterUsage, Object> selectionMap) {
+	public DataSetAggregated select(Map<ParameterDefinition, Object> selectionMap) {
 		DataSetRowBuilder builder = new DataSetRowBuilder();
 
 		for (DataSetRow row : this) {
 			boolean equals = true;
-			for (Entry<ParameterUsage, Object> entry : selectionMap.entrySet()) {
+			for (Entry<ParameterDefinition, Object> entry : selectionMap.entrySet()) {
 				if (!entry.getKey().getRole().equals(ParameterRole.INPUT)) {
 					throw new IllegalArgumentException(
 							"Parameter must be an input parameter!");
@@ -368,15 +367,15 @@ public class DataSetAggregated extends IDataSetImpl implements
 	// return true;
 	// }
 
-	private boolean containsParameter(String parameterId) {
-		for (AbstractDataSetColumn<?> c : this.getColumns()) {
-			if (c.getParameter().getID().equals(parameterId)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
+//	private boolean containsParameter(String parameterId) {
+//		for (AbstractDataSetColumn<?> c : this.getColumns()) {
+//			if (c.getParameter().getFullName().equals(parameterId)) {
+//				return true;
+//			}
+//		}
+//
+//		return false;
+//	}
 
 	@Override
 	public String toString() {
@@ -511,14 +510,14 @@ public class DataSetAggregated extends IDataSetImpl implements
 		return true;
 	}
 
-	@SuppressWarnings("rawtypes")
+	
 	// TODO: check whats the problem when sending dataset over RMI
 	public void reconstructDataSet() {
-		for (Entry<ParameterUsage, DataSetInputColumn> entry : inputColumnMap
+		for (Entry<ParameterDefinition, DataSetInputColumn> entry : inputColumnMap
 				.entrySet()) {
 			entry.getValue().parameter = entry.getKey();
 		}
-		for (Entry<ParameterUsage, DataSetObservationColumn> entry : observationColumnMap
+		for (Entry<ParameterDefinition, DataSetObservationColumn> entry : observationColumnMap
 				.entrySet()) {
 			entry.getValue().parameter = entry.getKey();
 		}

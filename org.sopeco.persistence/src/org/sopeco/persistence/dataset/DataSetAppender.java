@@ -1,11 +1,7 @@
-package org.sopeco.persistence.dataset.util;
+package org.sopeco.persistence.dataset;
 
 import java.util.ArrayList;
 
-import org.sopeco.persistence.dataset.DataSetAggregated;
-import org.sopeco.persistence.dataset.DataSetInputColumn;
-import org.sopeco.persistence.dataset.DataSetObservationColumn;
-import org.sopeco.persistence.dataset.DataSetRow;
 
 /**
  * Builder to merge multiple DataSets into a single one.
@@ -13,6 +9,7 @@ import org.sopeco.persistence.dataset.DataSetRow;
  * @author Jens Happe
  * 
  */
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class DataSetAppender extends AbstractDataSetRowBuilder {
 
 	public DataSetAppender() {
@@ -26,7 +23,6 @@ public class DataSetAppender extends AbstractDataSetRowBuilder {
 	 * @param dataset
 	 *            To be added.
 	 */
-	@SuppressWarnings("unchecked")
 	public void append(DataSetAggregated dataset) {
 
 		if (dataset.size() == 0) {

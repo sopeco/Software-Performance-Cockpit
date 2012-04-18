@@ -19,17 +19,17 @@ public class ParameterUtil {
 		
 	}
 	
-	public static ParameterRole getRoleEnumeration(String roleName){
-		if (roleName.equalsIgnoreCase(ParameterType.DOUBLE.getName())){
-			return ParameterRole.INPUT;
-		} else if (roleName.equalsIgnoreCase(ParameterRole.INPUT.getName())){
-			return ParameterRole.OBSERVATION;
-		} else if (roleName.equalsIgnoreCase(ParameterRole.OBSERVATION.getName())){
-			return ParameterRole.OBSERVABLE_TIME_SERIES;
-		} else {
-			throw new IllegalArgumentException(
-					"Invalid parameter role/direction: " + roleName);
-		}
-		
-	}
+//	public static ParameterRole getRoleEnumeration(String roleName){
+//		if (roleName.equalsIgnoreCase(ParameterType.DOUBLE.getName())){
+//			return ParameterRole.INPUT;
+//		} else if (roleName.equalsIgnoreCase(ParameterRole.INPUT.getName())){
+//			return ParameterRole.OBSERVATION;
+//		} else if (roleName.equalsIgnoreCase(ParameterRole.OBSERVATION.getName())){
+//			return ParameterRole.OBSERVABLE_TIME_SERIES;
+//		} else {
+//			throw new IllegalArgumentException(
+//					"Invalid parameter role/direction: " + roleName);
+//		}
+//		
+//	}
 }

@@ -2,20 +2,18 @@ package org.sopeco.persistence.dataset;
 
 import java.util.List;
 
-import org.sopeco.configuration.parameter.ParameterType;
-import org.sopeco.configuration.parameter.ParameterUsage;
-import org.sopeco.persistence.dataset.ParameterValue;
+import org.sopeco.model.configuration.environment.ParameterDefinition;
 
 public abstract class AbstractDataSetColumn<T> {
 	/**
 	 * Parameter / identifier of the column in the DataSet.
 	 */
-	protected ParameterUsage parameter;
+	protected ParameterDefinition parameter;
 
 	/**
 	 * @return Parameter / Identifier of the column.
 	 */
-	public ParameterUsage getParameter() {
+	public ParameterDefinition getParameter() {
 		return parameter;
 	}
 

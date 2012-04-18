@@ -5,8 +5,9 @@ import java.util.List;
 
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
-import org.sopeco.core.model.configuration.measurements.ExperimentSeriesDefinition;
+import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
 
 public class ExperimentSeries {
 	

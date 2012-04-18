@@ -1,15 +1,15 @@
-package org.sopeco.persistence.dataset.util;
+package org.sopeco.persistence.dataset;
 
-import org.sopeco.configuration.parameter.ParameterType;
-import org.sopeco.configuration.parameter.ParameterUsage;
-import org.sopeco.persistence.dataset.ParameterValue;
+import org.sopeco.model.configuration.environment.ParameterDefinition;
+import org.sopeco.persistence.dataset.util.ParameterType;
+import org.sopeco.persistence.dataset.util.ParameterUtil;
 
 public class ParameterValueFactory {
 	private static final double SMALL_NUMBER = 0.0000001;
 
 	public static ParameterValue<?> createParameterValue(
-			ParameterUsage parameter, Object value) {
-		Object convertedValue = convertValue(value, parameter.getType());
+			ParameterDefinition parameter, Object value) {
+		Object convertedValue = convertValue(value, ParameterUtil.getTypeEnumeration(parameter.getType()));
 		if (convertedValue instanceof Double) {
 			return new ParameterValue<Double>(parameter,
 					(Double) convertedValue);

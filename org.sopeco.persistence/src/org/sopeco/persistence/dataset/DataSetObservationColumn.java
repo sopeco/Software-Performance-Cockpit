@@ -5,15 +5,19 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.sopeco.configuration.parameter.ParameterRole;
-import org.sopeco.configuration.parameter.ParameterType;
-import org.sopeco.configuration.parameter.ParameterUsage;
-import org.sopeco.persistence.dataset.ParameterValue;
-import org.sopeco.persistence.dataset.ParameterValueFactory;
+import org.sopeco.model.configuration.environment.ParameterDefinition;
+import org.sopeco.model.configuration.environment.ParameterRole;
+import org.sopeco.persistence.dataset.util.ParameterType;
+import org.sopeco.persistence.dataset.util.ParameterUtil;
+
 
 public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T>
 		implements Iterable<ParameterValueList<T>>, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/**
 	 * Values associated to the parameter.
 	 */
@@ -25,10 +29,10 @@ public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T>
 	 * @param parameter
 	 * @param valueList
 	 */
-	protected DataSetObservationColumn(ParameterUsage parameter,
+	protected DataSetObservationColumn(ParameterDefinition parameter,
 			List<ParameterValueList<T>> valueList) {
 		super();
-		if (!parameter.getRole().equals(ParameterRole.OBSERVATION) && !parameter.getRole().equals(ParameterRole.OBSERVABLE_TIME_SERIES)) {
+		if (!parameter.getRole().equals(ParameterRole.OBSERVATION)) {
 			throw new IllegalArgumentException(
 					"Cannot create a DataSetInputColumn for a non observation parameter.");
 		}
@@ -85,11 +89,11 @@ public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T>
 		double min = Double.MAX_VALUE;
 		if (getAllValues().size() > 0) {
 			for (T value : getAllValues()) {
-				if (parameter.getType().equals(ParameterType.DOUBLE)) {
+				if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.DOUBLE)) {
 					if ((Double) value < min) {
 						min = (Double) value;
 					}
-				} else if (parameter.getType().equals(ParameterType.INTEGER)) {
+				} else if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.INTEGER)) {
 					if (((Integer) value).doubleValue() < min) {
 						min = ((Integer) value).doubleValue();
 					}
@@ -106,11 +110,11 @@ public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T>
 		double max = Double.MIN_VALUE;
 		if (getAllValues().size() > 0) {
 			for (T value : getAllValues()) {
-				if (parameter.getType().equals(ParameterType.DOUBLE)) {
+				if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.DOUBLE)) {
 					if ((Double) value > max) {
 						max = (Double) value;
 					}
-				} else if (parameter.getType().equals(ParameterType.INTEGER)) {
+				} else if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.INTEGER)) {
 					if (((Integer) value).doubleValue() > max) {
 						max = ((Integer) value).doubleValue();
 					}
@@ -163,20 +167,17 @@ public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T>
 	}
 
 	protected void addValues(List<T> values) {
-		if(isTimeSeries()){
-			throw new IllegalStateException("Use the addTimeSeriesValues() method for setting the value of a timeSeries column");
-		}
+		
 		ParameterValueList<T> pvl = new ParameterValueList<T>(parameter, values);
 		valueList.add(pvl);
 	}
 
 	protected void addValues(ParameterValueList<T> values) {
-		if(isTimeSeries()){
-			throw new IllegalStateException("Use the addTimeSeries() method for setting the values of a timeSeries column");
-		}
+		
 		valueList.add(values);
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void addValue(Object value) {
 		List list = new ArrayList();
 		list.add(value);
@@ -189,45 +190,5 @@ public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T>
 		return getAllValuesAsParameterValues();
 	}
 	
-	public boolean isTimeSeries(){
-		return parameter.getRole().equals(ParameterRole.OBSERVABLE_TIME_SERIES);
-	}
-	
-	protected void addTimeSeriesValues(List<T> values, List<Double> timestamps) {
-		if(!isTimeSeries()){
-			throw new IllegalStateException("TimeSeries value can not be added to a non TimeSeries Column!");
-		}
-		TimeSeries<T> pvl = new TimeSeries<T>(parameter, values, timestamps);
-		valueList.add(pvl);
-	}
-
-	protected void addTimeSeries(TimeSeries<T> values) {
-		if(!isTimeSeries()){
-			throw new IllegalStateException("TimeSeries value can not be added to a non TimeSeries Column!");
-		}
-		valueList.add(values);
-	}
-	
-	public List<Double> getAllTimestamps() {
-		if(!isTimeSeries()){
-			throw new IllegalStateException("Cannot retrieve timestamps for non time series column!");
-		}
-		List<Double> result = new ArrayList<Double>();
-		for (ParameterValueList<T> pvl : valueList) {
-			result.addAll(((TimeSeries)pvl).getTimeStamps());
-		}
-		return result;
-	}
-	
-
-	
-	protected void addTimeSeriesValue(Double timestamp, Object value) {
-		List valueList = new ArrayList();
-		List timeList = new ArrayList();
-		valueList.add(value);
-		timeList.add(timestamp);
-		ParameterValueList<T> pvl = new TimeSeries<T>(parameter, valueList, timeList);
-		this.valueList.add(pvl);
-	}
 	
 }

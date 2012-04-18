@@ -1,17 +1,12 @@
-package org.sopeco.persistence.dataset.util;
+package org.sopeco.persistence.dataset;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
-import org.sopeco.configuration.parameter.ParameterRole;
-import org.sopeco.configuration.parameter.ParameterUsage;
-import org.sopeco.persistence.dataset.AbstractDataSetColumn;
-import org.sopeco.persistence.dataset.DataSetAggregated;
-import org.sopeco.persistence.dataset.DataSetInputColumn;
-import org.sopeco.persistence.dataset.DataSetObservationColumn;
-import org.sopeco.persistence.dataset.ParameterValue;
+import org.sopeco.model.configuration.environment.ParameterDefinition;
+import org.sopeco.model.configuration.environment.ParameterRole;
 
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class DataSetModifier {
 	private DataSetAggregated dataset;
 
@@ -26,18 +21,18 @@ public class DataSetModifier {
 						.toString());
 	}
 
-	public AbstractDataSetColumn<?> addColumn(ParameterUsage p) {
+	public AbstractDataSetColumn<?> addColumn(ParameterDefinition p) {
 		AbstractDataSetColumn col = null;
 		if (p.getRole().equals(ParameterRole.INPUT)) {
 			col = new DataSetInputColumn(p, new ArrayList());
-		} else if (p.getRole().equals(ParameterRole.OBSERVATION) || p.getRole().equals(ParameterRole.OBSERVABLE_TIME_SERIES)) {
+		} else if (p.getRole().equals(ParameterRole.OBSERVATION)) {
 			col = new DataSetObservationColumn(p, new ArrayList());
 		}
 		dataset.addColumn(col);
 		return col;
 	}
 
-//	public AbstractDataSetColumn<?> addColumn(ParameterUsage p,
+//	public AbstractDataSetColumn<?> addColumn(ParameterDefinition p,
 //			List<Parameter> values) {
 //		AbstractDataSetColumn col = null;
 //		if (p.getRole().equals(ParameterRole.INPUT)) {
@@ -56,7 +51,7 @@ public class DataSetModifier {
 //		return col;
 //	}
 
-	// public DataSetInputColumn<?> addInputColumn(ParameterUsage p,
+	// public DataSetInputColumn<?> addInputColumn(ParameterDefinition p,
 	// List<ParameterValue<?>> values) {
 	// List<Object> valueList = new ArrayList<Object>();
 	// for (ParameterValue<?> pv : values) {
@@ -69,7 +64,7 @@ public class DataSetModifier {
 	// return col;
 	// }
 	//
-	// public DataSetObservationColumn<?> addObservationColumn(ParameterUsage p,
+	// public DataSetObservationColumn<?> addObservationColumn(ParameterDefinition p,
 	// List<ParameterValueList<?>> values) {
 	// List<ParameterValueList<?>> valueList = new
 	// ArrayList<ParameterValueList<?>>();
@@ -84,7 +79,7 @@ public class DataSetModifier {
 	// return col;
 	// }
 
-//	public void addValue(ParameterUsage p, Object value) {
+//	public void addValue(ParameterDefinition p, Object value) {
 //		if (p.getRole().equals(ParameterRole.INPUT)) {
 //			dataset.getInputColumn(p).addValue(value);
 //
@@ -102,7 +97,7 @@ public class DataSetModifier {
 //		dataset.setSize(max);
 //	}
 
-	public AbstractDataSetColumn<?> getColumn(ParameterUsage p) {
+	public AbstractDataSetColumn<?> getColumn(ParameterDefinition p) {
 		try {
 			return dataset.getColumn(p);
 		} catch (Exception e) {

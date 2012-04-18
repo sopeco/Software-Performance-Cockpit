@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.6"?>
 
-<target name="sopeco" sequenceNumber="47">
+<target name="sopeco" sequenceNumber="48">
 <locations>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.platform.feature.group" version="3.7.1.r37x_v20110729-9gF7UHOxFtniV7mI3T556iZN9AU8bEZ1lHMcVK"/>
@@ -39,6 +39,10 @@
 <location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.sopeco.orbit.feature.feature.group" version="0.0.0"/>
 <repository location="http://deqkal276.qkal.sap.corp:8080/jenkins/job/sopeco.orbit-master/ws/org.sopeco.orbit.updatesite/target/site/"/>
+</location>
+<location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.persistence.sdk.feature.group" version="2.1.2.v20101206-r8635"/>
+<repository location="http://download.eclipse.org/releases/helios"/>
 </location>
 </locations>
 <targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre6"/>

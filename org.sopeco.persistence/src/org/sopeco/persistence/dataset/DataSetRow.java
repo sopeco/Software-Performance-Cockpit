@@ -3,9 +3,8 @@ package org.sopeco.persistence.dataset;
 import java.io.Serializable;
 import java.util.List;
 
-import org.sopeco.configuration.parameter.ParameterRole;
-import org.sopeco.configuration.parameter.ParameterUsage;
-import org.sopeco.persistence.dataset.ParameterValue;
+import org.sopeco.model.configuration.environment.ParameterDefinition;
+import org.sopeco.model.configuration.environment.ParameterRole;
 
 /**
  * Row of a DataSet.
@@ -13,8 +12,13 @@ import org.sopeco.persistence.dataset.ParameterValue;
  * @author Jens Happe
  * 
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"rawtypes"})
 public class DataSetRow implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * ParameterValues of the row.
@@ -57,7 +61,7 @@ public class DataSetRow implements Serializable {
 	 *            Parameter of interest.
 	 * @return The value of a particular parameter in this row.
 	 */
-	public ParameterValue getInputParameterValue(ParameterUsage parameter) {
+	public ParameterValue getInputParameterValue(ParameterDefinition parameter) {
 		if (!parameter.getRole().equals(ParameterRole.INPUT)) {
 			throw new IllegalArgumentException(
 					"Parameter must be an input parameter");
@@ -76,8 +80,8 @@ public class DataSetRow implements Serializable {
 	 * @return The value of a particular parameter in this row.
 	 */
 	public ParameterValueList getObservableParameterValues(
-			ParameterUsage parameter) {
-		if (!parameter.getRole().equals(ParameterRole.OBSERVATION) && !parameter.getRole().equals(ParameterRole.OBSERVABLE_TIME_SERIES)) {
+			ParameterDefinition parameter) {
+		if (!parameter.getRole().equals(ParameterRole.OBSERVATION)) {
 			throw new IllegalArgumentException(
 					"Parameter must be an input parameter");
 		}

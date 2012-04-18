@@ -1,4 +1,4 @@
-package org.sopeco.persistence.dataset.util;
+package org.sopeco.persistence.dataset;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -7,12 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.sopeco.configuration.parameter.ParameterUsage;
-import org.sopeco.persistence.dataset.AbstractDataSetColumn;
-import org.sopeco.persistence.dataset.DataSetAggregated;
-import org.sopeco.persistence.dataset.DataSetInputColumn;
-import org.sopeco.persistence.dataset.DataSetObservationColumn;
-import org.sopeco.persistence.dataset.ParameterValueList;
+import org.sopeco.model.configuration.environment.ParameterDefinition;
+
 
 /**
  * Builder for DataSets from the column perspective.
@@ -20,22 +16,22 @@ import org.sopeco.persistence.dataset.ParameterValueList;
  * @author Jens Happe
  * 
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class DataSetColumnBuilder {
 
 	/**
 	 * Columns of the new DataSet.
 	 */
-	private Map<ParameterUsage, DataSetInputColumn> inputColumnMap = new HashMap<ParameterUsage, DataSetInputColumn>();
+	private Map<ParameterDefinition, DataSetInputColumn> inputColumnMap = new HashMap<ParameterDefinition, DataSetInputColumn>();
 	/**
 	 * Columns of the new DataSet.
 	 */
-	private Map<ParameterUsage, DataSetObservationColumn> observationColumnMap = new HashMap<ParameterUsage, DataSetObservationColumn>();
+	private Map<ParameterDefinition, DataSetObservationColumn> observationColumnMap = new HashMap<ParameterDefinition, DataSetObservationColumn>();
 	// /**
 	// * Indexes of the columns represented by the according parameter
 	// */
-	// private Map<Integer, ParameterUsage> parameterIndexes = new
-	// HashMap<Integer, ParameterUsage>();
+	// private Map<Integer, ParameterDefinition> parameterIndexes = new
+	// HashMap<Integer, ParameterDefinition>();
 
 	/**
 	 * Column under construction using methods startColumn, addValue,
@@ -111,15 +107,6 @@ public class DataSetColumnBuilder {
 		}
 	}
 
-	/**
-	 * @return All columns held by the dataset.
-	 */
-	private Collection<AbstractDataSetColumn> getColumns() {
-		List<AbstractDataSetColumn> result = new ArrayList<AbstractDataSetColumn>();
-		result.addAll(inputColumnMap.values());
-		result.addAll(observationColumnMap.values());
-		return result;
-	}
 
 	/**
 	 * @return All columns held by the dataset.
@@ -173,12 +160,12 @@ public class DataSetColumnBuilder {
 	 * @param parameter
 	 *            Parameter for which new data will be provided.
 	 */
-	public void startInputColumn(ParameterUsage parameter) {
+	public void startInputColumn(ParameterDefinition parameter) {
 		nextColumn = new DataSetInputColumn(parameter, new ArrayList());
 
 	}
 
-	public void startObservationColumn(ParameterUsage parameter) {
+	public void startObservationColumn(ParameterDefinition parameter) {
 		nextColumn = new DataSetObservationColumn(parameter, new ArrayList());
 
 	}
@@ -217,35 +204,11 @@ public class DataSetColumnBuilder {
 					"The started column must be an input column!");
 		}
 		for (Object val : values) {
-			((DataSetObservationColumn) nextColumn).addValue(values);
+			((DataSetObservationColumn) nextColumn).addValue(val);
 		}
 
 	}
 
-	/**
-	 * Adds a new value to the column under construction (created by
-	 * startColumn).
-	 * 
-	 * @param value
-	 *            Value to be added.
-	 */
-	public void addObservationTimeSeries(List<Object> values,
-			List<Double> timestamps) {
-		if (values.size() != timestamps.size()) {
-			throw new IllegalArgumentException(
-					"Value list and timestamp list must have the same size!");
-		}
-		if (nextColumn == null) {
-			throw new IllegalStateException("The row must be started first.");
-		}
-		if (!(nextColumn instanceof DataSetObservationColumn)) {
-			throw new IllegalStateException(
-					"The started column must be an input column!");
-		}
-		for (int i = 0; i < values.size(); i++) {
-			((DataSetObservationColumn) nextColumn).addTimeSeriesValue(timestamps.get(i), values.get(i));
-		}
-	}
 
 	/**
 	 * Adds a set of new values to the column under construction (created by
