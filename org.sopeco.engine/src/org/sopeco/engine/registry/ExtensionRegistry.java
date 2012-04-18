@@ -4,12 +4,12 @@
 package org.sopeco.engine.registry;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
  * @author Roozbeh Farahbod
  *
  */
-public class ExtensionRegistry {
+public class ExtensionRegistry implements IExtensionRegistry {
 
 	private static Logger logger = LoggerFactory.getLogger(ExtensionRegistry.class);
 	
@@ -34,12 +34,50 @@ public class ExtensionRegistry {
 		"org.sopeco.engine.analysis.analysisstrategy"
 	};
 	
-	private static ExtensionRegistry SINGLETON = null;
+	private static IExtensionRegistry SINGLETON = null;
 	
 	/** Holds a mapping of extension names to extensions. */
 	private Map<String, ISoPeCoExtension> extensions = new HashMap<String, ISoPeCoExtension>();
+
+	@SuppressWarnings("rawtypes")
+	private Map<Class, Extensions> extensionsMap = new HashMap<Class, Extensions>();
 	
 	private boolean initialized = false;
+
+	/**
+	 * Returns a singleton instance of the extension registry.
+	 */
+	public static IExtensionRegistry getSingleton() {
+		if (SINGLETON == null)
+			SINGLETON = new ExtensionRegistry();
+		return SINGLETON;
+	}
+	
+	@Override
+	public void addExtension(ISoPeCoExtension ext) {
+		extensions.put(ext.getName(), ext);
+	}
+	
+	@Override
+	public void removeExtension(String name) {
+		extensions.remove(name);
+	}
+	
+	@Override
+	public Collection<? extends ISoPeCoExtension> getExtensions() {
+		return Collections.unmodifiableCollection(extensions.values());
+	}
+
+	@Override
+	public <E extends ISoPeCoExtension> Extensions<E> getExtensions(Class<E> c) {
+		@SuppressWarnings("unchecked")
+		Extensions<E> exts = extensionsMap.get(c);
+		if (exts == null) {
+			exts = new Extensions<E>(c);
+			extensionsMap.put(c, exts);
+		}
+		return exts;
+	}
 
 	/*
  	 * Preventing public instantiation of the registry. 
@@ -47,16 +85,7 @@ public class ExtensionRegistry {
 	private ExtensionRegistry() {
 		initialize();
 	}
-	
-	/**
-	 * Returns a singleton instance of the extension registry.
-	 */
-	public static ExtensionRegistry getRegistry() {
-		if (SINGLETON == null)
-			SINGLETON = new ExtensionRegistry();
-		return SINGLETON;
-	}
-	
+
 	/** 
 	 * Initializes the plugin registry.
 	 */
@@ -70,18 +99,16 @@ public class ExtensionRegistry {
 	}
 	
 	/**
-	 * Returns a collection of all registered SoPeCo extensions.
-	 */
-	public Collection<ISoPeCoExtension> getExtensions() {
-		return extensions.values();
-	}
-	
-	/**
 	 * Loads all the extensions that are supported by the engine.
 	 */
 	private void loadEngineExtensions() {
-		final IExtensionRegistry registry = Platform.getExtensionRegistry();
+		final org.eclipse.core.runtime.IExtensionRegistry registry = Platform.getExtensionRegistry();
 
+		if (registry == null) {
+			logger.warn("Cannot load plugins. The application is not running within an Eclipse framework.");
+			return;
+		}
+		
 		// loads all extensions
 		for (String id: EXTENSION_POINTS) {
 			loadExtensions(registry, id);
@@ -94,7 +121,7 @@ public class ExtensionRegistry {
 	 * @param registry the Eclipse platform extension registry
 	 * @param eid extension point id
 	 */
-	private void loadExtensions(IExtensionRegistry registry, String eid) {
+	private void loadExtensions(org.eclipse.core.runtime.IExtensionRegistry registry, String eid) {
 		IConfigurationElement[] configs = registry.getConfigurationElementsFor(eid);
 		for (IConfigurationElement ext : configs) {
 			Object o = null;
@@ -109,4 +136,5 @@ public class ExtensionRegistry {
 			}
 		}
 	}
+
 }

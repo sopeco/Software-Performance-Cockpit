@@ -5,17 +5,18 @@ package org.sopeco.engine.registry;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
- * This class offers a generic view towards available extensions.
+ * This class offers a generic view towards available extensions. It implements {@link Iterable}.
  * 
  * @author Roozbeh Farahbod
  *
  */
-public class Extensions<E extends ISoPeCoExtension> {
+public class Extensions<E extends ISoPeCoExtension> implements Iterable<E> {
 
-	private final ExtensionRegistry registry;
+	private final IExtensionRegistry registry;
 	
 	private final List<E> extensions;
 	
@@ -26,8 +27,8 @@ public class Extensions<E extends ISoPeCoExtension> {
 	 * @filter a class instance
 	 */
 	@SuppressWarnings("unchecked")
-	public Extensions(Class<E> filter) {
-		registry = ExtensionRegistry.getRegistry();
+	protected Extensions(Class<E> filter) {
+		registry = ExtensionRegistry.getSingleton();
 		
 		// load the relevant extensions
 		extensions = new ArrayList<E>();
@@ -40,7 +41,12 @@ public class Extensions<E extends ISoPeCoExtension> {
 	/**
 	 * Returns a list of extensions that provide the desired extension interface.
 	 */
-	public List<E> getExtensions() {
+	public List<E> getList() {
 		return Collections.unmodifiableList(extensions);
+	}
+
+	@Override
+	public Iterator<E> iterator() {
+		return extensions.iterator();
 	}
 }
