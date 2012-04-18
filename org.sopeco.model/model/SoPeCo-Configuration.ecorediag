@@ -8,10 +8,6 @@
           <element xmi:type="ecore:EAttribute" href="SoPeCo-Configuration.ecore#//ScenarioDefinition/name"/>
           <layoutConstraint xmi:type="notation:Location" xmi:id="_23_nMW6kEeGCR4rs-JMgHw"/>
         </children>
-        <children xmi:type="notation:Node" xmi:id="_9OzYQG6kEeGCR4rs-JMgHw" type="2001">
-          <element xmi:type="ecore:EAttribute" href="SoPeCo-Configuration.ecore#//ScenarioDefinition/version"/>
-          <layoutConstraint xmi:type="notation:Location" xmi:id="_9OzYQW6kEeGCR4rs-JMgHw"/>
-        </children>
         <styles xmi:type="notation:DrawerStyle" xmi:id="_rdZzMW6kEeGCR4rs-JMgHw"/>
         <styles xmi:type="notation:SortingStyle" xmi:id="_rdZzMm6kEeGCR4rs-JMgHw"/>
         <styles xmi:type="notation:FilteringStyle" xmi:id="_rdZzM26kEeGCR4rs-JMgHw"/>
@@ -243,6 +239,10 @@
     <children xmi:type="notation:Node" xmi:id="_j91i8G6nEeGCR4rs-JMgHw" type="1001">
       <children xmi:type="notation:Node" xmi:id="_j94mQG6nEeGCR4rs-JMgHw" type="4001"/>
       <children xmi:type="notation:Node" xmi:id="_j94mQW6nEeGCR4rs-JMgHw" type="5001">
+        <children xmi:type="notation:Node" xmi:id="_9Pf_oYkuEeGNPZBf8351QA" type="2001">
+          <element xmi:type="ecore:EAttribute" href="SoPeCo-Configuration.ecore#//measurements/ExperimentSeriesDefinition/name"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_9Pf_ookuEeGNPZBf8351QA"/>
+        </children>
         <styles xmi:type="notation:DrawerStyle" xmi:id="_j94mQm6nEeGCR4rs-JMgHw"/>
         <styles xmi:type="notation:SortingStyle" xmi:id="_j94mQ26nEeGCR4rs-JMgHw"/>
         <styles xmi:type="notation:FilteringStyle" xmi:id="_j94mRG6nEeGCR4rs-JMgHw"/>
@@ -557,7 +557,7 @@
       </children>
       <styles xmi:type="notation:ConnectorStyle" xmi:id="_D3HZ8W6uEeGCR4rs-JMgHw" lineColor="4210752"/>
       <styles xmi:type="notation:FontStyle" xmi:id="_D3HZ8m6uEeGCR4rs-JMgHw" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
-      <element xmi:type="ecore:EReference" href="SoPeCo-Configuration.ecore#//measurements/MeasurementSpecification/experimentSeriesDefintions"/>
+      <element xmi:type="ecore:EReference" href="SoPeCo-Configuration.ecore#//measurements/MeasurementSpecification/experimentSeriesDefinitions"/>
       <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_D3HZ826uEeGCR4rs-JMgHw" points="[-11, 21, 54, -97]$[-63, 110, 2, -8]"/>
       <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_D3LrYG6uEeGCR4rs-JMgHw" id="(0.5098039215686274,0.20930232558139536)"/>
     </edges>

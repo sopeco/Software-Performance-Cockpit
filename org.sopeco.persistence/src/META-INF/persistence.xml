@@ -7,16 +7,27 @@
 		<class>org.sopeco.core.persistence.ScenarioInstance</class>
 		<class>org.sopeco.core.persistence.ExperimentSeries</class>
 		<properties>
+			<!--
 			<property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver" />
 			<property name="javax.persistence.jdbc.url"
 				value="jdbc:derby://localhost/sopeco-jpa;create=true" />
 			<property name="javax.persistence.jdbc.user" value="test" />
 			<property name="javax.persistence.jdbc.password" value="test" />
 
-			<!-- EclipseLink should create the database schema automatically -->
-		<!-- -->	<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /> 
+			 <property name="eclipselink.ddl-generation" value="drop-and-create-tables" /> 
 			<property name="eclipselink.ddl-generation.output-mode"
 				value="database" />
+			-->		
+				
+			  <property name="eclipselink.target-database" value="Derby"/>            
+		      <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
+		      <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost/sopeco-jpa;create=true"/>
+		      <property name="javax.persistence.jdbc.user" value="test"/>
+		      <property name="javax.persistence.jdbc.password" value="test"/>
+		      <property name="eclipselink.logging.level" value="ALL"/>            
+		      <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
+		      <property name="eclipselink.ddl-generation.output-mode" value="database"/>
+			
 		</properties>
 
 	</persistence-unit>

@@ -5,7 +5,6 @@
     nsURI="http://sopeco.org/configuration" nsPrefix="org.sopeco.core.model">
   <eClassifiers xsi:type="ecore:EClass" name="ScenarioDefinition">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="version" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="measurementEnvironmentDefinition"
         lowerBound="1" eType="#//environment/MeasurementEnvironmentDefinition" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="measurementSpecification"
@@ -44,7 +43,7 @@
   <eSubpackages name="measurements" nsURI="http://sopeco.org/configuration/measurements"
       nsPrefix="measurements">
     <eClassifiers xsi:type="ecore:EClass" name="MeasurementSpecification">
-      <eStructuralFeatures xsi:type="ecore:EReference" name="experimentSeriesDefintions"
+      <eStructuralFeatures xsi:type="ecore:EReference" name="experimentSeriesDefinitions"
           lowerBound="1" upperBound="-1" eType="#//measurements/ExperimentSeriesDefinition"
           containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="initializationAssignemts"
@@ -60,6 +59,8 @@
           lowerBound="1" eType="#//measurements/ExperimentTerminationCondition" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="preperationAssignments"
           upperBound="-1" eType="#//measurements/ConstantValueAssignment" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ParameterValueAssignment" abstract="true">
       <eStructuralFeatures xsi:type="ecore:EReference" name="parameter" lowerBound="1"

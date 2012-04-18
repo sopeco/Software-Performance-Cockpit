@@ -18,8 +18,13 @@ import org.sopeco.configuration.parameter.ParameterFactory;
 import org.sopeco.configuration.parameter.ParameterRole;
 import org.sopeco.configuration.parameter.ParameterType;
 import org.sopeco.configuration.parameter.ParameterUsage;
+import org.sopeco.core.model.configuration.measurements.ExperimentSeriesDefinition;
+import org.sopeco.core.model.configuration.measurements.MeasurementsFactory;
 import org.sopeco.persistence.advanced.DataSetAggregated;
 import org.sopeco.persistence.advanced.DataSetColumnBuilder;
+import org.sopeco.persistence.entities.ExperimentSeries;
+import org.sopeco.persistence.entities.ExperimentSeriesRun;
+import org.sopeco.persistence.entities.ScenarioInstance;
 
 public class JpaTest {
 
@@ -47,10 +52,12 @@ public class JpaTest {
 			ScenarioInstance scenario = new ScenarioInstance();
 			scenario.setName("scenarioName");
 			scenario.setDescription("scenarioDescr");
+			scenario.setMeasurementEnvironmentUrl("measurementEnvUrl");
 			em.persist(scenario);
 			for (int i = 0; i < 40; i++) {
-				ExperimentSeriesRun expSeries = new ExperimentSeriesRun();
-				expSeries.setExperimentSeriesConfigurationId("configId_" + i);
+				ExperimentSeries expSeries = new ExperimentSeries();
+				
+				expSeries.ssetExperimentSeriesConfigurationId("configId_" + i);
 				expSeries.setExperimentSeriesConfiguration(
 						new ExperimentSeriesConfiguration("configId_" + i, 
 								new ArrayList<String>()));
@@ -76,6 +83,12 @@ public class JpaTest {
 		em.close();
 
 	}
+	
+	private ExperimentSeriesDefinition createExperimentSeriesDefinition(){
+		ExperimentSeriesDefinition expSeriesDef = MeasurementsFactory.eINSTANCE.createExperimentSeriesDefinition();
+		expSeriesDef.
+	}
+	
 	
 	private DataSetAggregated createDummyDataSet(){
 		DataSetColumnBuilder builder = new DataSetColumnBuilder();

@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <genmodel:GenModel xmi:version="2.0"
     xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
-    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.sopeco.core.model/src"
-    modelPluginID="org.sopeco.core.model" modelName="SoPeCo-Configuration" importerID="org.eclipse.emf.importer.ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.sopeco.model/src"
+    modelPluginID="org.sopeco.model" modelName="SoPeCo-Configuration" importerID="org.eclipse.emf.importer.ecore"
     complianceLevel="6.0" copyrightFields="false">
   <foreignModel>SoPeCo-Configuration.ecore</foreignModel>
-  <genPackages prefix="Configuration" basePackage="org.sopeco.core.model" disposableProviderFactory="true"
+  <genPackages prefix="Configuration" basePackage="org.sopeco.model" disposableProviderFactory="true"
       ecorePackage="SoPeCo-Configuration.ecore#/">
     <genClasses ecoreClass="SoPeCo-Configuration.ecore#//ScenarioDefinition">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SoPeCo-Configuration.ecore#//ScenarioDefinition/name"/>
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SoPeCo-Configuration.ecore#//ScenarioDefinition/version"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SoPeCo-Configuration.ecore#//ScenarioDefinition/measurementEnvironmentDefinition"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SoPeCo-Configuration.ecore#//ScenarioDefinition/measurementSpecification"/>
     </genClasses>
-    <nestedGenPackages prefix="Environment" basePackage="org.sopeco.core.model.configuration"
+    <nestedGenPackages prefix="Environment" basePackage="org.sopeco.model.configuration"
         disposableProviderFactory="true" ecorePackage="SoPeCo-Configuration.ecore#//environment">
       <genEnums typeSafeEnumCompatible="false" ecoreEnum="SoPeCo-Configuration.ecore#//environment/Direction">
         <genEnumLiterals ecoreEnumLiteral="SoPeCo-Configuration.ecore#//environment/Direction/INPUT"/>
@@ -34,10 +33,10 @@
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute SoPeCo-Configuration.ecore#//environment/ParameterDefinition/fullName"/>
       </genClasses>
     </nestedGenPackages>
-    <nestedGenPackages prefix="Measurements" basePackage="org.sopeco.core.model.configuration"
+    <nestedGenPackages prefix="Measurements" basePackage="org.sopeco.model.configuration"
         disposableProviderFactory="true" ecorePackage="SoPeCo-Configuration.ecore#//measurements">
       <genClasses ecoreClass="SoPeCo-Configuration.ecore#//measurements/MeasurementSpecification">
-        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SoPeCo-Configuration.ecore#//measurements/MeasurementSpecification/experimentSeriesDefintions"/>
+        <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SoPeCo-Configuration.ecore#//measurements/MeasurementSpecification/experimentSeriesDefinitions"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SoPeCo-Configuration.ecore#//measurements/MeasurementSpecification/initializationAssignemts"/>
       </genClasses>
       <genClasses ecoreClass="SoPeCo-Configuration.ecore#//measurements/ExperimentSeriesDefinition">
@@ -45,6 +44,7 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SoPeCo-Configuration.ecore#//measurements/ExperimentSeriesDefinition/experimentAssignments"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SoPeCo-Configuration.ecore#//measurements/ExperimentSeriesDefinition/experimentTerminationCondition"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SoPeCo-Configuration.ecore#//measurements/ExperimentSeriesDefinition/preperationAssignments"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SoPeCo-Configuration.ecore#//measurements/ExperimentSeriesDefinition/name"/>
       </genClasses>
       <genClasses ecoreClass="SoPeCo-Configuration.ecore#//measurements/ParameterValueAssignment">
         <genFeatures notify="false" createChild="false" propertySortChoices="true"
@@ -73,7 +73,7 @@
       </genClasses>
       <genClasses ecoreClass="SoPeCo-Configuration.ecore#//measurements/DynamicValueAssignment"/>
     </nestedGenPackages>
-    <nestedGenPackages prefix="Analysis" basePackage="org.sopeco.core.model.configuration"
+    <nestedGenPackages prefix="Analysis" basePackage="org.sopeco.model.configuration"
         disposableProviderFactory="true" ecorePackage="SoPeCo-Configuration.ecore#//analysis">
       <genClasses ecoreClass="SoPeCo-Configuration.ecore#//analysis/AnalysisConfiguration"/>
     </nestedGenPackages>
