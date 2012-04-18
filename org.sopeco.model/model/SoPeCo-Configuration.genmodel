@@ -14,9 +14,9 @@
     </genClasses>
     <nestedGenPackages prefix="Environment" basePackage="org.sopeco.model.configuration"
         disposableProviderFactory="true" ecorePackage="SoPeCo-Configuration.ecore#//environment">
-      <genEnums typeSafeEnumCompatible="false" ecoreEnum="SoPeCo-Configuration.ecore#//environment/Direction">
-        <genEnumLiterals ecoreEnumLiteral="SoPeCo-Configuration.ecore#//environment/Direction/INPUT"/>
-        <genEnumLiterals ecoreEnumLiteral="SoPeCo-Configuration.ecore#//environment/Direction/OUTPUT"/>
+      <genEnums typeSafeEnumCompatible="false" ecoreEnum="SoPeCo-Configuration.ecore#//environment/ParameterRole">
+        <genEnumLiterals ecoreEnumLiteral="SoPeCo-Configuration.ecore#//environment/ParameterRole/INPUT"/>
+        <genEnumLiterals ecoreEnumLiteral="SoPeCo-Configuration.ecore#//environment/ParameterRole/OBSERVATION"/>
       </genEnums>
       <genClasses ecoreClass="SoPeCo-Configuration.ecore#//environment/MeasurementEnvironmentDefinition">
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SoPeCo-Configuration.ecore#//environment/MeasurementEnvironmentDefinition/root"/>
@@ -29,7 +29,7 @@
       <genClasses ecoreClass="SoPeCo-Configuration.ecore#//environment/ParameterDefinition">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SoPeCo-Configuration.ecore#//environment/ParameterDefinition/name"/>
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SoPeCo-Configuration.ecore#//environment/ParameterDefinition/type"/>
-        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SoPeCo-Configuration.ecore#//environment/ParameterDefinition/direction"/>
+        <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SoPeCo-Configuration.ecore#//environment/ParameterDefinition/role"/>
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute SoPeCo-Configuration.ecore#//environment/ParameterDefinition/fullName"/>
       </genClasses>
     </nestedGenPackages>

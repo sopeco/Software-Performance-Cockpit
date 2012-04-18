@@ -13,9 +13,9 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.EObjectImpl;
 
-import org.sopeco.model.configuration.environment.Direction;
 import org.sopeco.model.configuration.environment.EnvironmentPackage;
 import org.sopeco.model.configuration.environment.ParameterDefinition;
+import org.sopeco.model.configuration.environment.ParameterRole;
 
 /**
  * <!-- begin-user-doc -->
@@ -26,7 +26,7 @@ import org.sopeco.model.configuration.environment.ParameterDefinition;
  * <ul>
  *   <li>{@link org.sopeco.model.configuration.environment.impl.ParameterDefinitionImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.sopeco.model.configuration.environment.impl.ParameterDefinitionImpl#getType <em>Type</em>}</li>
- *   <li>{@link org.sopeco.model.configuration.environment.impl.ParameterDefinitionImpl#getDirection <em>Direction</em>}</li>
+ *   <li>{@link org.sopeco.model.configuration.environment.impl.ParameterDefinitionImpl#getRole <em>Role</em>}</li>
  *   <li>{@link org.sopeco.model.configuration.environment.impl.ParameterDefinitionImpl#getFullName <em>Full Name</em>}</li>
  * </ul>
  * </p>
@@ -75,24 +75,24 @@ public class ParameterDefinitionImpl extends EObjectImpl implements ParameterDef
 	protected String type = TYPE_EDEFAULT;
 
 	/**
-	 * The default value of the '{@link #getDirection() <em>Direction</em>}' attribute.
+	 * The default value of the '{@link #getRole() <em>Role</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getDirection()
+	 * @see #getRole()
 	 * @generated
 	 * @ordered
 	 */
-	protected static final Direction DIRECTION_EDEFAULT = Direction.INPUT;
+	protected static final ParameterRole ROLE_EDEFAULT = ParameterRole.INPUT;
 
 	/**
-	 * The cached value of the '{@link #getDirection() <em>Direction</em>}' attribute.
+	 * The cached value of the '{@link #getRole() <em>Role</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #getDirection()
+	 * @see #getRole()
 	 * @generated
 	 * @ordered
 	 */
-	protected Direction direction = DIRECTION_EDEFAULT;
+	protected ParameterRole role = ROLE_EDEFAULT;
 
 	/**
 	 * The default value of the '{@link #getFullName() <em>Full Name</em>}' attribute.
@@ -170,8 +170,8 @@ public class ParameterDefinitionImpl extends EObjectImpl implements ParameterDef
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Direction getDirection() {
-		return direction;
+	public ParameterRole getRole() {
+		return role;
 	}
 
 	/**
@@ -179,11 +179,11 @@ public class ParameterDefinitionImpl extends EObjectImpl implements ParameterDef
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setDirection(Direction newDirection) {
-		Direction oldDirection = direction;
-		direction = newDirection == null ? DIRECTION_EDEFAULT : newDirection;
+	public void setRole(ParameterRole newRole) {
+		ParameterRole oldRole = role;
+		role = newRole == null ? ROLE_EDEFAULT : newRole;
 		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.PARAMETER_DEFINITION__DIRECTION, oldDirection, direction));
+			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.PARAMETER_DEFINITION__ROLE, oldRole, role));
 	}
 
 	/**
@@ -220,8 +220,8 @@ public class ParameterDefinitionImpl extends EObjectImpl implements ParameterDef
 				return getName();
 			case EnvironmentPackage.PARAMETER_DEFINITION__TYPE:
 				return getType();
-			case EnvironmentPackage.PARAMETER_DEFINITION__DIRECTION:
-				return getDirection();
+			case EnvironmentPackage.PARAMETER_DEFINITION__ROLE:
+				return getRole();
 			case EnvironmentPackage.PARAMETER_DEFINITION__FULL_NAME:
 				return getFullName();
 		}
@@ -242,8 +242,8 @@ public class ParameterDefinitionImpl extends EObjectImpl implements ParameterDef
 			case EnvironmentPackage.PARAMETER_DEFINITION__TYPE:
 				setType((String)newValue);
 				return;
-			case EnvironmentPackage.PARAMETER_DEFINITION__DIRECTION:
-				setDirection((Direction)newValue);
+			case EnvironmentPackage.PARAMETER_DEFINITION__ROLE:
+				setRole((ParameterRole)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -263,8 +263,8 @@ public class ParameterDefinitionImpl extends EObjectImpl implements ParameterDef
 			case EnvironmentPackage.PARAMETER_DEFINITION__TYPE:
 				setType(TYPE_EDEFAULT);
 				return;
-			case EnvironmentPackage.PARAMETER_DEFINITION__DIRECTION:
-				setDirection(DIRECTION_EDEFAULT);
+			case EnvironmentPackage.PARAMETER_DEFINITION__ROLE:
+				setRole(ROLE_EDEFAULT);
 				return;
 		}
 		super.eUnset(featureID);
@@ -282,8 +282,8 @@ public class ParameterDefinitionImpl extends EObjectImpl implements ParameterDef
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case EnvironmentPackage.PARAMETER_DEFINITION__TYPE:
 				return TYPE_EDEFAULT == null ? type != null : !TYPE_EDEFAULT.equals(type);
-			case EnvironmentPackage.PARAMETER_DEFINITION__DIRECTION:
-				return direction != DIRECTION_EDEFAULT;
+			case EnvironmentPackage.PARAMETER_DEFINITION__ROLE:
+				return role != ROLE_EDEFAULT;
 			case EnvironmentPackage.PARAMETER_DEFINITION__FULL_NAME:
 				return isSetFullName();
 		}
@@ -304,8 +304,8 @@ public class ParameterDefinitionImpl extends EObjectImpl implements ParameterDef
 		result.append(name);
 		result.append(", type: ");
 		result.append(type);
-		result.append(", direction: ");
-		result.append(direction);
+		result.append(", role: ");
+		result.append(role);
 		result.append(')');
 		return result.toString();
 	}

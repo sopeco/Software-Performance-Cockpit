@@ -24,9 +24,12 @@
           eType="#//environment/ParameterDefinition" containment="true"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ParameterDefinition">
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="direction" eType="#//environment/Direction"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="role" lowerBound="1"
+          eType="#//environment/ParameterRole"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="fullName" unique="false"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
           changeable="false" volatile="true" transient="true" unsettable="true" derived="true">
@@ -35,9 +38,9 @@
         </eAnnotations>
       </eStructuralFeatures>
     </eClassifiers>
-    <eClassifiers xsi:type="ecore:EEnum" name="Direction">
+    <eClassifiers xsi:type="ecore:EEnum" name="ParameterRole">
       <eLiterals name="INPUT"/>
-      <eLiterals name="OUTPUT" value="1"/>
+      <eLiterals name="OBSERVATION" value="1"/>
     </eClassifiers>
   </eSubpackages>
   <eSubpackages name="measurements" nsURI="http://sopeco.org/configuration/measurements"

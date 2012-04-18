@@ -4,7 +4,7 @@
  *
  * $Id$
  */
-package org.sopeco.model.configuration.environment;
+package org.sopeco.persistence.dataset.util;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -14,14 +14,14 @@ import org.eclipse.emf.common.util.Enumerator;
 
 /**
  * <!-- begin-user-doc -->
- * A representation of the literals of the enumeration '<em><b>Direction</b></em>',
+ * A representation of the literals of the enumeration '<em><b>Role</b></em>',
  * and utility methods for working with them.
  * <!-- end-user-doc -->
- * @see org.sopeco.model.configuration.environment.EnvironmentPackage#getDirection()
+ * @see org.sopeco.configuration.parameter.ParameterPackage#getParameterRole()
  * @model
  * @generated
  */
-public enum Direction implements Enumerator {
+public enum ParameterRole implements Enumerator {
 	/**
 	 * The '<em><b>INPUT</b></em>' literal object.
 	 * <!-- begin-user-doc -->
@@ -33,14 +33,24 @@ public enum Direction implements Enumerator {
 	INPUT(0, "INPUT", "INPUT"),
 
 	/**
-	 * The '<em><b>OUTPUT</b></em>' literal object.
+	 * The '<em><b>OBSERVATION</b></em>' literal object.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see #OUTPUT_VALUE
+	 * @see #OBSERVATION_VALUE
 	 * @generated
 	 * @ordered
 	 */
-	OUTPUT(1, "OUTPUT", "OUTPUT");
+	OBSERVATION(1, "OBSERVATION", "OBSERVATION"),
+
+	/**
+	 * The '<em><b>OBSERVABLE TIME SERIES</b></em>' literal object.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #OBSERVABLE_TIME_SERIES_VALUE
+	 * @generated
+	 * @ordered
+	 */
+	OBSERVABLE_TIME_SERIES(2, "OBSERVABLE_TIME_SERIES", "OBSERVABLE_TIME_SERIES");
 
 	/**
 	 * The '<em><b>INPUT</b></em>' literal value.
@@ -58,49 +68,65 @@ public enum Direction implements Enumerator {
 	public static final int INPUT_VALUE = 0;
 
 	/**
-	 * The '<em><b>OUTPUT</b></em>' literal value.
+	 * The '<em><b>OBSERVATION</b></em>' literal value.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of '<em><b>OUTPUT</b></em>' literal object isn't clear,
+	 * If the meaning of '<em><b>OBSERVATION</b></em>' literal object isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @see #OUTPUT
+	 * @see #OBSERVATION
 	 * @model
 	 * @generated
 	 * @ordered
 	 */
-	public static final int OUTPUT_VALUE = 1;
+	public static final int OBSERVATION_VALUE = 1;
 
 	/**
-	 * An array of all the '<em><b>Direction</b></em>' enumerators.
+	 * The '<em><b>OBSERVABLE TIME SERIES</b></em>' literal value.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of '<em><b>OBSERVABLE TIME SERIES</b></em>' literal object isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @see #OBSERVABLE_TIME_SERIES
+	 * @model
+	 * @generated
+	 * @ordered
+	 */
+	public static final int OBSERVABLE_TIME_SERIES_VALUE = 2;
+
+	/**
+	 * An array of all the '<em><b>Role</b></em>' enumerators.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private static final Direction[] VALUES_ARRAY =
-		new Direction[] {
+	private static final ParameterRole[] VALUES_ARRAY =
+		new ParameterRole[] {
 			INPUT,
-			OUTPUT,
+			OBSERVATION,
+			OBSERVABLE_TIME_SERIES,
 		};
 
 	/**
-	 * A public read-only list of all the '<em><b>Direction</b></em>' enumerators.
+	 * A public read-only list of all the '<em><b>Role</b></em>' enumerators.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static final List<Direction> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
+	public static final List<ParameterRole> VALUES = Collections.unmodifiableList(Arrays.asList(VALUES_ARRAY));
 
 	/**
-	 * Returns the '<em><b>Direction</b></em>' literal with the specified literal value.
+	 * Returns the '<em><b>Role</b></em>' literal with the specified literal value.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static Direction get(String literal) {
+	public static ParameterRole get(String literal) {
 		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
-			Direction result = VALUES_ARRAY[i];
+			ParameterRole result = VALUES_ARRAY[i];
 			if (result.toString().equals(literal)) {
 				return result;
 			}
@@ -109,14 +135,14 @@ public enum Direction implements Enumerator {
 	}
 
 	/**
-	 * Returns the '<em><b>Direction</b></em>' literal with the specified name.
+	 * Returns the '<em><b>Role</b></em>' literal with the specified name.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static Direction getByName(String name) {
+	public static ParameterRole getByName(String name) {
 		for (int i = 0; i < VALUES_ARRAY.length; ++i) {
-			Direction result = VALUES_ARRAY[i];
+			ParameterRole result = VALUES_ARRAY[i];
 			if (result.getName().equals(name)) {
 				return result;
 			}
@@ -125,15 +151,16 @@ public enum Direction implements Enumerator {
 	}
 
 	/**
-	 * Returns the '<em><b>Direction</b></em>' literal with the specified integer value.
+	 * Returns the '<em><b>Role</b></em>' literal with the specified integer value.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public static Direction get(int value) {
+	public static ParameterRole get(int value) {
 		switch (value) {
 			case INPUT_VALUE: return INPUT;
-			case OUTPUT_VALUE: return OUTPUT;
+			case OBSERVATION_VALUE: return OBSERVATION;
+			case OBSERVABLE_TIME_SERIES_VALUE: return OBSERVABLE_TIME_SERIES;
 		}
 		return null;
 	}
@@ -165,7 +192,7 @@ public enum Direction implements Enumerator {
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private Direction(int value, String name, String literal) {
+	private ParameterRole(int value, String name, String literal) {
 		this.value = value;
 		this.name = name;
 		this.literal = literal;
@@ -209,4 +236,4 @@ public enum Direction implements Enumerator {
 		return literal;
 	}
 	
-} //Direction
+} //ParameterRole

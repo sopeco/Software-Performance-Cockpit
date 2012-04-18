@@ -20,12 +20,12 @@ import org.sopeco.model.configuration.analysis.AnalysisPackage;
 
 import org.sopeco.model.configuration.analysis.impl.AnalysisPackageImpl;
 
-import org.sopeco.model.configuration.environment.Direction;
 import org.sopeco.model.configuration.environment.EnvironmentFactory;
 import org.sopeco.model.configuration.environment.EnvironmentPackage;
 import org.sopeco.model.configuration.environment.MeasurementEnvironmentDefinition;
 import org.sopeco.model.configuration.environment.ParameterDefinition;
 import org.sopeco.model.configuration.environment.ParameterNamespace;
+import org.sopeco.model.configuration.environment.ParameterRole;
 
 import org.sopeco.model.configuration.impl.ConfigurationPackageImpl;
 
@@ -66,7 +66,7 @@ public class EnvironmentPackageImpl extends EPackageImpl implements EnvironmentP
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	private EEnum directionEEnum = null;
+	private EEnum parameterRoleEEnum = null;
 
 	/**
 	 * Creates an instance of the model <b>Package</b>, registered with
@@ -226,7 +226,7 @@ public class EnvironmentPackageImpl extends EPackageImpl implements EnvironmentP
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EAttribute getParameterDefinition_Direction() {
+	public EAttribute getParameterDefinition_Role() {
 		return (EAttribute)parameterDefinitionEClass.getEStructuralFeatures().get(2);
 	}
 
@@ -244,8 +244,8 @@ public class EnvironmentPackageImpl extends EPackageImpl implements EnvironmentP
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EEnum getDirection() {
-		return directionEEnum;
+	public EEnum getParameterRole() {
+		return parameterRoleEEnum;
 	}
 
 	/**
@@ -287,11 +287,11 @@ public class EnvironmentPackageImpl extends EPackageImpl implements EnvironmentP
 		parameterDefinitionEClass = createEClass(PARAMETER_DEFINITION);
 		createEAttribute(parameterDefinitionEClass, PARAMETER_DEFINITION__NAME);
 		createEAttribute(parameterDefinitionEClass, PARAMETER_DEFINITION__TYPE);
-		createEAttribute(parameterDefinitionEClass, PARAMETER_DEFINITION__DIRECTION);
+		createEAttribute(parameterDefinitionEClass, PARAMETER_DEFINITION__ROLE);
 		createEAttribute(parameterDefinitionEClass, PARAMETER_DEFINITION__FULL_NAME);
 
 		// Create enums
-		directionEEnum = createEEnum(DIRECTION);
+		parameterRoleEEnum = createEEnum(PARAMETER_ROLE);
 	}
 
 	/**
@@ -333,15 +333,15 @@ public class EnvironmentPackageImpl extends EPackageImpl implements EnvironmentP
 		initEReference(getParameterNamespace_Parameters(), this.getParameterDefinition(), null, "parameters", null, 0, -1, ParameterNamespace.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(parameterDefinitionEClass, ParameterDefinition.class, "ParameterDefinition", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getParameterDefinition_Name(), ecorePackage.getEString(), "name", null, 0, 1, ParameterDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getParameterDefinition_Type(), ecorePackage.getEString(), "type", null, 0, 1, ParameterDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEAttribute(getParameterDefinition_Direction(), this.getDirection(), "direction", null, 0, 1, ParameterDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getParameterDefinition_Name(), ecorePackage.getEString(), "name", null, 1, 1, ParameterDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getParameterDefinition_Type(), ecorePackage.getEString(), "type", null, 1, 1, ParameterDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getParameterDefinition_Role(), this.getParameterRole(), "role", null, 1, 1, ParameterDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getParameterDefinition_FullName(), ecorePackage.getEString(), "fullName", null, 0, 1, ParameterDefinition.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
 
 		// Initialize enums and add enum literals
-		initEEnum(directionEEnum, Direction.class, "Direction");
-		addEEnumLiteral(directionEEnum, Direction.INPUT);
-		addEEnumLiteral(directionEEnum, Direction.OUTPUT);
+		initEEnum(parameterRoleEEnum, ParameterRole.class, "ParameterRole");
+		addEEnumLiteral(parameterRoleEEnum, ParameterRole.INPUT);
+		addEEnumLiteral(parameterRoleEEnum, ParameterRole.OBSERVATION);
 	}
 
 } //EnvironmentPackageImpl

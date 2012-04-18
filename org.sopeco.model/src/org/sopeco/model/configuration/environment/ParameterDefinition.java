@@ -18,7 +18,7 @@ import org.eclipse.emf.ecore.EObject;
  * <ul>
  *   <li>{@link org.sopeco.model.configuration.environment.ParameterDefinition#getName <em>Name</em>}</li>
  *   <li>{@link org.sopeco.model.configuration.environment.ParameterDefinition#getType <em>Type</em>}</li>
- *   <li>{@link org.sopeco.model.configuration.environment.ParameterDefinition#getDirection <em>Direction</em>}</li>
+ *   <li>{@link org.sopeco.model.configuration.environment.ParameterDefinition#getRole <em>Role</em>}</li>
  *   <li>{@link org.sopeco.model.configuration.environment.ParameterDefinition#getFullName <em>Full Name</em>}</li>
  * </ul>
  * </p>
@@ -39,7 +39,7 @@ public interface ParameterDefinition extends EObject {
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
 	 * @see org.sopeco.model.configuration.environment.EnvironmentPackage#getParameterDefinition_Name()
-	 * @model
+	 * @model required="true"
 	 * @generated
 	 */
 	String getName();
@@ -65,7 +65,7 @@ public interface ParameterDefinition extends EObject {
 	 * @return the value of the '<em>Type</em>' attribute.
 	 * @see #setType(String)
 	 * @see org.sopeco.model.configuration.environment.EnvironmentPackage#getParameterDefinition_Type()
-	 * @model
+	 * @model required="true"
 	 * @generated
 	 */
 	String getType();
@@ -81,33 +81,33 @@ public interface ParameterDefinition extends EObject {
 	void setType(String value);
 
 	/**
-	 * Returns the value of the '<em><b>Direction</b></em>' attribute.
-	 * The literals are from the enumeration {@link org.sopeco.model.configuration.environment.Direction}.
+	 * Returns the value of the '<em><b>Role</b></em>' attribute.
+	 * The literals are from the enumeration {@link org.sopeco.model.configuration.environment.ParameterRole}.
 	 * <!-- begin-user-doc -->
 	 * <p>
-	 * If the meaning of the '<em>Direction</em>' attribute isn't clear,
+	 * If the meaning of the '<em>Role</em>' attribute isn't clear,
 	 * there really should be more of a description here...
 	 * </p>
 	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Direction</em>' attribute.
-	 * @see org.sopeco.model.configuration.environment.Direction
-	 * @see #setDirection(Direction)
-	 * @see org.sopeco.model.configuration.environment.EnvironmentPackage#getParameterDefinition_Direction()
-	 * @model
+	 * @return the value of the '<em>Role</em>' attribute.
+	 * @see org.sopeco.model.configuration.environment.ParameterRole
+	 * @see #setRole(ParameterRole)
+	 * @see org.sopeco.model.configuration.environment.EnvironmentPackage#getParameterDefinition_Role()
+	 * @model required="true"
 	 * @generated
 	 */
-	Direction getDirection();
+	ParameterRole getRole();
 
 	/**
-	 * Sets the value of the '{@link org.sopeco.model.configuration.environment.ParameterDefinition#getDirection <em>Direction</em>}' attribute.
+	 * Sets the value of the '{@link org.sopeco.model.configuration.environment.ParameterDefinition#getRole <em>Role</em>}' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Direction</em>' attribute.
-	 * @see org.sopeco.model.configuration.environment.Direction
-	 * @see #getDirection()
+	 * @param value the new value of the '<em>Role</em>' attribute.
+	 * @see org.sopeco.model.configuration.environment.ParameterRole
+	 * @see #getRole()
 	 * @generated
 	 */
-	void setDirection(Direction value);
+	void setRole(ParameterRole value);
 
 	/**
 	 * Returns the value of the '<em><b>Full Name</b></em>' attribute.

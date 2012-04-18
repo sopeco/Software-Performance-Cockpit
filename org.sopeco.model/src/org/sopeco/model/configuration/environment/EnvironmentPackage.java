@@ -163,13 +163,13 @@ public interface EnvironmentPackage extends EPackage {
 	int PARAMETER_DEFINITION__TYPE = 1;
 
 	/**
-	 * The feature id for the '<em><b>Direction</b></em>' attribute.
+	 * The feature id for the '<em><b>Role</b></em>' attribute.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PARAMETER_DEFINITION__DIRECTION = 2;
+	int PARAMETER_DEFINITION__ROLE = 2;
 
 	/**
 	 * The feature id for the '<em><b>Full Name</b></em>' attribute.
@@ -190,14 +190,14 @@ public interface EnvironmentPackage extends EPackage {
 	int PARAMETER_DEFINITION_FEATURE_COUNT = 4;
 
 	/**
-	 * The meta object id for the '{@link org.sopeco.model.configuration.environment.Direction <em>Direction</em>}' enum.
+	 * The meta object id for the '{@link org.sopeco.model.configuration.environment.ParameterRole <em>Parameter Role</em>}' enum.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @see org.sopeco.model.configuration.environment.Direction
-	 * @see org.sopeco.model.configuration.environment.impl.EnvironmentPackageImpl#getDirection()
+	 * @see org.sopeco.model.configuration.environment.ParameterRole
+	 * @see org.sopeco.model.configuration.environment.impl.EnvironmentPackageImpl#getParameterRole()
 	 * @generated
 	 */
-	int DIRECTION = 3;
+	int PARAMETER_ROLE = 3;
 
 
 	/**
@@ -297,15 +297,15 @@ public interface EnvironmentPackage extends EPackage {
 	EAttribute getParameterDefinition_Type();
 
 	/**
-	 * Returns the meta object for the attribute '{@link org.sopeco.model.configuration.environment.ParameterDefinition#getDirection <em>Direction</em>}'.
+	 * Returns the meta object for the attribute '{@link org.sopeco.model.configuration.environment.ParameterDefinition#getRole <em>Role</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the attribute '<em>Direction</em>'.
-	 * @see org.sopeco.model.configuration.environment.ParameterDefinition#getDirection()
+	 * @return the meta object for the attribute '<em>Role</em>'.
+	 * @see org.sopeco.model.configuration.environment.ParameterDefinition#getRole()
 	 * @see #getParameterDefinition()
 	 * @generated
 	 */
-	EAttribute getParameterDefinition_Direction();
+	EAttribute getParameterDefinition_Role();
 
 	/**
 	 * Returns the meta object for the attribute '{@link org.sopeco.model.configuration.environment.ParameterDefinition#getFullName <em>Full Name</em>}'.
@@ -319,14 +319,14 @@ public interface EnvironmentPackage extends EPackage {
 	EAttribute getParameterDefinition_FullName();
 
 	/**
-	 * Returns the meta object for enum '{@link org.sopeco.model.configuration.environment.Direction <em>Direction</em>}'.
+	 * Returns the meta object for enum '{@link org.sopeco.model.configuration.environment.ParameterRole <em>Parameter Role</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for enum '<em>Direction</em>'.
-	 * @see org.sopeco.model.configuration.environment.Direction
+	 * @return the meta object for enum '<em>Parameter Role</em>'.
+	 * @see org.sopeco.model.configuration.environment.ParameterRole
 	 * @generated
 	 */
-	EEnum getDirection();
+	EEnum getParameterRole();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -429,12 +429,12 @@ public interface EnvironmentPackage extends EPackage {
 		EAttribute PARAMETER_DEFINITION__TYPE = eINSTANCE.getParameterDefinition_Type();
 
 		/**
-		 * The meta object literal for the '<em><b>Direction</b></em>' attribute feature.
+		 * The meta object literal for the '<em><b>Role</b></em>' attribute feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated
 		 */
-		EAttribute PARAMETER_DEFINITION__DIRECTION = eINSTANCE.getParameterDefinition_Direction();
+		EAttribute PARAMETER_DEFINITION__ROLE = eINSTANCE.getParameterDefinition_Role();
 
 		/**
 		 * The meta object literal for the '<em><b>Full Name</b></em>' attribute feature.
@@ -445,14 +445,14 @@ public interface EnvironmentPackage extends EPackage {
 		EAttribute PARAMETER_DEFINITION__FULL_NAME = eINSTANCE.getParameterDefinition_FullName();
 
 		/**
-		 * The meta object literal for the '{@link org.sopeco.model.configuration.environment.Direction <em>Direction</em>}' enum.
+		 * The meta object literal for the '{@link org.sopeco.model.configuration.environment.ParameterRole <em>Parameter Role</em>}' enum.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
-		 * @see org.sopeco.model.configuration.environment.Direction
-		 * @see org.sopeco.model.configuration.environment.impl.EnvironmentPackageImpl#getDirection()
+		 * @see org.sopeco.model.configuration.environment.ParameterRole
+		 * @see org.sopeco.model.configuration.environment.impl.EnvironmentPackageImpl#getParameterRole()
 		 * @generated
 		 */
-		EEnum DIRECTION = eINSTANCE.getDirection();
+		EEnum PARAMETER_ROLE = eINSTANCE.getParameterRole();
 
 	}
 

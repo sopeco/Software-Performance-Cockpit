@@ -77,8 +77,8 @@ public class EnvironmentFactoryImpl extends EFactoryImpl implements EnvironmentF
 	@Override
 	public Object createFromString(EDataType eDataType, String initialValue) {
 		switch (eDataType.getClassifierID()) {
-			case EnvironmentPackage.DIRECTION:
-				return createDirectionFromString(eDataType, initialValue);
+			case EnvironmentPackage.PARAMETER_ROLE:
+				return createParameterRoleFromString(eDataType, initialValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -92,8 +92,8 @@ public class EnvironmentFactoryImpl extends EFactoryImpl implements EnvironmentF
 	@Override
 	public String convertToString(EDataType eDataType, Object instanceValue) {
 		switch (eDataType.getClassifierID()) {
-			case EnvironmentPackage.DIRECTION:
-				return convertDirectionToString(eDataType, instanceValue);
+			case EnvironmentPackage.PARAMETER_ROLE:
+				return convertParameterRoleToString(eDataType, instanceValue);
 			default:
 				throw new IllegalArgumentException("The datatype '" + eDataType.getName() + "' is not a valid classifier");
 		}
@@ -134,8 +134,8 @@ public class EnvironmentFactoryImpl extends EFactoryImpl implements EnvironmentF
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public Direction createDirectionFromString(EDataType eDataType, String initialValue) {
-		Direction result = Direction.get(initialValue);
+	public ParameterRole createParameterRoleFromString(EDataType eDataType, String initialValue) {
+		ParameterRole result = ParameterRole.get(initialValue);
 		if (result == null) throw new IllegalArgumentException("The value '" + initialValue + "' is not a valid enumerator of '" + eDataType.getName() + "'");
 		return result;
 	}
@@ -145,7 +145,7 @@ public class EnvironmentFactoryImpl extends EFactoryImpl implements EnvironmentF
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public String convertDirectionToString(EDataType eDataType, Object instanceValue) {
+	public String convertParameterRoleToString(EDataType eDataType, Object instanceValue) {
 		return instanceValue == null ? null : instanceValue.toString();
 	}
 
