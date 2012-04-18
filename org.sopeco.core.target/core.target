@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?pde version="3.6"?>
+
+<target name="sopeco" sequenceNumber="47">
+<locations>
+<location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.platform.feature.group" version="3.7.1.r37x_v20110729-9gF7UHOxFtniV7mI3T556iZN9AU8bEZ1lHMcVK"/>
+<repository location="http://nexus:8081/nexus/content/repositories/build.milestones.unzip/org/eclipse/download/eclipse/org.eclipse.platform/3.7.1/org.eclipse.platform-3.7.1.zip-unzip/"/>
+</location>
+<location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.jdt.feature.group" version="3.7.1.r371_v20110810-0800-7z8gFcoFMLfTabvKsR5Qm9rBGEBK"/>
+<repository location="http://nexus:8081/nexus/content/repositories/build.milestones.unzip/org/eclipse/download/eclipse/org.eclipse.jdt/3.7.1/org.eclipse.jdt-3.7.1.zip-unzip/"/>
+</location>
+<location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.emf.ecore.feature.group" version="2.7.1.v20110912-0920"/>
+<unit id="org.eclipse.emf.feature.group" version="2.7.1.v20110913-1526"/>
+<unit id="org.eclipse.emf.sdk.feature.group" version="2.7.1.v20110913-1526"/>
+<unit id="org.eclipse.emf.codegen.feature.group" version="2.7.0.v20110913-1156"/>
+<unit id="org.eclipse.emf.codegen.ui.feature.group" version="2.7.0.v20110913-1156"/>
+<unit id="org.eclipse.emf.common.feature.group" version="2.7.0.v20110912-0920"/>
+<unit id="org.eclipse.emf.common.ui.feature.group" version="2.7.0.v20110913-1156"/>
+<unit id="org.eclipse.emf.databinding.feature.group" version="1.2.0.v20110913-1156"/>
+<unit id="org.eclipse.emf.doc.feature.group" version="2.7.0.v20110913-1156"/>
+<unit id="org.eclipse.emf.codegen.ecore.feature.group" version="2.7.0.v20110913-1156"/>
+<unit id="org.eclipse.emf.codegen.ecore.ui.feature.group" version="2.7.0.v20110913-1156"/>
+<unit id="org.eclipse.emf.ecore.edit.feature.group" version="2.7.0.v20110913-1156"/>
+<unit id="org.eclipse.emf.mapping.ecore.feature.group" version="2.7.0.v20110913-1156"/>
+<unit id="org.eclipse.emf.mapping.ecore.editor.feature.group" version="2.7.0.v20110913-1156"/>
+<unit id="org.eclipse.emf.edit.feature.group" version="2.7.1.v20110913-1526"/>
+<unit id="org.eclipse.emf.databinding.edit.feature.group" version="1.2.0.v20110913-1156"/>
+<unit id="org.eclipse.emf.edit.ui.feature.group" version="2.7.0.v20110913-1156"/>
+<unit id="org.eclipse.emf.examples.feature.group" version="2.7.0.v20110913-1156"/>
+<unit id="org.eclipse.emf.license.feature.group" version="2.7.0.v20110401-1828"/>
+<unit id="org.eclipse.emf.mapping.feature.group" version="2.7.0.v20110913-1156"/>
+<unit id="org.eclipse.emf.mapping.ui.feature.group" version="2.7.0.v20110913-1156"/>
+<unit id="org.eclipse.emf.converter.feature.group" version="2.7.0.v20110913-1156"/>
+<repository location="http://nexus:8081/nexus/content/repositories/build.milestones.unzip/org/eclipse/download/modeling/emf-xsd-update/2.7.1/emf-xsd-update-2.7.1.zip-unzip/"/>
+</location>
+<location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.sopeco.orbit.feature.feature.group" version="0.0.0"/>
+<repository location="http://deqkal276.qkal.sap.corp:8080/jenkins/job/sopeco.orbit-master/ws/org.sopeco.orbit.updatesite/target/site/"/>
+</location>
+</locations>
+<targetJRE path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre6"/>
+</target>
