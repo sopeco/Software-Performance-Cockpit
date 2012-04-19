@@ -1,6 +1,8 @@
 package org.sopeco.engine.experimentseries;
 
-import org.sopeco.engine.registry.ISoPeCoExtension;
+import java.util.Iterator;
+
+import org.sopeco.engine.registry.ISoPeCoExtensionArtifact;
 import org.sopeco.model.configuration.environment.ParameterDefinition;
 import org.sopeco.model.configuration.measurements.ParameterValueAssignment;
 
@@ -10,7 +12,7 @@ import org.sopeco.model.configuration.measurements.ParameterValueAssignment;
  * @author D053711
  *
  */
-public interface IParameterVariation extends ISoPeCoExtension, Iterable<ParameterValue<?>> {
+public interface IParameterVariation extends ISoPeCoExtensionArtifact, Iterable<ParameterValue<?>> {
 	
 	public void initialize(ParameterValueAssignment configuration);
 	
@@ -20,4 +22,15 @@ public interface IParameterVariation extends ISoPeCoExtension, Iterable<Paramete
 	
 	public ParameterDefinition getParameter();
 
+	/**
+	 * Returns the iterator of this parameter variations. Different calls to 
+	 * this method should return the same iterator, unless the {@link #reset()}
+	 * method is called.
+	 */
+	public Iterator<ParameterValue<?>> iterator();
+	
+	/**
+	 * Resets the iterator on this instance. 
+	 */
+	public void reset();
 }

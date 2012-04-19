@@ -6,7 +6,7 @@ package org.sopeco.engine.registry;
  * @author Roozbeh Farahbod
  *
  */
-public interface ISoPeCoExtension {
+public interface ISoPeCoExtension<EA extends ISoPeCoExtensionArtifact> {
 	
 	/**
 	 * Returns the name of the extension which is expected to be unique in the framework.
@@ -16,4 +16,8 @@ public interface ISoPeCoExtension {
 	 */
 	public String getName();
 
+	/**
+	 * Creates a new artifact for this extension. 
+	 */
+	public EA createExtensionArtifact();
 }

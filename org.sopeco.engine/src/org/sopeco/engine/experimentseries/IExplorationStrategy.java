@@ -3,8 +3,9 @@ package org.sopeco.engine.experimentseries;
 import java.util.List;
 
 import org.sopeco.engine.experiment.IExperimentController;
-import org.sopeco.engine.registry.ISoPeCoExtension;
+import org.sopeco.engine.registry.ISoPeCoExtensionArtifact;
 import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
+import org.sopeco.model.configuration.measurements.ExperimentTerminationCondition;
 import org.sopeco.persistence.IPersistenceProvider;
 
 /**
@@ -13,15 +14,13 @@ import org.sopeco.persistence.IPersistenceProvider;
  * @author D053711
  *
  */
-public interface IExplorationStrategy extends ISoPeCoExtension {
+public interface IExplorationStrategy extends ISoPeCoExtensionArtifact {
 
 	public boolean canRun(ExperimentSeriesDefinition expSeries);
 	
-	public void runExperimentSeries(ExperimentSeriesDefinition expSeries, List<IParameterVariation> parameterVariation);
+	public void runExperimentSeries(ExperimentSeriesDefinition expSeries, List<IParameterVariation> parameterVariations, ExperimentTerminationCondition terminationCondition);
 	
 	public void setPersistenceProvider(IPersistenceProvider persistenceProvider);
-	
-	public void setAnalysisManager(IAnalysisManager analysisManager);
 	
 	public void setExperimentController(IExperimentController experimentController);
 	

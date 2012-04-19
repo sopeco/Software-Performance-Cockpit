@@ -27,8 +27,9 @@ public interface IExperimentController {
 	/**
 	 * To be executed you have to set the entry point of the measurement env. first by calling initialize(...) 
 	 */
-	public DataSetAggregated runExperiment(List<ParameterValue> inputPVList, ExperimentTerminationCondition terminationCondition);
+	public DataSetAggregated runExperiment(List<ParameterValue<?>> inputPVList, ExperimentTerminationCondition terminationCondition);
 
 	public void setPersistenceProvider(IPersistenceProvider persistenceProvider);
 	
+	public void finalizeExperimentSeries();
 }

@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.util.Tools;
 
 /**
  * The extension registry of SoPeCo. This class acts as a wrapper around Eclipse OSGi extensions 
@@ -37,7 +38,7 @@ public class ExtensionRegistry implements IExtensionRegistry {
 	private static IExtensionRegistry SINGLETON = null;
 	
 	/** Holds a mapping of extension names to extensions. */
-	private Map<String, ISoPeCoExtension> extensions = new HashMap<String, ISoPeCoExtension>();
+	private Map<String, ISoPeCoExtension<?>> extensions = new HashMap<String, ISoPeCoExtension<?>>();
 
 	@SuppressWarnings("rawtypes")
 	private Map<Class, Extensions> extensionsMap = new HashMap<Class, Extensions>();
@@ -54,7 +55,7 @@ public class ExtensionRegistry implements IExtensionRegistry {
 	}
 	
 	@Override
-	public void addExtension(ISoPeCoExtension ext) {
+	public void addExtension(ISoPeCoExtension<?> ext) {
 		extensions.put(ext.getName(), ext);
 	}
 	
@@ -64,12 +65,12 @@ public class ExtensionRegistry implements IExtensionRegistry {
 	}
 	
 	@Override
-	public Collection<? extends ISoPeCoExtension> getExtensions() {
+	public Collection<? extends ISoPeCoExtension<?>> getExtensions() {
 		return Collections.unmodifiableCollection(extensions.values());
 	}
 
 	@Override
-	public <E extends ISoPeCoExtension> Extensions<E> getExtensions(Class<E> c) {
+	public <E extends ISoPeCoExtension<?>> Extensions<E> getExtensions(Class<E> c) {
 		@SuppressWarnings("unchecked")
 		Extensions<E> exts = extensionsMap.get(c);
 		if (exts == null) {
@@ -128,13 +129,26 @@ public class ExtensionRegistry implements IExtensionRegistry {
 			try {
 				o = ext.createExecutableExtension("class");
 				if (o instanceof ISoPeCoExtension) {
-					final ISoPeCoExtension es = (ISoPeCoExtension) o;
+					final ISoPeCoExtension<?> es = (ISoPeCoExtension<?>) o;
 					extensions.put(es.getName(), es);
 				}
 			} catch (CoreException e) {
 				logger.warn("Could not load the {} extension. Error: {}", ext.getName(), e.getMessage());
 			}
 		}
+	}
+
+	@Override
+	public <EA extends ISoPeCoExtensionArtifact> EA getExtensionArtifact(Class<? extends ISoPeCoExtension<EA>> c, String name) {
+		Extensions<? extends ISoPeCoExtension<EA>> extensions = getExtensions(c);
+		
+		for (ISoPeCoExtension<EA> ext: extensions) 
+			if (Tools.strEqualName(ext.getName(), name))
+				return ext.createExtensionArtifact();
+		
+		logger.warn("Could not find extension {} for extension category {}.", name, c.getSimpleName());
+		
+		return null;
 	}
 
 }

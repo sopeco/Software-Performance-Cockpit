@@ -6,7 +6,7 @@
          <meta.schema plugin="org.sopeco.engine" id="org.sopeco.engine.experimentseries.explorationstrategy" name="Exploration Strategy"/>
       </appinfo>
       <documentation>
-         This is the extension point for new exploration strategies that can be used in experiment series. 
+         This is the extension point for new exploration strategies that can be used in experiment series.
       </documentation>
    </annotation>
 
@@ -55,7 +55,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.sopeco.engine.experimentseries.IExplorationStrategy"/>
+                  <meta.attribute kind="java" basedOn=":org.sopeco.engine.experimentseries.IExplorationStrategyExtension"/>
                </appinfo>
             </annotation>
          </attribute>

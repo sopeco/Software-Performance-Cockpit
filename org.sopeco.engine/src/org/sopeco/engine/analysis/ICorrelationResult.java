@@ -10,20 +10,22 @@ import java.util.List;
  */
 public interface ICorrelationResult extends IPredictionFunctionResult {
 
-	/**
-	 * Returns a list of all ParameterCorrelation-Objects describing the
-	 * correlation of the parameters with the dependent parameter.
-	 * 
-	 * @return list of ParameterCorrelations
-	 */
-	public List<ParameterInfluence> getAllParameterCorrelations();
-
-	/**
-	 * Returns the ParameterCorrelation-Object of the specified parameter(s).
-	 * 
-	 * @return list of ParameterCorrelations
-	 */
-	public ParameterInfluence getParameterCorrelationByParam(
-			ParameterUsage parameter);
+	// TODO fix the interface
+	
+//	/**
+//	 * Returns a list of all ParameterCorrelation-Objects describing the
+//	 * correlation of the parameters with the dependent parameter.
+//	 * 
+//	 * @return list of ParameterCorrelations
+//	 */
+//	public List<ParameterInfluence> getAllParameterCorrelations();
+//
+//	/**
+//	 * Returns the ParameterCorrelation-Object of the specified parameter(s).
+//	 * 
+//	 * @return list of ParameterCorrelations
+//	 */
+//	public ParameterInfluence getParameterCorrelationByParam(
+//			ParameterUsage parameter);
 
 }
