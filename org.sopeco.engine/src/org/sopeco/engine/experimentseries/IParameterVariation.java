@@ -5,6 +5,7 @@ import java.util.Iterator;
 import org.sopeco.engine.registry.ISoPeCoExtensionArtifact;
 import org.sopeco.model.configuration.environment.ParameterDefinition;
 import org.sopeco.model.configuration.measurements.ParameterValueAssignment;
+import org.sopeco.persistence.dataset.ParameterValue;
 
 /**
  * Plugin interface that determines the values of a parameter based on its configuration.

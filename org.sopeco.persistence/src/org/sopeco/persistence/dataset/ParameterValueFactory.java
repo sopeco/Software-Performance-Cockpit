@@ -27,6 +27,11 @@ public class ParameterValueFactory {
 					"Invalud value type for the creation of parameter value!");
 		}
 	}
+	
+	public static Object convertValue(Object value, String typeName ){
+		ParameterType type = ParameterUtil.getTypeEnumeration(typeName);
+		return convertValue(value, type);
+	}
 
 	public static Object convertValue(Object value, ParameterType type) {
 		switch (type) {
