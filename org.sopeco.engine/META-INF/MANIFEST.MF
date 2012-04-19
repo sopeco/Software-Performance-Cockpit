@@ -18,5 +18,6 @@ Export-Package: org.sopeco.engine,
  org.sopeco.engine.exception,
  org.sopeco.engine.experiment,
  org.sopeco.engine.experimentseries,
+ org.sopeco.engine.helper,
  org.sopeco.engine.measurementenvironment,
  org.sopeco.engine.registry
