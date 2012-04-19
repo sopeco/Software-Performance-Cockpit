@@ -11,6 +11,10 @@ Export-Package: org.sopeco.model.configuration,
  org.sopeco.model.configuration.analysis,
  org.sopeco.model.configuration.analysis.impl,
  org.sopeco.model.configuration.analysis.util,
+ org.sopeco.model.configuration.common,
+ org.sopeco.model.configuration.common.ext,
+ org.sopeco.model.configuration.common.impl,
+ org.sopeco.model.configuration.common.util,
  org.sopeco.model.configuration.environment,
  org.sopeco.model.configuration.environment.impl,
  org.sopeco.model.configuration.environment.util,
@@ -18,7 +22,10 @@ Export-Package: org.sopeco.model.configuration,
  org.sopeco.model.configuration.measurements,
  org.sopeco.model.configuration.measurements.impl,
  org.sopeco.model.configuration.measurements.util,
- org.sopeco.model.configuration.util
+ org.sopeco.model.configuration.util,
+ org.sopeco.model.util
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport
 Bundle-ActivationPolicy: lazy
+Import-Package: org.eclipse.emf.compare.util,
+ org.eclipse.emf.ecore.xmi.impl
