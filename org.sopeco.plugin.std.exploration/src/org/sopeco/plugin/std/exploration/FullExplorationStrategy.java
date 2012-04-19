@@ -11,11 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.experimentseries.IExplorationStrategy;
 import org.sopeco.engine.experimentseries.IParameterVariation;
-import org.sopeco.engine.experimentseries.ParameterValue;
-import org.sopeco.engine.registry.ISoPeCoExtension;
 import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
 import org.sopeco.model.configuration.measurements.ExperimentTerminationCondition;
 import org.sopeco.persistence.IPersistenceProvider;
+import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.util.Tools;
 
 /**
@@ -39,7 +38,7 @@ public class FullExplorationStrategy implements IExplorationStrategy {
 	/** The list of the ParameterVariations that have to be explored. **/
 	private ArrayList<IParameterVariation> variationImplementations = new ArrayList<IParameterVariation>();
 	/** The list of ParameterValues that have last been explored. **/
-	private ArrayList<ParameterValue<?>> parameterValues = new ArrayList<ParameterValue<?>>();
+	private List<ParameterValue<?>> parameterValues = new ArrayList<ParameterValue<?>>();
 	/** The index of the parameter to be varied. **/
 	private int index = 0;
 	/** Tells if all possible combinations have been tested. **/
@@ -56,7 +55,7 @@ public class FullExplorationStrategy implements IExplorationStrategy {
 	}
 	
 	@Override
-	public ISoPeCoExtension getProvider() {
+	public FullExplorationStrategyExtension getProvider() {
 		return provider;
 	}
 
@@ -117,7 +116,7 @@ public class FullExplorationStrategy implements IExplorationStrategy {
 			logger.debug("Executing experiment run {}.", count++);
 			
 			// TODO: Wiederholungen
-			expController.runExperiment(parameterValues, null);
+			expController.runExperiment(parameterValues, terminationCondition);
 			inputParameterValues = getNextParameterValues();
 		}
 		

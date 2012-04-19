@@ -45,4 +45,9 @@ public class ExperimentController implements IExperimentController {
 		
 	}
 
+	@Override
+	public void finalizeExperimentSeries() {
+		// TODO Auto-generated method stub
+	}
+
 }
