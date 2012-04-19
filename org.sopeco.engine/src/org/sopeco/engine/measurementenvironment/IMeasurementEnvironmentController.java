@@ -2,10 +2,12 @@ package org.sopeco.engine.measurementenvironment;
 
 import java.util.List;
 
-import org.sopeco.core.model.configuration.environment.ParameterDefinition;
-import org.sopeco.core.model.configuration.measurements.ExperimentTerminationCondition;
 import org.sopeco.engine.experimentseries.ParameterValue;
+import org.sopeco.model.configuration.environment.ParameterDefinition;
+import org.sopeco.model.configuration.measurements.ExperimentTerminationCondition;
+import org.sopeco.persistence.dataset.DataSetAggregated;
 
+@SuppressWarnings("rawtypes")
 public interface IMeasurementEnvironmentController {
 	
 	public void initialize(List<ParameterValue> initializationAssignments);

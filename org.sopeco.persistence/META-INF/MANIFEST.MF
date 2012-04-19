@@ -11,3 +11,8 @@ Import-Package: javax.persistence;version="2.0.1",
  junit.framework,
  org.junit;version="4.8.2"
 Require-Bundle: org.sopeco.model;bundle-version="0.2.0"
+Export-Package: org.sopeco.core.persistence,
+ org.sopeco.persistence,
+ org.sopeco.persistence.dataset,
+ org.sopeco.persistence.dataset.util,
+ org.sopeco.persistence.entities

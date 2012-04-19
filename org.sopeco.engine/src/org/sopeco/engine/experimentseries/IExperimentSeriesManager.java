@@ -1,6 +1,6 @@
 package org.sopeco.engine.experimentseries;
 
-import org.sopeco.core.model.configuration.measurements.ExperimentSeriesDefinition;
+import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
 
 /**
  * The ExperimentSeriesManager manages the execution of any single experiment

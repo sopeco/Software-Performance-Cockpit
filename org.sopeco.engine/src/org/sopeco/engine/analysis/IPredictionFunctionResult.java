@@ -2,8 +2,7 @@ package org.sopeco.engine.analysis;
 
 import java.util.List;
 
-import org.sopeco.configuration.analysis.AnalysisStrategy;
-import org.sopeco.core.exceptions.UnknownParameterException;
+import org.sopeco.model.configuration.analysis.AnalysisConfiguration;
 import org.sopeco.persistence.dataset.ParameterValue;
 
 
@@ -28,7 +27,7 @@ public interface IPredictionFunctionResult extends IAnalysisResult{
 	 * @throws UnknownParameterException 
 	 * 
 	 */
-	public ParameterValue<?> predictOutputParameter(List<ParameterValue<?>> inputParameters) throws UnknownParameterException;
+	public ParameterValue<?> predictOutputParameter(List<ParameterValue<?>> inputParameters) ;
 
 	/**
 	 * Calculates the output parameter's {@link ParameterValue} for the given
@@ -40,7 +39,7 @@ public interface IPredictionFunctionResult extends IAnalysisResult{
 	 * @return Result computed from the input values.
 	 * @throws UnknownParameterException 
 	 */
-	public ParameterValue<?> predictOutputParameter(ParameterValue<?> inputParameter) throws UnknownParameterException;
+	public ParameterValue<?> predictOutputParameter(ParameterValue<?> inputParameter) ;
 
 	/**
 	 * Returns a String-representation of the contained function.
@@ -54,6 +53,6 @@ public interface IPredictionFunctionResult extends IAnalysisResult{
 	 * 
 	 * @return Configuration used for the analysis.
 	 */
-	public AnalysisStrategy getAnalysisStrategyConfiguration();
+	public AnalysisConfiguration getAnalysisStrategyConfiguration();
 
 }

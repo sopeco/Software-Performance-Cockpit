@@ -1,10 +1,11 @@
 package org.sopeco.engine.experiment;
 
-import java.net.URI;
 import java.util.List;
 
-import org.sopeco.core.model.configuration.measurements.ExperimentTerminationCondition;
 import org.sopeco.engine.experimentseries.ParameterValue;
+import org.sopeco.model.configuration.measurements.ExperimentTerminationCondition;
+import org.sopeco.persistence.IPersistenceProvider;
+import org.sopeco.persistence.dataset.DataSetAggregated;
 
 
 /**
@@ -13,14 +14,15 @@ import org.sopeco.engine.experimentseries.ParameterValue;
  * @author D053711
  *
  */
+@SuppressWarnings("rawtypes")
 public interface IExperimentController {
 	
 	/**
 	 * @param environmentUri
 	 */
-	public void initialize(URI environmentUri, List<ParameterValue> initializationPVList);
+	public void initialize(List<ParameterValue> initializationPVList);
 	
-	public void prepareExperimentSeries(List<ParameterValue> preparationAssignments);
+	public void prepareExperimentSeries(List<ParameterValue> preparationPVList);
 	
 	/**
 	 * To be executed you have to set the entry point of the measurement env. first by calling initialize(...) 
