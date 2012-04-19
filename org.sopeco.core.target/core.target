@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <?pde version="3.6"?>
 
-<target name="sopeco" sequenceNumber="48">
+<target name="sopeco" sequenceNumber="49">
 <locations>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.platform.feature.group" version="3.7.1.r37x_v20110729-9gF7UHOxFtniV7mI3T556iZN9AU8bEZ1lHMcVK"/>
@@ -42,6 +42,7 @@
 </location>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.persistence.sdk.feature.group" version="2.1.2.v20101206-r8635"/>
+<unit id="org.eclipse.emf.compare.sdk.feature.group" version="1.1.2.v20110202-0936"/>
 <repository location="http://download.eclipse.org/releases/helios"/>
 </location>
 </locations>
