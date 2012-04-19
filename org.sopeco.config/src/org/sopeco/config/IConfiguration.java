@@ -11,6 +11,12 @@ package org.sopeco.config;
  */
 public interface IConfiguration {
 
+	public static final String CONF_LOGGER_CONFIG_FILE_NAME = "sopeco.config.loggerConfigFileName";
+	public static final String CONF_MEASUREMENT_SPEC_FILE_NAME = "sopeco.config.measurementSpecFileName";
+	public static final String CONF_APP_NAME = "sopeco.config.applicationName";
+
+	public static final String CLA_EXTENSION_ID = "org.sopeco.config.commandlinearguments";
+
 	/**
 	 * Returns the configured value of the given property in SoPeCo. 
 	 * 
