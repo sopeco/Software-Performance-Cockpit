@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -18,7 +19,6 @@ import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
 import org.sopeco.model.util.EMFUtil;
 import org.sopeco.persistence.entities.keys.ExperimentSeriesPK;
 
-//@IdClass(ExperimentSeriesPK.class)
 @Entity
 public class ExperimentSeries implements Serializable {
 	
@@ -27,34 +27,20 @@ public class ExperimentSeries implements Serializable {
 	/*
 	 * Entity Attributes
 	 */
-	
-//	private String name;
-
 	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumns({
-	    @JoinColumn(name="scenarioInstanceName", referencedColumnName = "NAME"),
-	    @JoinColumn(name="measurementEnvironmentUrl", referencedColumnName = "MEASUREMENTENVIRONMENTURL")
+	    @JoinColumn(name="scenarioInstanceName", referencedColumnName = "name"),
+	    @JoinColumn(name="measurementEnvironmentUrl", referencedColumnName = "measurementEnvironmentUrl")
 	})
 	private ScenarioInstance scenarioInstance;
 	
 	@Lob
+	@Column(name = "experimentSeriesDefinition")
 	private String experimentSeriesDefinition;
 	
-//	@Transient
 	@OneToMany(cascade=CascadeType.ALL, mappedBy = "experimentSeries")
 	private List<ExperimentSeriesRun> experimentSeriesRuns = new ArrayList<ExperimentSeriesRun>();
-	
-	
-	
-	/*
-	 * ForeignKey Attributes
-	 */
-//	@Id
-//	private String scenarioInstanceName;
-//	
-//	@Id
-//	private String measurementEnvironmentUrl;
-	
+		
 	@EmbeddedId
 	private
 	ExperimentSeriesPK primaryKey = new ExperimentSeriesPK();
@@ -63,13 +49,11 @@ public class ExperimentSeries implements Serializable {
 	 * Getters and Setters
 	 */
 	public String getName() {
-//		return name;
 		return this.primaryKey.getName();
 	}
 
 
 	public void setName(String name) {
-//		this.name = name;
 		this.primaryKey.setName(name);
 	}
 
@@ -81,8 +65,8 @@ public class ExperimentSeries implements Serializable {
 
 	public void setScenarioInstance(ScenarioInstance scenarioInstance) {
 		this.scenarioInstance = scenarioInstance;
-//		this.setScenarioInstanceName(scenarioInstance.getName());
-//		this.setMeasurementEnvironmentUrl(scenarioInstance.getMeasurementEnvironmentUrl());
+		this.primaryKey.setScenarioInstanceName(scenarioInstance.getName());
+		this.primaryKey.setMeasurementEnvironmentUrl(scenarioInstance.getMeasurementEnvironmentUrl());
 	}
 
 
@@ -116,61 +100,6 @@ public class ExperimentSeries implements Serializable {
 	/*
 	 * Overrides
 	 */
-	
-//	public String getScenarioInstanceName() {
-//		return scenarioInstanceName;
-//	}
-
-
-//	public void setScenarioInstanceName(String scenarioInstanceName) {
-//		this.scenarioInstanceName = scenarioInstanceName;
-//	}
-
-
-//	public String getMeasurementEnvironmentUrl() {
-//		return measurementEnvironmentUrl;
-//	}
-
-
-//	public void setMeasurementEnvironmentUrl(String measurementEnvironmentUrl) {
-//		this.measurementEnvironmentUrl = measurementEnvironmentUrl;
-//	}
-
-
-//	@Override
-//	public boolean equals(Object o) {
-//
-//		 if (this == o) return true;
-//		 if (o == null || getClass() != o.getClass()) return false;
-//
-//		 ExperimentSeries obj = (ExperimentSeries) o;
-//		 if (name == null || scenarioInstance == null || obj.name == null || obj.scenarioInstance == null) return false;
-//		 if(!name.equals(obj.name) || !scenarioInstance.equals(obj.scenarioInstance)) return false;
-//
-//		 return true;
-//
-//	}
-//
-//	@Override
-//	public int hashCode() {
-//		if(name!=null && scenarioInstance!=null){
-//			String hashString = name + scenarioInstance.hashCode();
-//			return hashString.hashCode();
-//		} else {
-//			return 0;
-//		}
-//	}
-//
-//	@Override
-//    public String toString() {
-//
-//       return "ExperimentSeries{" +
-//	                 "name='" + name + '\'' +
-//	                 "scenarioInstance='" + scenarioInstance.toString() + '\'' +'}';
-//    }
-//
-//
-	
 	@Override
 	public boolean equals(Object o) {
 

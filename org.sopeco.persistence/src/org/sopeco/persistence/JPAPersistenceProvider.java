@@ -97,9 +97,6 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 		try {
 			
 			em.getTransaction().begin();
-//			for (ExperimentSeries series : scenarioInstance.getExperimentSeries()) {
-//				em.merge(series);
-//			}
 			em.merge(scenarioInstance);
 			em.getTransaction().commit();
 			
@@ -120,14 +117,6 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 		EntityManager em = factory.createEntityManager();
 		try {
 			experimentSeries = em.find(ExperimentSeries.class, new ExperimentSeriesPK(experimentSeriesName, scenarioInstanceName, measurementEnvironmentUrl));
-//			// execute query
-//			String queryString = "SELECT es FROM ExperimentSeries es WHERE es.name=:name AND es.scenarioInstance=:scenarioInstance";
-//			logger.debug("Execute query: {}", queryString);
-//			Query q = em.createQuery(queryString);
-//			q.setParameter("name", experimentSeriesName);
-//			q.setParameter("scenarioInstance", scenarioInstance);
-//			
-//			experimentSeries = (ExperimentSeries) q.getSingleResult(); // the tuple name/scenarioInstance is unique for a ScenarioInstance
 		} catch (Exception e) {
 			String errorMsg = "Could not find experiment series for scenario instance { " 
 					+ scenarioInstanceName + ", " + measurementEnvironmentUrl + " and series name " 
@@ -139,17 +128,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 		}
 		
 		return experimentSeries;
-		
-//		// check if query was successful
-//		if(experimentSeries != null){
-//			return experimentSeries;
-//		} else {
-//			String errorMsg = "Could not find experiment series for " 
-//					+ scenarioInstance.toString() + " and series name " 
-//					+ experimentSeriesName + " .";
-//			logger.error(errorMsg);
-//			throw new IllegalArgumentException(errorMsg);
-//		}
+	
 	}
 
 	@Override
@@ -178,15 +157,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 		try {
 			
 			scenarioInstance = em.find(ScenarioInstance.class, new ScenarioInstancePK(scenarioName, measurementEnvironmentUrl));
-//			// execute query
-//			String queryString = "SELECT si FROM ScenarioInstance si WHERE si.name=:name AND si.measurementEnvironmentUrl=:url";
-//			logger.debug("Execute query: {}", queryString);
-//			Query q = em.createQuery(queryString);
-//			q.setParameter("name", scenarioName);
-//			q.setParameter("url", measurementEnvironmentUrl);
-//			
-//			scenarioInstance = (ScenarioInstance) q.getSingleResult(); // the tuple name/url is unique for a ScenarioInstance
-		
+
 		} catch (Exception e) {
 			
 			logger.error(errorMsg);

@@ -3,6 +3,7 @@ package org.sopeco.persistence.entities;
 import java.io.Serializable;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,6 +22,7 @@ public class ExperimentSeriesRun implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private Long id;
 	
 	/*
@@ -28,6 +30,7 @@ public class ExperimentSeriesRun implements Serializable {
 	 */
 	
 	@Lob
+	@Column(name = "restultDataSet")
 	private DataSetAggregated resultDataSet;
 	
 	@ManyToOne(cascade=CascadeType.ALL)
@@ -38,12 +41,6 @@ public class ExperimentSeriesRun implements Serializable {
 	})
 	private ExperimentSeries experimentSeries;
 	
-	/*
-	 * ForeignKeyAttributes
-	 */
-//	private String scenarioInstanceName;
-//	private String measurementEnvironmentUrl;
-//	private String experimentSeriesName;
 
 	/*
 	 * Getter and Setter
@@ -58,11 +55,6 @@ public class ExperimentSeriesRun implements Serializable {
 	}
 
 	public void setExperimentSeries(ExperimentSeries experimentSeries) {
-//		this.experimentSeriesName = experimentSeries.getName();
-//		if(experimentSeries.getScenarioInstance() != null){
-//			this.scenarioInstanceName = experimentSeries.getScenarioInstance().getName();
-//			this.measurementEnvironmentUrl = experimentSeries.getScenarioInstance().getMeasurementEnvironmentUrl();
-//		}
 		this.experimentSeries = experimentSeries;
 	}
 

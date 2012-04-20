@@ -2,6 +2,7 @@ package org.sopeco.persistence.entities.keys;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import org.sopeco.persistence.entities.ScenarioInstance;
@@ -16,8 +17,10 @@ public class ScenarioInstancePK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	@Column(name = "name")
 	private String name;
 	
+	@Column(name = "measurementEnvironmentUrl")
 	private String measurementEnvironmentUrl;
 	
 	public ScenarioInstancePK(){
