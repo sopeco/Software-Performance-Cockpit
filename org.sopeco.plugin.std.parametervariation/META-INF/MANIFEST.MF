@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Standard Parameter Variations
+Bundle-SymbolicName: org.sopeco.plugin.std.parametervariation;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.sopeco.core;bundle-version="0.2.0",
+ org.sopeco.orbit.logging;bundle-version="1.0.0",
+ org.sopeco.persistence;bundle-version="0.2.0",
+ org.junit

@@ -28,6 +28,7 @@
 		<module>../org.sopeco.config</module>
 		<module>../org.sopeco.util</module>
 		<module>../org.sopeco.plugin.std.exploration</module>
+		<module>../org.sopeco.plugin.std.parametervariation</module>
 	</modules>
 
 

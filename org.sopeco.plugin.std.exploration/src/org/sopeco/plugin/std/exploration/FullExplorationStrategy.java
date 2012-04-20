@@ -1,6 +1,4 @@
-/**
- * 
- */
+
 package org.sopeco.plugin.std.exploration;
 
 import java.util.ArrayList;
@@ -11,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.experimentseries.IExplorationStrategy;
 import org.sopeco.engine.experimentseries.IParameterVariation;
+import org.sopeco.engine.registry.AbstractSoPeCoExtensionArtifact;
 import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
 import org.sopeco.model.configuration.measurements.ExperimentTerminationCondition;
 import org.sopeco.persistence.IPersistenceProvider;
@@ -21,19 +20,18 @@ import org.sopeco.util.Tools;
  * A FullExplorationStrategy explores all possible combinations of values for
  * the given parameters.
  * 
- * <comment> [Chris:] I find two possible ways to implement the exploration: 1)
+ * [Chris:] I find two possible ways to implement the exploration: 1)
  * Create a List of all possible combinations Pro: A future handling of
  * candidates to skip might be easier Con: Big initial overhead + memory usage
  * 2) Derive only the next combination of values Pro: Less Memory Usage Con:
  * Evtl. harder to handle skipable combinations
  * 
  * Right now 2) is implemented, only "LinearIntegerVariation" are supported.
- * </comment>
  * 
  * @author Roozbeh Farahbod, Chris
  * 
  */
-public class FullExplorationStrategy implements IExplorationStrategy {
+public class FullExplorationStrategy extends AbstractSoPeCoExtensionArtifact implements IExplorationStrategy {
 
 	/** The list of the ParameterVariations that have to be explored. **/
 	private ArrayList<IParameterVariation> variationImplementations = new ArrayList<IParameterVariation>();
@@ -48,17 +46,11 @@ public class FullExplorationStrategy implements IExplorationStrategy {
 	
 	private IPersistenceProvider persistenceProvider = null;
 	private IExperimentController expController = null;
-	private final FullExplorationStrategyExtension provider;
 
 	protected FullExplorationStrategy(FullExplorationStrategyExtension provider) {
-		this.provider = provider;
+		super(provider);
 	}
 	
-	@Override
-	public FullExplorationStrategyExtension getProvider() {
-		return provider;
-	}
-
 	@Override
 	public void setPersistenceProvider(IPersistenceProvider persistenceProvider) {
 		this.persistenceProvider = persistenceProvider;
