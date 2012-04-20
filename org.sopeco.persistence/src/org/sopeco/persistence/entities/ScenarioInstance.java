@@ -73,6 +73,9 @@ public class ScenarioInstance implements Serializable {
 		return experimentSeries;
 	}
 	
+	public ScenarioInstancePK getPrimaryKey() {
+		return primaryKey;
+	}
 	
 	/*
 	 * Overrides
@@ -103,15 +106,10 @@ public class ScenarioInstance implements Serializable {
     public String toString() {
 
        return "ScenarioInstance{" +
-	                 "name='" + this.primaryKey.getName() + '\'' +
+	                 "name='" + this.primaryKey.getName() + "\' " +
 	                 "measurementEnvironmentUrl='" + this.primaryKey.getMeasurementEnvironmentUrl() + '\'' +'}';
     }
 	
-	public ScenarioInstancePK getPrimaryKey() {
-		return primaryKey;
-	}
-	public void setPrimaryKey(ScenarioInstancePK primaryKey) {
-		this.primaryKey = primaryKey;
-	}
+
 	
 }

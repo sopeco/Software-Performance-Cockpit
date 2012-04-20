@@ -1,4 +1,4 @@
-package org.sopeco.core.persistence;
+package org.sopeco.persistence;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,7 +64,7 @@ public class DummyFactory {
 			int numberOfRunsToCreate, ExperimentSeries expSeries) {
 		ArrayList<ExperimentSeriesRun> runs = new ArrayList<ExperimentSeriesRun>();
 		for (int i = 0; i < numberOfRunsToCreate; i++) {
-			ExperimentSeriesRun run = new ExperimentSeriesRun();
+			ExperimentSeriesRun run = new ExperimentSeriesRun(System.nanoTime());
 			run.setExperimentSeries(expSeries);
 			run.setResultDataSet(createDummyResultDataSet());
 			runs.add(run);

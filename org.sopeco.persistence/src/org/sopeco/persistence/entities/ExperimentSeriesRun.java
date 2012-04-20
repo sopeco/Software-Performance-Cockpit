@@ -5,40 +5,52 @@ import java.io.Serializable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 
 import org.sopeco.persistence.dataset.DataSetAggregated;
 
+@NamedQuery(
+	    name="findAllExperimentSeriesRuns",
+	    query="SELECT o FROM ExperimentSeriesRun o"
+	)
 @Entity
 public class ExperimentSeriesRun implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Long id;
+	
+	
+	public ExperimentSeriesRun(){
+		super();
+	}
+	
+	public ExperimentSeriesRun(Long timestamp){
+		super();
+		this.timestamp = timestamp;
+	}
 	
 	/*
 	 * Entity Attributes
 	 */
 	
+	@Id
+	@Column(name = "timestamp")
+	private Long timestamp;
+	
 	@Lob
 	@Column(name = "restultDataSet")
 	private DataSetAggregated resultDataSet;
 	
-	@ManyToOne(cascade=CascadeType.ALL)
-	@JoinColumns({
-	    @JoinColumn(name="scenarioInstanceName", referencedColumnName = "scenarioInstanceName"),
-	    @JoinColumn(name="measurementEnvironmentUrl", referencedColumnName = "measurementEnvironmentUrl"),
-	    @JoinColumn(name="experimentSeriesName", referencedColumnName = "NAME")
-	})
+	@ManyToOne(cascade=CascadeType.ALL, optional=false)
+//	@JoinColumns({
+//	    @JoinColumn(name="scenarioInstanceName", referencedColumnName = "scenarioInstanceName"),
+//	    @JoinColumn(name="measurementEnvironmentUrl", referencedColumnName = "measurementEnvironmentUrl"),
+//	    @JoinColumn(name="experimentSeriesName", referencedColumnName = "name")
+//	})
 	private ExperimentSeries experimentSeries;
 	
 
@@ -46,8 +58,8 @@ public class ExperimentSeriesRun implements Serializable {
 	 * Getter and Setter
 	 */
 	
-	public Long getId() {
-		return id;
+	public Long getPrimaryKey() {
+		return this.timestamp;
 	}
 	
 	public ExperimentSeries getExperimentSeries() {
@@ -66,7 +78,11 @@ public class ExperimentSeriesRun implements Serializable {
 		this.resultDataSet = resultDataSet; 
 	}
 
-	
+
+	public Long getTimestamp() {
+		return timestamp;
+	}
+
 	/*
 	 * Overrides
 	 */
@@ -78,8 +94,8 @@ public class ExperimentSeriesRun implements Serializable {
 		 if (o == null || getClass() != o.getClass()) return false;
 
 		 ExperimentSeriesRun obj = (ExperimentSeriesRun) o;
-		 if (id == null || obj.id == null) return false;
-		 if(id != obj.id) return false;
+		 if (timestamp == null || obj.timestamp == null) return false;
+		 if(timestamp != obj.timestamp) return false;
 
 		 return true;
 
@@ -87,8 +103,8 @@ public class ExperimentSeriesRun implements Serializable {
 
 	@Override
 	public int hashCode() {
-		if(id!=null){
-			return id.hashCode();
+		if(timestamp!=null){
+			return timestamp.hashCode();
 		} else {
 			return 0;
 		}
@@ -98,6 +114,7 @@ public class ExperimentSeriesRun implements Serializable {
     public String toString() {
 
        return "ExperimentSeriesRun{" +
-	                 "id='" + id + '\'' +'}';
+	                 "timestamp='" + timestamp + '\'' +'}';
     }
+
 }

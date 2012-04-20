@@ -17,6 +17,7 @@ public class ExperimentSeriesPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	@Column(name = "name")
 	private String name;
 
 	@Column(name = "scenarioInstanceName", nullable = false, insertable=false, updatable=false)
@@ -88,9 +89,9 @@ public class ExperimentSeriesPK implements Serializable {
     public String toString() {
 
        return "ExperimentSeriesPK{" +
-	                 "name='" + name + '\'' +
-	                 "measurementEnvironmentUrl='" + measurementEnvironmentUrl + '\'' +
-	                 "scenarioInstanceName='" + scenarioInstanceName + '\''
+	                 "name='" + name + "\' " +
+	                 "measurementEnvironmentUrl='" + measurementEnvironmentUrl + "\' " +
+	                 "scenarioInstanceName='" + scenarioInstanceName + "\'"
 	                 +'}';
     }
 	

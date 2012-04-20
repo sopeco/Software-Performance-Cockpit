@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
+import javax.persistence.metamodel.EntityType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,16 +50,14 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 	
 	
 	@Override
-	public ExperimentSeriesRun store(ExperimentSeriesRun experimentSeriesRun) {
-		ExperimentSeriesRun storedRun;
+	public void store(ExperimentSeriesRun experimentSeriesRun) {
 		
 		EntityManager em = factory.createEntityManager();
 		try {
 			
 			em.getTransaction().begin();
-			storedRun = em.merge(experimentSeriesRun);
+			em.merge(experimentSeriesRun);
 			em.getTransaction().commit();
-			
 			
 		} finally {
 			if (em.getTransaction().isActive()) {
@@ -67,7 +66,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 			em.close();
 		}
 		
-		return storedRun;
+	
 	}
 
 	@Override
@@ -86,6 +85,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 			}
 			em.close();
 		}
+
 		
 	}
 
@@ -98,6 +98,13 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 			em.merge(scenarioInstance);
 			em.getTransaction().commit();
 			
+			Query query = em.createNamedQuery("findAllExperimentSeriesRuns");
+			List<ExperimentSeriesRun> remainingRuns = query.getResultList();
+			logger.debug("Remaining runs: " + remainingRuns.size());
+			
+			query = em.createQuery("SELECT es FROM ExperimentSeries es");
+			List<ExperimentSeries> series = query.getResultList();
+			logger.debug("Remaining runs: " + series.size());
 		
 		} finally {
 			if (em.getTransaction().isActive()) {
@@ -106,6 +113,36 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 			em.close();
 		}
 		
+	}
+	
+	/* default */ int getSize(final Class<?> entityType) {
+		int result;
+		EntityManager em = factory.createEntityManager();
+		try {
+			Query query = em.createQuery("SELECT es FROM " + entityType.getSimpleName() + " es");
+			List<ExperimentSeries> series = query.getResultList();
+			result = series.size();
+			return result;
+		} finally {
+			em.close();
+		}
+	
+	}
+	
+	/* default */void disposeAll() {
+		EntityManager em = factory.createEntityManager();
+		em.getTransaction().begin();
+		try {
+			em.createQuery("DELETE FROM " + ExperimentSeriesRun.class.getSimpleName()).executeUpdate();
+			em.createQuery("DELETE FROM " + ExperimentSeries.class.getSimpleName()).executeUpdate();
+			em.createQuery("DELETE FROM " + ScenarioInstance.class.getSimpleName()).executeUpdate();
+			em.getTransaction().commit();
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
 	}
 
 	@Override
@@ -221,6 +258,114 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 			throw new DataNotFoundException(errorMsg);
 		}
 
+	}
+	
+	
+	@Override
+	public void remove(ExperimentSeriesRun experimentSeriesRun) throws DataNotFoundException{
+		
+		String errorMsg = "Could not remove experiment series run " + experimentSeriesRun.toString();
+		
+		EntityManager em = factory.createEntityManager();
+		try {
+			
+			em.getTransaction().begin();
+			experimentSeriesRun = em.find(ExperimentSeriesRun.class, experimentSeriesRun.getPrimaryKey());
+			em.remove(experimentSeriesRun);
+			em.getTransaction().commit();
+		
+		} catch(Exception e){
+			
+			logger.error(errorMsg);
+			throw new DataNotFoundException(errorMsg, e);
+			
+			
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
+		
+		
+	}
+
+	@Override
+	public void remove(ExperimentSeries experimentSeries) throws DataNotFoundException{
+		String errorMsg = "Could not remove experiment series " + experimentSeries.toString();
+		
+		EntityManager em = factory.createEntityManager();
+		try {
+			
+			em.getTransaction().begin();
+			experimentSeries = em.find(ExperimentSeries.class, experimentSeries.getPrimaryKey());
+			em.remove(experimentSeries);
+			em.getTransaction().commit();
+		} catch(Exception e){
+			
+			logger.error(errorMsg);
+			throw new DataNotFoundException(errorMsg, e);
+			
+		
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
+		
+	}
+
+	@Override
+	public void remove(ScenarioInstance scenarioInstance) throws DataNotFoundException{
+		
+		String errorMsg = "Could not remove scenario instance " + scenarioInstance.toString();
+		
+		EntityManager em = factory.createEntityManager();
+		try {
+			
+			em.getTransaction().begin();
+			
+			Query query = em.createNamedQuery("findAllExperimentSeriesRuns");
+			List<ExperimentSeriesRun> remainingRuns = query.getResultList();
+			logger.debug("Remaining runs: " + remainingRuns.size());
+			logger.error(errorMsg);
+			scenarioInstance = em.find(ScenarioInstance.class, scenarioInstance.getPrimaryKey());
+			removeAllSeries(scenarioInstance, em);
+			
+
+			 query = em.createNamedQuery("findAllExperimentSeriesRuns");
+			 remainingRuns = query.getResultList();
+			logger.debug("Remaining runs: " + remainingRuns.size());
+			em.remove(scenarioInstance);
+			logger.debug("Remove scenario");
+			em.getTransaction().commit();
+		} catch(Exception e){
+			
+			throw new DataNotFoundException(errorMsg, e);
+			
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
+		
+	}
+	
+	private void removeAllSeries(ScenarioInstance scenarioInstance, EntityManager em){
+		for(ExperimentSeries series : scenarioInstance.getExperimentSeries()){
+			removeAllRuns(series, em);
+			logger.debug("Remove Series");
+			em.remove(series);
+		}
+	}
+	
+	private void removeAllRuns(ExperimentSeries experimentSeries, EntityManager em){
+		for(ExperimentSeriesRun run : experimentSeries.getExperimentSeriesRuns()){
+			logger.debug("Remove Run");
+			em.remove(run);
+		}
 	}
 	
 

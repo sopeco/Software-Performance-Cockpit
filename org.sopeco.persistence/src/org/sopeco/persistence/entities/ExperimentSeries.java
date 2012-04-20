@@ -38,7 +38,7 @@ public class ExperimentSeries implements Serializable {
 	@Column(name = "experimentSeriesDefinition")
 	private String experimentSeriesDefinition;
 	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy = "experimentSeries")
+	@OneToMany(cascade=CascadeType.ALL, mappedBy = "experimentSeries", orphanRemoval=true)
 	private List<ExperimentSeriesRun> experimentSeriesRuns = new ArrayList<ExperimentSeriesRun>();
 		
 	@EmbeddedId
@@ -96,6 +96,11 @@ public class ExperimentSeries implements Serializable {
 		return this.experimentSeriesRuns;
 	}
 	
+	public ExperimentSeriesPK getPrimaryKey() {
+		return primaryKey;
+	}
+
+	
 	
 	/*
 	 * Overrides
@@ -125,17 +130,8 @@ public class ExperimentSeries implements Serializable {
     public String toString() {
 
        return "ExperimentSeries{" +
-	                 "name='" + this.primaryKey.getName() + '\'' +
+	                 "name='" + this.primaryKey.getName() + "\' " +
 	                 "scenarioInstance='" + scenarioInstance.toString() + '\'' +'}';
     }
-	
-	public ExperimentSeriesPK getPrimaryKey() {
-		return primaryKey;
-	}
-
-
-	public void setPrimaryKey(ExperimentSeriesPK primaryKey) {
-		this.primaryKey = primaryKey;
-	}
 
 }

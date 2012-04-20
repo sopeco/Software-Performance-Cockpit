@@ -1,4 +1,4 @@
-package org.sopeco.core.persistence;
+package org.sopeco.persistence;
 
 import java.io.IOException;
 import java.io.InputStream;

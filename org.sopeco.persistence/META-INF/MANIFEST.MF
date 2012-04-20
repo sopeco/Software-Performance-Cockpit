@@ -10,10 +10,10 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: .,
  META-INF/
 Import-Package: javax.persistence;version="2.0.1",
+ javax.persistence.metamodel;version="2.0.1",
  junit.framework,
  org.junit;version="4.8.2"
-Export-Package: org.sopeco.core.persistence,
- org.sopeco.persistence,
+Export-Package: org.sopeco.persistence,
  org.sopeco.persistence.dataset,
  org.sopeco.persistence.dataset.util,
  org.sopeco.persistence.entities

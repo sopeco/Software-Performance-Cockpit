@@ -15,13 +15,13 @@ import org.sopeco.persistence.exceptions.DataNotFoundException;
 public interface IPersistenceProvider {
 	
 	
-	ExperimentSeriesRun store(ExperimentSeriesRun experimentSeriesRun);
+	void store(ExperimentSeriesRun experimentSeriesRun);
 	
 	void store(ExperimentSeries experimentSeries);
 
 	void store(ScenarioInstance scenarioInstance);
 	
-	ExperimentSeriesRun loadExperimentSeriesRun(Long runId) throws DataNotFoundException;
+	ExperimentSeriesRun loadExperimentSeriesRun(Long timestamp) throws DataNotFoundException;
 	
 	List<ScenarioInstance> loadScenarioInstances(String scenarioName) throws DataNotFoundException;
 	
@@ -30,6 +30,13 @@ public interface IPersistenceProvider {
 	ExperimentSeries loadExperimentSeries(String experimentSeriesName,
 			String scenarioInstanceName, String measurementEnvironmentUrl)
 			throws DataNotFoundException;
+
+	void remove(ExperimentSeriesRun experimentSeriesRun)
+			throws DataNotFoundException;
+
+	void remove(ExperimentSeries experimentSeries) throws DataNotFoundException;
+
+	void remove(ScenarioInstance scenarioInstance) throws DataNotFoundException;
 
 	
 
