@@ -88,7 +88,7 @@ Slightly modified version of Sun Checks Eclipse that better matches our needs at
     </module>
     <module name="UpperEll"/>
     <module name="LineLength">
-      <property name="max" value="120"/>
+      <property name="max" value="160"/>
       <property name="tabWidth" value="4"/>
     </module>
   </module>
