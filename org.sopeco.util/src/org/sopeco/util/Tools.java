@@ -21,6 +21,36 @@ import java.util.StringTokenizer;
  */
 public class Tools {
 
+	public enum SupportedTypes {
+		Double, Integer, String;
+	
+		/**
+		 * If the given class is supported, returns the 
+		 * supported type for that class. Otherwise, returns null.
+		 * 
+		 * @see #valueOf(String)
+		 */
+		public static SupportedTypes get(Class<?> c) {
+			return get(c.getSimpleName());
+		}
+
+		/**
+		 * If the given class name is supported, returns the 
+		 * supported type for that class. Otherwise, returns null.
+		 */
+		public static SupportedTypes get(String name) {
+			if (Tools.strEqualName(name, Double.class.getSimpleName()))
+				return Double;
+			if (Tools.strEqualName(name, Integer.class.getSimpleName()))
+				return Integer;
+			if (Tools.strEqualName(name, String.class.getSimpleName()))
+				return String;
+			
+			return null;
+		}
+
+	};
+	
 	private static String eol;
 
 	/**
@@ -159,5 +189,11 @@ public class Tools {
 		return strEqualCaseInsensitive(a.trim(), b.trim());
 	}
 	
-	
+	/**
+	 * Checks if the given name is the simple name of the given class.
+	 * The test is case insensitive. 
+	 */
+	public static boolean isClassName(String name, Class<?> c) {
+		return strEqualName(name, c.getSimpleName());
+	}
 }
