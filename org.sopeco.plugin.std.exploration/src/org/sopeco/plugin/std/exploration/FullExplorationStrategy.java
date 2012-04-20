@@ -94,6 +94,8 @@ public class FullExplorationStrategy extends AbstractSoPeCoExtensionArtifact imp
 			// Add ParameterValueAssignment to List
 			parameterValues.add(parameterValueAssignment);
 		}
+		
+		expController.initialize(parameterValues);
 	}
 
 	private void executeExperimentSeries(ExperimentTerminationCondition terminationCondition) {
@@ -107,8 +109,9 @@ public class FullExplorationStrategy extends AbstractSoPeCoExtensionArtifact imp
 			
 			logger.debug("Executing experiment run {}.", count++);
 			
-			// TODO: Wiederholungen
+			// TODO: take care of persistency
 			expController.runExperiment(parameterValues, terminationCondition);
+			
 			inputParameterValues = getNextParameterValues();
 		}
 		
