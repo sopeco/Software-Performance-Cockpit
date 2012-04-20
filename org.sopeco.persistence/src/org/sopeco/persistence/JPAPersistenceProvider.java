@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,32 +34,13 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 	 * This constructor creates an instance of {@link JPAPersistenceProvider} and
 	 * creates an {@link EntityManagerFactory} for the given persistence unit.
 	 * 
-	 * @param peristenceUnit - the name of the peristence unit that should be used by the provider
+	 * @param peristenceUnit - the name of the persistence unit that should be used by the provider
 	 */
 	protected JPAPersistenceProvider(String peristenceUnit){
 		 
 		logger.debug("Create EntityManagerFactory for persistence unit {}.", peristenceUnit);
 		try{
-//			Map properties = new HashMap();
-//			// Ensure RESOURCE_LOCAL transactions is used.
-//			properties.put(TRANSACTION_TYPE,
-//			  PersistenceUnitTransactionType.RESOURCE_LOCAL.name());
-//
-//			// Configure the internal EclipseLink connection pool
-//			properties.put(JDBC_DRIVER, "oracle.jdbc.OracleDriver");
-//			properties.put(JDBC_URL, "jdbc:oracle:thin:@localhost:1521:ORCL");
-//			properties.put(JDBC_USER, "user-name");
-//			properties.put(JDBC_PASSWORD, "password");
-//			properties.put(JDBC_READ_CONNECTIONS_MIN, "1");
-//			properties.put(JDBC_WRITE_CONNECTIONS_MIN, "1");
-//
-//			// Configure logging. FINE ensures all SQL is shown
-//			properties.put(LOGGING_LEVEL, "FINE");
-//
-//			// Ensure that no server-platform is configured
-//			properties.put(TARGET_SERVER, TargetServer.None);
-//			
-		factory = Persistence.createEntityManagerFactory(peristenceUnit);
+			factory = Persistence.createEntityManagerFactory(peristenceUnit);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -67,9 +49,25 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 	
 	
 	@Override
-	public void store(ExperimentSeriesRun experimentSeriesRun) {
-		// TODO Auto-generated method stub
+	public ExperimentSeriesRun store(ExperimentSeriesRun experimentSeriesRun) {
+		ExperimentSeriesRun storedRun;
 		
+		EntityManager em = factory.createEntityManager();
+		try {
+			
+			em.getTransaction().begin();
+			storedRun = em.merge(experimentSeriesRun);
+			em.getTransaction().commit();
+			
+			
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
+		
+		return storedRun;
 	}
 
 	@Override
@@ -113,35 +111,84 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 	@Override
 	public ExperimentSeries loadExperimentSeries(String experimentSeriesName, String scenarioInstanceName, String measurementEnvironmentUrl) throws DataNotFoundException {
 		ExperimentSeries experimentSeries;
+		String errorMsg = "Could not find experiment series for scenario instance { " 
+				+ scenarioInstanceName + ", " + measurementEnvironmentUrl + " and series name " 
+				+ experimentSeriesName + " .";
 		
 		EntityManager em = factory.createEntityManager();
 		try {
 			experimentSeries = em.find(ExperimentSeries.class, new ExperimentSeriesPK(experimentSeriesName, scenarioInstanceName, measurementEnvironmentUrl));
 		} catch (Exception e) {
-			String errorMsg = "Could not find experiment series for scenario instance { " 
-					+ scenarioInstanceName + ", " + measurementEnvironmentUrl + " and series name " 
-					+ experimentSeriesName + " .";
+			
 			logger.error(errorMsg);
 			throw new DataNotFoundException(errorMsg);
 		} finally {
 		  em.close();
 		}
 		
-		return experimentSeries;
+		// check if query was successful
+		if(experimentSeries != null){
+			return experimentSeries;
+		} else {
+			logger.debug(errorMsg);
+			throw new DataNotFoundException(errorMsg);
+		}
 	
 	}
 
 	@Override
-	public List<ExperimentSeriesRun> loadExperimentSeriesRuns(
-			String experimentSeriesId) {
-		// TODO Auto-generated method stub
-		return null;
+	public ExperimentSeriesRun loadExperimentSeriesRun(Long runId) throws DataNotFoundException {
+		ExperimentSeriesRun experimentSeriesRun;
+		EntityManager em = factory.createEntityManager();
+		String errorMsg = "Could not find experiment series run with id " + runId + " .";
+		try {
+			experimentSeriesRun = em.find(ExperimentSeriesRun.class, runId);
+		} catch (Exception e) {
+			logger.error(errorMsg);
+			throw new DataNotFoundException(errorMsg);
+		} finally {
+		  em.close();
+		}
+		
+		// check if query was successful
+		if(experimentSeriesRun != null){
+			return experimentSeriesRun;
+		} else {
+			logger.debug(errorMsg);
+			throw new DataNotFoundException(errorMsg);
+		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public List<ScenarioInstance> loadScenarioInstances(String scenarioName) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<ScenarioInstance> loadScenarioInstances(String scenarioName) throws DataNotFoundException {
+		List<ScenarioInstance> scenarioInstances;
+		String errorMsg = "Could not find a scenario instance for scenario " 
+				+ scenarioName + ".";
+		
+		EntityManager em = factory.createEntityManager();
+		try {
+			
+			Query query = em.createNamedQuery("findScenarioInstancesByName");
+			query.setParameter("name", scenarioName);
+			scenarioInstances = query.getResultList();
+			
+		} catch (Exception e) {
+			
+			logger.error(errorMsg);
+			throw new DataNotFoundException(errorMsg, e);
+		}  finally {
+		  em.close();
+		}
+		
+		// check if query was successful
+		if(scenarioInstances != null){
+			return scenarioInstances;
+		} else {
+			logger.debug(errorMsg);
+			throw new DataNotFoundException(errorMsg);
+		}
+		
 	}
 
 	@Override

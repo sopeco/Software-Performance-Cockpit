@@ -3,6 +3,8 @@
  */
 package org.sopeco.core.persistence;
 
+import java.util.List;
+
 import junit.framework.TestCase;
 
 import org.junit.Before;
@@ -11,6 +13,7 @@ import org.sopeco.model.configuration.SoPeCoModelFactoryHandler;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.PersistenceProviderFactory;
 import org.sopeco.persistence.entities.ExperimentSeries;
+import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 
@@ -53,6 +56,25 @@ public class PersistenceProviderTest extends TestCase{
 		assertTrue(dummyScenarioInstance.equals(loadedInstance));
 		checkAvailableExperimentSeries(loadedInstance);
 	}
+	
+	@Test
+	public void testLoadScenarioInstancesByName() {
+		dummyScenarioInstance = DummyFactory.createDummyScenarioInstance();
+		try{
+			provider.store(dummyScenarioInstance);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		List<ScenarioInstance> loadedInstances;
+		try {
+			loadedInstances = provider.loadScenarioInstances(dummyScenarioInstance.getName());
+		} catch (DataNotFoundException e) {
+			fail(e.getMessage());return;
+		}
+		assertNotNull(loadedInstances);
+		assertTrue(loadedInstances.size() == 1);
+		assertTrue(dummyScenarioInstance.equals(loadedInstances.get(0)));
+	}
 
 	@Test
 	public void testStoreAndLoadExperimentSeries() {
@@ -69,6 +91,25 @@ public class PersistenceProviderTest extends TestCase{
 		assertTrue(dummySeries.equals(loadedSeries));
 		assertNotNull(loadedSeries.getScenarioInstance());
 		checkAvailableExperimentSeries(loadedSeries.getScenarioInstance());
+	}
+	
+	@Test
+	public void testStoreAndLoadExperimentSeriesRun() {
+		dummyScenarioInstance = DummyFactory.createDummyScenarioInstance();
+		ExperimentSeriesRun dummySeriesRun = dummyScenarioInstance.getExperimentSeries().get(0).getExperimentSeriesRuns().get(0);
+		dummySeriesRun = provider.store(dummySeriesRun);
+		ExperimentSeriesRun loadedSeriesRun;
+		try {
+			loadedSeriesRun = provider.loadExperimentSeriesRun(dummySeriesRun.getId());
+		} catch (DataNotFoundException e) {
+			fail(e.getMessage());return;
+		}
+		assertNotNull(loadedSeriesRun);
+		assertTrue(dummySeriesRun.equals(loadedSeriesRun));
+		assertNotNull(loadedSeriesRun.getExperimentSeries());
+		assertTrue(dummySeriesRun.getExperimentSeries().equals(loadedSeriesRun.getExperimentSeries()));
+		assertNotNull(loadedSeriesRun.getExperimentSeries().getScenarioInstance());
+		checkAvailableExperimentSeriesRuns(loadedSeriesRun.getExperimentSeries());
 	}
 
 	
