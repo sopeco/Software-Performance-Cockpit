@@ -195,6 +195,7 @@ public class Configuration implements IConfiguration {
 	 */
 	private void setDefaultValues() {
 		setProperty(CONF_APP_NAME, "SoPeCo");
+		setProperty(CONF_PLUGINS_FOLDER, "plugins");
 	}
 
 	/**

@@ -21,9 +21,9 @@ public interface IExtensionRegistry {
 
 	/**
 	 * Returns an extensions object that filters in only
-	 * those extensions that support the given class (or interface).
+	 * those extensions that support the extension type.
 	 *  
-	 * @param c a class instance
+	 * @param c the extension class
 	 * @see Extensions
 	 */
 	public <E extends ISoPeCoExtension<?>> Extensions<E> getExtensions(Class<E> c);
@@ -31,9 +31,9 @@ public interface IExtensionRegistry {
 	/**
 	 * Assuming that the extension names are unique for any category of SoPeCo 
 	 * extensions, this method returns an extension artifact from the extension identified by
-	 * the interface class and the given name.
+	 * the extension type.
 	 * 
-	 * @param c a class instance
+	 * @param c the extension class
 	 * @param name name of the extension
 	 * @return an extension artifact produced by the extension
 	 */
