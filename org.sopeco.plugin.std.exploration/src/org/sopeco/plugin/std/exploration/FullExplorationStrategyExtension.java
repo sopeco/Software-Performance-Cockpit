@@ -16,7 +16,7 @@ public class FullExplorationStrategyExtension implements IExplorationStrategyExt
 
 	public static final String NAME = "Full Exploration Strategy";
 	
-	protected FullExplorationStrategyExtension() {}
+	public FullExplorationStrategyExtension() {}
 
 	@Override
 	public String getName() {

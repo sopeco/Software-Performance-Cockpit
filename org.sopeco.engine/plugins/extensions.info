@@ -1,0 +1,2 @@
+org.sopeco.plugin.std.exploration.FullExplorationStrategyExtension
+org.sopeco.plugin.std.parametervariation.LinearNumericVariationExtension

@@ -11,7 +11,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
+
+import org.apache.tools.ant.DirectoryScanner;
 
 /**
  * A collection of auxiliary helper methods.
@@ -70,30 +74,22 @@ public class Tools {
 	}
 
 	/**
-	 * Reads and returns the last line of the given file.
+	 * Reads the lines of the given file.
 	 * 
 	 */
-	public static String readLastLine(String fileName) {
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));
-			
-			String line = "";
-			String output = null;
-			
-			do {
-				output = line;
-				line = reader.readLine();
-			} while (line != null);
-			
-			return output;
-			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public static List<String> readLines(String fileName) throws IOException {
+		List<String> result = new ArrayList<String>();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));
 		
-		return "";
+		String line = "";
+		
+		do {
+			line = reader.readLine();
+			if (line != null)
+				result.add(line);
+		} while (line != null);
+		
+		return result;
 	}
 
 //	/**
@@ -196,4 +192,24 @@ public class Tools {
 	public static boolean isClassName(String name, Class<?> c) {
 		return strEqualName(name, c.getSimpleName());
 	}
+
+	/**
+	 * Returns a list of files that their names match the given pattern.
+	 * 
+	 * @param pattern filename pattern
+	 * @return array of file names
+	 */
+	public static String[] getFileNames(String baseDir, String pattern) {
+		DirectoryScanner scanner = new DirectoryScanner();
+		scanner.setIncludes(new String[]{pattern});
+		scanner.setBasedir(baseDir);
+		scanner.setCaseSensitive(false);
+		scanner.scan();
+		final String[] result = scanner.getIncludedFiles();
+		if (result == null)
+			return new String[] {};
+		else
+			return result;
+	}
+
 }
