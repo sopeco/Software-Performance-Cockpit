@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<persistence xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
+	<persistence-unit name="sopeco" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<class>org.sopeco.persistence.entities.ScenarioInstance</class>
+		<class>org.sopeco.persistence.entities.ExperimentSeries</class>
+		<class>org.sopeco.persistence.entities.ExperimentSeriesRun</class>
+		<properties>
+			
+			<property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:derby:memory:sopeco-jpa;create=true" />
+			<property name="javax.persistence.jdbc.user" value="test" />
+			<property name="javax.persistence.jdbc.password" value="test" />
+
+			<property name="eclipselink.target-database" value="Derby"/>  
+			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /> 
+			
+					
+			<!--	
+			  <property name="eclipselink.target-database" value="Derby"/>            
+		      <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
+		      <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost/sopeco-jpa;create=true"/>
+		      <property name="javax.persistence.jdbc.user" value="test"/>
+		      <property name="javax.persistence.jdbc.password" value="test"/>
+		      <property name="eclipselink.logging.level" value="ALL"/>            
+		      <property name="eclipselink.ddl-generation" value="drop-and-create-tables"/>
+		      <property name="eclipselink.ddl-generation.output-mode" value="database"/>
+			-->
+		</properties>
+
+	</persistence-unit>
+</persistence>
+

@@ -21,7 +21,7 @@ public class SampleStarter {
 		Query q = em.createQuery("Select t from ScenarioInstance t");
 		List<ScenarioInstance> scenarioInstances = q.getResultList();
 		for (ScenarioInstance scenario : scenarioInstances) {
-			System.out.println(scenario.getId());
+//			System.out.println(scenario.getId());
 		}
 		System.out.println("Size: " + scenarioInstances.size());
 

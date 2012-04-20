@@ -3,16 +3,25 @@ Bundle-ManifestVersion: 2
 Bundle-Name: org.sopeco.persistence
 Bundle-SymbolicName: org.sopeco.persistence
 Bundle-Version: 0.2.0.qualifier
+Meta-Persistence: 
 JPA-PersistenceUnits: sopeco
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ META-INF/
 Import-Package: javax.persistence;version="2.0.1",
  junit.framework,
  org.junit;version="4.8.2"
-Require-Bundle: org.sopeco.model;bundle-version="0.2.0"
 Export-Package: org.sopeco.core.persistence,
  org.sopeco.persistence,
  org.sopeco.persistence.dataset,
  org.sopeco.persistence.dataset.util,
  org.sopeco.persistence.entities
+Require-Bundle: org.sopeco.model;bundle-version="0.2.0",
+ org.sopeco.orbit.logging;bundle-version="1.0.0",
+ org.eclipse.persistence.jpa;bundle-version="2.1.2",
+ org.eclipse.persistence.sdo;bundle-version="2.1.2",
+ org.eclipse.persistence.asm;bundle-version="2.1.2",
+ org.eclipse.persistence.moxy;bundle-version="2.1.2",
+ org.apache.derby;bundle-version="1.0.0",
+ org.eclipse.persistence.antlr;bundle-version="2.1.2"
