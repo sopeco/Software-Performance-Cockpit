@@ -22,6 +22,7 @@
 		<module>../org.sopeco.core.feature</module>
 		<module>../org.sopeco.core.updatesite</module>
 		<module>../org.sopeco.core</module>
+		<module>../org.sopeco.core.test</module>
 		<module>../org.sopeco.persistence</module>
 		<module>../org.sopeco.engine</module>
 		<module>../org.sopeco.model</module>
