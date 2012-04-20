@@ -14,6 +14,6 @@ public interface ISoPeCoExtensionArtifact {
 	/**
 	 * Returns the provider of this extension artifact.
 	 */
-	public ISoPeCoExtension getProvider();
+	public ISoPeCoExtension<?> getProvider();
 
 }
