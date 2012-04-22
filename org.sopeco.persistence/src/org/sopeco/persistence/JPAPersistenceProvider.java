@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 import javax.persistence.Query;
 
 import org.slf4j.Logger;
@@ -26,7 +25,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 
 	
 	
-	private static EntityManagerFactory factory;
+	private static EntityManagerFactory emf;
 	
 	private static Logger logger = LoggerFactory.getLogger(JPAPersistenceProvider.class);
 	
@@ -36,22 +35,19 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 	 * 
 	 * @param peristenceUnit - the name of the persistence unit that should be used by the provider
 	 */
-	protected JPAPersistenceProvider(String peristenceUnit){
+	protected JPAPersistenceProvider(EntityManagerFactory factory){
 		 
-		logger.debug("Create EntityManagerFactory for persistence unit {}.", peristenceUnit);
-		try{
-			factory = Persistence.createEntityManagerFactory(peristenceUnit);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		emf = factory;
 		
 	}
+	
+	
 	
 	
 	@Override
 	public void store(ExperimentSeriesRun experimentSeriesRun) {
 		
-		EntityManager em = factory.createEntityManager();
+		EntityManager em = emf.createEntityManager();
 		try {
 			
 			em.getTransaction().begin();
@@ -70,7 +66,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 
 	@Override
 	public void store(ExperimentSeries experimentSeries) {
-		EntityManager em = factory.createEntityManager();
+		EntityManager em = emf.createEntityManager();
 		try {
 			
 			em.getTransaction().begin();
@@ -90,7 +86,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 
 	@Override
 	public void store(ScenarioInstance scenarioInstance) {
-		EntityManager em = factory.createEntityManager();
+		EntityManager em = emf.createEntityManager();
 		try {
 			
 			em.getTransaction().begin();
@@ -108,7 +104,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 	
 	/* default */ int getSize(final Class<?> entityType) {
 		int result;
-		EntityManager em = factory.createEntityManager();
+		EntityManager em = emf.createEntityManager();
 		try {
 			Query query = em.createQuery("SELECT es FROM " + entityType.getSimpleName() + " es");
 			@SuppressWarnings("unchecked")
@@ -122,7 +118,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 	}
 	
 	/* default */void disposeAll() {
-		EntityManager em = factory.createEntityManager();
+		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
 		try {
 			em.createQuery("DELETE FROM " + ExperimentSeriesRun.class.getSimpleName()).executeUpdate();
@@ -144,7 +140,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 				+ scenarioInstanceName + ", " + measurementEnvironmentUrl + " and series name " 
 				+ experimentSeriesName + " .";
 		
-		EntityManager em = factory.createEntityManager();
+		EntityManager em = emf.createEntityManager();
 		try {
 //			em.getTransaction().begin();
 
@@ -179,7 +175,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 	@Override
 	public ExperimentSeriesRun loadExperimentSeriesRun(Long timestamp) throws DataNotFoundException {
 		ExperimentSeriesRun experimentSeriesRun;
-		EntityManager em = factory.createEntityManager();
+		EntityManager em = emf.createEntityManager();
 		String errorMsg = "Could not find experiment series run with id " + timestamp + " .";
 		try {
 //			em.getTransaction().begin();
@@ -211,7 +207,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 		String errorMsg = "Could not find a scenario instance for scenario " 
 				+ scenarioName + ".";
 		
-		EntityManager em = factory.createEntityManager();
+		EntityManager em = emf.createEntityManager();
 		
 		try {
 //			em.getTransaction().begin();
@@ -257,7 +253,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 				+ scenarioName + " and measurement environment URL" 
 				+ measurementEnvironmentUrl + " .";
 		
-		EntityManager em = factory.createEntityManager();
+		EntityManager em = emf.createEntityManager();
 		try {
 //			em.getTransaction().begin();
 			
@@ -292,7 +288,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 		
 		String errorMsg = "Could not remove experiment series run " + experimentSeriesRun.toString();
 		
-		EntityManager em = factory.createEntityManager();
+		EntityManager em = emf.createEntityManager();
 		try {
 			
 			em.getTransaction().begin();
@@ -324,7 +320,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 	public void remove(ExperimentSeries experimentSeries) throws DataNotFoundException{
 		String errorMsg = "Could not remove experiment series " + experimentSeries.toString();
 		
-		EntityManager em = factory.createEntityManager();
+		EntityManager em = emf.createEntityManager();
 		try {
 			
 			em.getTransaction().begin();
@@ -354,7 +350,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 		
 		String errorMsg = "Could not remove scenario instance " + scenarioInstance.toString();
 		
-		EntityManager em = factory.createEntityManager();
+		EntityManager em = emf.createEntityManager();
 		try {
 			
 			em.getTransaction().begin();

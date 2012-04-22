@@ -16,12 +16,16 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.sopeco.model.configuration.SoPeCoModelFactoryHandler;
+import org.sopeco.persistence.config.DBType;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
+
 /**
+ * Test class for the {@link IPersistenceProvider} interface.
+ * 
  * @author Dennis Westermann
  *
  */
@@ -29,14 +33,16 @@ public class PersistenceProviderTest {
 
 	static JPAPersistenceProvider provider;
 	static ScenarioInstance dummyScenarioInstance;
-	
+	 
 	@BeforeClass
 	public static void init() throws Exception {
 
 		SoPeCoModelFactoryHandler.initFactories();
+		PersistenceProviderFactory.DB_TYPE_VALUE = DBType.SERVER;
 		provider = (JPAPersistenceProvider) PersistenceProviderFactory.getPersistenceProvider();
 		dummyScenarioInstance = DummyFactory.createDummyScenarioInstance();
 	}
+   
 	
 	@Before
 	public void setUp() {
