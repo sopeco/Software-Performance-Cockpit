@@ -2,11 +2,9 @@ package org.sopeco.persistence;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.eclipse.emf.ecore.InternalEObject;
 import org.eclipse.emf.ecore.util.EcoreEMap;
 import org.sopeco.model.configuration.analysis.AnalysisConfiguration;
 import org.sopeco.model.configuration.analysis.AnalysisFactory;
@@ -23,6 +21,8 @@ import org.sopeco.model.configuration.measurements.impl.ConfigurationNodeImpl;
 import org.sopeco.model.configuration.measurements.impl.ExtensibleElementImpl;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetColumnBuilder;
+import org.sopeco.persistence.dataset.DataSetModifier;
+import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
@@ -76,12 +76,12 @@ public class DummyFactory {
 
 	public static DataSetAggregated createDummyResultDataSet() {
 		DataSetColumnBuilder builder = new DataSetColumnBuilder();
-		builder.startInputColumn(createDummyInputParameterDefinition());
+		builder.startInputColumn(createDummyInputParameterDefinition("DummyInput"));
 		builder.addInputValue(1);
 		builder.addInputValue(2);
 		builder.finishColumn();
 		
-		builder.startObservationColumn(createDummyObservationParameterDefinition());
+		builder.startObservationColumn(createDummyObservationParameterDefinition("DummyOutput"));
 		ArrayList<Object> obsValues1 = new ArrayList<Object>();
 		obsValues1.add(10);
 		obsValues1.add(10);
@@ -95,18 +95,30 @@ public class DummyFactory {
 		return builder.createDataSet();
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static void addDummyObservationColumn(DataSetAggregated dataset){
+		DataSetModifier modifier = new DataSetModifier(dataset);
+		ArrayList<Object> obsValuesAdded = new ArrayList<Object>();
+		obsValuesAdded.add(30);
+		obsValuesAdded.add(30);
+		ParameterDefinition paramDef = createDummyObservationParameterDefinition("DummyOutputAdded");
+		List<ParameterValueList<?>> listOfValueLists = new ArrayList<ParameterValueList<?>>();
+		listOfValueLists.add(new ParameterValueList(paramDef,obsValuesAdded));
+		modifier.addObservationColumn(paramDef, listOfValueLists);
+		
+	}
 
-	public static ParameterDefinition createDummyInputParameterDefinition() {
+	public static ParameterDefinition createDummyInputParameterDefinition(String name) {
 		ParameterDefinition paramDef = EnvironmentFactory.eINSTANCE.createParameterDefinition();
-		paramDef.setName("DummyInput");
+		paramDef.setName(name);
 		paramDef.setRole(ParameterRole.INPUT);
 		paramDef.setType("INTEGER");
 		return paramDef;
 	}
 	
-	public static ParameterDefinition createDummyObservationParameterDefinition() {
+	public static ParameterDefinition createDummyObservationParameterDefinition(String name) {
 		ParameterDefinition paramDef = EnvironmentFactory.eINSTANCE.createParameterDefinition();
-		paramDef.setName("DummyOutput");
+		paramDef.setName(name);
 		paramDef.setRole(ParameterRole.OBSERVATION);
 		paramDef.setType("INTEGER");
 		return paramDef;
@@ -149,6 +161,7 @@ public class DummyFactory {
 	public static Collection<? extends Entry<String, String>> createDummyConfigurationMap() {
 		
 		EcoreEMap<String,String> emap = new EcoreEMap<String,String>(MeasurementsPackage.Literals.CONFIGURATION_NODE, ConfigurationNodeImpl.class, new ExtensibleElementImpl() {
+			private static final long serialVersionUID = 1L;
 		} , MeasurementsPackage.EXTENSIBLE_ELEMENT__CONFIGURATION);
 		emap.put("Dummy", "Dummy");
 		return emap.entrySet();

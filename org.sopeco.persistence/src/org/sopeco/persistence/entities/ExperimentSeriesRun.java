@@ -11,6 +11,7 @@ import javax.persistence.JoinColumns;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.Version;
 
 import org.sopeco.persistence.dataset.DataSetAggregated;
 
@@ -22,9 +23,11 @@ import org.sopeco.persistence.dataset.DataSetAggregated;
 public class ExperimentSeriesRun implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	@SuppressWarnings("unused")
+	@Version private long version;
 	
-	
-	public ExperimentSeriesRun(){
+	@SuppressWarnings("unused")
+	private ExperimentSeriesRun(){
 		super();
 	}
 	
@@ -45,12 +48,12 @@ public class ExperimentSeriesRun implements Serializable {
 	@Column(name = "restultDataSet")
 	private DataSetAggregated resultDataSet;
 	
-	@ManyToOne(cascade=CascadeType.ALL, optional=false)
-//	@JoinColumns({
-//	    @JoinColumn(name="scenarioInstanceName", referencedColumnName = "scenarioInstanceName"),
-//	    @JoinColumn(name="measurementEnvironmentUrl", referencedColumnName = "measurementEnvironmentUrl"),
-//	    @JoinColumn(name="experimentSeriesName", referencedColumnName = "name")
-//	})
+	@ManyToOne(cascade={CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REFRESH})
+	@JoinColumns({
+	    @JoinColumn(name="scenarioInstanceName", referencedColumnName = "scenarioInstanceName"),
+	    @JoinColumn(name="measurementEnvironmentUrl", referencedColumnName = "measurementEnvironmentUrl"),
+	    @JoinColumn(name="experimentSeriesName", referencedColumnName = "name")
+	})
 	private ExperimentSeries experimentSeries;
 	
 
@@ -95,7 +98,7 @@ public class ExperimentSeriesRun implements Serializable {
 
 		 ExperimentSeriesRun obj = (ExperimentSeriesRun) o;
 		 if (timestamp == null || obj.timestamp == null) return false;
-		 if(timestamp != obj.timestamp) return false;
+		 if(!timestamp.equals(obj.timestamp)) return false;
 
 		 return true;
 

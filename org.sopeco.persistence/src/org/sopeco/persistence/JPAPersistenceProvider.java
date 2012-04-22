@@ -6,7 +6,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
-import javax.persistence.metamodel.EntityType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,14 +96,6 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 			em.getTransaction().begin();
 			em.merge(scenarioInstance);
 			em.getTransaction().commit();
-			
-			Query query = em.createNamedQuery("findAllExperimentSeriesRuns");
-			List<ExperimentSeriesRun> remainingRuns = query.getResultList();
-			logger.debug("Remaining runs: " + remainingRuns.size());
-			
-			query = em.createQuery("SELECT es FROM ExperimentSeries es");
-			List<ExperimentSeries> series = query.getResultList();
-			logger.debug("Remaining runs: " + series.size());
 		
 		} finally {
 			if (em.getTransaction().isActive()) {
@@ -120,6 +111,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 		EntityManager em = factory.createEntityManager();
 		try {
 			Query query = em.createQuery("SELECT es FROM " + entityType.getSimpleName() + " es");
+			@SuppressWarnings("unchecked")
 			List<ExperimentSeries> series = query.getResultList();
 			result = series.size();
 			return result;
@@ -154,13 +146,19 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 		
 		EntityManager em = factory.createEntityManager();
 		try {
+//			em.getTransaction().begin();
+
 			experimentSeries = em.find(ExperimentSeries.class, new ExperimentSeriesPK(experimentSeriesName, scenarioInstanceName, measurementEnvironmentUrl));
+//			em.getTransaction().commit();
 		} catch (Exception e) {
 			
 			logger.error(errorMsg);
 			throw new DataNotFoundException(errorMsg);
 		} finally {
-		  em.close();
+//			if (em.getTransaction().isActive()) {
+//				em.getTransaction().rollback();
+//			}
+			em.close();
 		}
 		
 		// check if query was successful
@@ -172,19 +170,29 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 		}
 	
 	}
+	
+	@Override
+	public ExperimentSeries loadExperimentSeries(ExperimentSeriesPK primaryKey) throws DataNotFoundException {
+		return loadExperimentSeries(primaryKey.getName(), primaryKey.getScenarioInstanceName(), primaryKey.getMeasurementEnvironmentUrl());
+	}
 
 	@Override
-	public ExperimentSeriesRun loadExperimentSeriesRun(Long runId) throws DataNotFoundException {
+	public ExperimentSeriesRun loadExperimentSeriesRun(Long timestamp) throws DataNotFoundException {
 		ExperimentSeriesRun experimentSeriesRun;
 		EntityManager em = factory.createEntityManager();
-		String errorMsg = "Could not find experiment series run with id " + runId + " .";
+		String errorMsg = "Could not find experiment series run with id " + timestamp + " .";
 		try {
-			experimentSeriesRun = em.find(ExperimentSeriesRun.class, runId);
+//			em.getTransaction().begin();
+			experimentSeriesRun = em.find(ExperimentSeriesRun.class, timestamp);
+//			em.getTransaction().commit();
 		} catch (Exception e) {
 			logger.error(errorMsg);
 			throw new DataNotFoundException(errorMsg);
 		} finally {
-		  em.close();
+//			if (em.getTransaction().isActive()) {
+//				em.getTransaction().rollback();
+//			}
+			em.close();
 		}
 		
 		// check if query was successful
@@ -204,18 +212,25 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 				+ scenarioName + ".";
 		
 		EntityManager em = factory.createEntityManager();
+		
 		try {
+//			em.getTransaction().begin();
+//			em.getEntityManagerFactory().getCache().evictAll(); // clear cache
 			
 			Query query = em.createNamedQuery("findScenarioInstancesByName");
 			query.setParameter("name", scenarioName);
 			scenarioInstances = query.getResultList();
 			
+//			em.getTransaction().commit();
 		} catch (Exception e) {
 			
 			logger.error(errorMsg);
 			throw new DataNotFoundException(errorMsg, e);
 		}  finally {
-		  em.close();
+//			if (em.getTransaction().isActive()) {
+//				em.getTransaction().rollback();
+//			}
+			em.close();
 		}
 		
 		// check if query was successful
@@ -226,6 +241,11 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 			throw new DataNotFoundException(errorMsg);
 		}
 		
+	}
+	
+	@Override
+	public ScenarioInstance loadScenarioInstance(ScenarioInstancePK primaryKey) throws DataNotFoundException {
+		return loadScenarioInstance(primaryKey.getName(), primaryKey.getMeasurementEnvironmentUrl());
 	}
 
 	@Override
@@ -239,15 +259,21 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 		
 		EntityManager em = factory.createEntityManager();
 		try {
+//			em.getTransaction().begin();
 			
 			scenarioInstance = em.find(ScenarioInstance.class, new ScenarioInstancePK(scenarioName, measurementEnvironmentUrl));
+
+//			em.getTransaction().commit();
 
 		} catch (Exception e) {
 			
 			logger.error(errorMsg);
 			throw new DataNotFoundException(errorMsg, e);
 		}  finally {
-		  em.close();
+//			if (em.getTransaction().isActive()) {
+//				em.getTransaction().rollback();
+//			}
+			em.close();
 		}
 		
 		// check if query was successful
@@ -270,8 +296,12 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 		try {
 			
 			em.getTransaction().begin();
+			
+			// load entity to make it "managed"
 			experimentSeriesRun = em.find(ExperimentSeriesRun.class, experimentSeriesRun.getPrimaryKey());
+			
 			em.remove(experimentSeriesRun);
+			
 			em.getTransaction().commit();
 		
 		} catch(Exception e){
@@ -298,7 +328,10 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 		try {
 			
 			em.getTransaction().begin();
+			
+			// load entity to make it "managed"
 			experimentSeries = em.find(ExperimentSeries.class, experimentSeries.getPrimaryKey());
+			
 			em.remove(experimentSeries);
 			em.getTransaction().commit();
 		} catch(Exception e){
@@ -326,19 +359,11 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 			
 			em.getTransaction().begin();
 			
-			Query query = em.createNamedQuery("findAllExperimentSeriesRuns");
-			List<ExperimentSeriesRun> remainingRuns = query.getResultList();
-			logger.debug("Remaining runs: " + remainingRuns.size());
-			logger.error(errorMsg);
+			// load entity to make it "managed"
 			scenarioInstance = em.find(ScenarioInstance.class, scenarioInstance.getPrimaryKey());
-			removeAllSeries(scenarioInstance, em);
 			
-
-			 query = em.createNamedQuery("findAllExperimentSeriesRuns");
-			 remainingRuns = query.getResultList();
-			logger.debug("Remaining runs: " + remainingRuns.size());
 			em.remove(scenarioInstance);
-			logger.debug("Remove scenario");
+
 			em.getTransaction().commit();
 		} catch(Exception e){
 			
@@ -353,20 +378,20 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 		
 	}
 	
-	private void removeAllSeries(ScenarioInstance scenarioInstance, EntityManager em){
-		for(ExperimentSeries series : scenarioInstance.getExperimentSeries()){
-			removeAllRuns(series, em);
-			logger.debug("Remove Series");
-			em.remove(series);
-		}
-	}
-	
-	private void removeAllRuns(ExperimentSeries experimentSeries, EntityManager em){
-		for(ExperimentSeriesRun run : experimentSeries.getExperimentSeriesRuns()){
-			logger.debug("Remove Run");
-			em.remove(run);
-		}
-	}
+//	private void removeAllSeries(ScenarioInstance scenarioInstance, EntityManager em){
+//		for(ExperimentSeries series : scenarioInstance.getExperimentSeries()){
+//			removeAllRuns(series, em);
+//			logger.debug("Remove Series");
+//			em.remove(series);
+//		}
+//	}
+//	
+//	private void removeAllRuns(ExperimentSeries experimentSeries, EntityManager em){
+//		for(ExperimentSeriesRun run : experimentSeries.getExperimentSeriesRuns()){
+//			logger.debug("Remove Run");
+//			em.remove(run);
+//		}
+//	}
 	
 
 }
