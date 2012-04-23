@@ -109,6 +109,8 @@ public class Configuration implements IConfiguration {
 										.hasArg()
 										.withDescription("the logback configuration file")
 										.create("logconfig");
+
+		// TODO URI!
 		
 //		Option selectedSeries = OptionBuilder.withArgName("series")
 //										.withValueSeparator(',')

@@ -15,6 +15,13 @@ import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentControlle
 public class MEConnector {
 	private static Logger logger = LoggerFactory.getLogger(MEConnector.class);
 	
+	/**
+	 * Connects to a remote measurement environment controller (via RMI) identified by the given URI and
+	 * returns a local instance. 
+	 * 
+	 * @param uri the URI of the RMI service
+	 * @return a local instance of the controller
+	 */
 	public static IMeasurementEnvironmentController getMeasurementEnvironmentController(URI uri){
 
 		// set path to java policy file TODO: Read path from Config-File

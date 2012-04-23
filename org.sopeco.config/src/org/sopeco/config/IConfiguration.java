@@ -13,6 +13,7 @@ public interface IConfiguration {
 
 	public static final String CONF_LOGGER_CONFIG_FILE_NAME = "sopeco.config.loggerConfigFileName";
 	public static final String CONF_MEASUREMENT_SPEC_FILE_NAME = "sopeco.config.measurementSpecFileName";
+	public static final String CONF_MEASUREMENT_CONTROLLER_URI = "sopeco.config.measurementControllerURI";
 	public static final String CONF_APP_NAME = "sopeco.config.applicationName";
 	
 	public static final String CONF_PLUGINS_FOLDER = "sopeco.config.plugins";

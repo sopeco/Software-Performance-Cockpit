@@ -29,6 +29,8 @@ public class ExperimentController implements IExperimentController {
 		if (terminationCondition == null)
 			throw new IllegalArgumentException("TerminationCondition must be set (not null).");
 		
+		// TODO append the new row to the already-persisted data
+		
 		return meController.runExperiment(inputPVList, terminationCondition);
 	}
 

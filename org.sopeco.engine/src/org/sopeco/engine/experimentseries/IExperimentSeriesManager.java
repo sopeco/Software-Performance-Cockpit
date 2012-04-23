@@ -1,6 +1,7 @@
 package org.sopeco.engine.experimentseries;
 
 import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
+import org.sopeco.persistence.entities.ExperimentSeries;
 
 /**
  * The ExperimentSeriesManager manages the execution of any single experiment
@@ -18,6 +19,6 @@ public interface IExperimentSeriesManager {
 
 	public boolean canRun(ExperimentSeriesDefinition expSeries);
 
-	public void runExperimentSeries(ExperimentSeriesDefinition expSeries);
+	public void runExperimentSeries(ExperimentSeries expSeries);
 
 }

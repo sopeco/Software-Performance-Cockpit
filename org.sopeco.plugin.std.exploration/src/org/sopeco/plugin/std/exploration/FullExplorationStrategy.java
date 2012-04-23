@@ -10,10 +10,12 @@ import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.experimentseries.IExplorationStrategy;
 import org.sopeco.engine.experimentseries.IParameterVariation;
 import org.sopeco.engine.registry.AbstractSoPeCoExtensionArtifact;
+import org.sopeco.engine.registry.IExtensionRegistry;
 import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
 import org.sopeco.model.configuration.measurements.ExperimentTerminationCondition;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.dataset.ParameterValue;
+import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.util.Tools;
 
 /**
@@ -39,12 +41,9 @@ public class FullExplorationStrategy extends AbstractSoPeCoExtensionArtifact imp
 	private List<ParameterValue<?>> parameterValues = new ArrayList<ParameterValue<?>>();
 	/** The index of the parameter to be varied. **/
 	private int index = 0;
-	/** Tells if all possible combinations have been tested. **/
-	private boolean explorationComplete = false;
 
 	private static Logger logger = LoggerFactory.getLogger(FullExplorationStrategy.class);
 	
-	private IPersistenceProvider persistenceProvider = null;
 	private IExperimentController expController = null;
 
 	protected FullExplorationStrategy(FullExplorationStrategyExtension provider) {
@@ -53,7 +52,7 @@ public class FullExplorationStrategy extends AbstractSoPeCoExtensionArtifact imp
 	
 	@Override
 	public void setPersistenceProvider(IPersistenceProvider persistenceProvider) {
-		this.persistenceProvider = persistenceProvider;
+		// don't need it
 	}
 
 	@Override
@@ -67,9 +66,9 @@ public class FullExplorationStrategy extends AbstractSoPeCoExtensionArtifact imp
 	}
 
 	@Override
-	public void runExperimentSeries(ExperimentSeriesDefinition expSeries, List<IParameterVariation> parameterVariations, ExperimentTerminationCondition terminationCondition) {
+	public void runExperimentSeries(ExperimentSeries expSeries, List<IParameterVariation> parameterVariations) {
 		initialiseExplorationStrategy(parameterVariations);
-		executeExperimentSeries(terminationCondition);
+		executeExperimentSeries(expSeries.getExperimentSeriesDefinition().getExperimentTerminationCondition());
 	}
 
 	public List<ParameterValue<?>> getCurrentParameterValues() {
@@ -95,7 +94,6 @@ public class FullExplorationStrategy extends AbstractSoPeCoExtensionArtifact imp
 			parameterValues.add(parameterValueAssignment);
 		}
 		
-		expController.initialize(parameterValues);
 	}
 
 	private void executeExperimentSeries(ExperimentTerminationCondition terminationCondition) {
@@ -114,7 +112,6 @@ public class FullExplorationStrategy extends AbstractSoPeCoExtensionArtifact imp
 			inputParameterValues = getNextParameterValues();
 		}
 		
-		expController.finalizeExperimentSeries();
 	}
 
 	
@@ -122,12 +119,6 @@ public class FullExplorationStrategy extends AbstractSoPeCoExtensionArtifact imp
 	 * Calculate and return the next list of ParameterValueAssignments.
 	 */
 	private List<ParameterValue<?>> getNextParameterValues() {
-		
-		// Check if all possible combinations have been tested:
-		// FIXME Where does this value change?
-		if (explorationComplete) {
-			return null;
-		}
 		
 		// Vary the next parameter
 		index = 0;
@@ -145,6 +136,11 @@ public class FullExplorationStrategy extends AbstractSoPeCoExtensionArtifact imp
 			}
 		}
 		return null;
+	}
+
+	@Override
+	public void setExtensionRegistry(IExtensionRegistry registry) {
+		// don't need it
 	}
 
 

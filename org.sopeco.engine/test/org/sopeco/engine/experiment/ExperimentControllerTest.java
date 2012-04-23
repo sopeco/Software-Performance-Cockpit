@@ -5,9 +5,11 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.sopeco.engine.EngineFactory;
+import org.sopeco.engine.experiment.impl.ExperimentController;
 import org.sopeco.engine.helper.ConfigurationBuilder;
 import org.sopeco.engine.helper.DummyDataSet;
 import org.sopeco.engine.helper.DummyMEController;
+import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
 import org.sopeco.model.configuration.environment.ParameterRole;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.util.ParameterType;
@@ -24,9 +26,15 @@ public class ExperimentControllerTest {
 	@Before
 	public void before(){
 		meController = new DummyMEController();
-		expController = EngineFactory.INSTANCE.createExperimentController(meController);
+		expController = createExperimentController(meController);
 	}
 	
+	protected IExperimentController createExperimentController(IMeasurementEnvironmentController meController) {
+		ExperimentController expController = new ExperimentController();
+		expController.setMeasurementEnvironment(meController);
+		return expController;
+	}
+
 	@Test 
 	public void create(){
 		assertNotNull(expController);
