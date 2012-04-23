@@ -109,7 +109,6 @@ public class FullExplorationStrategy extends AbstractSoPeCoExtensionArtifact imp
 			
 			logger.debug("Executing experiment run {}.", count++);
 			
-			// TODO: take care of persistency
 			expController.runExperiment(parameterValues, terminationCondition);
 			
 			inputParameterValues = getNextParameterValues();
