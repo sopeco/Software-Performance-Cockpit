@@ -16,7 +16,7 @@ public interface IConfiguration {
 	public static final String CONF_MEASUREMENT_CONTROLLER_URI = "sopeco.config.measurementControllerURI";
 	public static final String CONF_APP_NAME = "sopeco.config.applicationName";
 	
-	public static final String CONF_PLUGINS_FOLDER = "sopeco.config.plugins";
+	public static final String CONF_PLUGINS_FOLDER = "sopeco.config.pluginsFolder";
 
 	public static final String CLA_EXTENSION_ID = "org.sopeco.config.commandlinearguments";
 

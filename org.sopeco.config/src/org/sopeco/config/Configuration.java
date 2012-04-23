@@ -3,6 +3,7 @@ package org.sopeco.config;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -39,6 +40,8 @@ import ch.qos.logback.core.joran.spi.JoranException;
  */
 public class Configuration implements IConfiguration {
 
+	public static final String DEFAULT_CONFIG_FILE_NAME = "/sopeco-defaults.conf";
+	
 	private static final Logger logger = LoggerFactory.getLogger(Configuration.class);
 
 	/** Holds the singleton reference to this class. */
@@ -110,7 +113,11 @@ public class Configuration implements IConfiguration {
 										.withDescription("the logback configuration file")
 										.create("logconfig");
 
-		// TODO URI!
+		// option: URI
+		Option uri = OptionBuilder.withArgName("URI")
+										.hasArg()
+										.withDescription("URI of the measurement controller service")
+										.create("uri");
 		
 //		Option selectedSeries = OptionBuilder.withArgName("series")
 //										.withValueSeparator(',')
@@ -120,6 +127,7 @@ public class Configuration implements IConfiguration {
 		
 		options.addOption(help);
 		options.addOption(config);
+		options.addOption(uri);
 		options.addOption(logconfig);
 
 		/* Adding all extension options */
@@ -156,6 +164,12 @@ public class Configuration implements IConfiguration {
 	    if (line.hasOption(config.getOpt())) {
 	    	final String configFilePath = line.getOptionValue(config.getOpt());
 	    	loadConfigFromFile(configFilePath);
+	    }
+	    
+	    // -uri
+	    if (line.hasOption(uri.getOpt())) {
+	    	final String uriStr = line.getOptionValue(uri.getOpt());
+	    	setProperty(CONF_MEASUREMENT_CONTROLLER_URI, uri);
 	    }
 	    
 	    // -logconfig
@@ -198,6 +212,15 @@ public class Configuration implements IConfiguration {
 	private void setDefaultValues() {
 		setProperty(CONF_APP_NAME, "SoPeCo");
 		setProperty(CONF_PLUGINS_FOLDER, "plugins");
+		
+		InputStream in = this.getClass().getResourceAsStream(DEFAULT_CONFIG_FILE_NAME);
+		
+		if (in != null) {
+			loadConfigFromStream(in);
+			logger.debug("Loaded default configuration file.");
+		} else {
+			logger.warn("Could not find default configuration file ('{}').", DEFAULT_CONFIG_FILE_NAME);
+		}
 	}
 
 	/**
@@ -218,18 +241,31 @@ public class Configuration implements IConfiguration {
 	private void loadConfigFromFile(String fileName) {
 		logger.debug("Loading configuration from {}...", fileName);
 		
-		Properties prop = new Properties();
 		try {
-			prop.load(new FileInputStream(fileName));
+			loadConfigFromStream(new FileInputStream(fileName));
 		} catch (FileNotFoundException e) {
 			logger.error("Could not load configuration from file. File not found.");
+			return;
+		}
+		
+		logger.debug("Configuration file loaded.");
+	}
+	
+	/**
+	 * Loads SoPeCo configuration from a config stream.
+	 * 
+	 * @param stream the input stream
+	 */
+	private void loadConfigFromStream(InputStream stream) {
+		Properties prop = new Properties();
+		try {
+			prop.load(stream);
 		} catch (IOException e) {
-			logger.error("Could not load configuration from file. (Reason: {})", e.getMessage());
+			logger.error("Could not load configuration. (Reason: {})", e.getMessage());
+			return;
 		}
 		for (Entry<Object, Object> entry : prop.entrySet())
 			properties.put((String)entry.getKey(), entry.getValue());
-		
-		logger.debug("Configuration file loaded.");
 	}
 	
 	/**
@@ -263,7 +299,9 @@ public class Configuration implements IConfiguration {
 		}
 		return extensions;
 	}
+
 }
+
 
 
 
