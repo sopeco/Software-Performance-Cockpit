@@ -26,7 +26,8 @@ public class SoPeCoExecutableTest {
 		IConfiguration config = Configuration.getSingleton();
 		
 		String[] testArgs = new String[] {
-				"rsc/test.configuration"
+//				"rsc/test.configuration"
+				"-help"
 		};
 		
 		config.processCommandLineArguments(testArgs);
@@ -39,11 +40,11 @@ public class SoPeCoExecutableTest {
 			e.printStackTrace();
 		}
 		
-		IEngine engine = EngineFactory.INSTANCE.createEngine();
+		// IEngine engine = EngineFactory.INSTANCE.createEngine();
 		
-		ScenarioInstance scenarioInstance = engine.run(scenario);
+		//ScenarioInstance scenarioInstance = engine.run(scenario);
 		
-		System.out.println(scenarioInstance.getName());
+		//System.out.println(scenarioInstance.getName());
 		
 	}
 

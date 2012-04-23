@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.emf.common.util.EMap;
+import org.sopeco.engine.experiment.IExperimentController;
+import org.sopeco.engine.experiment.impl.ExperimentController;
+import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
 import org.sopeco.model.configuration.ConfigurationFactory;
 import org.sopeco.model.configuration.ScenarioDefinition;
 import org.sopeco.model.configuration.environment.EnvironmentFactory;
@@ -57,6 +60,12 @@ public class ConfigurationBuilder {
 		namespace.setName(name);
 		root.getChildren().add(namespace);
 		currentNamespace = namespace;
+	}
+
+	public IExperimentController createExperimentController(IMeasurementEnvironmentController meController) {
+		ExperimentController expController = new ExperimentController();
+		expController.setMeasurementEnvironment(meController);
+		return expController;
 	}
 
 	public ParameterDefinition createParameter(String name, ParameterType type, ParameterRole role) {

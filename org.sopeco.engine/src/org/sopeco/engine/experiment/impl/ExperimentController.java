@@ -9,6 +9,7 @@ import org.sopeco.model.configuration.measurements.ExperimentTerminationConditio
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.ParameterValue;
+import org.sopeco.persistence.entities.ExperimentSeriesRun;
 
 public class ExperimentController implements IExperimentController {
 	
@@ -20,8 +21,9 @@ public class ExperimentController implements IExperimentController {
 	}
 
 	@Override
-	public void prepareExperimentSeries(List<ParameterValue<?>> preparationPVList) {
+	public void prepareExperimentSeries(ExperimentSeriesRun experimentSeriesRun, List<ParameterValue<?>> preparationPVList) {
 		meController.prepareExperimentSeries(preparationPVList);
+		// TODO do it right!
 	}
 
 	@Override

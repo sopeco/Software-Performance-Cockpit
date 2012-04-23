@@ -26,6 +26,7 @@ import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
 import org.sopeco.model.configuration.measurements.ExplorationStrategy;
 import org.sopeco.model.configuration.measurements.MeasurementsFactory;
 import org.sopeco.persistence.dataset.util.ParameterType;
+import org.sopeco.persistence.entities.ExperimentSeries;
 
 public class SoPeCoCoreTest {
 
@@ -48,7 +49,7 @@ public class SoPeCoCoreTest {
 	@Before
 	public void setUp() throws Exception {
 		// TODO replace the null, later!
-		engine = EngineFactory.INSTANCE.createEngine(null);
+		engine = EngineFactory.INSTANCE.createEngine();
 		registry = engine.getExtensionRegistry();
 
 		builder = new ConfigurationBuilder("test");
@@ -56,7 +57,7 @@ public class SoPeCoCoreTest {
 		pdef = builder.createParameter("initParameter", ParameterType.DOUBLE, ParameterRole.INPUT);
 
 		meController = new DummyMEController();
-		expController = EngineFactory.INSTANCE.createExperimentController(meController);
+		expController = builder.createExperimentController(meController);
 		
 		expSeriesDef = MeasurementsFactory.eINSTANCE.createExperimentSeriesDefinition();
 		builder.createNumberOfRunsCondition(2);
@@ -89,8 +90,11 @@ public class SoPeCoCoreTest {
 		assertNotNull(fes);
 
 		fes.setExperimentController(expController);
-		fes.runExperimentSeries(expSeriesDef, ipvList, builder.getTerminationCondition());
+		ExperimentSeries es = new ExperimentSeries();
+		es.setExperimentSeriesDefinition(expSeriesDef);
+		es.setName(expSeriesDef.getName());
 		
+		fes.runExperimentSeries(es, ipvList);
 		// TODO test the results
 	}
 

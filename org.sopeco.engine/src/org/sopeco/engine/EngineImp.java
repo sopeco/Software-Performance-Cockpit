@@ -3,15 +3,25 @@
  */
 package org.sopeco.engine;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
 import org.sopeco.engine.experiment.IExperimentController;
+import org.sopeco.engine.experimentseries.IConstantAssignment;
+import org.sopeco.engine.experimentseries.IConstantAssignmentExtension;
 import org.sopeco.engine.experimentseries.IExperimentSeriesManager;
 import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.engine.registry.IExtensionRegistry;
 import org.sopeco.model.configuration.ScenarioDefinition;
+import org.sopeco.model.configuration.measurements.ConstantValueAssignment;
 import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
 import org.sopeco.persistence.IPersistenceProvider;
+import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
@@ -24,6 +34,8 @@ import org.sopeco.persistence.exceptions.DataNotFoundException;
  */
 public class EngineImp implements IEngine {
 
+	private static final Logger logger = LoggerFactory.getLogger(EngineImp.class);
+	
 	private IConfiguration configuration = null; 
 	
 	private IExtensionRegistry registry = null; 
@@ -58,15 +70,14 @@ public class EngineImp implements IEngine {
 		
 		ScenarioInstance scenarioInstance = new ScenarioInstance();
 		
-		// TODO set the URL
-		//instance.setMeasurementEnvironmentUrl()
+		scenarioInstance.setMeasurementEnvironmentUrl(getConfiguration().getProperty(IConfiguration.CONF_MEASUREMENT_CONTROLLER_URI).toString());
 		
 		scenarioInstance.setName(scenario.getName());
 		
 		persistenceProvider.store(scenarioInstance);
 		
-		// TODO do the exp controller init
-//		experimentController.initialize(scenario.getMeasurementSpecification().getInitializationAssignemts());
+		experimentController.initialize(getParameterValues(
+				scenario.getMeasurementSpecification().getInitializationAssignemts()));
 		
 		// loop over all the experiment series in the spec
 		for (ExperimentSeriesDefinition esd: scenario.getMeasurementSpecification().getExperimentSeriesDefinitions()) {
@@ -83,7 +94,7 @@ public class EngineImp implements IEngine {
 				
 				experimentSeriesManager.runExperimentSeries(series);
 			} else {
-				// TODO logger message
+				// TODO throw proper runtime error
 			}
 		}
 		
@@ -91,7 +102,7 @@ public class EngineImp implements IEngine {
 			ScenarioInstance loadedScenario = persistenceProvider.loadScenarioInstance(scenarioInstance.getPrimaryKey());
 			return loadedScenario;
 		} catch (DataNotFoundException e) {
-			// TODO logger message
+			logger.error("Cannot load the scenario from the persistnce provider. Something is seriously gone wrong.");
 			throw new RuntimeException("Something went wrong");
 		}
 	}
@@ -111,4 +122,24 @@ public class EngineImp implements IEngine {
 		return persistenceProvider;
 	}
 
+	// TODO put the following method in its proper place!
+	/**
+	 * Returns a list of parameter value assignments based on the given constant value assignments.
+	 * 
+	 * @param constantValueAssignments
+	 * @return
+	 */
+	public List<ParameterValue<?>> getParameterValues(Collection<ConstantValueAssignment> constantValueAssignments) {
+		ArrayList<ParameterValue<?>> result = new ArrayList<ParameterValue<?>>();
+		
+		for (ConstantValueAssignment cva: constantValueAssignments) {
+			IConstantAssignment ca = registry.getExtensionArtifact(IConstantAssignmentExtension.class, cva.getParameter().getType());
+			if (ca.canAssign(cva))
+				result.add(ca.createParameterValue(cva));
+			else {
+				// TODO throw runtime error
+			}
+		}
+		return result;
+	}
 }

@@ -26,7 +26,7 @@ import org.apache.tools.ant.DirectoryScanner;
 public class Tools {
 
 	public enum SupportedTypes {
-		Double, Integer, String;
+		Double, Integer, String, Boolean;
 	
 		/**
 		 * If the given class is supported, returns the 
@@ -49,7 +49,9 @@ public class Tools {
 				return Integer;
 			if (Tools.strEqualName(name, String.class.getSimpleName()))
 				return String;
-			
+			if (Tools.strEqualName(name, Boolean.class.getSimpleName()))
+				return Boolean;
+
 			return null;
 		}
 

@@ -1,15 +1,15 @@
 package org.sopeco.plugin.std.exploration;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.sopeco.engine.EngineFactory;
-import org.sopeco.engine.EngineImp;
 import org.sopeco.engine.IEngine;
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.experimentseries.IExplorationStrategy;
@@ -25,6 +25,7 @@ import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
 import org.sopeco.model.configuration.measurements.ExplorationStrategy;
 import org.sopeco.model.configuration.measurements.MeasurementsFactory;
 import org.sopeco.persistence.dataset.util.ParameterType;
+import org.sopeco.persistence.entities.ExperimentSeries;
 
 public class FullExplorationStrategyTest {
 
@@ -45,7 +46,7 @@ public class FullExplorationStrategyTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		engine = new EngineImp();
+		engine = EngineFactory.INSTANCE.createEngine();
 		
 		builder = new ConfigurationBuilder("test");
 		builder.createNamespace("initialization");
@@ -55,7 +56,7 @@ public class FullExplorationStrategyTest {
 		fes = fese.createExtensionArtifact();
 
 		meController = new DummyMEController();
-		expController = EngineFactory.INSTANCE.createExperimentController(meController);
+		expController = builder.createExperimentController(meController);
 		
 		expSeriesDef = MeasurementsFactory.eINSTANCE.createExperimentSeriesDefinition();
 		builder.createNumberOfRunsCondition(2);
@@ -90,7 +91,11 @@ public class FullExplorationStrategyTest {
 		List<IParameterVariation> ipvList = new ArrayList<IParameterVariation>();
 		ipvList.add(ipv);
 		
-		fes.runExperimentSeries(expSeriesDef, ipvList, builder.getTerminationCondition());
+		ExperimentSeries es = new ExperimentSeries();
+		es.setExperimentSeriesDefinition(expSeriesDef);
+		es.setName(expSeriesDef.getName());
+		
+		fes.runExperimentSeries(es, ipvList);
 	}
 	
 }
