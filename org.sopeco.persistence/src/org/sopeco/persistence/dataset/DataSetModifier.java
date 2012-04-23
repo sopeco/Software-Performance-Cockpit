@@ -1,7 +1,10 @@
 package org.sopeco.persistence.dataset;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+
+
 
 import org.sopeco.model.configuration.environment.ParameterDefinition;
 import org.sopeco.model.configuration.environment.ParameterRole;
@@ -51,33 +54,33 @@ public class DataSetModifier {
 //		return col;
 //	}
 
-	// public DataSetInputColumn<?> addInputColumn(ParameterDefinition p,
-	// List<ParameterValue<?>> values) {
-	// List<Object> valueList = new ArrayList<Object>();
-	// for (ParameterValue<?> pv : values) {
-	// valueList.add(pv.getValue());
-	// }
-	//
-	// DataSetInputColumn col = new DataSetInputColumn(p, valueList);
-	//
-	// dataset.addColumn(col);
-	// return col;
-	// }
-	//
-	// public DataSetObservationColumn<?> addObservationColumn(ParameterDefinition p,
-	// List<ParameterValueList<?>> values) {
-	// List<ParameterValueList<?>> valueList = new
-	// ArrayList<ParameterValueList<?>>();
-	// for (ParameterValueList<?> pvl : values) {
-	// valueList.add(pvl);
-	// }
-	//
-	// DataSetObservationColumn col = new DataSetObservationColumn(p,
-	// valueList);
-	//
-	// dataset.addColumn(col);
-	// return col;
-	// }
+	 public DataSetInputColumn<?> addInputColumn(ParameterDefinition p,
+	 List<ParameterValue<?>> values) {
+	 List<Object> valueList = new ArrayList<Object>();
+	 for (ParameterValue<?> pv : values) {
+	 valueList.add(pv.getValue());
+	 }
+	
+	 DataSetInputColumn col = new DataSetInputColumn(p, valueList);
+	
+	 dataset.addColumn(col);
+	 return col;
+	 }
+	
+	 public DataSetObservationColumn<?> addObservationColumn(ParameterDefinition p,
+	 List<ParameterValueList<?>> values) {
+	 List<ParameterValueList<?>> valueList = new
+	 ArrayList<ParameterValueList<?>>();
+	 for (ParameterValueList<?> pvl : values) {
+	 valueList.add(pvl);
+	 }
+	
+	 DataSetObservationColumn col = new DataSetObservationColumn(p,
+	 valueList);
+	
+	 dataset.addColumn(col);
+	 return col;
+	 }
 
 //	public void addValue(ParameterDefinition p, Object value) {
 //		if (p.getRole().equals(ParameterRole.INPUT)) {

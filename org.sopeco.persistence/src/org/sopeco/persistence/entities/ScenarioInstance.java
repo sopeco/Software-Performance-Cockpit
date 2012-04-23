@@ -10,6 +10,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Version;
 
 import org.sopeco.persistence.entities.keys.ScenarioInstancePK;
 
@@ -26,7 +27,8 @@ import org.sopeco.persistence.entities.keys.ScenarioInstancePK;
 public class ScenarioInstance implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	@SuppressWarnings("unused")
+	@Version private long version;
 	/*
 	 * Entity Attributes
 	 */
@@ -34,7 +36,7 @@ public class ScenarioInstance implements Serializable {
 	private String description;
 	
 	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy = "scenarioInstance")
+	@OneToMany(cascade=CascadeType.ALL, mappedBy = "scenarioInstance", orphanRemoval=true)
 	private List<ExperimentSeries> experimentSeries = new ArrayList<ExperimentSeries>();
 	
 

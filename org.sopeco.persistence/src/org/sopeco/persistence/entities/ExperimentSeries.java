@@ -14,6 +14,7 @@ import javax.persistence.JoinColumns;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.Version;
 
 import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
 import org.sopeco.model.util.EMFUtil;
@@ -23,11 +24,12 @@ import org.sopeco.persistence.entities.keys.ExperimentSeriesPK;
 public class ExperimentSeries implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
-
+	@SuppressWarnings("unused")
+	@Version private long version; 
 	/*
 	 * Entity Attributes
 	 */
-	@ManyToOne(cascade=CascadeType.ALL)
+	@ManyToOne(cascade={CascadeType.PERSIST,CascadeType.MERGE,CascadeType.REFRESH})
 	@JoinColumns({
 	    @JoinColumn(name="scenarioInstanceName", referencedColumnName = "name"),
 	    @JoinColumn(name="measurementEnvironmentUrl", referencedColumnName = "measurementEnvironmentUrl")
