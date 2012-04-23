@@ -9,6 +9,7 @@ package org.sopeco.model.configuration.common;
 import java.io.Serializable;
 
 import org.eclipse.emf.ecore.EObject;
+
 import org.sopeco.model.configuration.common.ext.ISerializableEObject;
 
 /**

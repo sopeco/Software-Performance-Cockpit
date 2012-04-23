@@ -22,7 +22,12 @@
           eType="#//environment/ParameterNamespace" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="parameters" upperBound="-1"
-          eType="#//environment/ParameterDefinition" containment="true"/>
+          eType="#//environment/ParameterDefinition" containment="true">
+        <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
+          <details key="namespace" value=""/>
+        </eAnnotations>
+      </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="parent" eType="#//environment/ParameterNamespace"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ParameterDefinition" eSuperTypes="#//common/Serializable">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1"
@@ -38,6 +43,8 @@
           <details key="documentation" value="This is a 'derived' attribute computed out of the namespace structure and the parameter's name."/>
         </eAnnotations>
       </eStructuralFeatures>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="namespace" lowerBound="1"
+          eType="#//environment/ParameterNamespace"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="ParameterRole">
       <eLiterals name="INPUT"/>

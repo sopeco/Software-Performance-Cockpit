@@ -23,6 +23,7 @@ import org.sopeco.model.configuration.common.ext.ISerializableEObject;
  *   <li>{@link org.sopeco.model.configuration.environment.ParameterNamespace#getChildren <em>Children</em>}</li>
  *   <li>{@link org.sopeco.model.configuration.environment.ParameterNamespace#getName <em>Name</em>}</li>
  *   <li>{@link org.sopeco.model.configuration.environment.ParameterNamespace#getParameters <em>Parameters</em>}</li>
+ *   <li>{@link org.sopeco.model.configuration.environment.ParameterNamespace#getParent <em>Parent</em>}</li>
  * </ul>
  * </p>
  *
@@ -86,8 +87,35 @@ public interface ParameterNamespace extends ISerializableEObject, Serializable {
 	 * @return the value of the '<em>Parameters</em>' containment reference list.
 	 * @see org.sopeco.model.configuration.environment.EnvironmentPackage#getParameterNamespace_Parameters()
 	 * @model containment="true"
+	 *        extendedMetaData="namespace=''"
 	 * @generated
 	 */
 	EList<ParameterDefinition> getParameters();
+
+	/**
+	 * Returns the value of the '<em><b>Parent</b></em>' reference.
+	 * <!-- begin-user-doc -->
+	 * <p>
+	 * If the meaning of the '<em>Parent</em>' reference isn't clear,
+	 * there really should be more of a description here...
+	 * </p>
+	 * <!-- end-user-doc -->
+	 * @return the value of the '<em>Parent</em>' reference.
+	 * @see #setParent(ParameterNamespace)
+	 * @see org.sopeco.model.configuration.environment.EnvironmentPackage#getParameterNamespace_Parent()
+	 * @model
+	 * @generated
+	 */
+	ParameterNamespace getParent();
+
+	/**
+	 * Sets the value of the '{@link org.sopeco.model.configuration.environment.ParameterNamespace#getParent <em>Parent</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @param value the new value of the '<em>Parent</em>' reference.
+	 * @see #getParent()
+	 * @generated
+	 */
+	void setParent(ParameterNamespace value);
 
 } // ParameterNamespace

@@ -1,5 +1,7 @@
 package org.sopeco.model.configuration;
 
+import org.sopeco.model.configuration.environment.EnvironmentFactory;
+import org.sopeco.model.configuration.environment.ext.EnvironmentFactoryExt;
 import org.sopeco.model.configuration.ext.ConfigurationFactoryExt;
 
 
@@ -19,7 +21,7 @@ public class SoPeCoModelFactoryHandler {
 	public static void initFactories(){
 	 
 		ConfigurationFactoryExt.getFactory();
-		
+		EnvironmentFactoryExt.getFactory();
 	}
 
 	/**
@@ -30,6 +32,17 @@ public class SoPeCoModelFactoryHandler {
 	public static ConfigurationFactory getConfigurationFactory(){
 		
 		return ConfigurationFactoryExt.getFactory();
+		
+	}
+	
+	/**
+	 * Provides access to the {@link EnvironmentFactory}.
+	 * 
+	 * @return the extended version of the {@link EnvironmentFactory}
+	 */
+	public static EnvironmentFactory getEnvironmentFactory(){
+		
+		return EnvironmentFactoryExt.getFactory();
 		
 	}
 

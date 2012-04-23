@@ -136,7 +136,8 @@ public class CommonAdapterFactory extends AdapterFactoryImpl {
 	/**
 	 * Creates a new adapter for an object of class '{@link org.eclipse.emf.ecore.EObject <em>EObject</em>}'.
 	 * <!-- begin-user-doc -->
-	 * This default implementation returns null.
+	 * This default implementation returns null so that we can easily ignore cases;
+	 * it's useful to ignore a case when inheritance will catch all the cases anyway.
 	 * <!-- end-user-doc -->
 	 * @return the new adapter.
 	 * @see org.eclipse.emf.ecore.EObject

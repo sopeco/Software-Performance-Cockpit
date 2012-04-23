@@ -218,6 +218,34 @@
       <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_VdCncG6xEeGCR4rs-JMgHw" id="(0.5065502183406113,0.13953488372093023)"/>
       <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_VdCncW6xEeGCR4rs-JMgHw" id="(0.4732824427480916,0.7966101694915254)"/>
     </edges>
+    <edges xmi:type="notation:Edge" xmi:id="_3KNnAY1NEeG3nsoGutyMow" type="3002" source="_kriL4G6mEeGCR4rs-JMgHw" target="_SwRgMG6mEeGCR4rs-JMgHw">
+      <children xmi:type="notation:Node" xmi:id="_3KQqUI1NEeG3nsoGutyMow" type="4011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_3KQqUY1NEeG3nsoGutyMow" x="-104" y="9"/>
+      </children>
+      <children xmi:type="notation:Node" xmi:id="_3KRRYI1NEeG3nsoGutyMow" type="4012">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_3KRRYY1NEeG3nsoGutyMow" x="10" y="10"/>
+      </children>
+      <styles xmi:type="notation:ConnectorStyle" xmi:id="_3KNnAo1NEeG3nsoGutyMow" lineColor="4210752"/>
+      <styles xmi:type="notation:FontStyle" xmi:id="_3KNnA41NEeG3nsoGutyMow" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+      <element xmi:type="ecore:EReference" href="SoPeCo-Configuration.ecore#//environment/ParameterDefinition/namespace"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_3KNnBI1NEeG3nsoGutyMow" points="[-20, 9, 281, 1]$[-300, 6, 1, -2]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3KUUsI1NEeG3nsoGutyMow" id="(0.1390728476821192,0.058823529411764705)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3KUUsY1NEeG3nsoGutyMow" id="(0.3701657458563536,0.05084745762711865)"/>
+    </edges>
+    <edges xmi:type="notation:Edge" xmi:id="_AlWrwI1OEeG3nsoGutyMow" type="3002" source="_SwRgMG6mEeGCR4rs-JMgHw" target="_SwRgMG6mEeGCR4rs-JMgHw">
+      <children xmi:type="notation:Node" xmi:id="_AlXS0I1OEeG3nsoGutyMow" type="4011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_AlXS0Y1OEeG3nsoGutyMow" x="-12" y="-27"/>
+      </children>
+      <children xmi:type="notation:Node" xmi:id="_AlXS0o1OEeG3nsoGutyMow" type="4012">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_AlXS041OEeG3nsoGutyMow" x="13" y="-26"/>
+      </children>
+      <styles xmi:type="notation:ConnectorStyle" xmi:id="_AlWrwY1OEeG3nsoGutyMow" lineColor="4210752"/>
+      <styles xmi:type="notation:FontStyle" xmi:id="_AlWrwo1OEeG3nsoGutyMow" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+      <element xmi:type="ecore:EReference" href="SoPeCo-Configuration.ecore#//environment/ParameterNamespace/parent"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_AlWrw41OEeG3nsoGutyMow" points="[7, 6, 34, 40]$[7, 68, 34, 102]$[-27, 68, 0, 102]$[-27, 6, 0, 40]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_AlaWII1OEeG3nsoGutyMow" id="(0.16022099447513813,0.8983050847457628)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_AlaWIY1OEeG3nsoGutyMow" id="(0.011049723756906077,0.3050847457627119)"/>
+    </edges>
   </notation:Diagram>
   <notation:Diagram xmi:id="_UmxSUG6nEeGCR4rs-JMgHw" type="EcoreTools" name="Measurements" measurementUnit="Pixel">
     <children xmi:type="notation:Node" xmi:id="_dacHYG6nEeGCR4rs-JMgHw" type="1001">

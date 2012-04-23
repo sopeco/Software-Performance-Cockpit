@@ -14,6 +14,7 @@ import org.eclipse.emf.common.notify.NotificationChain;
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
@@ -37,6 +38,7 @@ import org.sopeco.model.configuration.environment.ParameterNamespace;
  *   <li>{@link org.sopeco.model.configuration.environment.impl.ParameterNamespaceImpl#getChildren <em>Children</em>}</li>
  *   <li>{@link org.sopeco.model.configuration.environment.impl.ParameterNamespaceImpl#getName <em>Name</em>}</li>
  *   <li>{@link org.sopeco.model.configuration.environment.impl.ParameterNamespaceImpl#getParameters <em>Parameters</em>}</li>
+ *   <li>{@link org.sopeco.model.configuration.environment.impl.ParameterNamespaceImpl#getParent <em>Parent</em>}</li>
  * </ul>
  * </p>
  *
@@ -89,6 +91,16 @@ public class ParameterNamespaceImpl extends SerializableEObject implements Param
 	 * @ordered
 	 */
 	protected EList<ParameterDefinition> parameters;
+
+	/**
+	 * The cached value of the '{@link #getParent() <em>Parent</em>}' reference.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getParent()
+	 * @generated
+	 * @ordered
+	 */
+	protected ParameterNamespace parent;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -159,6 +171,44 @@ public class ParameterNamespaceImpl extends SerializableEObject implements Param
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public ParameterNamespace getParent() {
+		if (parent != null && ((EObject)parent).eIsProxy()) {
+			InternalEObject oldParent = (InternalEObject)parent;
+			parent = (ParameterNamespace)eResolveProxy(oldParent);
+			if (parent != oldParent) {
+				if (eNotificationRequired())
+					eNotify(new ENotificationImpl(this, Notification.RESOLVE, EnvironmentPackage.PARAMETER_NAMESPACE__PARENT, oldParent, parent));
+			}
+		}
+		return parent;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public ParameterNamespace basicGetParent() {
+		return parent;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setParent(ParameterNamespace newParent) {
+		ParameterNamespace oldParent = parent;
+		parent = newParent;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.PARAMETER_NAMESPACE__PARENT, oldParent, parent));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -184,6 +234,9 @@ public class ParameterNamespaceImpl extends SerializableEObject implements Param
 				return getName();
 			case EnvironmentPackage.PARAMETER_NAMESPACE__PARAMETERS:
 				return getParameters();
+			case EnvironmentPackage.PARAMETER_NAMESPACE__PARENT:
+				if (resolve) return getParent();
+				return basicGetParent();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -208,6 +261,9 @@ public class ParameterNamespaceImpl extends SerializableEObject implements Param
 				getParameters().clear();
 				getParameters().addAll((Collection<? extends ParameterDefinition>)newValue);
 				return;
+			case EnvironmentPackage.PARAMETER_NAMESPACE__PARENT:
+				setParent((ParameterNamespace)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -229,6 +285,9 @@ public class ParameterNamespaceImpl extends SerializableEObject implements Param
 			case EnvironmentPackage.PARAMETER_NAMESPACE__PARAMETERS:
 				getParameters().clear();
 				return;
+			case EnvironmentPackage.PARAMETER_NAMESPACE__PARENT:
+				setParent((ParameterNamespace)null);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -247,6 +306,8 @@ public class ParameterNamespaceImpl extends SerializableEObject implements Param
 				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 			case EnvironmentPackage.PARAMETER_NAMESPACE__PARAMETERS:
 				return parameters != null && !parameters.isEmpty();
+			case EnvironmentPackage.PARAMETER_NAMESPACE__PARENT:
+				return parent != null;
 		}
 		return super.eIsSet(featureID);
 	}

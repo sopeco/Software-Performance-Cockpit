@@ -27,12 +27,16 @@
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SoPeCo-Configuration.ecore#//environment/ParameterNamespace/children"/>
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SoPeCo-Configuration.ecore#//environment/ParameterNamespace/name"/>
         <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference SoPeCo-Configuration.ecore#//environment/ParameterNamespace/parameters"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SoPeCo-Configuration.ecore#//environment/ParameterNamespace/parent"/>
       </genClasses>
       <genClasses ecoreClass="SoPeCo-Configuration.ecore#//environment/ParameterDefinition">
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SoPeCo-Configuration.ecore#//environment/ParameterDefinition/name"/>
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SoPeCo-Configuration.ecore#//environment/ParameterDefinition/type"/>
         <genFeatures createChild="false" ecoreFeature="ecore:EAttribute SoPeCo-Configuration.ecore#//environment/ParameterDefinition/role"/>
         <genFeatures property="Readonly" createChild="false" ecoreFeature="ecore:EAttribute SoPeCo-Configuration.ecore#//environment/ParameterDefinition/fullName"/>
+        <genFeatures notify="false" createChild="false" propertySortChoices="true"
+            ecoreFeature="ecore:EReference SoPeCo-Configuration.ecore#//environment/ParameterDefinition/namespace"/>
       </genClasses>
     </nestedGenPackages>
     <nestedGenPackages prefix="Measurements" basePackage="org.sopeco.model.configuration"
@@ -83,6 +87,7 @@
         disposableProviderFactory="true" ecorePackage="SoPeCo-Configuration.ecore#//common">
       <genClasses image="false" ecoreClass="SoPeCo-Configuration.ecore#//common/Serializable"/>
       <genClasses image="false" ecoreClass="SoPeCo-Configuration.ecore#//common/SerializableEObject"/>
+      <genClasses image="false" ecoreClass="SoPeCo-Configuration.ecore#//common/EObject"/>
     </nestedGenPackages>
   </genPackages>
 </genmodel:GenModel>

@@ -95,7 +95,6 @@ public interface CommonPackage extends EPackage {
 	 */
 	int SERIALIZABLE_EOBJECT_FEATURE_COUNT = SERIALIZABLE_FEATURE_COUNT + 0;
 
-
 	/**
 	 * The meta object id for the '{@link org.eclipse.emf.ecore.EObject <em>EObject</em>}' class.
 	 * <!-- begin-user-doc -->
