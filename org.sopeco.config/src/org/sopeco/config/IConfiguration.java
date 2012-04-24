@@ -34,6 +34,19 @@ public interface IConfiguration {
 	public Object getProperty(String key);
 
 	/**
+	 * Returns the configured value of the given property as a String.
+	 * 
+	 * This method calls the {@link Object#toString()} of the property value
+	 * and is for convenience only. If the given property is not set, 
+	 * it returns <code>null</code>. 
+	 * 
+	 * @param key property key
+	 * 
+	 * @see #getProperty(String)
+	 */
+	public String getPropertyAsStr(String key);
+
+	/**
 	 * Sets the value of a property for the current run.
 	 * 
 	 * @param key property key

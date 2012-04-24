@@ -86,6 +86,15 @@ public class Configuration implements IConfiguration {
 	}
 
 	@Override
+	public String getPropertyAsStr(String key) {
+		final Object value = getProperty(key);
+		if (value != null) {
+			return value.toString();
+		} else
+			return null;
+	}
+
+	@Override
 	public void setProperty(String key, Object value) {
 		properties.put(key, value);
 	}

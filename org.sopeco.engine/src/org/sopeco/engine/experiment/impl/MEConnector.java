@@ -1,7 +1,6 @@
 package org.sopeco.engine.experiment.impl;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RMISecurityManager;
@@ -22,7 +21,7 @@ public class MEConnector {
 	 * @param uri the URI of the RMI service
 	 * @return a local instance of the controller
 	 */
-	public static IMeasurementEnvironmentController getMeasurementEnvironmentController(URI uri){
+	public static IMeasurementEnvironmentController getMeasurementEnvironmentController(String uri){
 
 		// set path to java policy file TODO: Read path from Config-File
 		System.setProperty("java.security.policy", "rsc/wideopen.policy");
@@ -33,12 +32,12 @@ public class MEConnector {
 		try {
 			  	LocateRegistry.getRegistry("localhost", 1099);
 				
-				logger.debug("Looking up {}", uri.toString());
+				logger.debug("Looking up {}", uri);
 				
 				IMeasurementEnvironmentController meController = 
-				(IMeasurementEnvironmentController) Naming.lookup(uri.toString());
+				(IMeasurementEnvironmentController) Naming.lookup(uri);
 						
-				logger.info("Received SatelliteController instance from {}", uri.toString());
+				logger.info("Received SatelliteController instance from {}", uri);
 				
 				return meController;
 		    
