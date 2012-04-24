@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
+import org.sopeco.model.configuration.environment.MeasurementEnvironmentDefinition;
 import org.sopeco.model.configuration.measurements.ExperimentTerminationCondition;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.ParameterValue;
@@ -22,8 +23,10 @@ public interface IExperimentController {
 	 * Initializes the experiment controller before the one set of experiments. 
 	 *  
 	 * @param initializationPVList initialization arguments
+	 * @param meDefinition
 	 */
-	public void initialize(List<ParameterValue<?>> initializationPVList);
+	void initialize(List<ParameterValue<?>> initializationPVList,
+			MeasurementEnvironmentDefinition meDefinition);
 	
 	/**
 	 * Prepares the experiment controller for one single experiment series. This is called
@@ -48,4 +51,6 @@ public interface IExperimentController {
 	 * @see IMeasurementEnvironmentController
 	 */
 	public void finalizeExperimentSeries();
+
+	
 }

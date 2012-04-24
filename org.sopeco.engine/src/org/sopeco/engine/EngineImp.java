@@ -70,25 +70,23 @@ public class EngineImp implements IEngine {
 		persistenceProvider.store(scenarioInstance);
 		
 		experimentController.initialize(EngineTools.getConstantParameterValues(
-				scenario.getMeasurementSpecification().getInitializationAssignemts()));
+				scenario.getMeasurementSpecification().getInitializationAssignemts()), scenario.getMeasurementEnvironmentDefinition());
 		
 		// loop over all the experiment series in the spec
 		for (ExperimentSeriesDefinition esd: scenario.getMeasurementSpecification().getExperimentSeriesDefinitions()) {
-			if (experimentSeriesManager.canRun(esd)) {
-				ExperimentSeries series = new ExperimentSeries();
-				series.setExperimentSeriesDefinition(esd);
-				//TODO get it from the def
-				series.setName(esd.getName());
-				series.setScenarioInstance(scenarioInstance);
-				
-				persistenceProvider.store(series);
-				
-				scenarioInstance.getExperimentSeries().add(series);
-				
-				experimentSeriesManager.runExperimentSeries(series);
-			} else {
-				// TODO throw proper runtime error
-			}
+			
+			ExperimentSeries series = new ExperimentSeries();
+			series.setExperimentSeriesDefinition(esd);
+			//TODO get it from the def
+			series.setName(esd.getName());
+			series.setScenarioInstance(scenarioInstance);
+			
+			persistenceProvider.store(series);
+			
+			scenarioInstance.getExperimentSeries().add(series);
+			
+			experimentSeriesManager.runExperimentSeries(series);
+			
 		}
 		
 		try {

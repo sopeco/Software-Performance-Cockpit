@@ -37,11 +37,6 @@ public class ExperimentSeriesManager implements IExperimentSeriesManager {
 
 	private final static Logger logger = LoggerFactory.getLogger(ExperimentSeriesManager.class);
 	
-	@Override
-	public boolean canRun(ExperimentSeriesDefinition expSeries) {
-		// TODO Do we need this? It would not be efficient.
-		return false;
-	}
 
 	@Override
 	public void runExperimentSeries(ExperimentSeries expSeries) {

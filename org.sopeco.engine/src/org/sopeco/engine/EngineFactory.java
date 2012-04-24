@@ -27,6 +27,8 @@ public class EngineFactory {
 	public IEngine createEngine() {
 		final IConfiguration config = Configuration.getSingleton();
 	
+		IPersistenceProvider persistenceProvider = PersistenceProviderFactory.getPersistenceProvider();
+		
 		IExperimentController experimentController;
 		String meClassName = config.getPropertyAsStr(IConfiguration.CONF_MEASUREMENT_CONTROLLER_CLASS_NAME);
 		
@@ -37,7 +39,7 @@ public class EngineFactory {
 			
 			logger.debug("Connected to the measurement environment controller service.");
 			
-			experimentController = createExperimentController(meController);
+			experimentController = createExperimentController(meController, persistenceProvider);
 			
 		} else {
 			// load the given class
@@ -46,7 +48,7 @@ public class EngineFactory {
 				Object o = mec.newInstance();
 				if (o instanceof IMeasurementEnvironmentController) {
 					logger.debug("Measurement environment controller is instantiated.");
-					experimentController = createExperimentController((IMeasurementEnvironmentController)o);
+					experimentController = createExperimentController((IMeasurementEnvironmentController)o, persistenceProvider);
 				} else
 					throw new RuntimeException("The measurement environment class must implement " + IMeasurementEnvironmentController.class.getName() + ".");
 			} catch (ClassNotFoundException e) {
@@ -63,7 +65,7 @@ public class EngineFactory {
 		IExperimentSeriesManager expSeriesManager;
 		expSeriesManager = new ExperimentSeriesManager();
 		
-		IPersistenceProvider persistenceProvider = PersistenceProviderFactory.getPersistenceProvider();
+
 		
 		engine = new EngineImp(experimentController, expSeriesManager, persistenceProvider);
 
@@ -85,9 +87,10 @@ public class EngineFactory {
 	 * @param meController
 	 * @return an instance of experiment controller
 	 */
-	protected IExperimentController createExperimentController(IMeasurementEnvironmentController meController) {
+	protected IExperimentController createExperimentController(IMeasurementEnvironmentController meController, IPersistenceProvider persistenceProvider) {
 		ExperimentController expController = new ExperimentController();
-		expController.setMeasurementEnvironment(meController);
+		expController.setMeasurementEnvironmentController(meController);
+		expController.setPersistenceProvider(persistenceProvider);
 		return expController;
 	}
 

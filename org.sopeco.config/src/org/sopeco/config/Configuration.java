@@ -201,6 +201,7 @@ public class Configuration implements IConfiguration {
 	    if (line.hasOption(meClass.getOpt())) {
 	    	final String className = line.getOptionValue(meClass.getOpt());
 	    	setProperty(CONF_MEASUREMENT_CONTROLLER_CLASS_NAME, className);
+	    	setProperty(CONF_MEASUREMENT_CONTROLLER_URI, "class://" + className);
 	    }
 
 	    // -logconfig

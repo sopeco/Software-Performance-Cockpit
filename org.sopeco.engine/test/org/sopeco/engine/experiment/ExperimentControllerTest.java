@@ -41,7 +41,8 @@ public class ExperimentControllerTest {
 		builder.createParameter("initParameter",ParameterType.DOUBLE, ParameterRole.INPUT);
 		builder.createParameterValue(INITIALIZATION_VALUE);
 
-		expController.initialize(builder.getPVList());
+		//TODO
+		expController.initialize(builder.getPVList(),null);
 		assertEquals(INITIALIZATION_VALUE, meController.getInitializationValue().getValue());
 		assertEquals(builder.getCurrentParameter(), meController.getInitializationValue().getParameter());
 	}

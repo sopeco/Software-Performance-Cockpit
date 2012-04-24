@@ -64,7 +64,7 @@ public class ConfigurationBuilder {
 
 	public IExperimentController createExperimentController(IMeasurementEnvironmentController meController) {
 		ExperimentController expController = new ExperimentController();
-		expController.setMeasurementEnvironment(meController);
+		expController.setMeasurementEnvironmentController(meController);
 		return expController;
 	}
 

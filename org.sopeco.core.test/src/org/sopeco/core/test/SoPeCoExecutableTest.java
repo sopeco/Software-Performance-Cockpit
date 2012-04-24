@@ -13,6 +13,7 @@ import org.sopeco.engine.EngineFactory;
 import org.sopeco.engine.IEngine;
 import org.sopeco.model.configuration.ScenarioDefinition;
 import org.sopeco.model.util.EMFUtil;
+import org.sopeco.persistence.entities.ScenarioInstance;
 
 /**
  * This is a test for running SoPeCo as a simple Java application.
@@ -48,9 +49,9 @@ public class SoPeCoExecutableTest {
 		
 		IEngine engine = EngineFactory.INSTANCE.createEngine();
 		
-//		ScenarioInstance scenarioInstance = engine.run(scenario);
-//		
-//		System.out.println(scenarioInstance.getName());
+		ScenarioInstance scenarioInstance = engine.run(scenario);
+		
+		System.out.println(scenarioInstance.getName());
 		
 	}
 
