@@ -80,9 +80,7 @@ public class EMFUtil {
 	 * @throws IOException 
 	 */
 	public static EObject loadFromURI(URI uri) throws IOException {
-		
 		return ModelUtils.load(uri, createSoPeCoModelResourceSet());
-		
 	}
 	
 

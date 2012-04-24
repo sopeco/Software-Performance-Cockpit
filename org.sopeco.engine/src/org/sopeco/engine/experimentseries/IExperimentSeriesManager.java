@@ -12,13 +12,25 @@ import org.sopeco.persistence.entities.ExperimentSeries;
  * ValidationStrategies and runs the ExplorationStrategy (which gets
  * TerminationCondition).
  * 
- * @author D053711
+ * @author Jens Happe, Roozbeh Farahbod
  * 
  */
 public interface IExperimentSeriesManager {
 
+	/**
+	 * Checks if this implementation can run the given experiment series definition.
+	 * 
+	 * @param expSeries an experiment series definition
+	 * 
+	 * @return <code>true</code> if it can run the series.
+	 */
 	public boolean canRun(ExperimentSeriesDefinition expSeries);
 
+	/**
+	 * Runs the experiment series represented by the given experiment series instance.
+	 * 
+	 * @param expSeries an experiment series instance
+	 */
 	public void runExperimentSeries(ExperimentSeries expSeries);
 
 }

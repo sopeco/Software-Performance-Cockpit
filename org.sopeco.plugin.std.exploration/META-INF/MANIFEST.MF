@@ -8,4 +8,4 @@ Require-Bundle: org.sopeco.persistence;bundle-version="0.2.0",
  org.sopeco.core;bundle-version="0.2.0",
  org.sopeco.orbit.logging;bundle-version="1.0.0",
  org.junit
-Export-Package: org.sopeco.plugin.std.exploration
+Export-Package: org.sopeco.plugin.std.exploration.full

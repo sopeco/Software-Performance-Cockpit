@@ -1,5 +1,6 @@
 package org.sopeco.engine.experiment;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
@@ -31,7 +32,7 @@ public interface IExperimentController {
 	 * @param experimentSeriesRun an instance of experiment series run 
 	 * @param preparationPVList preparation arguments
 	 */
-	public void prepareExperimentSeries(ExperimentSeriesRun experimentSeriesRun, List<ParameterValue<?>> preparationPVList);
+	public void prepareExperimentSeries(ExperimentSeriesRun experimentSeriesRun, Collection<ParameterValue<?>> preparationPVList);
 	
 	/**
 	 * Runs a single experiment with the given arguments.

@@ -1,5 +1,6 @@
 package org.sopeco.engine.measurementenvironment;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.sopeco.model.configuration.environment.MeasurementEnvironmentDefinition;
@@ -11,7 +12,7 @@ public interface IMeasurementEnvironmentController {
 	
 	public void initialize(List<ParameterValue<?>> initializationPVList);
 
-	public void prepareExperimentSeries(List<ParameterValue<?>> preparationPVList);
+	public void prepareExperimentSeries(Collection<ParameterValue<?>> preparationPVList);
 	
 	/**
 	 * @return DataSet containing only output parameter values.

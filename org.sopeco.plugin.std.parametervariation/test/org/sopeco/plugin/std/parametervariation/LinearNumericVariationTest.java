@@ -15,6 +15,8 @@ import org.sopeco.model.configuration.environment.ParameterRole;
 import org.sopeco.model.configuration.measurements.DynamicValueAssignment;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.util.ParameterType;
+import org.sopeco.plugin.std.parametervariation.linear.LinearNumericVariation;
+import org.sopeco.plugin.std.parametervariation.linear.LinearNumericVariationExtension;
 
 public class LinearNumericVariationTest {
 

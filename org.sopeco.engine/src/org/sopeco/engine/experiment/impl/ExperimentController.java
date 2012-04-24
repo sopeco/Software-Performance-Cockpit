@@ -1,5 +1,6 @@
 package org.sopeco.engine.experiment.impl;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.sopeco.engine.experiment.IExperimentController;
@@ -13,7 +14,9 @@ import org.sopeco.persistence.entities.ExperimentSeriesRun;
 
 public class ExperimentController implements IExperimentController {
 	
+	MeasurementEnvironmentDefinition meDefinition = null;
 	IMeasurementEnvironmentController meController = null;
+	IPersistenceProvider persistenceProvider = null;
 
 	@Override
 	public void initialize(List<ParameterValue<?>> initializationPVList) {
@@ -21,7 +24,7 @@ public class ExperimentController implements IExperimentController {
 	}
 
 	@Override
-	public void prepareExperimentSeries(ExperimentSeriesRun experimentSeriesRun, List<ParameterValue<?>> preparationPVList) {
+	public void prepareExperimentSeries(ExperimentSeriesRun experimentSeriesRun, Collection<ParameterValue<?>> preparationPVList) {
 		meController.prepareExperimentSeries(preparationPVList);
 		// TODO do it right!
 	}
@@ -37,7 +40,7 @@ public class ExperimentController implements IExperimentController {
 	}
 
 	public void setPersistenceProvider(IPersistenceProvider persistenceProvider) {
-		// TODO Auto-generated method stub
+		this.persistenceProvider = persistenceProvider;
 	}
 
 	public void setMeasurementEnvironment(IMeasurementEnvironmentController meController) {
@@ -45,8 +48,7 @@ public class ExperimentController implements IExperimentController {
 	}
 
 	public void setMeasurementEnvironment(MeasurementEnvironmentDefinition meDefinition) {
-		// TODO Auto-generated method stub
-		
+		this.meDefinition = meDefinition;
 	}
 
 	@Override

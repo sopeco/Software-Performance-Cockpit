@@ -2,6 +2,8 @@ package org.sopeco.engine.helper;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
@@ -22,8 +24,8 @@ public class DummyMEController implements IMeasurementEnvironmentController {
 	}
 
 	@Override
-	public void prepareExperimentSeries(List<ParameterValue<?>> preparationPVList) {
-		this.preparationPVList = preparationPVList;
+	public void prepareExperimentSeries(Collection<ParameterValue<?>> preparationPVList) {
+		this.preparationPVList = new ArrayList<ParameterValue<?>>(preparationPVList);
 	}
 
 	@Override

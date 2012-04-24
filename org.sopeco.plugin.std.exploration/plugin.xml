@@ -4,7 +4,7 @@
    <extension
          point="org.sopeco.engine.experimentseries.explorationstrategy">
       <strategy
-            class="org.sopeco.plugin.std.exploration.FullExplorationStrategyExtension">
+            class="org.sopeco.plugin.std.exploration.full.FullExplorationStrategyExtension">
       </strategy>
    </extension>
 

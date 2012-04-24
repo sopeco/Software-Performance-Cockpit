@@ -3,6 +3,7 @@
  */
 package org.sopeco.core.test;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -34,9 +35,9 @@ public class SoPeCoExecutableTest {
 
 		ScenarioDefinition scenario = null;
 		try {
-			scenario = EMFUtil.loadFromURI(new URI("file://" + config.getProperty(IConfiguration.CONF_MEASUREMENT_SPEC_FILE_NAME)));
-		} catch (URISyntaxException e) {
-			// TODO proper exception handling
+			scenario = (ScenarioDefinition) EMFUtil.loadFromFilePath(config.getProperty(IConfiguration.CONF_MEASUREMENT_SPEC_FILE_NAME).toString());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
