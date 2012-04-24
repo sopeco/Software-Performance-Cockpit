@@ -11,7 +11,6 @@ import javax.persistence.JoinColumns;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
-import javax.persistence.Version;
 
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetAppender;
@@ -24,8 +23,6 @@ import org.sopeco.persistence.dataset.DataSetAppender;
 public class ExperimentSeriesRun implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	@SuppressWarnings("unused")
-	@Version private long version;
 	
 	/*
 	 * Entity Attributes
@@ -98,6 +95,7 @@ public class ExperimentSeriesRun implements Serializable {
 		this.resultDataSet = appender.createDataSet();
 		
 	}
+
 
 	/*
 	 * Overrides

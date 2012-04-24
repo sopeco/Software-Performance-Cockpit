@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.eclipse.emf.ecore.util.EcoreEMap;
+import org.sopeco.model.configuration.SoPeCoModelFactoryHandler;
 import org.sopeco.model.configuration.analysis.AnalysisConfiguration;
 import org.sopeco.model.configuration.analysis.AnalysisFactory;
 import org.sopeco.model.configuration.environment.EnvironmentFactory;
@@ -31,6 +32,7 @@ public class DummyFactory {
 
 	
 	public static ScenarioInstance createDummyScenarioInstance(){
+		SoPeCoModelFactoryHandler.initFactories();
 		ScenarioInstance scenarioInstance = new ScenarioInstance();
 		scenarioInstance.setName("Dummy");
 		scenarioInstance.setMeasurementEnvironmentUrl("Dummy");
@@ -77,6 +79,7 @@ public class DummyFactory {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static DataSetAggregated createDummyResultDataSet() {
+//		SoPeCoModelFactoryHandler.initFactories();
 		DataSetColumnBuilder builder = new DataSetColumnBuilder();
 		builder.startInputColumn(createDummyInputParameterDefinition("DummyInput"));
 		builder.addInputValue(1);

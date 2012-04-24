@@ -49,9 +49,9 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 		
 		EntityManager em = emf.createEntityManager();
 		try {
-			
+//			experimentSeriesRun.increaseVersion();
 			em.getTransaction().begin();
-			em.merge(experimentSeriesRun);
+			experimentSeriesRun = em.merge(experimentSeriesRun);
 			em.getTransaction().commit();
 			
 		} finally {

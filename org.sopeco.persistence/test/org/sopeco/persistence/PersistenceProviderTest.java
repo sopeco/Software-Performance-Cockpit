@@ -15,9 +15,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.sopeco.model.configuration.ScenarioDefinition;
 import org.sopeco.model.configuration.SoPeCoModelFactoryHandler;
+import org.sopeco.model.configuration.environment.ParameterDefinition;
+import org.sopeco.model.configuration.environment.ParameterRole;
 import org.sopeco.persistence.config.DBType;
 import org.sopeco.persistence.dataset.DataSetAggregated;
+import org.sopeco.persistence.dataset.DataSetRowBuilder;
+import org.sopeco.persistence.dataset.ParameterValueFactory;
 import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
@@ -407,6 +412,59 @@ public class PersistenceProviderTest {
 			fail(e.getMessage());return;
 		}
 				
+	}
+	
+	
+	@Test
+	public void testSoPeCoWorkflow(){
+		
+		// simulate engine
+		ScenarioDefinition sd = SoPeCoModelFactoryHandler.getConfigurationFactory().createScenarioDefinition();
+		sd.setName("Dummy Scenario");
+		ScenarioInstance scenarioInstance = PersistenceProviderFactory.createScenarioInstance(sd, "Dummy");
+		provider.store(scenarioInstance);
+		
+		// simulate experiment series manager
+		ExperimentSeries expSeries = PersistenceProviderFactory.createExperimentSeries(scenarioInstance, DummyFactory.createDummyExperimentSeriesDefinition("Dummy"));
+		provider.store(expSeries);
+		
+		// simulate experiment controller
+		ExperimentSeriesRun run = PersistenceProviderFactory.createExperimentSeriesRun(expSeries);
+		DataSetAggregated dataSet1 = DummyFactory.createDummyResultDataSet();
+		run.append(dataSet1);
+		provider.store(run);
+		run.append(simulateExperimentRun(dataSet1));
+		provider.store(run);
+		
+		// simulate engine
+		try {
+			provider.loadScenarioInstance(scenarioInstance.getPrimaryKey());
+		} catch (DataNotFoundException e) {
+			fail(e.getMessage());
+		}
+		
+	}
+	
+	private DataSetAggregated simulateExperimentRun(DataSetAggregated dataset){
+		DataSetRowBuilder builder = new DataSetRowBuilder();
+		builder.startRow();
+		for (ParameterDefinition parameter : dataset.getParameterDefinitions()) {
+			if(parameter.getRole().equals(ParameterRole.INPUT)){
+				builder.addInputParameterValue(parameter, ParameterValueFactory.createParameterValue(parameter, 0).getValue());
+			} else {
+				builder.addObservationParameterValue(parameter, ParameterValueFactory.createParameterValue(parameter, 0).getValue());
+			}
+			
+		}
+		builder.finishRow();
+		return builder.createDataSet();
+	}
+	
+	public static void printTableSizes(){
+		System.out.println("ScenariInstance: " + provider.getSize(ScenarioInstance.class));
+		System.out.println("ExperimentSeries: " + provider.getSize(ExperimentSeries.class));
+		System.out.println("ExperimentSeriesRun: " + provider.getSize(ExperimentSeriesRun.class));
+		
 	}
 	
 	private void checkTableSizes() {
