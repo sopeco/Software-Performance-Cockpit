@@ -14,9 +14,9 @@ public class ParameterDefinitionExt extends ParameterDefinitionImpl {
 	@Override
 	public String getFullName() {
 		ParameterNamespace namespace = this.getNamespace();
-
-		
-		return createFullNamespaceString("", namespace) + getName();
+		String result = createFullNamespaceString("", namespace) + getName();
+		System.out.println(result);
+		return result;
 	}
 
 	@Override

@@ -214,7 +214,7 @@ public class ParameterDefinitionImpl extends SerializableEObject implements Para
 	 * @generated
 	 */
 	public String getFullName() {
-		// TODO: implement this method to return the 'Full Name' attribute
+		
 		// Ensure that you remove @generated or mark it @generated NOT
 		throw new UnsupportedOperationException();
 	}
@@ -225,7 +225,7 @@ public class ParameterDefinitionImpl extends SerializableEObject implements Para
 	 * @generated
 	 */
 	public boolean isSetFullName() {
-		// TODO: implement this method to return whether the 'Full Name' attribute is set
+
 		// Ensure that you remove @generated or mark it @generated NOT
 		throw new UnsupportedOperationException();
 	}
