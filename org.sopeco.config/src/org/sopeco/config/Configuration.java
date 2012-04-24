@@ -18,6 +18,7 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.eclipse.core.runtime.CoreException;
@@ -113,23 +114,42 @@ public class Configuration implements IConfiguration {
 										.withDescription("the logback configuration file")
 										.create("logconfig");
 
-		// option: URI
-		Option uri = OptionBuilder.withArgName("URI")
+		// option: ME URI
+		Option meURI = OptionBuilder.withArgName("URI")
 										.hasArg()
-										.withDescription("URI of the measurement controller service")
+										.withDescription("URI of the measurement environment controller service")
 										.create("uri");
 		
-//		Option selectedSeries = OptionBuilder.withArgName("series")
+		// option: ME Class
+		Option meClass = OptionBuilder.withArgName("class")
+										.hasArg()
+										.withDescription("classname of the measurement environment controller")
+										.create("meClass");
+		
+		// option: scenario definition
+		Option scenarioDef = OptionBuilder.withArgName("file")
+										.hasArg()
+										.isRequired()
+										.withDescription("scenario definition file")
+										.create("sd");
+
+		//		Option selectedSeries = OptionBuilder.withArgName("series")
 //										.withValueSeparator(',')
 //										.hasArg()
 //										.withDescription("the names of selected experiment series separated by comma")
 //										.create("series");
 		
+		OptionGroup meGroup = new OptionGroup();
+		meGroup.addOption(meURI);
+		meGroup.addOption(meClass);
+		meGroup.setRequired(true);
+		
+		options.addOption(scenarioDef);
 		options.addOption(help);
 		options.addOption(config);
-		options.addOption(uri);
+		options.addOptionGroup(meGroup);
 		options.addOption(logconfig);
-
+		
 		/* Adding all extension options */
 		// the following does not check for option conflicts 
 		for (ICommandLineArgumentsExtension iclae: getCLAExtensions()) 
@@ -140,25 +160,21 @@ public class Configuration implements IConfiguration {
 	    CommandLine line = null;
 	    try {
 	        line = parser.parse( options, args );
-	        
-	        // there must be exactly one argument, which is the config file name 
-	        if (line.getArgs().length != 1) {
-	        	throw new ParseException("This program requires at least one argument"
-	        			+ " (the path to the measurement specification file).");
-	        } else
-	        	setProperty(CONF_MEASUREMENT_SPEC_FILE_NAME, line.getArgs()[0]);
 	    }
 	    catch( ParseException exp ) {
 	        System.err.println("Invalid options. " + exp.getMessage() );
 	        printHelpMessage(options);
 	        return;
 	    }
-	    
+
 	    // -help
 	    if (line.hasOption(help.getOpt())) {
 	        printHelpMessage(options);
 	        System.exit(0);
 	    }
+
+	    // -sd 
+	    setProperty(CONF_SCENARIO_DESCRIPTION_FILE_NAME, line.getOptionValue(scenarioDef.getOpt()));
 	    
 	    // -config
 	    if (line.hasOption(config.getOpt())) {
@@ -167,11 +183,17 @@ public class Configuration implements IConfiguration {
 	    }
 	    
 	    // -uri
-	    if (line.hasOption(uri.getOpt())) {
-	    	final String uriStr = line.getOptionValue(uri.getOpt());
-	    	setProperty(CONF_MEASUREMENT_CONTROLLER_URI, uri);
+	    if (line.hasOption(meURI.getOpt())) {
+	    	final String uriStr = line.getOptionValue(meURI.getOpt());
+	    	setProperty(CONF_MEASUREMENT_CONTROLLER_URI, uriStr);
 	    }
 	    
+	    // -meClass
+	    if (line.hasOption(meClass.getOpt())) {
+	    	final String className = line.getOptionValue(meClass.getOpt());
+	    	setProperty(CONF_MEASUREMENT_CONTROLLER_CLASS_NAME, className);
+	    }
+
 	    // -logconfig
 	    if (line.hasOption(logconfig.getOpt())) {
 	    	String logbackConfigFilePath = line.getOptionValue(logconfig.getOpt());
@@ -210,7 +232,7 @@ public class Configuration implements IConfiguration {
 	 * Sets the default property values. 
 	 */
 	private void setDefaultValues() {
-		setProperty(CONF_APP_NAME, "SoPeCo");
+		setProperty(CONF_APP_NAME, "sopeco");
 		setProperty(CONF_PLUGINS_FOLDER, "plugins");
 		
 		InputStream in = this.getClass().getResourceAsStream(DEFAULT_CONFIG_FILE_NAME);
@@ -230,7 +252,9 @@ public class Configuration implements IConfiguration {
 	 */
 	private void printHelpMessage(Options options) {
 		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp(getProperty(CONF_APP_NAME) + " [OPTIONS] MEASUREMENT_SPEC_FILE", options );
+		formatter.setWidth(120);
+		formatter.setArgName("Test");
+		formatter.printHelp(getProperty(CONF_APP_NAME).toString(), options, true );
 	}
 
 	/**

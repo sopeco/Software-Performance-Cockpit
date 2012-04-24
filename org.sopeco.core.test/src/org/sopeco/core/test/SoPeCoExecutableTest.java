@@ -28,14 +28,16 @@ public class SoPeCoExecutableTest {
 		
 		String[] testArgs = new String[] {
 //				"rsc/test.configuration"
-				"-help"
+				"-help",
 		};
 		
 		config.processCommandLineArguments(testArgs);
-
+		
+		System.exit(0);
+		
 		ScenarioDefinition scenario = null;
 		try {
-			scenario = (ScenarioDefinition) EMFUtil.loadFromFilePath(config.getProperty(IConfiguration.CONF_MEASUREMENT_SPEC_FILE_NAME).toString());
+			scenario = (ScenarioDefinition) EMFUtil.loadFromFilePath(config.getProperty(IConfiguration.CONF_SCENARIO_DESCRIPTION_FILE_NAME).toString());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
