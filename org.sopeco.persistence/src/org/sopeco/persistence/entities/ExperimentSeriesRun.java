@@ -14,6 +14,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Version;
 
 import org.sopeco.persistence.dataset.DataSetAggregated;
+import org.sopeco.persistence.dataset.DataSetAppender;
 
 @NamedQuery(
 	    name="findAllExperimentSeriesRuns",
@@ -78,6 +79,24 @@ public class ExperimentSeriesRun implements Serializable {
 	
 	public void setTimestamp(Long timestamp){
 		this.timestamp = timestamp; 
+	}
+	
+	/*
+	 * Utility functions
+	 */
+	
+	/**
+	 * Adds the given experiment run results to the result data set of this {@link ExperimentSeriesRun}.
+	 * 
+	 * @param experimentRunResults - a dataSet containing the parameter values of one or many experiment runs
+	 */
+	public void append(DataSetAggregated experimentRunResults){
+		
+		DataSetAppender appender = new DataSetAppender();
+		if(resultDataSet!=null) appender.append(resultDataSet);
+		appender.append(experimentRunResults);
+		this.resultDataSet = appender.createDataSet();
+		
 	}
 
 	/*

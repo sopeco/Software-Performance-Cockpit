@@ -75,6 +75,7 @@ public class DummyFactory {
 	}
 
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static DataSetAggregated createDummyResultDataSet() {
 		DataSetColumnBuilder builder = new DataSetColumnBuilder();
 		builder.startInputColumn(createDummyInputParameterDefinition("DummyInput"));
@@ -82,15 +83,21 @@ public class DummyFactory {
 		builder.addInputValue(2);
 		builder.finishColumn();
 		
-		builder.startObservationColumn(createDummyObservationParameterDefinition("DummyOutput"));
+		ParameterDefinition paramDef = createDummyObservationParameterDefinition("DummyOutput");
+		ArrayList<ParameterValueList> obsValueLists = new ArrayList<ParameterValueList>();
+		builder.startObservationColumn(paramDef);
 		ArrayList<Object> obsValues1 = new ArrayList<Object>();
 		obsValues1.add(10);
 		obsValues1.add(10);
-		builder.addObservationValues(obsValues1);
+		obsValueLists.add(new ParameterValueList<Object>(paramDef, obsValues1));
+		
 		ArrayList<Object> obsValues2 = new ArrayList<Object>();
 		obsValues2.add(20);
 		obsValues2.add(20);
-		builder.addObservationValues(obsValues2);
+//		builder.addObservationValues(obsValues2);
+		obsValueLists.add(new ParameterValueList(paramDef, obsValues2));
+		
+		builder.addObservationValueLists(obsValueLists);
 		builder.finishColumn();
 		
 		return builder.createDataSet();

@@ -48,5 +48,5 @@ public interface IPersistenceProvider {
 
 	void remove(ScenarioInstance scenarioInstance) throws DataNotFoundException;
 
-
+	
 }

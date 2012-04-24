@@ -239,9 +239,9 @@ public class DataSetColumnBuilder {
 		if (nextColumn == null) {
 			throw new IllegalStateException("The row must be started first.");
 		}
-		if (!(nextColumn instanceof DataSetInputColumn)) {
+		if (!(nextColumn instanceof DataSetObservationColumn)) {
 			throw new IllegalStateException(
-					"The started column must be an input column!");
+					"The started column must be an obsrevation column!");
 		}
 		((DataSetObservationColumn) nextColumn).getValueLists().addAll(
 				valueLists);
