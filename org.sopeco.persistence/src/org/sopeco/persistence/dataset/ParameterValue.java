@@ -91,7 +91,7 @@ public class ParameterValue<T> implements Serializable,
 		}
 	}
 
-	public String getValueString() {
+	public String getValueAsString() {
 
 		if (value instanceof Double) {
 			return Double.toString((Double) value);
