@@ -115,6 +115,14 @@ public class ParameterValue<T> implements Serializable,
 					"The function getValueAsDouble is supported only by Double and Integer ParameterValues!");
 	}
 
+	public boolean getValueAsBoolean() {
+		if (value instanceof Boolean) {
+			return (Boolean) value;
+		} else
+			throw new IllegalStateException(
+					"The function getValueAsBoolean is supported only by Boolean ParameterValues!");
+	}
+
 	public int getValueAsInteger() {
 		if (value instanceof Double) {
 			return ((Double) value).intValue();

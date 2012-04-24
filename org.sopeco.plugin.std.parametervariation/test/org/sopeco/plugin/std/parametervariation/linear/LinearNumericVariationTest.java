@@ -1,4 +1,4 @@
-package org.sopeco.plugin.std.parametervariation;
+package org.sopeco.plugin.std.parametervariation.linear;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
