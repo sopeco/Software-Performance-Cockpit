@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Standard Constant Value Assignments
+Bundle-SymbolicName: org.sopeco.plugin.std.constantassignment;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.sopeco.config;bundle-version="0.2.0",
+ org.sopeco.core;bundle-version="0.2.0",
+ org.sopeco.orbit.logging;bundle-version="1.0.0",
+ org.sopeco.util;bundle-version="1.0.0"
+Export-Package: org.sopeco.plugin.std.constantassignment
