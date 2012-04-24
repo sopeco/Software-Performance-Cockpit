@@ -32,11 +32,11 @@ public class PersistenceProviderFactory {
 	private final static String DB_DRIVER_CLASS = "javax.persistence.jdbc.driver";
 	private final static String DB_URL = "javax.persistence.jdbc.url"; 
 	
-	private final static String MEM_DB_DRIVER_CLASS_VALUE = "org.apache.derby.jdbc.ClientDriver";
-	private final static String MEM_DB_URL_VALUE = "jdbc:derby://localhost/sopeco-jpa;create=true";
+	private final static String SERVER_DB_DRIVER_CLASS_VALUE = "org.apache.derby.jdbc.ClientDriver";
+	private final static String SERVER_DB_URL_VALUE = "jdbc:derby://localhost/sopeco-jpa;create=true";
 	
-	private final static String SERVER_DB_DRIVER_CLASS_VALUE = "org.apache.derby.jdbc.EmbeddedDriver";
-	private final static String SERVER_DB_URL_VALUE = "jdbc:derby:memory:sopeco-jpa;create=true";
+	private final static String MEM_DB_DRIVER_CLASS_VALUE = "org.apache.derby.jdbc.EmbeddedDriver";
+	private final static String MEM_DB_URL_VALUE = "jdbc:derby:memory:sopeco-jpa;create=true";
 	
 	
 	// General persistence provider constants TODO: retrieve values from config registry
