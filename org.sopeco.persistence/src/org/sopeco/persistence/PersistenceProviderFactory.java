@@ -1,6 +1,5 @@
 package org.sopeco.persistence;
 
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,12 +8,18 @@ import javax.persistence.Persistence;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.model.configuration.ScenarioDefinition;
+import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
 import org.sopeco.persistence.config.DBType;
+import org.sopeco.persistence.entities.ExperimentSeries;
+import org.sopeco.persistence.entities.ExperimentSeriesRun;
+import org.sopeco.persistence.entities.ScenarioInstance;
 
 /**
  * Factory class that allows access to a persistence provider ({@link IPersistenceProvider}). 
  * The persistence provider is a singleton.
  * Currently, we have only one type of persistence provider (JPA persistence). 
+ * Moreover, the factory is used to create new instance of the SoPeCo persistence entities.
  * 
  * @author Dennis Westermann
  *
@@ -89,5 +94,60 @@ public class PersistenceProviderFactory {
 		}
 		return configOverrides;
 	}
+	
+	
+	/**
+	 * Creates a new instance of the {@link ScenarioInstance} entity. Sets the name and measurementEnvironmentUrl according to the given parameters.
+	 * 
+	 * @param scenarioDefinition
+	 * @param measurementEnvironmentUrl
+	 * 
+	 * @return a new instance of {@link ScenarioInstance} based on the given parameters
+	 */
+	public static ScenarioInstance createScenarioInstance(ScenarioDefinition scenarioDefinition, String measurementEnvironmentUrl){
+		ScenarioInstance si = new ScenarioInstance();
+		si.setName(scenarioDefinition.getName());
+		si.setMeasurementEnvironmentUrl(measurementEnvironmentUrl);
+		return si;
+	}
+	
+	/**
+	 * Creates a new instance of the {@link ExperimentSeries} entity. 
+	 * Sets the name, experimentDefintion and scenarioInstance according to the given parameters.
+	 * Adds the newly created instance to the given scenarioInstance (resolving the relationship).
+	 * 
+	 * @param scenarioInstance
+	 * @param expSeriesDefinition
+	 * @return a new instance of {@link ExperimentSeries} based on the given parameters
+	 */
+	public static ExperimentSeries createExperimentSeries(ScenarioInstance scenarioInstance, ExperimentSeriesDefinition expSeriesDefinition){
+		ExperimentSeries expSeries = new ExperimentSeries();
+		expSeries.setName(expSeriesDefinition.getName());
+		expSeries.setExperimentSeriesDefinition(expSeriesDefinition);
+		expSeries.setScenarioInstance(scenarioInstance);
+		scenarioInstance.getExperimentSeries().add(expSeries);
+		
+		return expSeries;
+	}
+	
+	
+	/**
+	 * Creates a new instance of the {@link ExperimentSeriesRun} entity. 
+	 * Sets the given experimentSeries as well as the timestamp (to the current {@link System.nanoTime()}).
+	 * Adds the newly created instance to the given experiment series (resolving the relationship).
+	 * 
+	 * @param scenarioInstance
+	 * @param expSeriesDefinition
+	 * @return a new instance of {@link ExperimentSeriesRun} based on the given parameters
+	 */
+	public static ExperimentSeriesRun createExperimentSeriesRun(ExperimentSeries experimentSeries){
+		ExperimentSeriesRun expSeriesRun = new ExperimentSeriesRun();
+		
+		expSeriesRun.setTimestamp(System.nanoTime());
+		expSeriesRun.setExperimentSeries(experimentSeries);
+		experimentSeries.getExperimentSeriesRuns().add(expSeriesRun);
+		return expSeriesRun;
+	}
+	
 	
 }

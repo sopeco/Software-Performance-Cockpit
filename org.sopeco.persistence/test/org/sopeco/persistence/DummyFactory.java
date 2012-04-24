@@ -64,7 +64,8 @@ public class DummyFactory {
 			int numberOfRunsToCreate, ExperimentSeries expSeries) {
 		ArrayList<ExperimentSeriesRun> runs = new ArrayList<ExperimentSeriesRun>();
 		for (int i = 0; i < numberOfRunsToCreate; i++) {
-			ExperimentSeriesRun run = new ExperimentSeriesRun(System.nanoTime());
+			ExperimentSeriesRun run = new ExperimentSeriesRun();
+			run.setTimestamp(System.nanoTime());
 			run.setExperimentSeries(expSeries);
 			run.setResultDataSet(createDummyResultDataSet());
 			runs.add(run);

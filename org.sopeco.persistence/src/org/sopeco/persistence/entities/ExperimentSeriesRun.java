@@ -26,16 +26,6 @@ public class ExperimentSeriesRun implements Serializable {
 	@SuppressWarnings("unused")
 	@Version private long version;
 	
-	@SuppressWarnings("unused")
-	private ExperimentSeriesRun(){
-		super();
-	}
-	
-	public ExperimentSeriesRun(Long timestamp){
-		super();
-		this.timestamp = timestamp;
-	}
-	
 	/*
 	 * Entity Attributes
 	 */
@@ -84,6 +74,10 @@ public class ExperimentSeriesRun implements Serializable {
 
 	public Long getTimestamp() {
 		return timestamp;
+	}
+	
+	public void setTimestamp(Long timestamp){
+		this.timestamp = timestamp; 
 	}
 
 	/*
