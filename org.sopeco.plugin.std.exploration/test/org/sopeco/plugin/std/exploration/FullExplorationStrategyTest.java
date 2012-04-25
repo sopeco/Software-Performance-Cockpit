@@ -93,7 +93,6 @@ public class FullExplorationStrategyTest {
 		ipvList.add(ipv);
 		
 		ExperimentSeries es = new ExperimentSeries();
-		es.setExperimentSeriesDefinition(expSeriesDef);
 		es.setName(expSeriesDef.getName());
 		
 		fes.runExperimentSeries(es, ipvList);

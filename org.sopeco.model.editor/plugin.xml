@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+ <copyright>
+ </copyright>
+
+ $Id$
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.sopeco.model.configuration.presentation.ConfigurationModelWizardID"
+            name="%_UI_ConfigurationModelWizard_label"
+            class="org.sopeco.model.configuration.presentation.ConfigurationModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/ConfigurationModelFile.gif">
+         <description>%_UI_ConfigurationModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="org.sopeco.model.configuration.presentation.ConfigurationEditorID"
+            name="%_UI_ConfigurationEditor_label"
+            icon="icons/full/obj16/ConfigurationModelFile.gif"
+            extensions="configuration"
+            class="org.sopeco.model.configuration.presentation.ConfigurationEditor"
+            contributorClass="org.sopeco.model.configuration.presentation.ConfigurationActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.sopeco.model.configuration.environment.presentation.EnvironmentModelWizardID"
+            name="%_UI_EnvironmentModelWizard_label"
+            class="org.sopeco.model.configuration.environment.presentation.EnvironmentModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/EnvironmentModelFile.gif">
+         <description>%_UI_EnvironmentModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="org.sopeco.model.configuration.environment.presentation.EnvironmentEditorID"
+            name="%_UI_EnvironmentEditor_label"
+            icon="icons/full/obj16/EnvironmentModelFile.gif"
+            extensions="environment"
+            class="org.sopeco.model.configuration.environment.presentation.EnvironmentEditor"
+            contributorClass="org.sopeco.model.configuration.environment.presentation.EnvironmentActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.sopeco.model.configuration.measurements.presentation.MeasurementsModelWizardID"
+            name="%_UI_MeasurementsModelWizard_label"
+            class="org.sopeco.model.configuration.measurements.presentation.MeasurementsModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/MeasurementsModelFile.gif">
+         <description>%_UI_MeasurementsModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="org.sopeco.model.configuration.measurements.presentation.MeasurementsEditorID"
+            name="%_UI_MeasurementsEditor_label"
+            icon="icons/full/obj16/MeasurementsModelFile.gif"
+            extensions="measurements"
+            class="org.sopeco.model.configuration.measurements.presentation.MeasurementsEditor"
+            contributorClass="org.sopeco.model.configuration.measurements.presentation.MeasurementsActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="org.sopeco.model.configuration.analysis.presentation.AnalysisModelWizardID"
+            name="%_UI_AnalysisModelWizard_label"
+            class="org.sopeco.model.configuration.analysis.presentation.AnalysisModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/AnalysisModelFile.gif">
+         <description>%_UI_AnalysisModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <editor
+            id="org.sopeco.model.configuration.analysis.presentation.AnalysisEditorID"
+            name="%_UI_AnalysisEditor_label"
+            icon="icons/full/obj16/AnalysisModelFile.gif"
+            extensions="analysis"
+            class="org.sopeco.model.configuration.analysis.presentation.AnalysisEditor"
+            contributorClass="org.sopeco.model.configuration.analysis.presentation.AnalysisActionBarContributor">
+      </editor>
+   </extension>
+
+</plugin>
