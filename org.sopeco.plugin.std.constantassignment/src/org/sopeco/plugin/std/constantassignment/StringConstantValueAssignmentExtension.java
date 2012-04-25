@@ -11,7 +11,7 @@ package org.sopeco.plugin.std.constantassignment;
  */
 public class StringConstantValueAssignmentExtension extends BasicConstantValueAssignmentExtension {
 
-	protected StringConstantValueAssignmentExtension() {
+	public StringConstantValueAssignmentExtension() {
 		super("String");
 	}
 

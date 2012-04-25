@@ -11,7 +11,7 @@ package org.sopeco.plugin.std.constantassignment;
  */
 public class DoubleConstantValueAssignmentExtension extends BasicConstantValueAssignmentExtension {
 
-	protected DoubleConstantValueAssignmentExtension() {
+	public DoubleConstantValueAssignmentExtension() {
 		super("Double");
 	}
 

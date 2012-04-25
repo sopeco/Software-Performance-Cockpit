@@ -27,7 +27,7 @@ public abstract class BasicConstantValueAssignmentExtension implements IConstant
 
 	@Override
 	public IConstantAssignment createExtensionArtifact() {
-		return null;
+		return new BasicConstantValueAssignment(this);
 	}
 
 }

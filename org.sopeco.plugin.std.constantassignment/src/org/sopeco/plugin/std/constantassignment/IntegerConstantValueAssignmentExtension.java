@@ -11,7 +11,7 @@ package org.sopeco.plugin.std.constantassignment;
  */
 public class IntegerConstantValueAssignmentExtension extends BasicConstantValueAssignmentExtension {
 
-	protected IntegerConstantValueAssignmentExtension() {
+	public IntegerConstantValueAssignmentExtension() {
 		super("Integer");
 	}
 

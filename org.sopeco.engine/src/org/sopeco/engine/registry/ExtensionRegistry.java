@@ -215,14 +215,6 @@ public class ExtensionRegistry implements IExtensionRegistry {
 				return;
 			}
 			
-			ServiceLoader<IExplorationStrategyExtension> sl = ServiceLoader.load(IExplorationStrategyExtension.class, cl);
-			
-			Iterator<IExplorationStrategyExtension> iterator = sl.iterator();
-			
-			while (iterator.hasNext())
-				System.out.println(iterator.next().getClass().getName());
-				
-			
 		} else {
 			logger.debug("Could not locate the plugins folder ({}).", pluginsDirName); 
 		}

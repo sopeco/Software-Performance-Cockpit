@@ -13,4 +13,5 @@ Require-Bundle: org.sopeco.config;bundle-version="0.2.0",
  org.sopeco.plugin.std.parametervariation;bundle-version="1.0.0",
  org.sopeco.util;bundle-version="1.0.0",
  org.junit,
- org.sopeco.orbit.logging;bundle-version="1.0.0"
+ org.sopeco.orbit.logging;bundle-version="1.0.0",
+ org.sopeco.plugin.std.constantassignment;bundle-version="1.0.0"

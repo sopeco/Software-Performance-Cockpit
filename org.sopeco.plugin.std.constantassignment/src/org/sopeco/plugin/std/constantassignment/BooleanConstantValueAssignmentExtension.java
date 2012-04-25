@@ -11,7 +11,7 @@ package org.sopeco.plugin.std.constantassignment;
  */
 public class BooleanConstantValueAssignmentExtension extends BasicConstantValueAssignmentExtension {
 
-	protected BooleanConstantValueAssignmentExtension() {
+	public BooleanConstantValueAssignmentExtension() {
 		super("Boolean");
 	}
 
