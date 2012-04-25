@@ -475,7 +475,7 @@ public class PersistenceProviderTest {
 	}
 
 	public static void printTableSizes() {
-		System.out.println("ScenariInstance: " + provider.getSize(ScenarioInstance.class));
+		System.out.println("ScenarioInstance: " + provider.getSize(ScenarioInstance.class));
 		System.out.println("ExperimentSeries: " + provider.getSize(ExperimentSeries.class));
 		System.out.println("ExperimentSeriesRun: " + provider.getSize(ExperimentSeriesRun.class));
 
