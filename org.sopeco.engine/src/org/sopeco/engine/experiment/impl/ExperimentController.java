@@ -8,9 +8,8 @@ import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
 import org.sopeco.model.configuration.environment.MeasurementEnvironmentDefinition;
 import org.sopeco.model.configuration.environment.ParameterDefinition;
-import org.sopeco.model.configuration.environment.ParameterNamespace;
-import org.sopeco.model.configuration.environment.ParameterRole;
 import org.sopeco.model.configuration.measurements.ExperimentTerminationCondition;
+import org.sopeco.model.util.ScenarioDefinitionUtil;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.ParameterValue;
@@ -54,34 +53,9 @@ public class ExperimentController implements IExperimentController {
 		meController.prepareExperimentSeries(preparationPVList);
 		
 		List<ParameterDefinition> observationParameterList = new ArrayList<ParameterDefinition>();
-		collectObservationParameters(meDefinition.getRoot(), observationParameterList);
+		ScenarioDefinitionUtil.collectObservationParameters(meDefinition.getRoot(), observationParameterList);
 		meController.setObservationParameters(observationParameterList);
 	}
-
-	/**
-	 * Collects all observation parameters included in the given namespace. 
-	 * 
-	 * @param namespace
-	 * @param observationParameterList - the list in which the observation parameters should be stored (must not be null)
-	 */
-	private void collectObservationParameters(ParameterNamespace namespace, List<ParameterDefinition> observationParameterList) {
-		
-		
-		for(ParameterDefinition parameter : namespace.getParameters()){
-			if(parameter.getRole().equals(ParameterRole.OBSERVATION)){
-				observationParameterList.add(parameter);
-			}
-		}
-		
-		for(ParameterNamespace child : namespace.getChildren()){
-			collectObservationParameters(child, observationParameterList);
-		}
-		
-	}
-	
-	
-	
-
 	
 	
 	

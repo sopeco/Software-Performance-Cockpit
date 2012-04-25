@@ -106,6 +106,7 @@ public class PersistenceProviderFactory {
 	 */
 	public static ScenarioInstance createScenarioInstance(ScenarioDefinition scenarioDefinition, String measurementEnvironmentUrl){
 		ScenarioInstance si = new ScenarioInstance();
+		si.setScenarioDefinition(scenarioDefinition);
 		si.setName(scenarioDefinition.getName());
 		si.setMeasurementEnvironmentUrl(measurementEnvironmentUrl);
 		return si;
@@ -123,7 +124,6 @@ public class PersistenceProviderFactory {
 	public static ExperimentSeries createExperimentSeries(ScenarioInstance scenarioInstance, ExperimentSeriesDefinition expSeriesDefinition){
 		ExperimentSeries expSeries = new ExperimentSeries();
 		expSeries.setName(expSeriesDefinition.getName());
-		expSeries.setExperimentSeriesDefinition(expSeriesDefinition);
 		expSeries.setScenarioInstance(scenarioInstance);
 		scenarioInstance.getExperimentSeries().add(expSeries);
 		

@@ -15,8 +15,10 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import org.sopeco.model.configuration.ScenarioDefinition;
 import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
 import org.sopeco.model.util.EMFUtil;
+import org.sopeco.model.util.ScenarioDefinitionUtil;
 import org.sopeco.persistence.entities.keys.ExperimentSeriesPK;
 
 @Entity
@@ -34,9 +36,9 @@ public class ExperimentSeries implements Serializable {
 	})
 	private ScenarioInstance scenarioInstance;
 	
-	@Lob
-	@Column(name = "experimentSeriesDefinition")
-	private String experimentSeriesDefinition;
+//	@Lob
+//	@Column(name = "experimentSeriesDefinition")
+//	private String experimentSeriesDefinition;
 	
 	@OneToMany(cascade=CascadeType.ALL, mappedBy = "experimentSeries", orphanRemoval=true)
 	private List<ExperimentSeriesRun> experimentSeriesRuns = new ArrayList<ExperimentSeriesRun>();
@@ -73,24 +75,24 @@ public class ExperimentSeries implements Serializable {
 	public ExperimentSeriesDefinition getExperimentSeriesDefinition() {
 		
 		ExperimentSeriesDefinition returnValue;
-		try {
-			returnValue = (ExperimentSeriesDefinition) EMFUtil.loadFromSting(this.experimentSeriesDefinition);
-		} catch (IOException e) {
-			throw new RuntimeException("Cannot serialize object.", e);
-		}
+		
+		ScenarioDefinition sd = this.scenarioInstance.getScenarioDefinition();
+		
+		returnValue = ScenarioDefinitionUtil.getExperimentSeriesDefinition(this.getName(), sd);
+		
 		return returnValue;
 	}
 
 
-	public void setExperimentSeriesDefinition(
-			ExperimentSeriesDefinition experimentSeriesDefinition) {
-		try {
-			this.experimentSeriesDefinition = EMFUtil.saveToString(experimentSeriesDefinition);
-		} catch (IOException e) {
-			throw new RuntimeException("Cannot serialize object.", e);
-		}
-		
-	}
+//	public void setExperimentSeriesDefinition(
+//			ExperimentSeriesDefinition experimentSeriesDefinition) {
+//		try {
+//			this.experimentSeriesDefinition = EMFUtil.saveToString(experimentSeriesDefinition);
+//		} catch (IOException e) {
+//			throw new RuntimeException("Cannot serialize object.", e);
+//		}
+//		
+//	}
 	
 	public List<ExperimentSeriesRun> getExperimentSeriesRuns(){
 		return this.experimentSeriesRuns;

@@ -91,7 +91,6 @@ public class SoPeCoCoreTest {
 
 		fes.setExperimentController(expController);
 		ExperimentSeries es = new ExperimentSeries();
-		es.setExperimentSeriesDefinition(expSeriesDef);
 		es.setName(expSeriesDef.getName());
 		
 		fes.runExperimentSeries(es, ipvList);

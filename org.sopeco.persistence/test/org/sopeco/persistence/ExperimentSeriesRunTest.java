@@ -31,9 +31,8 @@ public class ExperimentSeriesRunTest {
 	@Test
 	public void testAppendExperimentRunResultsOnNotInitializedResultDataSet() {
 	
-		DataSetAggregated dataSet = DummyFactory.createDummyResultDataSet();
-		
 		try {
+			DataSetAggregated dataSet = DummyFactory.createDummyResultDataSet();
 			dummyRun.append(dataSet);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -49,11 +48,9 @@ public class ExperimentSeriesRunTest {
 	@Test
 	public void testAppendExperimentRunResultsOnInitializedResultDataSet() {
 	
-		DataSetAggregated dataSet = DummyFactory.createDummyResultDataSet();
-		dummyRun.setResultDataSet(dataSet);
-		
-	
 		try {
+			DataSetAggregated dataSet = DummyFactory.createDummyResultDataSet();
+			dummyRun.setResultDataSet(dataSet);
 			dummyRun.append(dataSet);
 		} catch (Exception e) {
 			e.printStackTrace();

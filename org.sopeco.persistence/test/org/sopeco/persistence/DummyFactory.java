@@ -1,25 +1,18 @@
 package org.sopeco.persistence;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map.Entry;
 
-import org.eclipse.emf.ecore.util.EcoreEMap;
+import org.sopeco.model.configuration.ScenarioDefinition;
 import org.sopeco.model.configuration.SoPeCoModelFactoryHandler;
-import org.sopeco.model.configuration.analysis.AnalysisConfiguration;
-import org.sopeco.model.configuration.analysis.AnalysisFactory;
 import org.sopeco.model.configuration.environment.EnvironmentFactory;
 import org.sopeco.model.configuration.environment.ParameterDefinition;
 import org.sopeco.model.configuration.environment.ParameterRole;
 import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
-import org.sopeco.model.configuration.measurements.ExperimentTerminationCondition;
-import org.sopeco.model.configuration.measurements.ExplorationStrategy;
-import org.sopeco.model.configuration.measurements.MeasurementsFactory;
-import org.sopeco.model.configuration.measurements.MeasurementsPackage;
-import org.sopeco.model.configuration.measurements.NumberOfRepetitions;
-import org.sopeco.model.configuration.measurements.impl.ConfigurationNodeImpl;
-import org.sopeco.model.configuration.measurements.impl.ExtensibleElementImpl;
+import org.sopeco.model.util.EMFUtil;
+import org.sopeco.model.util.ScenarioDefinitionUtil;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetColumnBuilder;
 import org.sopeco.persistence.dataset.DataSetModifier;
@@ -30,45 +23,42 @@ import org.sopeco.persistence.entities.ScenarioInstance;
 
 public class DummyFactory {
 
+	private static ParameterDefinition inputParam;
+	private static ParameterDefinition observationParam;
+	private static ScenarioDefinition scenarioDefinition; 
 	
-	public static ScenarioInstance createDummyScenarioInstance(){
+	public static ScenarioInstance createDummyScenarioInstance() throws IOException{
 		SoPeCoModelFactoryHandler.initFactories();
-		ScenarioInstance scenarioInstance = new ScenarioInstance();
-		scenarioInstance.setName("Dummy");
-		scenarioInstance.setMeasurementEnvironmentUrl("Dummy");
-		scenarioInstance.getExperimentSeries().addAll(createDummyExperimentSeries(2, scenarioInstance));
+		scenarioDefinition = loadScenarioDefinition();
+		ScenarioInstance scenarioInstance = PersistenceProviderFactory.createScenarioInstance(scenarioDefinition, "Dummy");
+//		ScenarioInstance scenarioInstance = new ScenarioInstance();
+//		scenarioInstance.setName("Dummy");
+//		scenarioInstance.setMeasurementEnvironmentUrl("Dummy");
+		createDummyExperimentSeries(scenarioInstance);
 		return scenarioInstance;
 	}
 	
+	public static ScenarioDefinition loadScenarioDefinition() throws IOException{
+		return (ScenarioDefinition) EMFUtil.loadFromFilePath("test/dummy.configuration");
+	}
 	
-	public static List<ExperimentSeries> createDummyExperimentSeries(int numberOfSeriesToCreate, ScenarioInstance scenarioInstance){
-		ArrayList<ExperimentSeries> series = new ArrayList<ExperimentSeries>();
+	private static void createDummyExperimentSeries(ScenarioInstance scenarioInstance) throws IOException{
 		
-		for (int i = 0; i < numberOfSeriesToCreate; i++) {
-			series.add(createDummyExperimentSeries("Dummy"+i, scenarioInstance));
+		for (ExperimentSeriesDefinition esd : scenarioInstance.getScenarioDefinition().getMeasurementSpecification().getExperimentSeriesDefinitions()) {
+			ExperimentSeries es = PersistenceProviderFactory.createExperimentSeries(scenarioInstance, esd);
+			createDummyExperimentSeriesRuns(10, es);
 		}
 		
-		return series;
 	}
 	
 	
-	public static ExperimentSeries createDummyExperimentSeries(String name, ScenarioInstance scenarioInstance){
-		ExperimentSeries expSeries = new ExperimentSeries();
-		expSeries.setExperimentSeriesDefinition(createDummyExperimentSeriesDefinition(name));
-		expSeries.setName(name);
-		expSeries.setScenarioInstance(scenarioInstance);
-		expSeries.getExperimentSeriesRuns().addAll(createDummyExperimentSeriesRuns(10, expSeries));
-		return expSeries;
-	}
 	
-	
-	public static Collection<? extends ExperimentSeriesRun> createDummyExperimentSeriesRuns(
-			int numberOfRunsToCreate, ExperimentSeries expSeries) {
+	static Collection<? extends ExperimentSeriesRun> createDummyExperimentSeriesRuns(
+			int numberOfRunsToCreate, ExperimentSeries expSeries) throws IOException {
 		ArrayList<ExperimentSeriesRun> runs = new ArrayList<ExperimentSeriesRun>();
 		for (int i = 0; i < numberOfRunsToCreate; i++) {
-			ExperimentSeriesRun run = new ExperimentSeriesRun();
-			run.setTimestamp(System.nanoTime());
-			run.setExperimentSeries(expSeries);
+			
+			ExperimentSeriesRun run = PersistenceProviderFactory.createExperimentSeriesRun(expSeries);
 			run.setResultDataSet(createDummyResultDataSet());
 			runs.add(run);
 		}
@@ -78,15 +68,17 @@ public class DummyFactory {
 
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static DataSetAggregated createDummyResultDataSet() {
-//		SoPeCoModelFactoryHandler.initFactories();
+	public static DataSetAggregated createDummyResultDataSet() throws IOException {
+		if(scenarioDefinition==null) 
+			scenarioDefinition = loadScenarioDefinition();
+		
 		DataSetColumnBuilder builder = new DataSetColumnBuilder();
-		builder.startInputColumn(createDummyInputParameterDefinition("DummyInput"));
+		builder.startInputColumn(ScenarioDefinitionUtil.getParameterDefinition("default.DummyInput", scenarioDefinition));
 		builder.addInputValue(1);
 		builder.addInputValue(2);
 		builder.finishColumn();
 		
-		ParameterDefinition paramDef = createDummyObservationParameterDefinition("DummyOutput");
+		ParameterDefinition paramDef = ScenarioDefinitionUtil.getParameterDefinition("default.DummyOutput", scenarioDefinition);
 		ArrayList<ParameterValueList> obsValueLists = new ArrayList<ParameterValueList>();
 		builder.startObservationColumn(paramDef);
 		ArrayList<Object> obsValues1 = new ArrayList<Object>();
@@ -119,64 +111,73 @@ public class DummyFactory {
 		
 	}
 
-	public static ParameterDefinition createDummyInputParameterDefinition(String name) {
-		ParameterDefinition paramDef = EnvironmentFactory.eINSTANCE.createParameterDefinition();
-		paramDef.setName(name);
-		paramDef.setRole(ParameterRole.INPUT);
-		paramDef.setType("INTEGER");
-		return paramDef;
-	}
-	
+//	public static ParameterDefinition createDummyInputParameterDefinition(String name) {
+//		ParameterDefinition paramDef = EnvironmentFactory.eINSTANCE.createParameterDefinition();
+//		paramDef.setName(name);
+//		paramDef.setRole(ParameterRole.INPUT);
+//		paramDef.setType("INTEGER");
+//		inputParam = paramDef;
+//		return paramDef;
+//	}
+//	
 	public static ParameterDefinition createDummyObservationParameterDefinition(String name) {
 		ParameterDefinition paramDef = EnvironmentFactory.eINSTANCE.createParameterDefinition();
 		paramDef.setName(name);
 		paramDef.setRole(ParameterRole.OBSERVATION);
 		paramDef.setType("INTEGER");
-		return paramDef;
+		observationParam = paramDef;
+		return paramDef; 
 	}
-
-
-	public static ExperimentSeriesDefinition createDummyExperimentSeriesDefinition(String name){
-		ExperimentSeriesDefinition expSeriesDef = MeasurementsFactory.eINSTANCE.createExperimentSeriesDefinition();
-		expSeriesDef.setName(name);
-		expSeriesDef.setExperimentTerminationCondition(createDummyExperimentTerminationCondition());
-		expSeriesDef.setExplorationStrategy(createDummyExplorationStrategy());
-		return expSeriesDef;
-	}
-	
-	public static ExperimentTerminationCondition createDummyExperimentTerminationCondition(){
-		NumberOfRepetitions numRepTermCond = MeasurementsFactory.eINSTANCE.createNumberOfRepetitions();
-		numRepTermCond.setNumberOfRepetitions(1);
-		return numRepTermCond;
-	}
-	
-	public static ExplorationStrategy createDummyExplorationStrategy(){
-		ExplorationStrategy explorationStrategy = MeasurementsFactory.eINSTANCE.createExplorationStrategy();
-		explorationStrategy.setName("Dummy");
-		explorationStrategy.getAnalysisConfigurations().add(createDummyAnalysisConfiguration());
-		explorationStrategy.getConfiguration().addAll(createDummyConfigurationMap());
-		
-		return explorationStrategy;
-		
-	}
-
-
-	public static AnalysisConfiguration createDummyAnalysisConfiguration() {
-		AnalysisConfiguration analysisConfig = AnalysisFactory.eINSTANCE.createAnalysisConfiguration();
-		analysisConfig.setName("Dummy");
-		analysisConfig.getConfiguration().addAll(createDummyConfigurationMap());
-		return analysisConfig;
-	}
-
-
-	public static Collection<? extends Entry<String, String>> createDummyConfigurationMap() {
-		
-		EcoreEMap<String,String> emap = new EcoreEMap<String,String>(MeasurementsPackage.Literals.CONFIGURATION_NODE, ConfigurationNodeImpl.class, new ExtensibleElementImpl() {
-			private static final long serialVersionUID = 1L;
-		} , MeasurementsPackage.EXTENSIBLE_ELEMENT__CONFIGURATION);
-		emap.put("Dummy", "Dummy");
-		return emap.entrySet();
-	}
+//
+//
+//	public static ExperimentSeriesDefinition createDummyExperimentSeriesDefinition(String name){
+//		ExperimentSeriesDefinition expSeriesDef = MeasurementsFactory.eINSTANCE.createExperimentSeriesDefinition();
+//		expSeriesDef.setName(name);
+//		expSeriesDef.setExperimentTerminationCondition(createDummyExperimentTerminationCondition());
+//		expSeriesDef.setExplorationStrategy(createDummyExplorationStrategy());
+//		expSeriesDef.getExperimentAssignments().add(createDummyLinearNumericAssigment());
+//		return expSeriesDef;
+//	}
+//	
+//	public static ParameterValueAssignment createDummyLinearNumericAssigment(){
+//		ParameterValueAssignment ass = MeasurementsFactory.eINSTANCE.createDynamicValueAssignment();
+//		ass.setParameter(inputParam);
+//		return ass;
+//	}
+//	
+//	public static ExperimentTerminationCondition createDummyExperimentTerminationCondition(){
+//		NumberOfRepetitions numRepTermCond = MeasurementsFactory.eINSTANCE.createNumberOfRepetitions();
+//		numRepTermCond.setNumberOfRepetitions(1);
+//		return numRepTermCond;
+//	}
+//	
+//	public static ExplorationStrategy createDummyExplorationStrategy(){
+//		ExplorationStrategy explorationStrategy = MeasurementsFactory.eINSTANCE.createExplorationStrategy();
+//		explorationStrategy.setName("Dummy");
+//		explorationStrategy.getAnalysisConfigurations().add(createDummyAnalysisConfiguration());
+//		explorationStrategy.getConfiguration().addAll(createDummyConfigurationMap());
+//		
+//		return explorationStrategy;
+//		
+//	}
+//
+//
+//	public static AnalysisConfiguration createDummyAnalysisConfiguration() {
+//		AnalysisConfiguration analysisConfig = AnalysisFactory.eINSTANCE.createAnalysisConfiguration();
+//		analysisConfig.setName("Dummy");
+//		analysisConfig.getConfiguration().addAll(createDummyConfigurationMap());
+//		return analysisConfig;
+//	}
+//
+//
+//	public static Collection<? extends Entry<String, String>> createDummyConfigurationMap() {
+//		
+//		EcoreEMap<String,String> emap = new EcoreEMap<String,String>(MeasurementsPackage.Literals.CONFIGURATION_NODE, ConfigurationNodeImpl.class, new ExtensibleElementImpl() {
+//			private static final long serialVersionUID = 1L;
+//		} , MeasurementsPackage.EXTENSIBLE_ELEMENT__CONFIGURATION);
+//		emap.put("Dummy", "Dummy");
+//		return emap.entrySet();
+//	}
 
 
 	

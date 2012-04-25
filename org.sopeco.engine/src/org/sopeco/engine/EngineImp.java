@@ -15,6 +15,7 @@ import org.sopeco.engine.util.EngineTools;
 import org.sopeco.model.configuration.ScenarioDefinition;
 import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
 import org.sopeco.persistence.IPersistenceProvider;
+import org.sopeco.persistence.PersistenceProviderFactory;
 import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
@@ -61,11 +62,7 @@ public class EngineImp implements IEngine {
 	@Override
 	public ScenarioInstance run(ScenarioDefinition scenario) {
 		
-		ScenarioInstance scenarioInstance = new ScenarioInstance();
-		
-		scenarioInstance.setMeasurementEnvironmentUrl(getConfiguration().getProperty(IConfiguration.CONF_MEASUREMENT_CONTROLLER_URI).toString());
-		
-		scenarioInstance.setName(scenario.getName());
+		ScenarioInstance scenarioInstance = PersistenceProviderFactory.createScenarioInstance(scenario, getConfiguration().getProperty(IConfiguration.CONF_MEASUREMENT_CONTROLLER_URI).toString());
 		
 		persistenceProvider.store(scenarioInstance);
 		
@@ -75,15 +72,12 @@ public class EngineImp implements IEngine {
 		// loop over all the experiment series in the spec
 		for (ExperimentSeriesDefinition esd: scenario.getMeasurementSpecification().getExperimentSeriesDefinitions()) {
 			
-			ExperimentSeries series = new ExperimentSeries();
-			series.setExperimentSeriesDefinition(esd);
-			//TODO get it from the def
-			series.setName(esd.getName());
-			series.setScenarioInstance(scenarioInstance);
+		
+			ExperimentSeries series = PersistenceProviderFactory.createExperimentSeries(scenarioInstance, esd);
+			
 			
 			persistenceProvider.store(series);
 			
-			scenarioInstance.getExperimentSeries().add(series);
 			
 			experimentSeriesManager.runExperimentSeries(series);
 			

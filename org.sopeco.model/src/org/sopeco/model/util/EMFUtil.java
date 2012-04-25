@@ -13,6 +13,7 @@ import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.emf.ecore.xmi.impl.XMIResourceFactoryImpl;
 import org.sopeco.model.configuration.ConfigurationPackage;
+import org.sopeco.model.configuration.SoPeCoModelFactoryHandler;
 
 /**
  * This class provides several helper methods to work with EMF models.
@@ -45,6 +46,8 @@ public class EMFUtil {
 	 */
 	public static EObject loadFromSting(String str) throws IOException {
 
+		SoPeCoModelFactoryHandler.initFactories();
+		
 		// convert String into InputStream
 		InputStream is = new ByteArrayInputStream(str.getBytes());
 		
@@ -80,6 +83,7 @@ public class EMFUtil {
 	 * @throws IOException 
 	 */
 	public static EObject loadFromURI(URI uri) throws IOException {
+		SoPeCoModelFactoryHandler.initFactories();
 		return ModelUtils.load(uri, createSoPeCoModelResourceSet());
 	}
 	
@@ -92,6 +96,7 @@ public class EMFUtil {
 	 * @throws IOException 
 	 */
 	public static EObject loadFromFilePath(String filePath) throws IOException{
+		
 		File file = new File(filePath);
 		org.eclipse.emf.common.util.URI uri = null;
 		if (file.isFile()) {
