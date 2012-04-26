@@ -1,12 +1,14 @@
 package org.sopeco.engine.analysis;
 
-import org.sopeco.model.configuration.analysis.AnalysisConfiguration;
-import org.sopeco.persistence.dataset.DataSetAggregated;
 
+/**
+ * Interface for analysis strategies that derive a prediction function during the analysis.
+ * 
+ * @author Dennis Westermann
+ *
+ */
 public interface IPredictionFunctionStrategy extends IAnalysisStrategy {
 
-	@Override
-	public IPredictionFunctionResult analyse(DataSetAggregated dataset, AnalysisConfiguration config);
-	
+	IPredictionFunctionResult getPredictionFunctionResult();
 	
 }

@@ -1,12 +1,15 @@
 package org.sopeco.engine.analysis;
 
-import org.sopeco.model.configuration.analysis.AnalysisConfiguration;
-import org.sopeco.persistence.dataset.DataSetAggregated;
 
+
+/**
+ * Interface for analysis strategies that identify correlations between parameters during the analysis.
+ * 
+ * @author Dennis Westermann
+ *
+ */
 public interface ICorrelationStrategy extends IAnalysisStrategy {
 
-	@Override
-	public ICorrelationResult analyse(DataSetAggregated dataset, AnalysisConfiguration config);
-	
+	ICorrelationResult getCorrelationResult(); 
 	
 }

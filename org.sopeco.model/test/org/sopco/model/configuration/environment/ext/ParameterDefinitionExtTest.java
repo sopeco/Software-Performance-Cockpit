@@ -35,4 +35,9 @@ public class ParameterDefinitionExtTest {
 		assertEquals("org.sopeco.dummy", paramDef.getFullName());
 	}
 	
+	@Test
+	public void testGetFullNameWithDelimiter() {
+		assertEquals("org_sopeco_dummy", paramDef.getFullName("_"));
+	}
+	
 }

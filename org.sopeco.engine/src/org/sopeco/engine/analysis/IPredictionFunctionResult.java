@@ -10,7 +10,7 @@ import org.sopeco.persistence.dataset.ParameterValue;
  * An AnalysisResult contains the representation of a function derived by a
  * data-analysis.
  * 
- * @author Chris Heupel, Jens Happe
+ * @author Chris Heupel, Jens Happe, Dennis Westermann
  * 
  */
 public interface IPredictionFunctionResult extends IAnalysisResult{

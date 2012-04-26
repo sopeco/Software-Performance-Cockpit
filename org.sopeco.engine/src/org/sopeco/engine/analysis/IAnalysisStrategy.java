@@ -7,7 +7,7 @@ import org.sopeco.persistence.dataset.DataSetAggregated;
 
 public interface IAnalysisStrategy extends ISoPeCoExtensionArtifact {
 
-	public IAnalysisResult analyse(DataSetAggregated dataset, AnalysisConfiguration config);
+	public void analyse(DataSetAggregated dataset, AnalysisConfiguration config);
 
 	boolean supports(AnalysisConfiguration config);
 }
