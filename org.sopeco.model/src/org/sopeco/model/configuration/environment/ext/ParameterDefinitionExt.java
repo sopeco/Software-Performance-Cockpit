@@ -16,12 +16,20 @@ public class ParameterDefinitionExt extends ParameterDefinitionImpl {
 	private static final long serialVersionUID = 1L;
 
 	
-	private static final String NAMESPACE_DELIMITTER = ".";
+	private static final String NAMESPACE_DELIMITER = ".";
 	
+	/**
+	 * Returns the full name of a parameter. The full name is a concatenation of the namespace hierarchy and the name of the parameter.
+	 * The different hierarchy levels are delimited by the default delimiter '.'.
+	 * Example: "org.sopeco.myParam".
+	 * 
+	 * @param nameSpaceDelimitter - the string that should be used for delimiting namespaces in a namespace hierarchy 
+	 * @return the full name (namespace + name) of the parameter where the namespaces are delimited by the given string
+	 */
 	@Override
 	public String getFullName() {
 		ParameterNamespace namespace = this.getNamespace();
-		String result = createFullNamespaceString("", namespace) + getName();
+		String result = createFullNamespaceString("", namespace, NAMESPACE_DELIMITER) + getName();
 		return result;
 	}
 
@@ -31,11 +39,26 @@ public class ParameterDefinitionExt extends ParameterDefinitionImpl {
 	}
 
 	
-	private String createFullNamespaceString(String fullNamespace, ParameterNamespace namespace){
+	/**
+	 * Returns the full name of a parameter. The full name is a concatenation of the namespace hierarchy and the name of the parameter.
+	 * The different hierarchy levels are delimited by the given string.
+	 * Example: "org_sopeco_myParam" for the delimiter '_'
+	 * 
+	 * @param namespaceDelimiter - the string that should be used for delimiting namespaces in a namespace hierarchy 
+	 * @return the full name (namespace + name) of the parameter where the namespaces are delimited by the given string
+	 */
+	@Override
+	public String getFullName(String namespaceDelimiter){
+		ParameterNamespace namespace = this.getNamespace();
+		String result = createFullNamespaceString("", namespace, namespaceDelimiter) + getName();
+		return result;
+	}
+	
+	private String createFullNamespaceString(String fullNamespace, ParameterNamespace namespace, String namespaceDelimitter){
 
 		if(namespace!=null && !namespace.getName().isEmpty()){
-			fullNamespace = namespace.getName() + NAMESPACE_DELIMITTER + fullNamespace;
-			return createFullNamespaceString(fullNamespace, namespace.getParent());
+			fullNamespace = namespace.getName() + namespaceDelimitter + fullNamespace;
+			return createFullNamespaceString(fullNamespace, namespace.getParent(), namespaceDelimitter);
 		}
 		
 		return fullNamespace;

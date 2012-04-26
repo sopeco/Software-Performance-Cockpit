@@ -164,4 +164,12 @@ public interface ParameterDefinition extends ISerializableEObject, Serializable 
 	 */
 	void setNamespace(ParameterNamespace value);
 
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @model
+	 * @generated
+	 */
+	String getFullName(String namespaceDelimiter);
+
 } // ParameterDefinition

@@ -147,6 +147,10 @@
         <styles xmi:type="notation:FilteringStyle" xmi:id="_krjaAW6mEeGCR4rs-JMgHw"/>
       </children>
       <children xmi:type="notation:Node" xmi:id="_krjaAm6mEeGCR4rs-JMgHw" type="5002">
+        <children xmi:type="notation:Node" xmi:id="_aYYjkY-AEeG2VpxFl_TRzw" type="2002">
+          <element xmi:type="ecore:EOperation" href="SoPeCo-Configuration.ecore#//environment/ParameterDefinition/getFullName"/>
+          <layoutConstraint xmi:type="notation:Location" xmi:id="_aYYjko-AEeG2VpxFl_TRzw"/>
+        </children>
         <styles xmi:type="notation:DrawerStyle" xmi:id="_krjaA26mEeGCR4rs-JMgHw"/>
         <styles xmi:type="notation:SortingStyle" xmi:id="_krjaBG6mEeGCR4rs-JMgHw"/>
         <styles xmi:type="notation:FilteringStyle" xmi:id="_krjaBW6mEeGCR4rs-JMgHw"/>

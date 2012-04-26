@@ -30,6 +30,9 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="parent" eType="#//environment/ParameterNamespace"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ParameterDefinition" eSuperTypes="#//common/Serializable">
+      <eOperations name="getFullName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
+        <eParameters name="namespaceDelimiter" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </eOperations>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1"
           eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="type" lowerBound="1"
