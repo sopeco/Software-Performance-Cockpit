@@ -1,4 +1,4 @@
-package org.sopeco.engine.experiment.impl;
+package org.sopeco.engine.measurementenvironment;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
@@ -9,7 +9,6 @@ import java.rmi.registry.LocateRegistry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
 
 public class MEConnector {
 	private static Logger logger = LoggerFactory.getLogger(MEConnector.class);
