@@ -1,8 +1,10 @@
 package org.sopeco.model.configuration;
 
+import org.sopeco.model.configuration.analysis.AnalysisFactory;
 import org.sopeco.model.configuration.environment.EnvironmentFactory;
 import org.sopeco.model.configuration.environment.ext.EnvironmentFactoryExt;
 import org.sopeco.model.configuration.ext.ConfigurationFactoryExt;
+import org.sopeco.model.configuration.measurements.MeasurementsFactory;
 
 
 /**
@@ -22,6 +24,7 @@ public class SoPeCoModelFactoryHandler {
 	 
 		ConfigurationFactoryExt.getFactory();
 		EnvironmentFactoryExt.getFactory();
+		
 	}
 
 	/**
@@ -43,6 +46,30 @@ public class SoPeCoModelFactoryHandler {
 	public static EnvironmentFactory getEnvironmentFactory(){
 		
 		return EnvironmentFactoryExt.getFactory();
+		
+	}
+	
+	/**
+	 * Provides access to the {@link AnalysisFactory}.
+	 * 
+	 * @return the extended version of the {@link AnalysisFactory}
+	 */
+	public static AnalysisFactory getAnalysisFactory(){
+		
+		// We do not have an extension yet, so we return an instance of the generated factory
+		return AnalysisFactory.eINSTANCE;
+		
+	}
+	
+	/**
+	 * Provides access to the {@link MeasurementsFactory}.
+	 * 
+	 * @return the extended version of the {@link MeasurementsFactory}
+	 */
+	public static MeasurementsFactory getMeasurementsFactory(){
+
+		// We do not have an extension yet, so we return an instance of the generated factory
+		return MeasurementsFactory.eINSTANCE;
 		
 	}
 
