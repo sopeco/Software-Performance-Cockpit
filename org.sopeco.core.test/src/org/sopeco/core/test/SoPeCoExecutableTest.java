@@ -3,17 +3,13 @@
  */
 package org.sopeco.core.test;
 
-import java.io.IOException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sopeco.config.Configuration;
-import org.sopeco.config.IConfiguration;
-import org.sopeco.config.exception.ConfigurationException;
-import org.sopeco.engine.EngineFactory;
-import org.sopeco.engine.IEngine;
-import org.sopeco.model.configuration.ScenarioDefinition;
-import org.sopeco.model.util.EMFUtil;
+import org.sopeco.core.SoPeCoRunner;
+import org.sopeco.persistence.IPersistenceProvider;
+import org.sopeco.persistence.PersistenceProviderFactory;
+import org.sopeco.persistence.dataset.DataSetAggregated;
+import org.sopeco.persistence.dataset.DataSetInputColumn;
 import org.sopeco.persistence.entities.ScenarioInstance;
 
 /**
@@ -27,36 +23,31 @@ public class SoPeCoExecutableTest {
 	private static final Logger logger = LoggerFactory.getLogger(SoPeCoExecutableTest.class);
 	
 	public static void main(String[] args) {
-		IConfiguration config = Configuration.getSingleton();
-		
-		String[] testArgs = new String[] {
-//				"rsc/test.configuration"
-				"-meClass", "org.sopeco.engine.helper.DummyMEController",
+		String[] arguments = new String[] {
+				"-meClass", "org.sopeco.core.test.SampleMEController",
 				"-sd", "rsc/test.configuration"
 		};
 		
-		try {
-			config.processCommandLineArguments(testArgs);
-		} catch (ConfigurationException e1) {
-			System.exit(1);
+		SoPeCoRunner runner = new SoPeCoRunner();
+		runner.setArguments(arguments);
+		runner.run();
+		
+		ScenarioInstance si = runner.getScenarioInstance();
+		
+		DataSetAggregated data = si.getExperimentSeries().get(0).getExperimentSeriesRuns().get(0).getResultDataSet();
+		
+		System.out.println(data.getInputColumns());
+		
+		for (DataSetInputColumn<?> ic: data.getInputColumns()) {
+			System.out.println(ic.getValueList());
 		}
+
 		
-		ScenarioDefinition scenario = null;
-		try {
-			scenario = (ScenarioDefinition) EMFUtil.loadFromFilePath(config.getProperty(IConfiguration.CONF_SCENARIO_DESCRIPTION_FILE_NAME).toString());
-			
-			logger.debug("Scenario definition file loaded.");
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		System.out.println(runner.getScenarioInstance().getName());
 		
-		IEngine engine = EngineFactory.INSTANCE.createEngine();
+		IPersistenceProvider pp = PersistenceProviderFactory.getPersistenceProvider();
 		
-		ScenarioInstance scenarioInstance = engine.run(scenario);
 		
-		System.out.println(scenarioInstance.getName());
 		
 	}
 

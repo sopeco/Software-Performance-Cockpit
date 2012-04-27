@@ -1,26 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<org.sopeco.core.model:ScenarioDefinition xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:measurements="http://sopeco.org/configuration/measurements" xmlns:org.sopeco.core.model="http://sopeco.org/configuration" name="Test Scenario">
+<org.sopeco.core.model:ScenarioDefinition xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:measurements="http://sopeco.org/configuration/measurements" xmlns:org.sopeco.core.model="http://sopeco.org/configuration" name="Fibonacci 2.0">
   <measurementEnvironmentDefinition>
-    <root name="default">
-      <parameters name="A" type="Integer" namespace="//@measurementEnvironmentDefinition/@root"/>
-      <parameters name="B" type="Double" namespace="//@measurementEnvironmentDefinition/@root"/>
-      <parameters name="C" type="Double" role="OBSERVATION" namespace="//@measurementEnvironmentDefinition/@root"/>
+    <root name="Main">
+      <children name="Preparation" parent="//@measurementEnvironmentDefinition/@root">
+        <parameters name="CPUCores" type="Integer" namespace="//@measurementEnvironmentDefinition/@root/@children.0"/>
+        <parameters name="MaxMem" type="Integer" namespace="//@measurementEnvironmentDefinition/@root/@children.0"/>
+      </children>
+      <children name="Initialization" parent="//@measurementEnvironmentDefinition/@root">
+        <parameters name="Platform" type="String" namespace="//@measurementEnvironmentDefinition/@root/@children.1"/>
+      </children>
+      <parameters name="Value" type="Integer" namespace="//@measurementEnvironmentDefinition/@root"/>
+      <parameters name="Implementation" type="String" namespace="//@measurementEnvironmentDefinition/@root"/>
+      <parameters name="ResponseTime" type="Double" role="OBSERVATION" namespace="//@measurementEnvironmentDefinition/@root"/>
     </root>
   </measurementEnvironmentDefinition>
   <measurementSpecification>
-    <experimentSeriesDefinitions name="Series 1">
+    <experimentSeriesDefinitions name="Recursive">
       <explorationStrategy name="Full Exploration Strategy"/>
       <experimentAssignments xsi:type="measurements:DynamicValueAssignment" name="Linear Numeric Variation" parameter="//@measurementEnvironmentDefinition/@root/@parameters.0">
-        <configuration key="min" value="0"/>
-        <configuration key="max" value="100"/>
-        <configuration key="step" value="7"/>
+        <configuration key="min" value="5"/>
+        <configuration key="max" value="15"/>
+        <configuration key="step" value="5"/>
       </experimentAssignments>
-      <experimentAssignments xsi:type="measurements:DynamicValueAssignment" name="Linear Numeric Variation" parameter="//@measurementEnvironmentDefinition/@root/@parameters.1">
-        <configuration key="min" value="10"/>
-        <configuration key="max" value="20"/>
-        <configuration key="step" value="2.5"/>
-      </experimentAssignments>
-      <experimentTerminationCondition xsi:type="measurements:NumberOfRepetitions" numberOfRepetitions="4"/>
+      <experimentAssignments xsi:type="measurements:ConstantValueAssignment" parameter="//@measurementEnvironmentDefinition/@root/@parameters.1" value="Recursive"/>
+      <experimentTerminationCondition xsi:type="measurements:NumberOfRepetitions" numberOfRepetitions="2"/>
+      <preperationAssignments parameter="//@measurementEnvironmentDefinition/@root/@children.0/@parameters.0" value="2"/>
+      <preperationAssignments parameter="//@measurementEnvironmentDefinition/@root/@children.0/@parameters.1" value="512"/>
     </experimentSeriesDefinitions>
+    <experimentSeriesDefinitions name="Iterative">
+      <explorationStrategy name="Full Exploration Strategy"/>
+      <experimentAssignments xsi:type="measurements:DynamicValueAssignment" name="Linear Numeric Variation" parameter="//@measurementEnvironmentDefinition/@root/@parameters.0">
+        <configuration key="min" value="5"/>
+        <configuration key="max" value="15"/>
+        <configuration key="step" value="5"/>
+      </experimentAssignments>
+      <experimentAssignments xsi:type="measurements:ConstantValueAssignment" parameter="//@measurementEnvironmentDefinition/@root/@parameters.1" value="Iterative"/>
+      <experimentTerminationCondition xsi:type="measurements:NumberOfRepetitions" numberOfRepetitions="2"/>
+      <preperationAssignments parameter="//@measurementEnvironmentDefinition/@root/@children.0/@parameters.0" value="8"/>
+      <preperationAssignments parameter="//@measurementEnvironmentDefinition/@root/@children.0/@parameters.1" value="4096"/>
+    </experimentSeriesDefinitions>
+    <initializationAssignemts parameter="//@measurementEnvironmentDefinition/@root/@children.1/@parameters.0" value="linux"/>
   </measurementSpecification>
 </org.sopeco.core.model:ScenarioDefinition>

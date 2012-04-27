@@ -72,15 +72,11 @@ public class EngineImp implements IEngine {
 		// loop over all the experiment series in the spec
 		for (ExperimentSeriesDefinition esd: scenario.getMeasurementSpecification().getExperimentSeriesDefinitions()) {
 			
-		
 			ExperimentSeries series = PersistenceProviderFactory.createExperimentSeries(scenarioInstance, esd);
-			
 			
 			persistenceProvider.store(series);
 			
-			
 			experimentSeriesManager.runExperimentSeries(series);
-			
 		}
 		
 		try {
