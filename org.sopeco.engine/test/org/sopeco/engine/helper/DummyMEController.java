@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +17,7 @@ import org.sopeco.model.configuration.measurements.NumberOfRepetitions;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetRowBuilder;
 import org.sopeco.persistence.dataset.ParameterValue;
+import org.sopeco.persistence.dataset.ParameterValueList;
 
 public class DummyMEController implements IMeasurementEnvironmentController {
 
@@ -37,22 +40,36 @@ public class DummyMEController implements IMeasurementEnvironmentController {
 	}
 
 	@Override
-	public DataSetAggregated runExperiment(List<ParameterValue<?>> inputPVList, ExperimentTerminationCondition terminationCondition) {
+	public Collection<ParameterValueList<?>> runExperiment(List<ParameterValue<?>> inputPVList, ExperimentTerminationCondition terminationCondition) {
+		Map<ParameterDefinition, ParameterValueList<?>> map = new HashMap<ParameterDefinition, ParameterValueList<?>>();
+		for (ParameterDefinition pd : observationParameterList)
+			map.put(pd, new ParameterValueList<Object>(pd));
+		
 		logger.debug("Run experiment.");
-		DataSetRowBuilder builder = new DataSetRowBuilder();
-		builder.startRow();
-		for (ParameterValue<?> parameterValue : inputPVList) {
-			builder.addInputParameterValue(parameterValue.getParameter(), parameterValue.getValue());
-		}
 		for (int i=0; i< ((NumberOfRepetitions)terminationCondition).getNumberOfRepetitions(); i++){
 			logger.debug("Running repetition {}.", i+1);
 			for(ParameterDefinition parameter : observationParameterList){
-				builder.addObservationParameterValue(parameter, 0);
+				map.get(parameter).addValue(new Integer(0));
 			}
 		}
-		builder.finishRow();
 		logger.debug("Finished experiment.");
-		return builder.createDataSet();
+		return map.values();
+
+//		DataSetRowBuilder builder = new DataSetRowBuilder();
+//		builder.startRow();
+//		for (ParameterValue<?> parameterValue : inputPVList) {
+//			builder.addInputParameterValue(parameterValue.getParameter(), parameterValue.getValue());
+//		}
+//		for (int i=0; i< ((NumberOfRepetitions)terminationCondition).getNumberOfRepetitions(); i++){
+//			logger.debug("Running repetition {}.", i+1);
+//			for(ParameterDefinition parameter : observationParameterList){
+//				builder.addObservationParameterValue(parameter, 0);
+//			}
+//		}
+//		builder.finishRow();
+//		logger.debug("Finished experiment.");
+//		return builder.createDataSet();
+
 	}
 
 	public ParameterValue<?> getInitializationValue() {

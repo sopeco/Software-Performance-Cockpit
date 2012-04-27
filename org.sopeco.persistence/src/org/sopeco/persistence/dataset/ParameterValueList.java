@@ -11,14 +11,11 @@ import org.sopeco.persistence.dataset.util.ParameterUtil;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class ParameterValueList<T> implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -6730179918476230975L;
 	private ParameterDefinition parameter;
 	private List<T> values;
 
-	protected ParameterValueList(ParameterDefinition parameter) {
+	public ParameterValueList(ParameterDefinition parameter) {
 		super();
 		this.parameter = parameter;
 		values = new ArrayList<T>();
@@ -67,13 +64,13 @@ public class ParameterValueList<T> implements Serializable {
 		this.values.addAll(other.getValues());
 	}
 
-	protected void addValue(Object value) {
+	public void addValue(Object value) {
 		T convertedValue = (T) ParameterValueFactory.convertValue(value,
 				ParameterUtil.getTypeEnumeration(parameter.getType()));
 		this.values.add(convertedValue);
 	}
 
-	protected void addValues(List<Object> values) {
+	public void addValues(List<Object> values) {
 		for (Object value : values) {
 			addValue(value);
 		}
