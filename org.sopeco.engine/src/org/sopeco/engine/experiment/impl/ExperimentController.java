@@ -2,6 +2,7 @@ package org.sopeco.engine.experiment.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.sopeco.engine.experiment.IExperimentController;
@@ -30,17 +31,23 @@ public class ExperimentController implements IExperimentController {
 	IMeasurementEnvironmentController meController = null;
 	IPersistenceProvider persistenceProvider = null;
 	ExperimentSeriesRun currentExperimentSeriesRun = null;
+	List<ParameterValue<?>> initializationPVList = Collections.emptyList();
+	Collection<ParameterValue<?>> preparationPVList = Collections.emptyList();
 
 	@Override
 	public void initialize(List<ParameterValue<?>> initializationPVList, MeasurementEnvironmentDefinition meDefinition) {
 		
-		if(meController == null){
+		if (meController == null) {
 			throw new IllegalStateException("No MeasurementEnvironmentController has been set.");
 		}
-		if(persistenceProvider == null){
+		if (persistenceProvider == null) {
 			throw new IllegalStateException("No PersistenceProvider has been set.");
 		}
+		
 		this.meDefinition = meDefinition;
+		
+		this.initializationPVList = initializationPVList;
+		
 		meController.initialize(initializationPVList);
 	}
 
@@ -51,6 +58,7 @@ public class ExperimentController implements IExperimentController {
 		}
 		
 		this.currentExperimentSeriesRun = experimentSeriesRun;
+		this.preparationPVList = preparationPVList;
 		
 		meController.prepareExperimentSeries(preparationPVList);
 		
@@ -106,12 +114,19 @@ public class ExperimentController implements IExperimentController {
 		DataSetRowBuilder builder = new DataSetRowBuilder();
 		builder.startRow();
 		
-		// 2.1. add input values
-		for (ParameterValue<?> parameterValue : inputPVList) {
-			builder.addInputParameterValue(parameterValue.getParameter(), parameterValue.getValue());
-		}
+		// 2.1. add initialization values
+		for (ParameterValue<?> pv: initializationPVList)
+			builder.addInputParameterValue(pv.getParameter(), pv.getValue());
+
+		// 2.2. add preparation values
+		for (ParameterValue<?> pv: preparationPVList)
+			builder.addInputParameterValue(pv.getParameter(), pv.getValue());
 		
-		// 2.2. add observation values
+		// 2.3. add input values
+		for (ParameterValue<?> parameterValue : inputPVList) 
+			builder.addInputParameterValue(parameterValue.getParameter(), parameterValue.getValue());
+		
+		// 2.4. add observation values
 		for (ParameterValueList<?> pvl: observations)
 			builder.addObservationParameterValues(pvl);
 		
