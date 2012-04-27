@@ -19,6 +19,10 @@ public interface IConfiguration {
 	public static final String CONF_MEASUREMENT_CONTROLLER_CLASS_NAME = "sopeco.config.measurementControllerClassName";
 	public static final String CONF_APP_NAME = "sopeco.config.applicationName";
 	
+	/** Holds the path to the root folder of SoPeCo. */ 
+	public static final String CONF_APP_ROOT_FOLDER = "sopeco.config.rootFolder";
+	
+	/** Holds the path to the plugins folder, relative to the root folder of SoPeCo. */ 
 	public static final String CONF_PLUGINS_FOLDER = "sopeco.config.pluginsFolder";
 
 	public static final String CLA_EXTENSION_ID = "org.sopeco.config.commandlinearguments";

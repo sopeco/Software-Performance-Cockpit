@@ -11,11 +11,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.tools.ant.DirectoryScanner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A collection of auxiliary helper methods.
@@ -25,6 +30,8 @@ import org.apache.tools.ant.DirectoryScanner;
  */
 public class Tools {
 
+	private final static Logger logger = LoggerFactory.getLogger(Tools.class);
+	
 	public enum SupportedTypes {
 		Double, Integer, String, Boolean;
 	
@@ -82,6 +89,24 @@ public class Tools {
 	public static List<String> readLines(String fileName) throws IOException {
 		List<String> result = new ArrayList<String>();
 		BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileName)));
+		
+		String line = "";
+		
+		do {
+			line = reader.readLine();
+			if (line != null)
+				result.add(line);
+		} while (line != null);
+		
+		return result;
+	}
+
+	/**
+	 * Reads the lines of the given URL.
+	 */
+	public static List<String> readLines(URL url) throws IOException {
+		List<String> result = new ArrayList<String>();
+		BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
 		
 		String line = "";
 		
@@ -227,5 +252,31 @@ public class Tools {
 			if (array[i].equals(obj))
 				return i;
 		return -1; 
+	}
+	
+	/**
+	 * Detects and returns the root folder of the running application.
+	 */
+	public static String getRootFolder() {
+		final String classFile = Tools.class.getName().replaceAll("\\.", "/") + ".class";
+		String fullPath = ClassLoader.getSystemResource(classFile).toString();
+		
+		try {
+			fullPath = URLDecoder.decode(fullPath, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			logger.warn("Cannot find root folder. UTF-8 encoding is not supported.");
+		}
+		
+		if (fullPath.indexOf("file:") > -1) {
+			fullPath = fullPath.replaceFirst("file:", "").replaceFirst(classFile, "");
+			fullPath = fullPath.substring(0, fullPath.lastIndexOf('/'));
+		} 
+		if (fullPath.indexOf("jar:") > -1) {
+			fullPath = fullPath.replaceFirst("jar:", "").replaceFirst("!" + classFile, "");
+			fullPath = fullPath.substring(0, fullPath.lastIndexOf('/'));
+		}
+		logger.debug("Root folder is detected as: {}", fullPath);
+		
+		return fullPath;
 	}
 }

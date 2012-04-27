@@ -265,6 +265,7 @@ public class Configuration implements IConfiguration {
 	private void setDefaultValues() {
 		setProperty(CONF_APP_NAME, "sopeco");
 		setProperty(CONF_PLUGINS_FOLDER, "plugins");
+		setProperty(CONF_APP_ROOT_FOLDER, Tools.getRootFolder());
 		
 		InputStream in = this.getClass().getResourceAsStream(DEFAULT_CONFIG_FILE_NAME);
 		

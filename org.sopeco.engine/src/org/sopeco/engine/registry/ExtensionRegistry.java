@@ -11,33 +11,19 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.ServiceLoader;
+import java.util.Set;
 
-import org.apache.tools.ant.DirectoryScanner;
-import org.apache.tools.ant.taskdefs.optional.depend.DirectoryIterator;
-import org.eclipse.core.runtime.ContributorFactoryOSGi;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.RegistryFactory;
-import org.eclipse.osgi.launch.Equinox;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.framework.launch.Framework;
-import org.osgi.framework.launch.FrameworkFactory;
-import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
-import org.sopeco.engine.experimentseries.IExplorationStrategy;
-import org.sopeco.engine.experimentseries.IExplorationStrategyExtension;
-import org.sopeco.engine.helper.ConfigurationBuilder;
 import org.sopeco.util.Tools;
 
 /**
@@ -174,8 +160,46 @@ public class ExtensionRegistry implements IExtensionRegistry {
 	 */
 	private void loadExtensions() {
 		final IConfiguration config = Configuration.getSingleton();
-		final String pluginsDirName = (String)config.getProperty(IConfiguration.CONF_PLUGINS_FOLDER); 
+		final String pluginsDirName = config.getPropertyAsStr(IConfiguration.CONF_APP_ROOT_FOLDER) + File.separator + config.getPropertyAsStr(IConfiguration.CONF_PLUGINS_FOLDER); 
 		final File pluginsDir = new File(pluginsDirName);
+		final String defExtensionsFileName = pluginsDirName + File.separatorChar + EXTENSIONS_FILE_NAME;
+		final File defExtensionsFile = new File(defExtensionsFileName);
+
+		// 1. Look for all 'extensions.info' files in the classpath
+		//    and the default location
+		Set<URL> extensioInfoURLs = new HashSet<URL>();
+		Enumeration<URL> eURLs;
+		try {
+			eURLs = ClassLoader.getSystemResources(EXTENSIONS_FILE_NAME);
+			while (eURLs.hasMoreElements()) {
+				extensioInfoURLs.add(eURLs.nextElement());
+			}
+		} catch (IOException e1) {
+		}
+
+		// 2. add 'plugins/extensions.info' if it exists
+		if (defExtensionsFile.exists()) {
+			try {
+				extensioInfoURLs.add(new URL("file:" + defExtensionsFileName));
+			} catch (MalformedURLException e1) {
+				logger.warn("Could not read '{}'. Reason: (MalformedURLException) {}", defExtensionsFile, e1.getMessage());
+			}
+		}
+		
+		for (URL url: extensioInfoURLs)
+			logger.debug("Found extensions info at: {}", url);
+		
+		// 2. gather the list of all extension class files
+		Set<String> extensionClasses = new HashSet<String>();
+		for (URL url: extensioInfoURLs) {
+			try {
+				extensionClasses.addAll(Tools.readLines(url));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		ClassLoader cl = ClassLoader.getSystemClassLoader();
 		
 		if (pluginsDir.exists()) {
 			String[] names = Tools.getFileNames(pluginsDirName, "*.jar");
@@ -192,33 +216,29 @@ public class ExtensionRegistry implements IExtensionRegistry {
 					}
 				}
 			}
-			URLClassLoader cl = new URLClassLoader(urls.toArray(new URL[] {}), this.getClass().getClassLoader());
+			for (URL url: urls) 
+				logger.debug("Found extension JAR file {}", url);
 
-			try {
-				List<String> extensionClasses = Tools.readLines(pluginsDirName + File.separatorChar + EXTENSIONS_FILE_NAME);
-				for (String extClassName: extensionClasses) {
-					Class<?> c;
-					try {
-						c = cl.loadClass(extClassName);
-						Object o = c.newInstance();
-						if (o instanceof ISoPeCoExtension) {
-							ISoPeCoExtension ext = (ISoPeCoExtension)o;
-							this.addExtension(ext);
-							logger.debug("Loading extension {}.", ext.getName());
-						}
-					} catch (Exception e) {
-						logger.warn("Could not load extension {}. Reason: {}", extClassName, e.getMessage());
-					}
-				}
-			} catch (IOException e) {
-				logger.warn("Could not locate extensions information file ({}). Skipping loading extensions.", EXTENSIONS_FILE_NAME);
-				return;
-			}
+			cl = new URLClassLoader(urls.toArray(new URL[] {}), this.getClass().getClassLoader());
 			
 		} else {
 			logger.debug("Could not locate the plugins folder ({}).", pluginsDirName); 
 		}
-		
+
+		for (String extClassName: extensionClasses) {
+			Class<?> c;
+			try {
+				c = cl.loadClass(extClassName);
+				Object o = c.newInstance();
+				if (o instanceof ISoPeCoExtension) {
+					ISoPeCoExtension ext = (ISoPeCoExtension)o;
+					this.addExtension(ext);
+					logger.debug("Loading extension {}.", ext.getName());
+				}
+			} catch (Exception e) {
+				logger.warn("Could not load extension {}. Reason: ({}) {}", new Object[] {extClassName, e.getClass().getSimpleName(), e.getMessage()});
+			}
+		}
 	}
 
 	@Override
