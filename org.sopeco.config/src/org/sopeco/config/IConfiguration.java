@@ -3,6 +3,8 @@
  */
 package org.sopeco.config;
 
+import org.sopeco.config.exception.ConfigurationException;
+
 /**
  * Interface to the SoPeCo global configuration component.
  * 
@@ -67,7 +69,8 @@ public interface IConfiguration {
 	 * reflect in the global property values.
 	 * 
 	 * @param args command line arguments
+	 * @throws ConfigurationException if there is any problem with command line arguments
 	 */
-	public void processCommandLineArguments(String[] args);
+	public void processCommandLineArguments(String[] args) throws ConfigurationException;
 	
 }

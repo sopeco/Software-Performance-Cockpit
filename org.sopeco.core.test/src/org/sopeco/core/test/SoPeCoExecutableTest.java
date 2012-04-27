@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
+import org.sopeco.config.exception.ConfigurationException;
 import org.sopeco.engine.EngineFactory;
 import org.sopeco.engine.IEngine;
 import org.sopeco.model.configuration.ScenarioDefinition;
@@ -34,7 +35,11 @@ public class SoPeCoExecutableTest {
 				"-sd", "rsc/test.configuration"
 		};
 		
-		config.processCommandLineArguments(testArgs);
+		try {
+			config.processCommandLineArguments(testArgs);
+		} catch (ConfigurationException e1) {
+			System.exit(1);
+		}
 		
 		ScenarioDefinition scenario = null;
 		try {

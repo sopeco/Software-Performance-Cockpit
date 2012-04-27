@@ -214,4 +214,18 @@ public class Tools {
 			return result;
 	}
 
+	/**
+	 * Returns the index of the given object in the given array if it exsists.
+	 * It uses the {@link Object#equals(Object)} method.
+	 * 
+	 * @param obj object to look for
+	 * @param array array of objects
+	 * @return the index of the object or -1 if the object doesn't exist
+	 */
+	public static int exists(Object obj, Object[] array) {
+		for (int i=0; i < array.length; i++)
+			if (array[i].equals(obj))
+				return i;
+		return -1; 
+	}
 }

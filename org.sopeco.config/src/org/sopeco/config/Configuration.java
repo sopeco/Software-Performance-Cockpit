@@ -27,6 +27,8 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.config.exception.ConfigurationException;
+import org.sopeco.util.Tools;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
@@ -105,7 +107,7 @@ public class Configuration implements IConfiguration {
 	}
 
 	@Override
-	public void processCommandLineArguments(String[] args) {
+	public void processCommandLineArguments(String[] args) throws ConfigurationException {
 		Options options = new Options();
 		
 		// option: help
@@ -142,12 +144,18 @@ public class Configuration implements IConfiguration {
 										.withDescription("scenario definition file")
 										.create("sd");
 
-		//		Option selectedSeries = OptionBuilder.withArgName("series")
-//										.withValueSeparator(',')
-//										.hasArg()
-//										.withDescription("the names of selected experiment series separated by comma")
-//										.create("series");
+		// option 
+		Option logVerbosity = OptionBuilder.withArgName("level")
+				.hasArg()
+				.withDescription("logging verbosity level (overrides log config)")
+				.create("lv");
 		
+//		Option selectedSeries = OptionBuilder.withArgName("series")
+//		.withValueSeparator(',')
+//		.hasArg()
+//		.withDescription("the names of selected experiment series separated by comma")
+//		.create("series");
+
 		OptionGroup meGroup = new OptionGroup();
 		meGroup.addOption(meURI);
 		meGroup.addOption(meClass);
@@ -158,7 +166,8 @@ public class Configuration implements IConfiguration {
 		options.addOption(config);
 		options.addOptionGroup(meGroup);
 		options.addOption(logconfig);
-		
+//		options.addOption(logVerbosity);
+
 		/* Adding all extension options */
 		// the following does not check for option conflicts 
 		for (ICommandLineArgumentsExtension iclae: getCLAExtensions()) 
@@ -171,9 +180,15 @@ public class Configuration implements IConfiguration {
 	        line = parser.parse( options, args );
 	    }
 	    catch( ParseException exp ) {
-	        System.err.println("Invalid options. " + exp.getMessage() );
-	        printHelpMessage(options);
-	        return;
+	    	if (Tools.exists("-help", args) < 0) {
+		    	final String err = "Invalid options. " + exp.getMessage();
+		        System.err.println(err);
+		        printHelpMessage(options);
+		        throw new ConfigurationException(err, exp);
+	    	} else {
+	    		printHelpMessage(options);
+	    		System.exit(0);
+	    	}
 	    }
 
 	    // -help
@@ -230,6 +245,12 @@ public class Configuration implements IConfiguration {
 	        setProperty(CONF_LOGGER_CONFIG_FILE_NAME, logbackConfigFilePath);
 	        
 	    	logger.debug("Configured logback using '{}'.", logbackConfigFilePath);
+	    }
+	    
+	    // -lv
+	    if (line.hasOption(logVerbosity.getOpt())) {
+	    	final String verbosity = line.getOptionValue(logVerbosity.getOpt());
+	    	// TODO it may not be possible
 	    }
 
 	    /* processing all extension options */
