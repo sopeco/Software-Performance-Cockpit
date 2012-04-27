@@ -27,6 +27,7 @@ public class SoPeCoRunner implements Runnable {
 	protected static final Logger logger = LoggerFactory.getLogger(SoPeCoRunner.class);
 	
 	protected String[] args = new String[] {};
+	protected ScenarioInstance lastExecutedScenarioInstance = null;
 	
 	/**
 	 * Runs SoPeCo with the given command-line arguments. 
@@ -48,6 +49,7 @@ public class SoPeCoRunner implements Runnable {
 	 */
 	@Override
 	public void run() {
+		lastExecutedScenarioInstance = null;
 		IConfiguration config = Configuration.getSingleton();
 		
 		try {
@@ -71,7 +73,7 @@ public class SoPeCoRunner implements Runnable {
 		
 		IEngine engine = EngineFactory.INSTANCE.createEngine();
 		
-		ScenarioInstance scenarioInstance = engine.run(scenario);
+		lastExecutedScenarioInstance = engine.run(scenario);
 
 		logger.info("SoPeCo run finished.");
 	}
@@ -83,6 +85,16 @@ public class SoPeCoRunner implements Runnable {
 	 */
 	public void setArguments(String[] args) {
 		this.args = args;
+	}
+	
+	/**
+	 * Returns the result of the last run of SoPeCo. 
+	 * If there was no successful run, this method returns <code>null</code>.
+	 * 
+	 * @return result of last run, or <code>null</code> if there was no successful run.
+	 */
+	public ScenarioInstance getScenarioInstance() {
+		return lastExecutedScenarioInstance;
 	}
 }
 

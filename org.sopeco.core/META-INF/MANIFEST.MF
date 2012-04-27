@@ -10,3 +10,4 @@ Require-Bundle: org.sopeco.engine;bundle-version="0.2.0";visibility:=reexport,
  org.sopeco.util;bundle-version="1.0.0";visibility:=reexport,
  org.sopeco.persistence;bundle-version="0.2.0";visibility:=reexport,
  org.sopeco.orbit.logging;bundle-version="1.0.0";visibility:=reexport
+Export-Package: org.sopeco.core
