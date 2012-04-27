@@ -34,7 +34,7 @@ public class SoPeCoExecutableTest {
 		
 		ScenarioInstance si = runner.getScenarioInstance();
 		
-		DataSetAggregated data = si.getExperimentSeries().get(0).getExperimentSeriesRuns().get(0).getResultDataSet();
+		DataSetAggregated data = si.getExperimentSeriesList().get(0).getExperimentSeriesRuns().get(0).getResultDataSet();
 		
 		System.out.println(data.getInputColumns());
 		
@@ -42,7 +42,6 @@ public class SoPeCoExecutableTest {
 			System.out.println(ic.getValueList());
 		}
 
-		
 		System.out.println(runner.getScenarioInstance().getName());
 		
 		IPersistenceProvider pp = PersistenceProviderFactory.getPersistenceProvider();

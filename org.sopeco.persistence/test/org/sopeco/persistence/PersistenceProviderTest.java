@@ -126,13 +126,13 @@ public class PersistenceProviderTest {
 			final ScenarioInstance loaded1 = provider.loadScenarioInstance(dummyScenarioInstance.getName(),
 					dummyScenarioInstance.getMeasurementEnvironmentUrl());
 			assertNotNull(loaded1);
-			assertEquals(2, loaded1.getExperimentSeries().size());
-			assertEquals(10, loaded1.getExperimentSeries().get(0).getExperimentSeriesRuns().size());
+			assertEquals(2, loaded1.getExperimentSeriesList().size());
+			assertEquals(10, loaded1.getExperimentSeriesList().get(0).getExperimentSeriesRuns().size());
 			assertTrue(loaded1.getDescription() == null);
 
 			// update
-			loaded1.getExperimentSeries().remove(1);
-			loaded1.getExperimentSeries().get(0).getExperimentSeriesRuns().remove(0);
+			loaded1.getExperimentSeriesList().remove(1);
+			loaded1.getExperimentSeriesList().get(0).getExperimentSeriesRuns().remove(0);
 			loaded1.setDescription("Dummy");
 
 			// store updated entity
@@ -143,8 +143,8 @@ public class PersistenceProviderTest {
 					dummyScenarioInstance.getMeasurementEnvironmentUrl());
 			assertNotNull(loaded2);
 			assertEquals(dummyScenarioInstance, loaded2);
-			assertEquals(1, loaded2.getExperimentSeries().size());
-			assertEquals(9, loaded2.getExperimentSeries().get(0).getExperimentSeriesRuns().size());
+			assertEquals(1, loaded2.getExperimentSeriesList().size());
+			assertEquals(9, loaded2.getExperimentSeriesList().get(0).getExperimentSeriesRuns().size());
 			assertEquals("Dummy", loaded2.getDescription());
 
 			// table sizes should have changed
@@ -173,8 +173,8 @@ public class PersistenceProviderTest {
 		assertTrue(isRemoved(dummyScenarioInstance));
 
 		// experiment series and runs should be removed as well
-		assertTrue(isRemoved(dummyScenarioInstance.getExperimentSeries().get(0)));
-		assertTrue(isRemoved(dummyScenarioInstance.getExperimentSeries().get(0).getExperimentSeriesRuns().get(0)));
+		assertTrue(isRemoved(dummyScenarioInstance.getExperimentSeriesList().get(0)));
+		assertTrue(isRemoved(dummyScenarioInstance.getExperimentSeriesList().get(0).getExperimentSeriesRuns().get(0)));
 
 		// database should be empty
 		assertTrue(isDatabaseEmpty());
@@ -184,7 +184,7 @@ public class PersistenceProviderTest {
 	@Test
 	public void testStoreAndLoadExperimentSeries() {
 
-		ExperimentSeries dummySeries = dummyScenarioInstance.getExperimentSeries().get(0);
+		ExperimentSeries dummySeries = dummyScenarioInstance.getExperimentSeriesList().get(0);
 
 		try {
 			// store
@@ -211,7 +211,7 @@ public class PersistenceProviderTest {
 	@Test
 	public void testUpdateViaExperimentSeries() {
 
-		ExperimentSeries dummySeries = dummyScenarioInstance.getExperimentSeries().get(0);
+		ExperimentSeries dummySeries = dummyScenarioInstance.getExperimentSeriesList().get(0);
 
 		try {
 			// store
@@ -259,7 +259,7 @@ public class PersistenceProviderTest {
 	@Test
 	public void testRemoveExperimentSeries() {
 
-		ExperimentSeries dummySeries = dummyScenarioInstance.getExperimentSeries().get(0);
+		ExperimentSeries dummySeries = dummyScenarioInstance.getExperimentSeriesList().get(0);
 
 		try {
 
@@ -287,11 +287,11 @@ public class PersistenceProviderTest {
 			final ScenarioInstance loaded1 = loadedList.get(0);
 			assertNotNull(loaded1);
 			assertEquals(1, provider.getSize(ExperimentSeries.class));
-			assertEquals(1, loaded1.getExperimentSeries().size());
+			assertEquals(1, loaded1.getExperimentSeriesList().size());
 			final ScenarioInstance loaded2 = provider.loadScenarioInstance(dummySeries.getScenarioInstance().getPrimaryKey());
 			assertNotNull(loaded2);
 			assertEquals(1, provider.getSize(ExperimentSeries.class));
-			assertEquals(1, loaded2.getExperimentSeries().size());
+			assertEquals(1, loaded2.getExperimentSeriesList().size());
 
 		} catch (DataNotFoundException e) {
 			fail(e.getMessage());
@@ -302,7 +302,7 @@ public class PersistenceProviderTest {
 
 	@Test
 	public void testStoreAndLoadExperimentSeriesRun() {
-		ExperimentSeriesRun dummySeriesRun = dummyScenarioInstance.getExperimentSeries().get(0).getExperimentSeriesRuns().get(0);
+		ExperimentSeriesRun dummySeriesRun = dummyScenarioInstance.getExperimentSeriesList().get(0).getExperimentSeriesRuns().get(0);
 
 		try {
 			// store
@@ -333,7 +333,7 @@ public class PersistenceProviderTest {
 	@Test
 	public void testUpdateViaExperimentSeriesRun() {
 
-		ExperimentSeriesRun dummyRun = dummyScenarioInstance.getExperimentSeries().get(0).getExperimentSeriesRuns().get(0);
+		ExperimentSeriesRun dummyRun = dummyScenarioInstance.getExperimentSeriesList().get(0).getExperimentSeriesRuns().get(0);
 
 		try {
 			// store
@@ -390,7 +390,7 @@ public class PersistenceProviderTest {
 	@Test
 	public void testRemoveExperimentSeriesRun() {
 
-		ExperimentSeriesRun dummySeriesRun = dummyScenarioInstance.getExperimentSeries().get(0).getExperimentSeriesRuns().get(0);
+		ExperimentSeriesRun dummySeriesRun = dummyScenarioInstance.getExperimentSeriesList().get(0).getExperimentSeriesRuns().get(0);
 
 		try {
 			// init
@@ -540,27 +540,27 @@ public class PersistenceProviderTest {
 	private void checkAvailableExperimentSeries(ScenarioInstance scenarioInstance) {
 
 		// We should have 2 ExperimentSeries in the database
-		assertTrue(scenarioInstance.getExperimentSeries().size() == 2);
+		assertTrue(scenarioInstance.getExperimentSeriesList().size() == 2);
 
 		// ExperimentSeries should reference the ScenarioInstance
-		assertNotNull(scenarioInstance.getExperimentSeries().get(0).getScenarioInstance());
-		assertTrue(scenarioInstance.getExperimentSeries().get(0).getScenarioInstance().getName().equalsIgnoreCase("Dummy"));
-		assertTrue(scenarioInstance.equals(scenarioInstance.getExperimentSeries().get(0).getScenarioInstance()));
+		assertNotNull(scenarioInstance.getExperimentSeriesList().get(0).getScenarioInstance());
+		assertTrue(scenarioInstance.getExperimentSeriesList().get(0).getScenarioInstance().getName().equalsIgnoreCase("Dummy"));
+		assertTrue(scenarioInstance.equals(scenarioInstance.getExperimentSeriesList().get(0).getScenarioInstance()));
 
 		// ExperimentSeries should reference the ExperimentSeriesDefintion
-		assertNotNull(scenarioInstance.getExperimentSeries().get(0).getExperimentSeriesDefinition());
+		assertNotNull(scenarioInstance.getExperimentSeriesList().get(0).getExperimentSeriesDefinition());
 
 		// Name of ExperimentSeries should be equal to the name of its
 		// definition
-		assertTrue(scenarioInstance.getExperimentSeries().get(0).getName()
-				.equals(scenarioInstance.getExperimentSeries().get(0).getExperimentSeriesDefinition().getName()));
+		assertTrue(scenarioInstance.getExperimentSeriesList().get(0).getName()
+				.equals(scenarioInstance.getExperimentSeriesList().get(0).getExperimentSeriesDefinition().getName()));
 
 		// Parameters should be loaded
-		assertNotNull(scenarioInstance.getExperimentSeries().get(0).getExperimentSeriesDefinition().getExperimentAssignments().get(0).getParameter().getName());
-		assertNotNull(scenarioInstance.getExperimentSeries().get(0).getExperimentSeriesDefinition().getExperimentAssignments().get(0).getParameter().getType());
+		assertNotNull(scenarioInstance.getExperimentSeriesList().get(0).getExperimentSeriesDefinition().getExperimentAssignments().get(0).getParameter().getName());
+		assertNotNull(scenarioInstance.getExperimentSeriesList().get(0).getExperimentSeriesDefinition().getExperimentAssignments().get(0).getParameter().getType());
 		
 		// ExperimentSeries should reference ExperimentSeriesRuns
-		checkAvailableExperimentSeriesRuns(scenarioInstance.getExperimentSeries().get(0));
+		checkAvailableExperimentSeriesRuns(scenarioInstance.getExperimentSeriesList().get(0));
 	}
 
 	private void checkAvailableExperimentSeriesRuns(ExperimentSeries expSeries) {

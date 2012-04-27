@@ -125,7 +125,7 @@ public class PersistenceProviderFactory {
 		ExperimentSeries expSeries = new ExperimentSeries();
 		expSeries.setName(expSeriesDefinition.getName());
 		expSeries.setScenarioInstance(scenarioInstance);
-		scenarioInstance.getExperimentSeries().add(expSeries);
+		scenarioInstance.getExperimentSeriesList().add(expSeries);
 		
 		return expSeries;
 	}

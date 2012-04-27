@@ -98,7 +98,7 @@ public class ScenarioInstance implements Serializable {
 		this.primaryKey.setMeasurementEnvironmentUrl(measurementEnvironmentUrl);
 	}
 
-	public List<ExperimentSeries> getExperimentSeries() {
+	public List<ExperimentSeries> getExperimentSeriesList() {
 		return experimentSeries;
 	}
 	

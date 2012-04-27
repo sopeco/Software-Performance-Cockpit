@@ -64,8 +64,8 @@ public class PersistenceProviderFactoryTest {
 			assertEquals(scenarioInstance, series.getScenarioInstance());
 			assertEquals(esd.getName(), series.getExperimentSeriesDefinition().getName());
 			assertEquals(0, series.getExperimentSeriesRuns().size());
-			assertEquals(1, scenarioInstance.getExperimentSeries().size());
-			assertEquals(series, scenarioInstance.getExperimentSeries().get(0));
+			assertEquals(1, scenarioInstance.getExperimentSeriesList().size());
+			assertEquals(series, scenarioInstance.getExperimentSeriesList().get(0));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
