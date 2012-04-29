@@ -56,8 +56,8 @@ public class ExperimentSeriesManager implements IExperimentSeriesManager {
 			// TODO throw runtime exception
 		}
 
-		// TODO factory for persistence entities
 		ExperimentSeriesRun seriesRun = PersistenceProviderFactory.createExperimentSeriesRun(expSeries);
+		engine.getPersistenceProvider().store(seriesRun);
 		
 		// prepare the experiment series
 		List<ParameterValue<?>> constantParamValues = EngineTools.getConstantParameterValues(expSeries.getExperimentSeriesDefinition().getPreperationAssignments());

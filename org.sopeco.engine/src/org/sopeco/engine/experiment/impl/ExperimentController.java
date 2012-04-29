@@ -17,6 +17,7 @@ import org.sopeco.persistence.dataset.DataSetRowBuilder;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
+import org.sopeco.persistence.exceptions.DataNotFoundException;
 
 /**
  * This class implements the functionality required to execute a single experiment.
@@ -77,8 +78,13 @@ public class ExperimentController implements IExperimentController {
 
 		DataSetAggregated experimentRunResult =  runExperimentOnME(meController, inputPVList, terminationCondition);
 		
-		currentExperimentSeriesRun.append(experimentRunResult);
-		persistenceProvider.store(currentExperimentSeriesRun);
+		try {
+			currentExperimentSeriesRun = persistenceProvider.loadExperimentSeriesRun(currentExperimentSeriesRun.getPrimaryKey());
+			currentExperimentSeriesRun.append(experimentRunResult);
+			persistenceProvider.store(currentExperimentSeriesRun);	
+		} catch (DataNotFoundException e) {
+			throw new IllegalStateException("ExperimentSeriesRun with Id " + currentExperimentSeriesRun + " could not be loaded from database.", e);
+		}
 		
 		return experimentRunResult;
 	}
