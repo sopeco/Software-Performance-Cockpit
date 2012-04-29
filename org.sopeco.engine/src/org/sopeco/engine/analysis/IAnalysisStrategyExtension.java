@@ -7,7 +7,7 @@ import org.sopeco.engine.registry.ISoPeCoExtension;
 
 
 /**
- * The interface of extensions providing new exploration strategies.
+ * The interface of extensions providing new analysis strategies.
  * 
  * @author Roozbeh Farahbod
  *
