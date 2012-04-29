@@ -93,7 +93,7 @@ public class ExperimentSeriesManager implements IExperimentSeriesManager {
 
 		}
 
-		expStrategy.runExperimentSeries(expSeries, pvList);
+		expStrategy.runExperimentSeries(seriesRun, pvList);
 		
 		expController.finalizeExperimentSeries();
 	}

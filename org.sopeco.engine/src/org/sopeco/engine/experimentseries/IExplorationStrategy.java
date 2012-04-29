@@ -7,19 +7,19 @@ import org.sopeco.engine.registry.IExtensionRegistry;
 import org.sopeco.engine.registry.ISoPeCoExtensionArtifact;
 import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
 import org.sopeco.persistence.IPersistenceProvider;
-import org.sopeco.persistence.entities.ExperimentSeries;
+import org.sopeco.persistence.entities.ExperimentSeriesRun;
 
 /**
  * Plugin interface for exploration strategies.  
  * 
- * @author D053711
+ * @author Dennis Westermann
  *
  */
 public interface IExplorationStrategy extends ISoPeCoExtensionArtifact {
 
 	public boolean canRun(ExperimentSeriesDefinition expSeries);
 	
-	public void runExperimentSeries(ExperimentSeries expSeries, List<IParameterVariation> parameterVariations);
+	public void runExperimentSeries(ExperimentSeriesRun expSeriesRun, List<IParameterVariation> parameterVariations);
 	
 	public void setPersistenceProvider(IPersistenceProvider persistenceProvider);
 	

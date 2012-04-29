@@ -1,6 +1,5 @@
 package org.sopeco.engine.experimentseries;
 
-import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.ExperimentSeries;
 
 /**
