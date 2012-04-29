@@ -15,7 +15,7 @@ import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
 import org.sopeco.model.configuration.measurements.ExperimentTerminationCondition;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.dataset.ParameterValue;
-import org.sopeco.persistence.entities.ExperimentSeries;
+import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.util.Tools;
 
 /**
@@ -66,9 +66,9 @@ public class FullExplorationStrategy extends AbstractSoPeCoExtensionArtifact imp
 	}
 
 	@Override
-	public void runExperimentSeries(ExperimentSeries expSeries, List<IParameterVariation> parameterVariations) {
+	public void runExperimentSeries(ExperimentSeriesRun expSeriesRun, List<IParameterVariation> parameterVariations) {
 		initialiseExplorationStrategy(parameterVariations);
-		executeExperimentSeries(expSeries.getExperimentSeriesDefinition().getExperimentTerminationCondition());
+		executeExperimentSeries(expSeriesRun.getExperimentSeries().getExperimentSeriesDefinition().getExperimentTerminationCondition());
 	}
 
 	public List<ParameterValue<?>> getCurrentParameterValues() {

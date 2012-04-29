@@ -26,6 +26,7 @@ import org.sopeco.model.configuration.measurements.ExplorationStrategy;
 import org.sopeco.model.configuration.measurements.MeasurementsFactory;
 import org.sopeco.persistence.dataset.util.ParameterType;
 import org.sopeco.persistence.entities.ExperimentSeries;
+import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.plugin.std.exploration.full.FullExplorationStrategyExtension;
 
 public class FullExplorationStrategyTest {
@@ -95,7 +96,12 @@ public class FullExplorationStrategyTest {
 		ExperimentSeries es = new ExperimentSeries();
 		es.setName(expSeriesDef.getName());
 		
-		fes.runExperimentSeries(es, ipvList);
+		ExperimentSeriesRun esr = new ExperimentSeriesRun();
+		esr.setTimestamp(System.nanoTime());
+		esr.setExperimentSeries(es);
+		es.getExperimentSeriesRuns().add(esr);
+		
+		fes.runExperimentSeries(esr, ipvList);
 	}
 	
 }
