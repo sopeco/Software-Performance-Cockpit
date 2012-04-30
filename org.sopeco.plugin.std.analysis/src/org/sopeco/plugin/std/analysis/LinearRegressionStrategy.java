@@ -1,22 +1,13 @@
 package org.sopeco.plugin.std.analysis;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.engine.analysis.IPredictionFunctionResult;
-import org.sopeco.engine.analysis.IPredictionFunctionStrategy;
 import org.sopeco.model.configuration.analysis.AnalysisConfiguration;
 import org.sopeco.model.configuration.environment.ParameterDefinition;
-import org.sopeco.persistence.dataset.AbstractDataSetColumn;
 import org.sopeco.persistence.dataset.DataSetAggregated;
-import org.sopeco.persistence.dataset.DataSetInputColumn;
-import org.sopeco.persistence.dataset.DataSetObservationColumn;
-import org.sopeco.plugin.std.analysis.common.AbstractRStrategy;
+import org.sopeco.plugin.std.analysis.common.AbstractPredictionFunctionStrategy;
 import org.sopeco.plugin.std.analysis.common.PredictionFunctionResult;
-import org.sopeco.plugin.std.analysis.common.RDataSet;
 import org.sopeco.plugin.std.analysis.util.CSVStringGenerator;
 import org.sopeco.plugin.std.analysis.util.RAdapter;
 
@@ -26,13 +17,9 @@ import org.sopeco.plugin.std.analysis.util.RAdapter;
  * @author Dennis Westermann, Jens Happe
  * 
  */
-public class LinearRegressionStrategy extends AbstractRStrategy implements IPredictionFunctionStrategy {
+public class LinearRegressionStrategy extends AbstractPredictionFunctionStrategy {
 
 	Logger logger = LoggerFactory.getLogger(LinearRegressionStrategy.class);
-	
-	ParameterDefinition observationParameterDefintion;
-	List<ParameterDefinition> inputParameterDefinitions; 
-	AnalysisConfiguration config;
 	
 	
 	protected LinearRegressionStrategy(LinearRegressionStrategyExtension provider) {
@@ -41,35 +28,14 @@ public class LinearRegressionStrategy extends AbstractRStrategy implements IPred
 	}
 
 	@Override
-	public boolean supports(AnalysisConfiguration strategyConf) {
-		return strategyConf.getName().equalsIgnoreCase("Linear Regression");
-	}
-
-	@SuppressWarnings("rawtypes")
-	@Override
 	public void analyse(DataSetAggregated dataset, AnalysisConfiguration config) {
 	
-		this.config = config;
 	
 		logger.debug("Starting linear regression analysis.");
 		
-		// determine dependent and independent parameter
-		Collection<DataSetObservationColumn> observationColumns = dataset.getObservationColumns();
-		if (observationColumns.size() != 1)
-			throw new IllegalArgumentException("DataSet must contain exactly one observation column. Actual size is " + observationColumns.size());
-
-		Collection<DataSetInputColumn> inputColumns = dataset.getInputColumns();
-		if (inputColumns.size() == 0)
-			throw new IllegalArgumentException("DataSet must contain at least one input column.");
-
-		observationParameterDefintion = ((DataSetObservationColumn<?>) observationColumns.toArray()[0]).getParameter();
-		inputParameterDefinitions = getParameterDefintions(inputColumns);
+		initialize(dataset, config);
 		
-		// load dataset in R
-		RDataSet data = new RDataSet(dataset.convertToSimpleDataSet());
-		data.loadDataSetInR();
-
-		// build R command
+		// build and execute R command
 		StringBuilder cmdBuilder = new StringBuilder();
 		cmdBuilder.append(getId());
 		cmdBuilder.append(" <- lm(");
@@ -88,6 +54,9 @@ public class LinearRegressionStrategy extends AbstractRStrategy implements IPred
 		return buildResultObject();
 	}
 	
+	/**
+	 * @return the analysis result as a function string that conforms to the JavaScript syntax
+	 */
 	private String getFunctionAsString() {
 		StringBuilder functionBuilder = new StringBuilder();
 		functionBuilder.append(RAdapter.getWrapper().executeRCommandString(
@@ -104,18 +73,9 @@ public class LinearRegressionStrategy extends AbstractRStrategy implements IPred
 		return functionBuilder.toString();
 	}
 	
+	
 	private IPredictionFunctionResult buildResultObject(){
 		return new PredictionFunctionResult(getFunctionAsString(), observationParameterDefintion, config);
-	}
-
-	@SuppressWarnings("rawtypes")
-	private List<ParameterDefinition> getParameterDefintions(Collection<DataSetInputColumn> inputColumns) {
-		ArrayList<ParameterDefinition> resultList = new ArrayList<ParameterDefinition>();
-		
-		for (AbstractDataSetColumn<?> col : inputColumns) {
-				resultList.add(col.getParameter());
-		}
-		return resultList;
 	}
 
 

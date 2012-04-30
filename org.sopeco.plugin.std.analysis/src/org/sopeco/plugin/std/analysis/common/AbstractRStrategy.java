@@ -1,10 +1,14 @@
 package org.sopeco.plugin.std.analysis.common;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.sopeco.engine.registry.AbstractSoPeCoExtensionArtifact;
 import org.sopeco.engine.registry.ISoPeCoExtension;
+import org.sopeco.model.configuration.environment.ParameterDefinition;
+import org.sopeco.persistence.dataset.AbstractDataSetColumn;
+import org.sopeco.persistence.dataset.DataSetInputColumn;
 import org.sopeco.plugin.std.analysis.util.RAdapter;
 
 /**
@@ -72,6 +76,14 @@ public abstract class AbstractRStrategy extends AbstractSoPeCoExtensionArtifact 
 		return rAdapter;
 	}
 	
-	
+	@SuppressWarnings("rawtypes")
+	protected List<ParameterDefinition> getParameterDefintions(Collection<DataSetInputColumn> inputColumns) {
+		ArrayList<ParameterDefinition> resultList = new ArrayList<ParameterDefinition>();
+		
+		for (AbstractDataSetColumn<?> col : inputColumns) {
+				resultList.add(col.getParameter());
+		}
+		return resultList;
+	}
 	
 }

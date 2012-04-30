@@ -7,10 +7,15 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 import org.sopeco.engine.analysis.IPredictionFunctionResult;
 import org.sopeco.engine.analysis.IPredictionFunctionStrategy;
 import org.sopeco.model.configuration.ScenarioDefinition;
@@ -26,29 +31,54 @@ import org.sopeco.persistence.dataset.ParameterValueFactory;
 import org.sopeco.persistence.dataset.ParameterValueList;
 
 /**
- * Test class for implementations of the {@link IPredictionFunctionStrategy} interface
- * that implement a prediction function derivation analysis.
+ * Test class for implementations of the {@link IPredictionFunctionStrategy}
+ * interface that implement a prediction function derivation analysis.
  * 
  * @author Dennis Westermann
  * 
  */
+@RunWith(Parameterized.class)
 public class PredictionFunctionAnalysisStrategyTest {
 
-	private static IPredictionFunctionStrategy strategy;
+	private IPredictionFunctionStrategy strategy;
+	private AnalysisConfiguration analysisConfiguration;
 	private static ScenarioDefinition scenarioDefinition;
-	private static AnalysisConfiguration analysisConfiguration;
+
+	@Parameters
+	public static Collection<Object[]> data() {
+		Object[][] data = new Object[][] {
+				{ (IPredictionFunctionStrategy) new LinearRegressionStrategyExtension().createExtensionArtifact(), "Linear Regression" },
+				{ (IPredictionFunctionStrategy) new MarsStrategyExtension().createExtensionArtifact(), "MARS" } };
+		return Arrays.asList(data);
+	}
+
+	public PredictionFunctionAnalysisStrategyTest(IPredictionFunctionStrategy strategy, String name) {
+		this.strategy = strategy;
+		this.analysisConfiguration = SoPeCoModelFactoryHandler.getAnalysisFactory().createAnalysisConfiguration();
+		this.analysisConfiguration.setName(name);
+		
+		System.out.println("\n*** Running test for " + name);
+	}
 
 	@Before
 	public void setUp() throws Exception {
 		SoPeCoModelFactoryHandler.initFactories();
 		scenarioDefinition = loadScenarioDefinition();
-		
+
 		/*
 		 * This is the only implementation specific part of the test
 		 */
-		strategy = (IPredictionFunctionStrategy) new LinearRegressionStrategyExtension().createExtensionArtifact();
-		analysisConfiguration = SoPeCoModelFactoryHandler.getAnalysisFactory().createAnalysisConfiguration();
-		analysisConfiguration.setName("Linear Regression");
+		// strategy = (IPredictionFunctionStrategy) new
+		// LinearRegressionStrategyExtension().createExtensionArtifact();
+		// analysisConfiguration =
+		// SoPeCoModelFactoryHandler.getAnalysisFactory().createAnalysisConfiguration();
+		// analysisConfiguration.setName("Linear Regression");
+
+		// strategy = (IPredictionFunctionStrategy) new
+		// MarsStrategyExtension().createExtensionArtifact();
+		// analysisConfiguration =
+		// SoPeCoModelFactoryHandler.getAnalysisFactory().createAnalysisConfiguration();
+		// analysisConfiguration.setName("MARS");
 	}
 
 	@Test
@@ -57,28 +87,29 @@ public class PredictionFunctionAnalysisStrategyTest {
 		try {
 
 			assertTrue(strategy.supports(analysisConfiguration));
-			
+
 			DataSetAggregated dataset = createDummyDataSet();
 
 			strategy.analyse(dataset, analysisConfiguration);
-			
+
 			IPredictionFunctionResult result = strategy.getPredictionFunctionResult();
-			
+
 			assertNotNull(result);
 			assertEquals(analysisConfiguration.getName(), result.getAnalysisStrategyConfiguration().getName());
-			
-			ParameterValue<?> inputParam = ParameterValueFactory.createParameterValue(ScenarioDefinitionUtil.getParameterDefinition("default.DummyInput", scenarioDefinition), 1);
+
+			ParameterValue<?> inputParam = ParameterValueFactory.createParameterValue(
+					ScenarioDefinitionUtil.getParameterDefinition("default.DummyInput", scenarioDefinition), 1);
 			ParameterValue<?> predParam1 = result.predictOutputParameter(inputParam);
 			assertNotNull(predParam1);
 			List<ParameterValue<?>> inputParamList = new ArrayList<ParameterValue<?>>();
 			inputParamList.add(inputParam);
 			ParameterValue<?> predParam2 = result.predictOutputParameter(inputParamList);
 			assertEquals(predParam1.getValue(), predParam2.getValue());
-			
+
 			assertNotNull(result.getFunctionAsString());
-			
+
 			System.out.println(result.getFunctionAsString());
-			
+
 		} catch (IOException e) {
 			fail(e.getMessage());
 		}
@@ -106,9 +137,13 @@ public class PredictionFunctionAnalysisStrategyTest {
 		ArrayList<Object> obsValues1 = new ArrayList<Object>();
 		obsValues1.add(10);
 		obsValues1.add(10);
+		obsValues1.add(10);
+		obsValues1.add(10);
 		obsValueLists.add(new ParameterValueList<Object>(paramDef, obsValues1));
 
 		ArrayList<Object> obsValues2 = new ArrayList<Object>();
+		obsValues2.add(20);
+		obsValues2.add(20);
 		obsValues2.add(20);
 		obsValues2.add(20);
 		obsValueLists.add(new ParameterValueList(paramDef, obsValues2));
