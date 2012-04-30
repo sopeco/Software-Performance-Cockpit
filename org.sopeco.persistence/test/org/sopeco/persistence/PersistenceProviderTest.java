@@ -21,6 +21,7 @@ import org.sopeco.model.configuration.environment.ParameterRole;
 import org.sopeco.model.util.ScenarioDefinitionUtil;
 import org.sopeco.persistence.config.DBType;
 import org.sopeco.persistence.dataset.DataSetAggregated;
+import org.sopeco.persistence.dataset.DataSetInputColumn;
 import org.sopeco.persistence.dataset.DataSetRowBuilder;
 import org.sopeco.persistence.dataset.ParameterValueFactory;
 import org.sopeco.persistence.entities.ExperimentSeries;
@@ -322,6 +323,7 @@ public class PersistenceProviderTest {
 			assertTrue(dummySeriesRun.getExperimentSeries().equals(loadedSeriesRun.getExperimentSeries()));
 			assertNotNull(loadedSeriesRun.getExperimentSeries().getScenarioInstance());
 
+		
 			checkAvailableExperimentSeriesRuns(loadedSeriesRun.getExperimentSeries());
 
 		} catch (DataNotFoundException e) {
@@ -576,6 +578,9 @@ public class PersistenceProviderTest {
 		assertNotNull(expSeries.getExperimentSeriesRuns().get(0).getResultDataSet());
 		assertTrue(expSeries.getExperimentSeriesRuns().get(0).getResultDataSet().getObservationColumns().size() == 1);
 		assertTrue(expSeries.getExperimentSeriesRuns().get(0).getResultDataSet().getInputColumns().size() == 1);
+		
+		// Result Data Set should have the ParameterDefinitions
+		assertNotNull(((DataSetInputColumn<?>)expSeries.getExperimentSeriesRuns().get(0).getResultDataSet().getInputColumns().toArray()[0]).getParameter());
 
 	}
 
