@@ -1,12 +1,11 @@
 package org.sopeco.engine.experiment.impl;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
+import org.sopeco.engine.util.ParameterCollection;
+import org.sopeco.engine.util.ParameterCollectionFactory;
 import org.sopeco.model.configuration.environment.MeasurementEnvironmentDefinition;
 import org.sopeco.model.configuration.environment.ParameterDefinition;
 import org.sopeco.model.configuration.measurements.ExperimentTerminationCondition;
@@ -32,11 +31,11 @@ public class ExperimentController implements IExperimentController {
 	IMeasurementEnvironmentController meController = null;
 	IPersistenceProvider persistenceProvider = null;
 	ExperimentSeriesRun currentExperimentSeriesRun = null;
-	List<ParameterValue<?>> initializationPVList = Collections.emptyList();
-	Collection<ParameterValue<?>> preparationPVList = Collections.emptyList();
+	ParameterCollection<ParameterValue<?>> initializationPVs = ParameterCollectionFactory.createParameterValueCollection();
+	ParameterCollection<ParameterValue<?>> preparationPVs = ParameterCollectionFactory.createParameterValueCollection();
 
 	@Override
-	public void initialize(List<ParameterValue<?>> initializationPVList, MeasurementEnvironmentDefinition meDefinition) {
+	public void initialize(ParameterCollection<ParameterValue<?>> initializationPVs, MeasurementEnvironmentDefinition meDefinition) {
 		
 		if (meController == null) {
 			throw new IllegalStateException("No MeasurementEnvironmentController has been set.");
@@ -47,36 +46,36 @@ public class ExperimentController implements IExperimentController {
 		
 		this.meDefinition = meDefinition;
 		
-		this.initializationPVList = initializationPVList;
+		this.initializationPVs = initializationPVs;
 		
-		meController.initialize(initializationPVList);
+		meController.initialize(initializationPVs);
 	}
 
 	@Override
-	public void prepareExperimentSeries(ExperimentSeriesRun experimentSeriesRun, Collection<ParameterValue<?>> preparationPVList) {
+	public void prepareExperimentSeries(ExperimentSeriesRun experimentSeriesRun, ParameterCollection<ParameterValue<?>> preparationPVs) {
 		if(experimentSeriesRun==null){
 			throw new IllegalArgumentException("ExperimentSeriesRun must not be null.");
 		}
 		
 		this.currentExperimentSeriesRun = experimentSeriesRun;
-		this.preparationPVList = preparationPVList;
+		this.preparationPVs = preparationPVs;
 		
-		meController.prepareExperimentSeries(preparationPVList);
+		meController.prepareExperimentSeries(preparationPVs);
 		
-		List<ParameterDefinition> observationParameterList = new ArrayList<ParameterDefinition>();
-		ScenarioDefinitionUtil.collectObservationParameters(meDefinition.getRoot(), observationParameterList);
-		meController.setObservationParameters(observationParameterList);
+		ParameterCollection<ParameterDefinition> observationParams = 
+				ParameterCollectionFactory.createParameterDefinitionCollection(ScenarioDefinitionUtil.collectObservationParameters(meDefinition.getRoot()));
+		meController.setObservationParameters(observationParams);
 	}
 	
 	
 	
 	@Override
-	public DataSetAggregated runExperiment(List<ParameterValue<?>> inputPVList, ExperimentTerminationCondition terminationCondition) {
+	public DataSetAggregated runExperiment(ParameterCollection<ParameterValue<?>> inputPVs, ExperimentTerminationCondition terminationCondition) {
 		if (terminationCondition == null)
 			throw new IllegalArgumentException("TerminationCondition must be set (not null).");
 		
 
-		DataSetAggregated experimentRunResult =  runExperimentOnME(meController, inputPVList, terminationCondition);
+		DataSetAggregated experimentRunResult =  runExperimentOnME(meController, inputPVs, terminationCondition);
 		
 		try {
 			currentExperimentSeriesRun = persistenceProvider.loadExperimentSeriesRun(currentExperimentSeriesRun.getPrimaryKey());
@@ -111,25 +110,25 @@ public class ExperimentController implements IExperimentController {
 	 * the given measurement environment controller, and aggregates the results into an instance of
 	 * {@link DataSetAggregated}.
 	 */
-	private DataSetAggregated runExperimentOnME(IMeasurementEnvironmentController meController, List<ParameterValue<?>> inputPVList, ExperimentTerminationCondition terminationCondition) {
+	private DataSetAggregated runExperimentOnME(IMeasurementEnvironmentController meController, ParameterCollection<ParameterValue<?>> inputPVs, ExperimentTerminationCondition terminationCondition) {
 
 		// 1. run the experiment
-		Collection<ParameterValueList<?>> observations = meController.runExperiment(inputPVList, terminationCondition);
+		Collection<ParameterValueList<?>> observations = meController.runExperiment(inputPVs, terminationCondition);
 		
 		// 2. aggregate the results
 		DataSetRowBuilder builder = new DataSetRowBuilder();
 		builder.startRow();
 		
 		// 2.1. add initialization values
-		for (ParameterValue<?> pv: initializationPVList)
+		for (ParameterValue<?> pv: initializationPVs)
 			builder.addInputParameterValue(pv.getParameter(), pv.getValue());
 
 		// 2.2. add preparation values
-		for (ParameterValue<?> pv: preparationPVList)
+		for (ParameterValue<?> pv: preparationPVs)
 			builder.addInputParameterValue(pv.getParameter(), pv.getValue());
 		
 		// 2.3. add input values
-		for (ParameterValue<?> parameterValue : inputPVList) 
+		for (ParameterValue<?> parameterValue : inputPVs) 
 			builder.addInputParameterValue(parameterValue.getParameter(), parameterValue.getValue());
 		
 		// 2.4. add observation values

@@ -1,8 +1,8 @@
 package org.sopeco.engine.measurementenvironment;
 
 import java.util.Collection;
-import java.util.List;
 
+import org.sopeco.engine.util.ParameterCollection;
 import org.sopeco.model.configuration.environment.ParameterDefinition;
 import org.sopeco.model.configuration.measurements.ExperimentTerminationCondition;
 import org.sopeco.persistence.dataset.ParameterValue;
@@ -21,28 +21,28 @@ public interface IMeasurementEnvironmentController {
 	 * Initializes the measurement environment controller with a list 
 	 * of initialization values.
 	 * 
-	 * @param initializationPVList the list of constant values defined in the scenario as initialization assignments
+	 * @param initializationPVs the collection of constant values defined in the scenario as initialization assignments
 	 */
-	public void initialize(List<ParameterValue<?>> initializationPVList);
+	public void initialize(ParameterCollection<ParameterValue<?>> initializationPVs);
 
 	/**
 	 * Prepares the measurement environment for a series of experiments with a collection 
 	 * of value assignments that remain constant in the series. 
 	 *   
-	 * @param preparationPVList a collection of constant value assignments
+	 * @param preparationPVs a collection of constant value assignments
 	 */
-	public void prepareExperimentSeries(Collection<ParameterValue<?>> preparationPVList);
+	public void prepareExperimentSeries(ParameterCollection<ParameterValue<?>> preparationPVs);
 	
 	/**
 	 * Runs a single experiment on the measurement environment. As a result, for every 
 	 * observation parameter a list of observed values is returned. 
 	 * 
-	 * @param inputPVList a list of input value assignments
+	 * @param inputPVs a collection of input value assignments
 	 * @param terminationCondition a termination condition
 	 * 
 	 * @return a collection of parameter value lists that includes one parameter value list for every observation parameter
 	 */
-	public Collection<ParameterValueList<?>> runExperiment(List<ParameterValue<?>> inputPVList, ExperimentTerminationCondition  terminationCondition);
+	public Collection<ParameterValueList<?>> runExperiment(ParameterCollection<ParameterValue<?>> inputPVs, ExperimentTerminationCondition  terminationCondition);
 	
 	/**
 	 * Finalizes the measurement environment.
@@ -50,10 +50,10 @@ public interface IMeasurementEnvironmentController {
 	public void finalizeExperimentSeries();
 
 	/**
-	 * Sets the list of observation parameters. 
+	 * Sets the collection of observation parameters. 
 	 * 
-	 * @param observationParameters
+	 * @param observationParameters the collection of observation parameters
 	 */
-	void setObservationParameters(List<ParameterDefinition> observationParameters);
+	void setObservationParameters(ParameterCollection<ParameterDefinition> observationParameters);
 	
 }

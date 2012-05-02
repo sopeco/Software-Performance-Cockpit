@@ -18,6 +18,7 @@ import org.sopeco.engine.experimentseries.IParameterVariation;
 import org.sopeco.engine.experimentseries.IParameterVariationExtension;
 import org.sopeco.engine.registry.IExtensionRegistry;
 import org.sopeco.engine.util.EngineTools;
+import org.sopeco.engine.util.ParameterCollection;
 import org.sopeco.model.configuration.measurements.ConstantValueAssignment;
 import org.sopeco.model.configuration.measurements.DynamicValueAssignment;
 import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
@@ -60,7 +61,7 @@ public class ExperimentSeriesManager implements IExperimentSeriesManager {
 		engine.getPersistenceProvider().store(seriesRun);
 		
 		// prepare the experiment series
-		List<ParameterValue<?>> constantParamValues = EngineTools.getConstantParameterValues(expSeries.getExperimentSeriesDefinition().getPreperationAssignments());
+		ParameterCollection<ParameterValue<?>> constantParamValues = EngineTools.getConstantParameterValues(expSeries.getExperimentSeriesDefinition().getPreperationAssignments());
 		expController.prepareExperimentSeries(seriesRun, constantParamValues);
 		
 		List<IParameterVariation> pvList = new ArrayList<IParameterVariation>();

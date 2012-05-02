@@ -1,7 +1,10 @@
 package org.sopeco.model.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.sopeco.model.configuration.ScenarioDefinition;
 import org.sopeco.model.configuration.environment.ParameterDefinition;
@@ -59,9 +62,21 @@ public class ScenarioDefinitionUtil {
 	 * Collects all observation parameters of the given namespace (including all child namespaces). 
 	 * 
 	 * @param namespace
-	 * @param observationParameterList - the list in which the observation parameters should be stored (must not be null)
+	 * @return the set of parameter definitions
 	 */
-	public static void collectObservationParameters(ParameterNamespace namespace, List<ParameterDefinition> observationParameterList) {
+	public static Set<ParameterDefinition> collectObservationParameters(ParameterNamespace namespace) {
+		Set<ParameterDefinition> result = new HashSet<ParameterDefinition>();
+		collectObservationParameters(namespace, result);
+		return result;
+	}
+	
+	/**
+	 * Collects all observation parameters of the given namespace (including all child namespaces). 
+	 * 
+	 * @param namespace
+	 * @param observationParameterList - the collection in which the observation parameters should be stored (must not be null)
+	 */
+	public static void collectObservationParameters(ParameterNamespace namespace, Collection<ParameterDefinition> observationParameterList) {
 		
 		for(ParameterDefinition parameter : namespace.getParameters()){
 			if(parameter.getRole().equals(ParameterRole.OBSERVATION)){
@@ -81,7 +96,7 @@ public class ScenarioDefinitionUtil {
 	 * @param namespace
 	 * @param parameterList - the list in which the parameters should be stored (must not be null)
 	 */
-	private static void collectAllParameters(ParameterNamespace namespace, List<ParameterDefinition> parameterList) {
+	private static void collectAllParameters(ParameterNamespace namespace, Collection<ParameterDefinition> parameterList) {
 		
 		for(ParameterDefinition parameter : namespace.getParameters()){
 			parameterList.add(parameter);
