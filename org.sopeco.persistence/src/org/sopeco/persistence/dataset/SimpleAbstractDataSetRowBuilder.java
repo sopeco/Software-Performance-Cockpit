@@ -78,7 +78,7 @@ public abstract class SimpleAbstractDataSetRowBuilder {
 	/**
 	 * @return Number of rows in the SimpleDataSet.
 	 */
-	protected int size() {
+	public int size() {
 		for (SimpleDataSetColumn column : columnMap.values()) {
 			if (column.getValueList() != null) {
 				return column.getValueList().size();

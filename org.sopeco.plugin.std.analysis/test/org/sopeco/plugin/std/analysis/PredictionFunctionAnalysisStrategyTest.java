@@ -1,7 +1,6 @@
 package org.sopeco.plugin.std.analysis;
 
 import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -43,52 +42,41 @@ public class PredictionFunctionAnalysisStrategyTest {
 	private IPredictionFunctionStrategy strategy;
 	private AnalysisConfiguration analysisConfiguration;
 	private static ScenarioDefinition scenarioDefinition;
-
+	private DataSetAggregated dataset;
+	
 	@Parameters
 	public static Collection<Object[]> data() {
 		Object[][] data = new Object[][] {
-				{ (IPredictionFunctionStrategy) new LinearRegressionStrategyExtension().createExtensionArtifact(), "Linear Regression" },
-				{ (IPredictionFunctionStrategy) new MarsStrategyExtension().createExtensionArtifact(), "MARS" } };
+				{ (IPredictionFunctionStrategy) new LinearRegressionStrategyExtension().createExtensionArtifact(), "Linear Regression", "Small" },
+				{ (IPredictionFunctionStrategy) new LinearRegressionStrategyExtension().createExtensionArtifact(), "Linear Regression", "Large" },
+				{ (IPredictionFunctionStrategy) new MarsStrategyExtension().createExtensionArtifact(), "MARS", "Small" },
+				{ (IPredictionFunctionStrategy) new MarsStrategyExtension().createExtensionArtifact(), "MARS", "Large" }
+		};
 		return Arrays.asList(data);
 	}
 
-	public PredictionFunctionAnalysisStrategyTest(IPredictionFunctionStrategy strategy, String name) {
+	public PredictionFunctionAnalysisStrategyTest(IPredictionFunctionStrategy strategy, String name, String dataSetSize) throws IOException {
 		this.strategy = strategy;
 		this.analysisConfiguration = SoPeCoModelFactoryHandler.getAnalysisFactory().createAnalysisConfiguration();
 		this.analysisConfiguration.setName(name);
-		
-		System.out.println("\n*** Running test for " + name);
+		if (dataSetSize.equalsIgnoreCase("Small")) {
+			this.dataset = createSmallDummyDataSet();
+		} else if (dataSetSize.equalsIgnoreCase("Large")) {
+			this.dataset = createLargeDummyDataSet();
+		}
+		System.out.println("\n*** Running test for " + name + " with dataset size " + dataSetSize);
 	}
 
 	@Before
 	public void setUp() throws Exception {
 		SoPeCoModelFactoryHandler.initFactories();
 		scenarioDefinition = loadScenarioDefinition();
-
-		/*
-		 * This is the only implementation specific part of the test
-		 */
-		// strategy = (IPredictionFunctionStrategy) new
-		// LinearRegressionStrategyExtension().createExtensionArtifact();
-		// analysisConfiguration =
-		// SoPeCoModelFactoryHandler.getAnalysisFactory().createAnalysisConfiguration();
-		// analysisConfiguration.setName("Linear Regression");
-
-		// strategy = (IPredictionFunctionStrategy) new
-		// MarsStrategyExtension().createExtensionArtifact();
-		// analysisConfiguration =
-		// SoPeCoModelFactoryHandler.getAnalysisFactory().createAnalysisConfiguration();
-		// analysisConfiguration.setName("MARS");
 	}
 
 	@Test
-	public void testAnalysis() {
-
-		try {
+	public void testAnalysisWithLargeDataSet() {
 
 			assertTrue(strategy.supports(analysisConfiguration));
-
-			DataSetAggregated dataset = createDummyDataSet();
 
 			strategy.analyse(dataset, analysisConfiguration);
 
@@ -110,18 +98,15 @@ public class PredictionFunctionAnalysisStrategyTest {
 
 			System.out.println(result.getFunctionAsString());
 
-		} catch (IOException e) {
-			fail(e.getMessage());
-		}
-
 	}
+	
 
 	private static ScenarioDefinition loadScenarioDefinition() throws IOException {
 		return (ScenarioDefinition) EMFUtil.loadFromFilePath("test/dummy.configuration");
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private static DataSetAggregated createDummyDataSet() throws IOException {
+	private static DataSetAggregated createLargeDummyDataSet() throws IOException {
 		if (scenarioDefinition == null)
 			scenarioDefinition = loadScenarioDefinition();
 
@@ -145,6 +130,34 @@ public class PredictionFunctionAnalysisStrategyTest {
 		obsValues2.add(20);
 		obsValues2.add(20);
 		obsValues2.add(20);
+		obsValues2.add(20);
+		obsValueLists.add(new ParameterValueList(paramDef, obsValues2));
+
+		builder.addObservationValueLists(obsValueLists);
+		builder.finishColumn();
+
+		return builder.createDataSet();
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private static DataSetAggregated createSmallDummyDataSet() throws IOException {
+		if (scenarioDefinition == null)
+			scenarioDefinition = loadScenarioDefinition();
+
+		DataSetColumnBuilder builder = new DataSetColumnBuilder();
+		builder.startInputColumn(ScenarioDefinitionUtil.getParameterDefinition("default.DummyInput", scenarioDefinition));
+		builder.addInputValue(1);
+		builder.addInputValue(2);
+		builder.finishColumn();
+
+		ParameterDefinition paramDef = ScenarioDefinitionUtil.getParameterDefinition("default.DummyOutput", scenarioDefinition);
+		ArrayList<ParameterValueList> obsValueLists = new ArrayList<ParameterValueList>();
+		builder.startObservationColumn(paramDef);
+		ArrayList<Object> obsValues1 = new ArrayList<Object>();
+		obsValues1.add(10);
+		obsValueLists.add(new ParameterValueList<Object>(paramDef, obsValues1));
+
+		ArrayList<Object> obsValues2 = new ArrayList<Object>();
 		obsValues2.add(20);
 		obsValueLists.add(new ParameterValueList(paramDef, obsValues2));
 

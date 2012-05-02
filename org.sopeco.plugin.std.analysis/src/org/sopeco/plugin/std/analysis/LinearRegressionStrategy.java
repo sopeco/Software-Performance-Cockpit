@@ -33,7 +33,9 @@ public class LinearRegressionStrategy extends AbstractPredictionFunctionStrategy
 	
 		logger.debug("Starting linear regression analysis.");
 		
-		initialize(dataset, config);
+		validate(dataset, config);
+	
+		loadDataSetInR(dataset.convertToSimpleDataSet());
 		
 		// build and execute R command
 		StringBuilder cmdBuilder = new StringBuilder();

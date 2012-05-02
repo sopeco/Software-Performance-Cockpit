@@ -19,11 +19,10 @@ public abstract class AbstractPredictionFunctionStrategy extends AbstractRStrate
 
 	protected ParameterDefinition observationParameterDefintion;
 	protected List<ParameterDefinition> inputParameterDefinitions; 
-	protected AnalysisConfiguration config;
-	protected RDataSet data; 
+	
 	
 	@SuppressWarnings("rawtypes")
-	protected void initialize(DataSetAggregated dataset, AnalysisConfiguration config){
+	protected void validate(DataSetAggregated dataset, AnalysisConfiguration config){
 		
 		this.config = config;
 			
@@ -38,10 +37,6 @@ public abstract class AbstractPredictionFunctionStrategy extends AbstractRStrate
 
 		observationParameterDefintion = ((DataSetObservationColumn<?>) observationColumns.toArray()[0]).getParameter();
 		inputParameterDefinitions = getParameterDefintions(inputColumns);
-		
-		// load dataset in R
-		data = new RDataSet(dataset.convertToSimpleDataSet());
-		data.loadDataSetInR();
 	}
 	
 	@Override

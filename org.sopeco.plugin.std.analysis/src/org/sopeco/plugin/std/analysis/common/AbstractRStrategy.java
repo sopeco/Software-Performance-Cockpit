@@ -6,9 +6,11 @@ import java.util.List;
 
 import org.sopeco.engine.registry.AbstractSoPeCoExtensionArtifact;
 import org.sopeco.engine.registry.ISoPeCoExtension;
+import org.sopeco.model.configuration.analysis.AnalysisConfiguration;
 import org.sopeco.model.configuration.environment.ParameterDefinition;
 import org.sopeco.persistence.dataset.AbstractDataSetColumn;
 import org.sopeco.persistence.dataset.DataSetInputColumn;
+import org.sopeco.persistence.dataset.SimpleDataSet;
 import org.sopeco.plugin.std.analysis.util.RAdapter;
 
 /**
@@ -86,4 +88,12 @@ public abstract class AbstractRStrategy extends AbstractSoPeCoExtensionArtifact 
 		return resultList;
 	}
 	
+	protected AnalysisConfiguration config;
+	protected RDataSet data; 
+	
+	protected void loadDataSetInR(SimpleDataSet dataset){
+		
+		data = new RDataSet(dataset);
+		data.loadDataSetInR();
+	}
 }
