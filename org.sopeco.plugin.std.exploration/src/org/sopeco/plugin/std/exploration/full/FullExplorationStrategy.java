@@ -11,6 +11,8 @@ import org.sopeco.engine.experimentseries.IExplorationStrategy;
 import org.sopeco.engine.experimentseries.IParameterVariation;
 import org.sopeco.engine.registry.AbstractSoPeCoExtensionArtifact;
 import org.sopeco.engine.registry.IExtensionRegistry;
+import org.sopeco.engine.util.ParameterCollection;
+import org.sopeco.engine.util.ParameterCollectionFactory;
 import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
 import org.sopeco.model.configuration.measurements.ExperimentTerminationCondition;
 import org.sopeco.persistence.IPersistenceProvider;
@@ -71,8 +73,8 @@ public class FullExplorationStrategy extends AbstractSoPeCoExtensionArtifact imp
 		executeExperimentSeries(expSeriesRun.getExperimentSeries().getExperimentSeriesDefinition().getExperimentTerminationCondition());
 	}
 
-	public List<ParameterValue<?>> getCurrentParameterValues() {
-		return parameterValues;
+	public ParameterCollection<ParameterValue<?>> getCurrentParameterValues() {
+		return ParameterCollectionFactory.createParameterValueCollection(parameterValues);
 	}
 
 	private void initialiseExplorationStrategy(
@@ -99,7 +101,7 @@ public class FullExplorationStrategy extends AbstractSoPeCoExtensionArtifact imp
 	private void executeExperimentSeries(ExperimentTerminationCondition terminationCondition) {
 
 		// List InputParameter' ParameterValues for the runs
-		List<ParameterValue<?>> inputParameterValues = getCurrentParameterValues();
+		ParameterCollection<ParameterValue<?>> inputParameterValues = getCurrentParameterValues();
 		
 		int count = 1;
 		// As long as parameters can be varied: determine next parameters and execute the experiment-run
@@ -107,9 +109,9 @@ public class FullExplorationStrategy extends AbstractSoPeCoExtensionArtifact imp
 			
 			logger.debug("Executing experiment run {}.", count++);
 			
-			expController.runExperiment(parameterValues, terminationCondition);
+			expController.runExperiment(ParameterCollectionFactory.createParameterValueCollection(parameterValues), terminationCondition);
 			
-			inputParameterValues = getNextParameterValues();
+			inputParameterValues = ParameterCollectionFactory.createParameterValueCollection(getNextParameterValues());
 		}
 		
 	}

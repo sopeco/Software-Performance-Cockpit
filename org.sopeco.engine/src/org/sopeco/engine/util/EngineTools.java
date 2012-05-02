@@ -3,9 +3,7 @@
  */
 package org.sopeco.engine.util;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.sopeco.engine.experimentseries.IConstantAssignment;
 import org.sopeco.engine.experimentseries.IConstantAssignmentExtension;
@@ -22,13 +20,13 @@ import org.sopeco.persistence.dataset.ParameterValue;
 public class EngineTools {
 
 	/**
-	 * Returns a list of parameter value assignments based on the given constant value assignments.
+	 * Returns a collection of parameter value assignments based on the given constant value assignments.
 	 * 
 	 * @param constantValueAssignments
-	 * @return returns a list of {@link ParameterValue}; never returns null.
+	 * @return returns a collection of {@link ParameterValue}; never returns null.
 	 */
-	public static List<ParameterValue<?>> getConstantParameterValues(Collection<ConstantValueAssignment> constantValueAssignments) {
-		ArrayList<ParameterValue<?>> result = new ArrayList<ParameterValue<?>>();
+	public static ParameterCollection<ParameterValue<?>> getConstantParameterValues(Collection<ConstantValueAssignment> constantValueAssignments) {
+		ParameterCollection<ParameterValue<?>> result = ParameterCollectionFactory.createParameterValueCollection();
 		
 		for (ConstantValueAssignment cva: constantValueAssignments) {
 			ParameterValue<?> pv = getConstantParameterValue(cva);

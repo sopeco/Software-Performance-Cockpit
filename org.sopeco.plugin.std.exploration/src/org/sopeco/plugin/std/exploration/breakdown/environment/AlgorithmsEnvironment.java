@@ -9,6 +9,8 @@ import org.sopeco.engine.analysis.IPredictionFunctionResult;
 import org.sopeco.engine.analysis.IPredictionFunctionStrategy;
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.experimentseries.IParameterVariation;
+import org.sopeco.engine.util.ParameterCollection;
+import org.sopeco.engine.util.ParameterCollectionFactory;
 import org.sopeco.model.configuration.analysis.AnalysisConfiguration;
 import org.sopeco.model.configuration.environment.ParameterDefinition;
 import org.sopeco.persistence.IPersistenceProvider;
@@ -16,9 +18,7 @@ import org.sopeco.persistence.dataset.AbstractDataSetColumn;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetModifier;
 import org.sopeco.persistence.dataset.ParameterValue;
-import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
-import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.plugin.std.exploration.breakdown.space.RelativePosition;
 
 /**
@@ -162,8 +162,8 @@ public class AlgorithmsEnvironment {
 	 */
 	public AbstractEnvironmentValue measure(RelativePosition position) {
 
-		List<ParameterValue<?>> realPositionList = this.getRealPosition(position);
-		List<ParameterValue<?>> newRealPositionList = realPositionList;
+		ParameterCollection<ParameterValue<?>> realPositionList = ParameterCollectionFactory.createParameterValueCollection(this.getRealPosition(position));
+		ParameterCollection<ParameterValue<?>> newRealPositionList = ParameterCollectionFactory.createParameterValueCollection(realPositionList);
 		DataSetAggregated measuredData = this.experimentController.runExperiment(newRealPositionList, this.expSeriesRun.getExperimentSeries().getExperimentSeriesDefinition()
 				.getExperimentTerminationCondition());
 

@@ -1,14 +1,13 @@
 package org.sopeco.engine.helper;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.eclipse.emf.common.util.EMap;
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.experiment.impl.ExperimentController;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
+import org.sopeco.engine.util.ParameterCollection;
+import org.sopeco.engine.util.ParameterCollectionFactory;
 import org.sopeco.model.configuration.ConfigurationFactory;
 import org.sopeco.model.configuration.ScenarioDefinition;
 import org.sopeco.model.configuration.environment.EnvironmentFactory;
@@ -17,12 +16,9 @@ import org.sopeco.model.configuration.environment.ParameterDefinition;
 import org.sopeco.model.configuration.environment.ParameterNamespace;
 import org.sopeco.model.configuration.environment.ParameterRole;
 import org.sopeco.model.configuration.measurements.DynamicValueAssignment;
-import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
 import org.sopeco.model.configuration.measurements.ExperimentTerminationCondition;
 import org.sopeco.model.configuration.measurements.MeasurementsFactory;
 import org.sopeco.model.configuration.measurements.NumberOfRepetitions;
-import org.sopeco.model.configuration.measurements.ParameterValueAssignment;
-import org.sopeco.model.configuration.measurements.impl.ParameterValueAssignmentImpl;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueFactory;
 import org.sopeco.persistence.dataset.util.ParameterType;
@@ -36,7 +32,7 @@ public class ConfigurationBuilder {
 	
 	ParameterDefinition currentParameter;
 	
-	private List<ParameterValue<?>> pvList = new ArrayList<ParameterValue<?>>();
+	private ParameterCollection<ParameterValue<?>> pvList = ParameterCollectionFactory.createParameterValueCollection();
 
 	private ExperimentTerminationCondition terminationCondition;
 	
@@ -92,7 +88,7 @@ public class ConfigurationBuilder {
 		pvList.add(parameterValue);
 	}
 
-	public List<ParameterValue<?>> getPVList() {
+	public ParameterCollection<ParameterValue<?>> getPVList() {
 		return pvList;
 	}
 

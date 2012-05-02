@@ -5,13 +5,11 @@ package org.sopeco.core.test;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
+import org.sopeco.engine.util.ParameterCollection;
 import org.sopeco.model.configuration.environment.ParameterDefinition;
 import org.sopeco.model.configuration.measurements.ExperimentTerminationCondition;
 import org.sopeco.model.configuration.measurements.NumberOfRepetitions;
@@ -32,21 +30,21 @@ public class SampleMEController implements IMeasurementEnvironmentController {
 	private ParameterDefinition responseTime;
 
 	@Override
-	public void initialize(List<ParameterValue<?>> initializationPVList) {
+	public void initialize(ParameterCollection<ParameterValue<?>> initializationPVList) {
 		logger.debug("ME Controller initialized with:");
 		for (ParameterValue<?> pv: initializationPVList) 
 			logger.debug("   - {} = {}", pv.getParameter().getFullName(), pv.getValue());
 	}
 
 	@Override
-	public void prepareExperimentSeries(Collection<ParameterValue<?>> preparationPVList) {
+	public void prepareExperimentSeries(ParameterCollection<ParameterValue<?>> preparationPVList) {
 		logger.debug("ME Controller is prepared for experiment series with:");
 		for (ParameterValue<?> pv: preparationPVList) 
 			logger.debug("   - {} = {}", pv.getParameter().getFullName(), pv.getValue());
 	}
 
 	@Override
-	public Collection<ParameterValueList<?>> runExperiment(List<ParameterValue<?>> inputPVList, ExperimentTerminationCondition terminationCondition) {
+	public Collection<ParameterValueList<?>> runExperiment(ParameterCollection<ParameterValue<?>> inputPVList, ExperimentTerminationCondition terminationCondition) {
 		final ArrayList<ParameterValueList<?>> result = new ArrayList<ParameterValueList<?>>();
 		final ParameterValueList<Object> list = new ParameterValueList<Object>(responseTime);
 		result.add(list);
@@ -104,8 +102,8 @@ public class SampleMEController implements IMeasurementEnvironmentController {
 	}
 
 	@Override
-	public void setObservationParameters(List<ParameterDefinition> observationParameters) {
-		responseTime = observationParameters.get(0);
+	public void setObservationParameters(ParameterCollection<ParameterDefinition> observationParameters) {
+		responseTime = observationParameters.getOne();
 		logger.debug("Observation parameter is set as {}.", responseTime.getName());
 	}
 

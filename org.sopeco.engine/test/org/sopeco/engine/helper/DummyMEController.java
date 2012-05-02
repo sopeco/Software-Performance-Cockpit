@@ -2,20 +2,17 @@ package org.sopeco.engine.helper;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
+import org.sopeco.engine.util.ParameterCollection;
 import org.sopeco.model.configuration.environment.ParameterDefinition;
 import org.sopeco.model.configuration.measurements.ExperimentTerminationCondition;
 import org.sopeco.model.configuration.measurements.NumberOfRepetitions;
-import org.sopeco.persistence.dataset.DataSetAggregated;
-import org.sopeco.persistence.dataset.DataSetRowBuilder;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
 
@@ -23,24 +20,24 @@ public class DummyMEController implements IMeasurementEnvironmentController {
 
 	private static Logger logger = LoggerFactory.getLogger(DummyMEController.class);
 	
-	private List<ParameterValue<?>> initializationPVList;
-	private List<ParameterValue<?>> preparationPVList;
-	private List<ParameterDefinition> observationParameterList = null; 
+	private ParameterCollection<ParameterValue<?>> initializationPVList;
+	private ParameterCollection<ParameterValue<?>> preparationPVList;
+	private ParameterCollection<ParameterDefinition> observationParameterList = null; 
 	
 	@Override
-	public void initialize(List<ParameterValue<?>> initializationPVList) {
+	public void initialize(ParameterCollection<ParameterValue<?>> initializationPVList) {
 		logger.debug("Initialize measurement environment.");
 		this.initializationPVList = initializationPVList;
 	}
 
 	@Override
-	public void prepareExperimentSeries(Collection<ParameterValue<?>> preparationPVList) {
+	public void prepareExperimentSeries(ParameterCollection<ParameterValue<?>> preparationPVList) {
 		logger.debug("Prepare experiment series");
-		this.preparationPVList = new ArrayList<ParameterValue<?>>(preparationPVList);
+		this.preparationPVList = preparationPVList;
 	}
 
 	@Override
-	public Collection<ParameterValueList<?>> runExperiment(List<ParameterValue<?>> inputPVList, ExperimentTerminationCondition terminationCondition) {
+	public Collection<ParameterValueList<?>> runExperiment(ParameterCollection<ParameterValue<?>> inputPVList, ExperimentTerminationCondition terminationCondition) {
 		Map<ParameterDefinition, ParameterValueList<?>> map = new HashMap<ParameterDefinition, ParameterValueList<?>>();
 		for (ParameterDefinition pd : observationParameterList)
 			map.put(pd, new ParameterValueList<Object>(pd));
@@ -74,12 +71,12 @@ public class DummyMEController implements IMeasurementEnvironmentController {
 
 	public ParameterValue<?> getInitializationValue() {
 		assertEquals(1, initializationPVList.size());
-		return initializationPVList.get(0);
+		return initializationPVList.toArray(new ParameterValue<?>[] {})[0];
 	}
 
 	public ParameterValue<?> getPreparationValue() {
 		assertEquals(1, preparationPVList.size());
-		return preparationPVList.get(0);
+		return preparationPVList.toArray(new ParameterValue<?>[] {})[0];
 	}
 
 	@Override
@@ -89,7 +86,7 @@ public class DummyMEController implements IMeasurementEnvironmentController {
 	}
 	
 	@Override
-	public void setObservationParameters(List<ParameterDefinition> observationParameters){
+	public void setObservationParameters(ParameterCollection<ParameterDefinition> observationParameters){
 		logger.debug("Set observation parameters.");
 		this.observationParameterList = observationParameters;
 	}
