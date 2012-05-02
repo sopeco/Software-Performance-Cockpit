@@ -7,5 +7,29 @@
             class="org.sopeco.plugin.std.exploration.full.FullExplorationStrategyExtension">
       </strategy>
    </extension>
+   <extension
+         point="org.sopeco.engine.experimentseries.explorationstrategy">
+      <strategy
+            class="org.sopeco.plugin.std.exploration.breakdown.extensions.RandomBreakdownExtension">
+      </strategy>
+   </extension>
+   <extension
+         point="org.sopeco.engine.experimentseries.explorationstrategy">
+      <strategy
+            class="org.sopeco.plugin.std.exploration.breakdown.extensions.EquidistantBreakdownExtension">
+      </strategy>
+   </extension>
+   <extension
+         point="org.sopeco.engine.experimentseries.explorationstrategy">
+      <strategy
+            class="org.sopeco.plugin.std.exploration.breakdown.extensions.AdaptiveRandomBreakdownExtension">
+      </strategy>
+   </extension>
+   <extension
+         point="org.sopeco.engine.experimentseries.explorationstrategy">
+      <strategy
+            class="org.sopeco.plugin.std.exploration.breakdown.extensions.AdaptiveEquidistantBreakdownExtension">
+      </strategy>
+   </extension>
 
 </plugin>

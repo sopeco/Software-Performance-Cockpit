@@ -6,7 +6,7 @@ import java.util.List;
  * Contains the result of a correlation based analysis of the influence of
  * parameters on a dependent parameter.
  * 
- * @author Pascal Meier
+ * @author Dennis Westermann, Pascal Meier
  */
 public interface ICorrelationResult extends IPredictionFunctionResult {
 
