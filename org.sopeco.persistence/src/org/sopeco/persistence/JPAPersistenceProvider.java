@@ -22,10 +22,8 @@ import org.sopeco.persistence.exceptions.DataNotFoundException;
  *
  */
 public class JPAPersistenceProvider implements IPersistenceProvider{
-
 	
-	
-	private static EntityManagerFactory emf;
+	private EntityManagerFactory emf;
 	
 	private static Logger logger = LoggerFactory.getLogger(JPAPersistenceProvider.class);
 	
@@ -40,9 +38,6 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 		emf = factory;
 		
 	}
-	
-	
-	
 	
 	@Override
 	public void store(ExperimentSeriesRun experimentSeriesRun) {
@@ -135,7 +130,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 
 	@Override
 	public ExperimentSeries loadExperimentSeries(String experimentSeriesName, String scenarioInstanceName, String measurementEnvironmentUrl) throws DataNotFoundException {
-		ExperimentSeries experimentSeries;
+		ExperimentSeries experimentSeries = null;
 		String errorMsg = "Could not find experiment series for scenario instance { " 
 				+ scenarioInstanceName + ", " + measurementEnvironmentUrl + " and series name " 
 				+ experimentSeriesName + " .";
@@ -149,7 +144,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 		} catch (Exception e) {
 			
 			logger.error(errorMsg);
-			throw new DataNotFoundException(errorMsg);
+			throw new DataNotFoundException(errorMsg, e);
 		} finally {
 //			if (em.getTransaction().isActive()) {
 //				em.getTransaction().rollback();

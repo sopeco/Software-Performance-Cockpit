@@ -1,12 +1,13 @@
 /**
  * 
  */
-package org.sopeco.engine;
+package org.sopeco.engine.imp;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
+import org.sopeco.engine.IEngine;
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.experimentseries.IExperimentSeriesManager;
 import org.sopeco.engine.registry.ExtensionRegistry;
@@ -62,7 +63,7 @@ public class EngineImp implements IEngine {
 	@Override
 	public ScenarioInstance run(ScenarioDefinition scenario) {
 		
-		ScenarioInstance scenarioInstance = PersistenceProviderFactory.createScenarioInstance(scenario, getConfiguration().getProperty(IConfiguration.CONF_MEASUREMENT_CONTROLLER_URI).toString());
+		ScenarioInstance scenarioInstance = PersistenceProviderFactory.createScenarioInstance(scenario, getConfiguration().getPropertyAsStr((IConfiguration.CONF_MEASUREMENT_CONTROLLER_URI)));
 		
 		persistenceProvider.store(scenarioInstance);
 		

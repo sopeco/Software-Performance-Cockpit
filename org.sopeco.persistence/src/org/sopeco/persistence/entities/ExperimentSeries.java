@@ -1,23 +1,19 @@
 package org.sopeco.persistence.entities;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.sopeco.model.configuration.ScenarioDefinition;
 import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
-import org.sopeco.model.util.EMFUtil;
 import org.sopeco.model.util.ScenarioDefinitionUtil;
 import org.sopeco.persistence.entities.keys.ExperimentSeriesPK;
 
@@ -110,8 +106,9 @@ public class ExperimentSeries implements Serializable {
 	@Override
 	public boolean equals(Object o) {
 
+		// TODO cleanup
 		 if (this == o) return true;
-		 if (o == null || getClass() != o.getClass()) return false;
+		 if (o == null || !getClass().equals(o.getClass())) return false;
 
 		 ExperimentSeries obj = (ExperimentSeries) o;
 		 if(primaryKey == null || obj.getPrimaryKey() == null) return false;
