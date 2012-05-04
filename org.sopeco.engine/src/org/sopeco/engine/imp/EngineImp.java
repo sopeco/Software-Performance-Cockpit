@@ -13,8 +13,8 @@ import org.sopeco.engine.experimentseries.IExperimentSeriesManager;
 import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.engine.registry.IExtensionRegistry;
 import org.sopeco.engine.util.EngineTools;
+import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.IPersistenceProvider;
-import org.sopeco.persistence.PersistenceProviderFactory;
 import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
@@ -63,7 +63,7 @@ public class EngineImp implements IEngine {
 	@Override
 	public ScenarioInstance run(ScenarioDefinition scenario) {
 		
-		ScenarioInstance scenarioInstance = PersistenceProviderFactory.createScenarioInstance(scenario, getConfiguration().getPropertyAsStr((IConfiguration.CONF_MEASUREMENT_CONTROLLER_URI)));
+		ScenarioInstance scenarioInstance = EntityFactory.createScenarioInstance(scenario, getConfiguration().getPropertyAsStr((IConfiguration.CONF_MEASUREMENT_CONTROLLER_URI)));
 		
 		persistenceProvider.store(scenarioInstance);
 		
@@ -73,7 +73,9 @@ public class EngineImp implements IEngine {
 		// loop over all the experiment series in the spec
 		for (ExperimentSeriesDefinition esd: scenario.getMeasurementSpecification().getExperimentSeriesDefinitions()) {
 			
-			ExperimentSeries series = PersistenceProviderFactory.createExperimentSeries(scenarioInstance, esd);
+			ExperimentSeries series = EntityFactory.createExperimentSeries(esd);
+			scenarioInstance.getExperimentSeriesList().add(series);
+			series.setScenarioInstance(scenarioInstance);
 			
 			persistenceProvider.store(series);
 			

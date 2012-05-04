@@ -13,18 +13,17 @@ import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
 /**
- * Test class for the {@link PersistenceProviderFactory}.
+ * Test class for the {@link EntityFactory}.
  * 
  * @author Dennis Westermann
  * 
  */
-public class PersistenceProviderFactoryTest {
+public class EntityFactoryTest {
 
 	private static ScenarioDefinition dummyScenarioDefinition;
 
 	@Before
 	public void setUp() throws Exception {
-		SoPeCoModelFactoryHandler.initFactories();
 
 		dummyScenarioDefinition = DummyFactory.loadScenarioDefinition();
 
@@ -35,7 +34,7 @@ public class PersistenceProviderFactoryTest {
 
 		try {
 
-			ScenarioInstance scenarioInstance = PersistenceProviderFactory.createScenarioInstance(dummyScenarioDefinition, "Dummy");
+			ScenarioInstance scenarioInstance = EntityFactory.createScenarioInstance(dummyScenarioDefinition, "Dummy");
 
 			assertNotNull(scenarioInstance);
 			assertEquals("Dummy", scenarioInstance.getName());
@@ -53,9 +52,11 @@ public class PersistenceProviderFactoryTest {
 	public void testCreateExperimentSeries() {
 
 		try {
-			ScenarioInstance scenarioInstance = PersistenceProviderFactory.createScenarioInstance(dummyScenarioDefinition, "Dummy");
-			ExperimentSeriesDefinition esd = ScenarioDefinitionUtil.getExperimentSeriesDefinition("Dummy0", dummyScenarioDefinition);
-			ExperimentSeries series = PersistenceProviderFactory.createExperimentSeries(scenarioInstance, esd);
+			ScenarioInstance scenarioInstance = EntityFactory.createScenarioInstance(dummyScenarioDefinition, "Dummy");
+			ExperimentSeriesDefinition esd = dummyScenarioDefinition.getExperimentSeriesDefinition("Dummy0");
+			ExperimentSeries series = EntityFactory.createExperimentSeries(esd);
+			scenarioInstance.getExperimentSeriesList().add(series);
+			series.setScenarioInstance(scenarioInstance);
 		
 			assertNotNull(series);
 			assertEquals("Dummy0", series.getName());
@@ -77,10 +78,16 @@ public class PersistenceProviderFactoryTest {
 	public void testCreateExperimentSeriesRun() {
 
 		try {
-			ScenarioInstance scenarioInstance = PersistenceProviderFactory.createScenarioInstance(dummyScenarioDefinition, "Dummy");
-			ExperimentSeriesDefinition esd = ScenarioDefinitionUtil.getExperimentSeriesDefinition("Dummy0", dummyScenarioDefinition);
-			ExperimentSeries series = PersistenceProviderFactory.createExperimentSeries(scenarioInstance, esd);
-			ExperimentSeriesRun seriesRun = PersistenceProviderFactory.createExperimentSeriesRun(series);
+			ScenarioInstance scenarioInstance = EntityFactory.createScenarioInstance(dummyScenarioDefinition, "Dummy");
+			
+			ExperimentSeriesDefinition esd = dummyScenarioDefinition.getExperimentSeriesDefinition("Dummy0");
+			ExperimentSeries series = EntityFactory.createExperimentSeries(esd);
+			scenarioInstance.getExperimentSeriesList().add(series);
+			series.setScenarioInstance(scenarioInstance);
+			
+			ExperimentSeriesRun seriesRun = EntityFactory.createExperimentSeriesRun();
+			series.getExperimentSeriesRuns().add(seriesRun);
+			seriesRun.setExperimentSeries(series);
 			
 			assertNotNull(seriesRun);
 			assertEquals(series, seriesRun.getExperimentSeries());

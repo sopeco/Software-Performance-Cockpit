@@ -3,7 +3,6 @@ package org.sopeco.persistence.dataset;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +17,7 @@ import org.sopeco.persistence.entities.definition.ParameterRole;
  * column view on the data. A DataSet is read-only and can be constructed only
  * by a DataSetColumnBuilder or DataSetRowBuilder.
  * 
- * @author Jens Happe
+ * @author Jens Happe, Dennis Westermann
  * 
  */
 @SuppressWarnings({"rawtypes"})
@@ -35,12 +34,12 @@ public class DataSetAggregated implements
 	 */
 
 	
-	private Map<String, DataSetInputColumn> inputColumnMap;
+	private List<DataSetInputColumn> inputColumns;
 
 	/**
 	 * Data in form of columns associated to a observation parameter.
 	 */
-	private Map<String, DataSetObservationColumn> observationColumnMap;
+	private List<DataSetObservationColumn> observationColumns;
 
 	// /**
 	// * Indexes of the columns represented by the according parameter
@@ -57,6 +56,22 @@ public class DataSetAggregated implements
 	 */
 	private String id;
 
+	public DataSetAggregated(){
+		
+	}
+	
+
+//	public void reconstructMaps() {
+//		for (Entry<ParameterDefinition, DataSetInputColumn> entry : inputColumnMap
+//				.entrySet()) {
+//			entry.getValue().parameter = entry.getKey();
+//		}
+//		for (Entry<ParameterDefinition, DataSetObservationColumn> entry : observationColumnMap
+//				.entrySet()) {
+//			entry.getValue().parameter = entry.getKey();
+//		}
+//	}
+
 	/**
 	 * Constructor. Only to be used by the builders.
 	 * 
@@ -67,21 +82,21 @@ public class DataSetAggregated implements
 			String id) {
 		super();
 		this.id = id;
-		this.inputColumnMap = new HashMap<String, DataSetInputColumn>();
-		this.observationColumnMap = new HashMap<String, DataSetObservationColumn>();
+		this.inputColumns = inputColumns;
+		this.observationColumns = observationColumns;
 		// this.parameterIndexes = new HashMap<Integer, ParameterDefinition>();
 		this.size = size;
 		// int index = 0;
-		for (DataSetInputColumn column : inputColumns) {
-			inputColumnMap.put(column.getParameter().getFullName(), column);
-			// parameterIndexes.put(index, column.getParameter());
-			// index++;
-		}
-		for (DataSetObservationColumn column : observationColumns) {
-			observationColumnMap.put(column.getParameter().getFullName(), column);
-			// parameterIndexes.put(index, column.getParameter());
-			// index++;
-		}
+//		for (DataSetInputColumn column : inputColumns) {
+//			inputColumnMap.put(column.getParameter(), column);
+//			// parameterIndexes.put(index, column.getParameter());
+//			// index++;
+//		}
+//		for (DataSetObservationColumn column : observationColumns) {
+//			observationColumnMap.put(column.getParameter(), column);
+//			// parameterIndexes.put(index, column.getParameter());
+//			// index++;
+//		}
 	}
 
 	/**
@@ -90,12 +105,23 @@ public class DataSetAggregated implements
 	 * @return The column containing the data for the given parameter.
 	 */
 	public AbstractDataSetColumn getColumn(ParameterDefinition parameter) {
-		if (inputColumnMap.containsKey(parameter)) {
-			return inputColumnMap.get(parameter);
+		
+		for (AbstractDataSetColumn col : inputColumns){
+			if(col.getParameter().equals(parameter)){
+				return col;
+			}
 		}
-		if (observationColumnMap.containsKey(parameter)) {
-			return observationColumnMap.get(parameter);
+		for (AbstractDataSetColumn col : observationColumns){
+			if(col.getParameter().equals(parameter)){
+				return col;
+			}
 		}
+//		if (inputColumnMap.containsKey(parameter)) {
+//			return inputColumnMap.get(parameter);
+//		}
+//		if (observationColumnMap.containsKey(parameter)) {
+//			return observationColumnMap.get(parameter);
+//		}
 		throw new IllegalArgumentException("Unknown Parameter: " + parameter);
 	}
 
@@ -114,31 +140,34 @@ public class DataSetAggregated implements
 	 */
 	public Collection<DataSetInputColumn> getInputColumns() {
 		
-		Collection<DataSetInputColumn> col = inputColumnMap.values();
-		List<DataSetInputColumn> list = new ArrayList<DataSetInputColumn>(col);
-		return list;
+		return inputColumns;
+//		Collection<DataSetInputColumn> col = inputColumnMap.values();
+//		List<DataSetInputColumn> list = new ArrayList<DataSetInputColumn>(col);
+//		return list;
 	}
 
 	/**
 	 * @return All columns held by the dataset.
 	 */
 	public Collection<DataSetObservationColumn> getObservationColumns() {
-		return new ArrayList<DataSetObservationColumn>(
-				observationColumnMap.values());
+//		return new ArrayList<DataSetObservationColumn>(
+//				observationColumnMap.values());
+		return observationColumns;
 	}
 
 	/**
 	 * @return All columns held by the dataset.
 	 */
 	public DataSetInputColumn getInputColumn(ParameterDefinition parameter) {
-		return inputColumnMap.get(parameter);
+		return (DataSetInputColumn) getColumn(parameter);
 	}
 
 	/**
 	 * @return All columns held by the dataset.
 	 */
 	public DataSetObservationColumn getObservationColumn(ParameterDefinition parameter) {
-		return observationColumnMap.get(parameter);
+//		return observationColumnMap.get(parameter);
+		return (DataSetObservationColumn) getColumn(parameter);
 	}
 
 	/**
@@ -174,7 +203,7 @@ public class DataSetAggregated implements
 		if ((!parameter.getRole().equals(ParameterRole.OBSERVATION))
 				|| !(getColumn(parameter) instanceof DataSetObservationColumn)) {
 			throw new IllegalArgumentException(
-					"Parameter must be an input parameter!");
+					"Parameter must be an observation parameter!");
 		}
 		return ((DataSetObservationColumn) getColumn(parameter))
 				.getParameterValues(row);
@@ -221,8 +250,14 @@ public class DataSetAggregated implements
 	 *         otherwise.
 	 */
 	public boolean contains(ParameterDefinition parameter) {
-		return inputColumnMap.containsKey(parameter)
-				|| observationColumnMap.containsKey(parameter);
+//		return inputColumnMap.containsKey(parameter)
+//				|| observationColumnMap.containsKey(parameter);
+		for (AbstractDataSetColumn col : getColumns()){
+			if(parameter.equals(parameter)){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -237,11 +272,11 @@ public class DataSetAggregated implements
 	 */
 	public Collection<ParameterDefinition> getParameterDefinitions() {
 		ArrayList<ParameterDefinition> result = new ArrayList<ParameterDefinition>();
-		for(DataSetInputColumn dic : inputColumnMap.values()){
+		for(DataSetInputColumn dic : inputColumns){
 			result.add(dic.getParameter());
 		}
 		
-		for(DataSetObservationColumn doc: observationColumnMap.values()){
+		for(DataSetObservationColumn doc: observationColumns){
 			result.add(doc.getParameter());
 		}
 		
@@ -279,9 +314,9 @@ public class DataSetAggregated implements
 	public boolean equals(Object object) {
 		if (object instanceof DataSetAggregated) {
 			DataSetAggregated other = (DataSetAggregated) object;
-			if ((this.inputColumnMap.size() == other.inputColumnMap.size())
+			if ((this.inputColumns.size() == other.inputColumns.size())
 					&& this.size() == other.size()
-					&& (this.observationColumnMap.size() == other.observationColumnMap
+					&& (this.observationColumns.size() == other.observationColumns
 							.size())) {
 				for (AbstractDataSetColumn column : this.getColumns()) {
 					if (other.contains(column.getParameter())) {
@@ -443,14 +478,13 @@ public class DataSetAggregated implements
 	}
 
 	protected void addColumn(AbstractDataSetColumn<?> col) {
-		if (inputColumnMap.isEmpty() && observationColumnMap.isEmpty()) {
+		if (inputColumns.isEmpty() && observationColumns.isEmpty()) {
 			setSize(col.size());
 		}
 		if (col instanceof DataSetInputColumn) {
-			inputColumnMap.put(col.getParameter().getFullName(), (DataSetInputColumn) col);
+			inputColumns.add((DataSetInputColumn) col);
 		} else if (col instanceof DataSetObservationColumn) {
-			observationColumnMap.put(col.getParameter().getFullName(),
-					(DataSetObservationColumn) col);
+			observationColumns.add((DataSetObservationColumn) col);
 		}
 
 		// parameterIndexes.put(parameterIndexes.size(), col.getParameter());
@@ -519,17 +553,6 @@ public class DataSetAggregated implements
 		return true;
 	}
 
-	
-//	// TODO: check whats the problem when sending dataset over RMI
-//	public void reconstructDataSet() {
-//		for (Entry<String, DataSetInputColumn> entry : inputColumnMap
-//				.entrySet()) {
-//			entry.getValue().parameter = entry.getKey();
-//		}
-//		for (Entry<String, DataSetObservationColumn> entry : observationColumnMap
-//				.entrySet()) {
-//			entry.getValue().parameter = entry.getKey();
-//		}
-//	}
+
 
 }

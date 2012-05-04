@@ -38,6 +38,7 @@ public class ParameterCollection<V> implements Set<V> {
 	public boolean addAll(Collection<? extends V> collection) {
 		boolean changed = false;
 		boolean singleAdd = false;
+		
 		for (V e: collection) {
 			singleAdd = add(e);
 			changed = changed || singleAdd; 

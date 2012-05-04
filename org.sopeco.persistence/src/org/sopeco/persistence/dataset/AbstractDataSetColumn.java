@@ -1,10 +1,15 @@
 package org.sopeco.persistence.dataset;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
-public abstract class AbstractDataSetColumn<T> {
+public abstract class AbstractDataSetColumn<T> implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/**
 	 * Parameter / identifier of the column in the DataSet.
 	 */

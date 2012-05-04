@@ -1,6 +1,7 @@
 package org.sopeco.plugin.std.exploration.breakdown;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.sopeco.engine.analysis.IPredictionFunctionStrategy;
@@ -12,6 +13,7 @@ import org.sopeco.engine.registry.AbstractSoPeCoExtensionArtifact;
 import org.sopeco.engine.registry.Extensions;
 import org.sopeco.engine.registry.IExtensionRegistry;
 import org.sopeco.engine.registry.ISoPeCoExtension;
+import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
@@ -168,8 +170,7 @@ public class BreakdownExplorationController extends AbstractSoPeCoExtensionArtif
 				  		+ "Exploration strategy requires an IPredictionFunctionStrategy.");
 			  } else {
 				 IPredictionFunctionStrategyExtension defaultExtension = availableExtensions.getList().get(0); 
-				 AnalysisConfiguration analysisConfig = SoPeCoModelFactoryHandler.getAnalysisFactory().createAnalysisConfiguration();
-				 analysisConfig.setName(defaultExtension.getName());
+				 AnalysisConfiguration analysisConfig = EntityFactory.createAnalysisConfiguration(defaultExtension.getName(), new HashMap<String, String>());
 				 strategyConfig.getAnalysisConfigurations().add(analysisConfig);
 				 return defaultExtension.createExtensionArtifact();
 			  }

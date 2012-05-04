@@ -46,38 +46,30 @@ public class EntityFactory {
 	
 	/**
 	 * Creates a new instance of the {@link ExperimentSeries} entity. 
-	 * Sets the name, experimentDefintion and scenarioInstance according to the given parameters.
-	 * Adds the newly created instance to the given scenarioInstance (resolving the relationship).
+	 * Sets the name and experimentDefintion according to the given parameters.
 	 * 
 	 * @param scenarioInstance
 	 * @param expSeriesDefinition
 	 * @return a new instance of {@link ExperimentSeries} based on the given parameters
 	 */
-	public static ExperimentSeries createExperimentSeries(ScenarioInstance scenarioInstance, ExperimentSeriesDefinition expSeriesDefinition){
+	public static ExperimentSeries createExperimentSeries(ExperimentSeriesDefinition expSeriesDefinition){
 		ExperimentSeries expSeries = new ExperimentSeries();
 		expSeries.setName(expSeriesDefinition.getName());
-		expSeries.setScenarioInstance(scenarioInstance);
-		scenarioInstance.getExperimentSeriesList().add(expSeries);
-		
+		expSeries.setExperimentSeriesDefinition(expSeriesDefinition);
 		return expSeries;
 	}
 	
 	
 	/**
 	 * Creates a new instance of the {@link ExperimentSeriesRun} entity. 
-	 * Sets the given experimentSeries as well as the timestamp (to the current {@link System.nanoTime()}).
-	 * Adds the newly created instance to the given experiment series (resolving the relationship).
+	 * Sets the timestamp value to the current {@link System.nanoTime()}).
 	 * 
-	 * @param scenarioInstance
-	 * @param expSeriesDefinition
 	 * @return a new instance of {@link ExperimentSeriesRun} based on the given parameters
 	 */
-	public static ExperimentSeriesRun createExperimentSeriesRun(ExperimentSeries experimentSeries){
+	public static ExperimentSeriesRun createExperimentSeriesRun(){
 		ExperimentSeriesRun expSeriesRun = new ExperimentSeriesRun();
 		
 		expSeriesRun.setTimestamp(System.nanoTime());
-		expSeriesRun.setExperimentSeries(experimentSeries);
-		experimentSeries.getExperimentSeriesRuns().add(expSeriesRun);
 		return expSeriesRun;
 	}
 	
@@ -88,63 +80,49 @@ public class EntityFactory {
 		return sd;
 	}
 	
-	public static MeasurementEnvironmentDefinition createMeasurementEnvironmentDefinition(ScenarioDefinition sd) {
+	public static MeasurementEnvironmentDefinition createMeasurementEnvironmentDefinition() {
 		MeasurementEnvironmentDefinition med = new MeasurementEnvironmentDefinition();
-		sd.setMeasurementEnvironmentDefinition(med);
 		return med;
 	}
 	
-	public static ParameterNamespace createRootNamespace(String name, MeasurementEnvironmentDefinition med){
-		ParameterNamespace root = new ParameterNamespace();
-		med.setRoot(root);
-		root.setName(name);
-		return root;
-	}
 	
-	public static ParameterNamespace createChildNamespace(String name, ParameterNamespace parent){
+	public static ParameterNamespace createNamespace(String name){
 		ParameterNamespace child = new ParameterNamespace();
 		child.setName(name);
-		child.setParent(parent);
-		parent.getChildren().add(child);
 		return child;
 	}
 	
-	public static ParameterDefinition createParameterDefinition(String name, String type, ParameterRole role, ParameterNamespace namespace){
+	public static ParameterDefinition createParameterDefinition(String name, String type, ParameterRole role){
 		ParameterDefinition pd = new ParameterDefinition();
 		pd.setName(name);
 		pd.setRole(role);
 		pd.setType(type);
-		pd.setNamespace(namespace);
 		return pd;
 	}
 	
-	public static MeasurementSpecification createMeasurementSpecification(ScenarioDefinition scenarioDefinition){
+	public static MeasurementSpecification createMeasurementSpecification(){
 		MeasurementSpecification ms = new MeasurementSpecification();
-		scenarioDefinition.setMeasurementSpecification(ms);
 		return ms;
 	}
 	
-	public static ExperimentSeriesDefinition createExperimentSeriesDefinition(String name, ExperimentTerminationCondition terminationCondition, MeasurementSpecification ms){
+	public static ExperimentSeriesDefinition createExperimentSeriesDefinition(String name, ExperimentTerminationCondition terminationCondition){
 		ExperimentSeriesDefinition esd = new ExperimentSeriesDefinition();
 		esd.setName(name);
 		esd.setExperimentTerminationCondition(terminationCondition);
-		ms.getExperimentSeriesDefinitions().add(esd);
 		return esd;
 	}
 
-	public static ExplorationStrategy createExplorationStrategy(String name, Map<String, String> config, ExperimentSeriesDefinition expSeriesDef){
+	public static ExplorationStrategy createExplorationStrategy(String name, Map<String, String> config){
 		ExplorationStrategy es = new ExplorationStrategy();
 		es.setName(name);
 		es.getConfiguration().putAll(config);
-		expSeriesDef.setExplorationStrategy(es);
 		return es;
 	}
 	
-	public static AnalysisConfiguration createAnalysisConfiguration(String name, Map<String, String> config, ExplorationStrategy explorationStategy){
+	public static AnalysisConfiguration createAnalysisConfiguration(String name, Map<String, String> config){
 		AnalysisConfiguration ac = new AnalysisConfiguration();
 		ac.setName(name);
 		ac.getConfiguration().putAll(config);
-		explorationStategy.getAnalysisConfigurations().add(ac);
 		return ac;
 	}
 	
@@ -160,14 +138,14 @@ public class EntityFactory {
 		return numRep;
 	}
 	
-	public static ConstantValueAssignment createConstantValueAssignment(ParameterDefinition parameter, String value){
+	public static ConstantValueAssignment createConstantValueAssignment(final ParameterDefinition parameter, String value){
 		ConstantValueAssignment cva = new ConstantValueAssignment();
 		cva.setParameter(parameter);
 		cva.setValue(value);
 		return cva;
 	}
 
-	public static DynamicValueAssignment createDynamicValueAssignment(String name, ParameterDefinition parameter, Map<String, String> config){
+	public static DynamicValueAssignment createDynamicValueAssignment(String name, final ParameterDefinition parameter, Map<String, String> config){
 		DynamicValueAssignment dva = new DynamicValueAssignment();
 		dva.setParameter(parameter);
 		dva.setName(name);

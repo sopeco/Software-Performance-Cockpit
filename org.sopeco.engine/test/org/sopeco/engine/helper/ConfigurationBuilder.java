@@ -1,13 +1,13 @@
 package org.sopeco.engine.helper;
 
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.experiment.impl.ExperimentController;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
 import org.sopeco.engine.util.ParameterCollection;
 import org.sopeco.engine.util.ParameterCollectionFactory;
+import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueFactory;
 import org.sopeco.persistence.dataset.util.ParameterType;
@@ -34,24 +34,21 @@ public class ConfigurationBuilder {
 	private ExperimentTerminationCondition terminationCondition;
 	
 	public ConfigurationBuilder(String scenarioName){
-		scenarioDefinition = ConfigurationFactory.eINSTANCE.createScenarioDefinition();
+		scenarioDefinition = EntityFactory.createScenarioDefinition(scenarioName);
 		scenarioDefinition.setName(scenarioName);
 		
-		MeasurementEnvironmentDefinition meDefinition = EnvironmentFactory.eINSTANCE.createMeasurementEnvironmentDefinition();
+		MeasurementEnvironmentDefinition meDefinition = EntityFactory.createMeasurementEnvironmentDefinition();
 		scenarioDefinition.setMeasurementEnvironmentDefinition(meDefinition);
-
-		ParameterNamespace root = EnvironmentFactory.eINSTANCE.createParameterNamespace();
-		root.setName("");
 		
+		ParameterNamespace root = EntityFactory.createNamespace("");
 		meDefinition.setRoot(root);
 		currentNamespace = root;
 	}
 
 	public void createNamespace(String name) {
-		ParameterNamespace root = scenarioDefinition.getMeasurementEnvironmentDefinition().getRoot();
-		ParameterNamespace namespace = EnvironmentFactory.eINSTANCE.createParameterNamespace();
-		namespace.setName(name);
-		root.getChildren().add(namespace);
+		ParameterNamespace namespace = EntityFactory.createNamespace(name);
+		currentNamespace.getChildren().add(namespace);
+		namespace.setParent(currentNamespace);
 		currentNamespace = namespace;
 	}
 
@@ -62,21 +59,15 @@ public class ConfigurationBuilder {
 	}
 
 	public ParameterDefinition createParameter(String name, ParameterType type, ParameterRole role) {
-		ParameterDefinition parameter = EnvironmentFactory.eINSTANCE.createParameterDefinition();
-		parameter.setName(name);
-		parameter.setType(type.toString());
-		parameter.setRole(role);
+		ParameterDefinition parameter = EntityFactory.createParameterDefinition(
+				name, type.toString(), role);
 		currentNamespace.getParameters().add(parameter);
 		currentParameter = parameter;
 		return parameter;
 	}
 
 	public DynamicValueAssignment createDynamicValueAssignment(String name, ParameterDefinition parameter, Map<String, String> configuration) {
-		DynamicValueAssignment pva = MeasurementsFactory.eINSTANCE.createDynamicValueAssignment();
-		pva.setParameter(parameter);
-		for (Entry<String, String> e: configuration.entrySet())
-			pva.getConfiguration().put(e.getKey(), e.getValue());
-		pva.setName(name);
+		DynamicValueAssignment pva = EntityFactory.createDynamicValueAssignment(name, parameter, configuration);
 		return pva;
 	}
 
@@ -98,8 +89,7 @@ public class ConfigurationBuilder {
 	}
 
 	public void createNumberOfRunsCondition(int numberOfRepetitions) {
-		NumberOfRepetitions nor = MeasurementsFactory.eINSTANCE.createNumberOfRepetitions();
-		nor.setNumberOfRepetitions(numberOfRepetitions);
+		NumberOfRepetitions nor = EntityFactory.createNumberOfRepetitionsTerminationCondition(numberOfRepetitions);
 		terminationCondition = nor;
 	}
 

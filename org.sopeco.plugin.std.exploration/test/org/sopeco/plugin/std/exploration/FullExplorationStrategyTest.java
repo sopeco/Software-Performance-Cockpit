@@ -59,11 +59,11 @@ public class FullExplorationStrategyTest {
 		meController = new DummyMEController();
 		expController = builder.createExperimentController(meController);
 		
-		expSeriesDef = MeasurementsFactory.eINSTANCE.createExperimentSeriesDefinition();
+		expSeriesDef = new ExperimentSeriesDefinition();
 		builder.createNumberOfRunsCondition(2);
 		expSeriesDef.setExperimentTerminationCondition(builder.getTerminationCondition());
 		
-		ExplorationStrategy es = MeasurementsFactory.eINSTANCE.createExplorationStrategy();
+		ExplorationStrategy es = new ExplorationStrategy();
 		es.setName(FullExplorationStrategyExtension.NAME);
 		expSeriesDef.setExplorationStrategy(es);
 		

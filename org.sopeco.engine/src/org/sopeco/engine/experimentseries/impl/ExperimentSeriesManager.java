@@ -19,7 +19,7 @@ import org.sopeco.engine.experimentseries.IParameterVariationExtension;
 import org.sopeco.engine.registry.IExtensionRegistry;
 import org.sopeco.engine.util.EngineTools;
 import org.sopeco.engine.util.ParameterCollection;
-import org.sopeco.persistence.PersistenceProviderFactory;
+import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
@@ -31,7 +31,7 @@ import org.sopeco.persistence.entities.definition.ParameterValueAssignment;
 /**
  * The default implementation of {@link ExperimentSeriesManager}.
  * 
- * @author Roozbeh Farahbod
+ * @author Roozbeh Farahbod, Dennis Westermann
  *
  */
 public class ExperimentSeriesManager implements IExperimentSeriesManager {
@@ -57,7 +57,10 @@ public class ExperimentSeriesManager implements IExperimentSeriesManager {
 			// TODO throw runtime exception
 		}
 
-		ExperimentSeriesRun seriesRun = PersistenceProviderFactory.createExperimentSeriesRun(expSeries);
+		ExperimentSeriesRun seriesRun = EntityFactory.createExperimentSeriesRun();
+		seriesRun.setExperimentSeries(expSeries);
+		expSeries.getExperimentSeriesRuns().add(seriesRun);
+		
 		engine.getPersistenceProvider().store(seriesRun);
 		
 		// prepare the experiment series

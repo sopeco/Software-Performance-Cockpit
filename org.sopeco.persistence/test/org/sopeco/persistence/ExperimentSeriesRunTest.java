@@ -21,7 +21,6 @@ public class ExperimentSeriesRunTest {
 
 	@Before
 	public void setUp() throws Exception {
-		SoPeCoModelFactoryHandler.initFactories();
 		
 		dummyRun = new ExperimentSeriesRun();
 		dummyRun.setTimestamp(System.nanoTime());

@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Before;
@@ -17,6 +18,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.sopeco.engine.analysis.IPredictionFunctionResult;
 import org.sopeco.engine.analysis.IPredictionFunctionStrategy;
+import org.sopeco.model.configuration.SoPeCoModelFactoryHandler;
+import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetColumnBuilder;
 import org.sopeco.persistence.dataset.ParameterValue;
@@ -25,6 +28,7 @@ import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.persistence.util.EMFUtil;
 
 /**
  * Test class for implementations of the {@link IPredictionFunctionStrategy}
@@ -54,8 +58,7 @@ public class PredictionFunctionAnalysisStrategyTest {
 
 	public PredictionFunctionAnalysisStrategyTest(IPredictionFunctionStrategy strategy, String name, String dataSetSize) throws IOException {
 		this.strategy = strategy;
-		this.analysisConfiguration = SoPeCoModelFactoryHandler.getAnalysisFactory().createAnalysisConfiguration();
-		this.analysisConfiguration.setName(name);
+		this.analysisConfiguration = EntityFactory.createAnalysisConfiguration(name, new HashMap<String, String>());
 		if (dataSetSize.equalsIgnoreCase("Small")) {
 			this.dataset = createSmallDummyDataSet();
 		} else if (dataSetSize.equalsIgnoreCase("Large")) {
@@ -83,7 +86,7 @@ public class PredictionFunctionAnalysisStrategyTest {
 			assertEquals(analysisConfiguration.getName(), result.getAnalysisStrategyConfiguration().getName());
 
 			ParameterValue<?> inputParam = ParameterValueFactory.createParameterValue(
-					ScenarioDefinitionUtil.getParameterDefinition("default.DummyInput", scenarioDefinition), 1);
+					scenarioDefinition.getParameterDefinition("default.DummyInput"), 1);
 			ParameterValue<?> predParam1 = result.predictOutputParameter(inputParam);
 			assertNotNull(predParam1);
 			List<ParameterValue<?>> inputParamList = new ArrayList<ParameterValue<?>>();
@@ -108,12 +111,12 @@ public class PredictionFunctionAnalysisStrategyTest {
 			scenarioDefinition = loadScenarioDefinition();
 
 		DataSetColumnBuilder builder = new DataSetColumnBuilder();
-		builder.startInputColumn(ScenarioDefinitionUtil.getParameterDefinition("default.DummyInput", scenarioDefinition));
+		builder.startInputColumn(scenarioDefinition.getParameterDefinition("default.DummyInput"));
 		builder.addInputValue(1);
 		builder.addInputValue(2);
 		builder.finishColumn();
 
-		ParameterDefinition paramDef = ScenarioDefinitionUtil.getParameterDefinition("default.DummyOutput", scenarioDefinition);
+		ParameterDefinition paramDef = scenarioDefinition.getParameterDefinition("default.DummyOutput");
 		ArrayList<ParameterValueList> obsValueLists = new ArrayList<ParameterValueList>();
 		builder.startObservationColumn(paramDef);
 		ArrayList<Object> obsValues1 = new ArrayList<Object>();
@@ -142,12 +145,12 @@ public class PredictionFunctionAnalysisStrategyTest {
 			scenarioDefinition = loadScenarioDefinition();
 
 		DataSetColumnBuilder builder = new DataSetColumnBuilder();
-		builder.startInputColumn(ScenarioDefinitionUtil.getParameterDefinition("default.DummyInput", scenarioDefinition));
+		builder.startInputColumn(scenarioDefinition.getParameterDefinition("default.DummyInput"));
 		builder.addInputValue(1);
 		builder.addInputValue(2);
 		builder.finishColumn();
 
-		ParameterDefinition paramDef = ScenarioDefinitionUtil.getParameterDefinition("default.DummyOutput", scenarioDefinition);
+		ParameterDefinition paramDef = scenarioDefinition.getParameterDefinition("default.DummyOutput");
 		ArrayList<ParameterValueList> obsValueLists = new ArrayList<ParameterValueList>();
 		builder.startObservationColumn(paramDef);
 		ArrayList<Object> obsValues1 = new ArrayList<Object>();

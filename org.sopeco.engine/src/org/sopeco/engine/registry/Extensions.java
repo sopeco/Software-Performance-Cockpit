@@ -14,6 +14,7 @@ import java.util.List;
  * @author Roozbeh Farahbod
  *
  */
+@SuppressWarnings("rawtypes")
 public class Extensions<E extends ISoPeCoExtension> implements Iterable<E> {
 
 	private final IExtensionRegistry registry;

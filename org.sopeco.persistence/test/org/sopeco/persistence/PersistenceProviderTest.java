@@ -1,4 +1,3 @@
-
 package org.sopeco.persistence;
 
 import static junit.framework.Assert.assertEquals;
@@ -41,7 +40,6 @@ public class PersistenceProviderTest {
 	@BeforeClass
 	public static void init() throws Exception {
 
-		SoPeCoModelFactoryHandler.initFactories();
 		PersistenceProviderFactory.DB_TYPE_VALUE = DBType.SERVER;
 		provider = (JPAPersistenceProvider) PersistenceProviderFactory.getPersistenceProvider();
 		dummyScenarioInstance = DummyFactory.createDummyScenarioInstance();
@@ -63,8 +61,9 @@ public class PersistenceProviderTest {
 	@Test
 	public void testStoreAndLoadScenarioInstance() {
 
-		DataSetAggregated dataSet = dummyScenarioInstance.getExperimentSeriesList().get(0).getExperimentSeriesRuns().get(0).getResultDataSet();
-		
+		// sub tree checks
+		checkAvailableExperimentSeries(dummyScenarioInstance);
+
 		try {
 			provider.store(dummyScenarioInstance);
 		} catch (Exception e) {
@@ -228,7 +227,10 @@ public class PersistenceProviderTest {
 
 			// update
 			loaded1.getExperimentSeriesRuns().remove(0);
-			loaded1.getExperimentSeriesRuns().addAll(DummyFactory.createDummyExperimentSeriesRuns(2, loaded1));
+			for (ExperimentSeriesRun run : DummyFactory.createDummyExperimentSeriesRuns(2)) {
+				run.setExperimentSeries(loaded1);
+				loaded1.getExperimentSeriesRuns().add(run);
+			}
 			loaded1.getScenarioInstance().setDescription("Dummy");
 
 			// store updated entity
@@ -323,7 +325,6 @@ public class PersistenceProviderTest {
 			assertTrue(dummySeriesRun.getExperimentSeries().equals(loadedSeriesRun.getExperimentSeries()));
 			assertNotNull(loadedSeriesRun.getExperimentSeries().getScenarioInstance());
 
-		
 			checkAvailableExperimentSeriesRuns(loadedSeriesRun.getExperimentSeries());
 
 		} catch (DataNotFoundException e) {
@@ -430,31 +431,34 @@ public class PersistenceProviderTest {
 		ScenarioDefinition sd;
 		try {
 			sd = DummyFactory.loadScenarioDefinition();
-		
-			ScenarioInstance scenarioInstance = PersistenceProviderFactory.createScenarioInstance(sd, "Dummy");
+
+			ScenarioInstance scenarioInstance = EntityFactory.createScenarioInstance(sd, "Dummy");
 			provider.store(scenarioInstance);
-		
+
 			// simulate experiment series manager
-			ExperimentSeries expSeries = PersistenceProviderFactory.createExperimentSeries(scenarioInstance,
-					ScenarioDefinitionUtil.getExperimentSeriesDefinition("Dummy0", sd));
+			ExperimentSeries expSeries = EntityFactory.createExperimentSeries(sd.getExperimentSeriesDefinition("Dummy0"));
+			scenarioInstance.getExperimentSeriesList().add(expSeries);
+			expSeries.setScenarioInstance(scenarioInstance);
 			provider.store(expSeries);
-		
+
 			// simulate experiment controller
-			ExperimentSeriesRun run = PersistenceProviderFactory.createExperimentSeriesRun(expSeries);
+			ExperimentSeriesRun run = EntityFactory.createExperimentSeriesRun();
+			expSeries.getExperimentSeriesRuns().add(run);
+			run.setExperimentSeries(expSeries);
 			DataSetAggregated dataSet1;
-		
-				dataSet1 = DummyFactory.createDummyResultDataSet();
-			
+
+			dataSet1 = DummyFactory.createDummyResultDataSet();
+
 			run.append(dataSet1);
 			provider.store(run);
 			run.append(simulateExperimentRun(dataSet1));
 			provider.store(run);
-			
+
 			provider.loadScenarioInstance(scenarioInstance.getPrimaryKey());
 
 		} catch (IOException e1) {
 			fail(e1.getMessage());
-	
+
 		} catch (DataNotFoundException e) {
 			fail(e.getMessage());
 		}
@@ -558,9 +562,11 @@ public class PersistenceProviderTest {
 				.equals(scenarioInstance.getExperimentSeriesList().get(0).getExperimentSeriesDefinition().getName()));
 
 		// Parameters should be loaded
-		assertNotNull(scenarioInstance.getExperimentSeriesList().get(0).getExperimentSeriesDefinition().getExperimentAssignments().get(0).getParameter().getName());
-		assertNotNull(scenarioInstance.getExperimentSeriesList().get(0).getExperimentSeriesDefinition().getExperimentAssignments().get(0).getParameter().getType());
-		
+		assertNotNull(scenarioInstance.getExperimentSeriesList().get(0).getExperimentSeriesDefinition().getExperimentAssignments().get(0).getParameter()
+				.getName());
+		assertNotNull(scenarioInstance.getExperimentSeriesList().get(0).getExperimentSeriesDefinition().getExperimentAssignments().get(0).getParameter()
+				.getType());
+
 		// ExperimentSeries should reference ExperimentSeriesRuns
 		checkAvailableExperimentSeriesRuns(scenarioInstance.getExperimentSeriesList().get(0));
 	}
@@ -578,17 +584,11 @@ public class PersistenceProviderTest {
 		assertNotNull(expSeries.getExperimentSeriesRuns().get(0).getResultDataSet());
 		assertTrue(expSeries.getExperimentSeriesRuns().get(0).getResultDataSet().getObservationColumns().size() == 1);
 		assertTrue(expSeries.getExperimentSeriesRuns().get(0).getResultDataSet().getInputColumns().size() == 1);
-		
-		ExperimentSeriesRun run = expSeries.getExperimentSeriesRuns().get(0);
-//		DataSetInputColumn col = (DataSetInputColumn) run.getResultDataSet().getInputColumns().toArray()[0];
-		for (DataSetInputColumn col : run.getResultDataSet().getInputColumns()){
-			System.out.println(col.getParameter());
-		}
-		
-		System.out.println();
+
+		DataSetInputColumn col = ((DataSetInputColumn<?>) expSeries.getExperimentSeriesRuns().get(0).getResultDataSet().getInputColumns().toArray()[0]);
 		
 		// Result Data Set should have the ParameterDefinitions
-		assertNotNull(((DataSetInputColumn<?>)expSeries.getExperimentSeriesRuns().get(0).getResultDataSet().getInputColumns().toArray()[0]).getParameter());
+		assertNotNull(((DataSetInputColumn<?>) expSeries.getExperimentSeriesRuns().get(0).getResultDataSet().getInputColumns().toArray()[0]).getParameter());
 
 	}
 

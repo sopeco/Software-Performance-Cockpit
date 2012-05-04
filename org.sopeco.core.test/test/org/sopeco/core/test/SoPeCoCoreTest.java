@@ -58,11 +58,11 @@ public class SoPeCoCoreTest {
 		meController = new DummyMEController();
 		expController = builder.createExperimentController(meController);
 		
-		expSeriesDef = MeasurementsFactory.eINSTANCE.createExperimentSeriesDefinition();
+		expSeriesDef = new ExperimentSeriesDefinition();
 		builder.createNumberOfRunsCondition(2);
 		expSeriesDef.setExperimentTerminationCondition(builder.getTerminationCondition());
 		
-		ExplorationStrategy es = MeasurementsFactory.eINSTANCE.createExplorationStrategy();
+		ExplorationStrategy es = new ExplorationStrategy();
 		es.setName(FULL_EXPLORATION_STRATEGY_NAME);
 		expSeriesDef.setExplorationStrategy(es);
 		

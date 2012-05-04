@@ -158,6 +158,7 @@ public class ExtensionRegistry implements IExtensionRegistry {
 	 * @param registry the Eclipse platform extension registry
 	 * @param eid extension point id
 	 */
+	@SuppressWarnings("rawtypes")
 	private void loadExtensions() {
 		final IConfiguration config = Configuration.getSingleton();
 		final String pluginsDirName = config.getPropertyAsStr(IConfiguration.CONF_APP_ROOT_FOLDER) + File.separator + config.getPropertyAsStr(IConfiguration.CONF_PLUGINS_FOLDER); 

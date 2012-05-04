@@ -1,4 +1,4 @@
-package org.sopco.model.configuration.environment.ext;
+package org.sopeco.persistence;
 
 import static junit.framework.Assert.*;
 
@@ -6,9 +6,9 @@ import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.sopeco.model.configuration.ScenarioDefinition;
 import org.sopeco.model.configuration.SoPeCoModelFactoryHandler;
-import org.sopeco.model.util.EMFUtil;
+import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.persistence.util.EMFUtil;
 
 /**
  * Test class for the extension implementation of the parameter definition.
@@ -18,7 +18,7 @@ import org.sopeco.model.util.EMFUtil;
  */
 public class EMFUtilTest {
 	
-	private final static String PATH_TO_SCENARIO_DEFINITION = "test/test.configuration";
+	private final static String PATH_TO_SCENARIO_DEFINITION = "test/dummy.configuration";
 
 	@Before
 	public void setUp() throws Exception {
@@ -36,10 +36,10 @@ public class EMFUtilTest {
 			e.printStackTrace();
 			fail();return;
 		}
-		assertEquals("Test Scenario", scenarioDefinition.getName());
+		assertEquals("Dummy", scenarioDefinition.getName());
 		try
 		{
-			assertEquals("default.A", scenarioDefinition.getMeasurementEnvironmentDefinition().getRoot().getParameters().get(0).getFullName());
+			assertEquals("default.DummyInput", scenarioDefinition.getMeasurementEnvironmentDefinition().getRoot().getParameters().get(0).getFullName());
 		} catch (UnsupportedOperationException uoe){
 			fail("Factory override did not work");
 		}
