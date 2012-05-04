@@ -29,6 +29,10 @@ public class ParameterCollectionFactory {
 	 * @return a parameter value collection that holds the given parameter values
 	 */
 	public static ParameterCollection<ParameterValue<?>> createParameterValueCollection(Collection<ParameterValue<?>> parameterValueCollection) {
+		
+		if (parameterValueCollection == null){
+			return null;
+		}
 		final ParameterCollection<ParameterValue<?>> result = new ParameterCollection<ParameterValue<?>>();
 		result.addAll(parameterValueCollection);
 		return result;
