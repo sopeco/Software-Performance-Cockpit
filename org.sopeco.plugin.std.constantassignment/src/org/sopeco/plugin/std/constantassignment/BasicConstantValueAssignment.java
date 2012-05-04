@@ -6,9 +6,9 @@ package org.sopeco.plugin.std.constantassignment;
 import org.sopeco.engine.experimentseries.IConstantAssignment;
 import org.sopeco.engine.registry.AbstractSoPeCoExtensionArtifact;
 import org.sopeco.engine.registry.ISoPeCoExtension;
-import org.sopeco.model.configuration.measurements.ConstantValueAssignment;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueFactory;
+import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.util.Tools;
 import org.sopeco.util.Tools.SupportedTypes;
 

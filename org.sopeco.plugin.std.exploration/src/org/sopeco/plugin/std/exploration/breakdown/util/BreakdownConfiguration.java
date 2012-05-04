@@ -1,9 +1,8 @@
 package org.sopeco.plugin.std.exploration.breakdown.util;
 
-import org.sopeco.model.configuration.environment.ParameterDefinition;
-import org.sopeco.model.configuration.measurements.ExplorationStrategy;
-import org.sopeco.model.util.ScenarioDefinitionUtil;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
+import org.sopeco.persistence.entities.definition.ExplorationStrategy;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 /**
  * This class holds all the configuration parameter names and default values of
@@ -214,7 +213,7 @@ public abstract class BreakdownConfiguration {
 	public static ParameterDefinition getMainPerformanceIndicator(ExplorationStrategy strategyConfig, ExperimentSeriesRun expSeriesRun) {
 		String value = strategyConfig.getConfiguration().get(MAIN_PERFORMANCE_INDICATOR);
 		if (value != null) {
-			return ScenarioDefinitionUtil.getParameterDefinition(value, expSeriesRun.getExperimentSeries().getScenarioInstance().getScenarioDefinition());
+			return expSeriesRun.getExperimentSeries().getScenarioInstance().getScenarioDefinition().getParameterDefinition(value);
 		} else {
 			throw new IllegalArgumentException("The property " + MAIN_PERFORMANCE_INDICATOR + " must be specified");	
 		}

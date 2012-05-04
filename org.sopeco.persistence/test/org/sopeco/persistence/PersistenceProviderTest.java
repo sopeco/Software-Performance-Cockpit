@@ -14,11 +14,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.sopeco.model.configuration.ScenarioDefinition;
-import org.sopeco.model.configuration.SoPeCoModelFactoryHandler;
-import org.sopeco.model.configuration.environment.ParameterDefinition;
-import org.sopeco.model.configuration.environment.ParameterRole;
-import org.sopeco.model.util.ScenarioDefinitionUtil;
 import org.sopeco.persistence.config.DBType;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetInputColumn;
@@ -27,6 +22,9 @@ import org.sopeco.persistence.dataset.ParameterValueFactory;
 import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterRole;
+import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 
 /**
@@ -65,6 +63,8 @@ public class PersistenceProviderTest {
 	@Test
 	public void testStoreAndLoadScenarioInstance() {
 
+		DataSetAggregated dataSet = dummyScenarioInstance.getExperimentSeriesList().get(0).getExperimentSeriesRuns().get(0).getResultDataSet();
+		
 		try {
 			provider.store(dummyScenarioInstance);
 		} catch (Exception e) {
@@ -578,6 +578,14 @@ public class PersistenceProviderTest {
 		assertNotNull(expSeries.getExperimentSeriesRuns().get(0).getResultDataSet());
 		assertTrue(expSeries.getExperimentSeriesRuns().get(0).getResultDataSet().getObservationColumns().size() == 1);
 		assertTrue(expSeries.getExperimentSeriesRuns().get(0).getResultDataSet().getInputColumns().size() == 1);
+		
+		ExperimentSeriesRun run = expSeries.getExperimentSeriesRuns().get(0);
+//		DataSetInputColumn col = (DataSetInputColumn) run.getResultDataSet().getInputColumns().toArray()[0];
+		for (DataSetInputColumn col : run.getResultDataSet().getInputColumns()){
+			System.out.println(col.getParameter());
+		}
+		
+		System.out.println();
 		
 		// Result Data Set should have the ParameterDefinitions
 		assertNotNull(((DataSetInputColumn<?>)expSeries.getExperimentSeriesRuns().get(0).getResultDataSet().getInputColumns().toArray()[0]).getParameter());

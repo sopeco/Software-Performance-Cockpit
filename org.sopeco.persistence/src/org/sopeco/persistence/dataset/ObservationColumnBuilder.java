@@ -3,7 +3,7 @@ package org.sopeco.persistence.dataset;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sopeco.model.configuration.environment.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class ObservationColumnBuilder<T> {

@@ -9,8 +9,8 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.sopeco.engine.registry.ISoPeCoExtension;
-import org.sopeco.model.configuration.environment.ParameterDefinition;
-import org.sopeco.model.configuration.measurements.ExplorationStrategy;
+import org.sopeco.persistence.entities.definition.ExplorationStrategy;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.plugin.std.exploration.breakdown.environment.AbstractEnvironmentValue;
 import org.sopeco.plugin.std.exploration.breakdown.environment.EnvironmentCachedAccess;
 import org.sopeco.plugin.std.exploration.breakdown.environment.EnvironmentCachedAccess.MeasurementCacheResult;

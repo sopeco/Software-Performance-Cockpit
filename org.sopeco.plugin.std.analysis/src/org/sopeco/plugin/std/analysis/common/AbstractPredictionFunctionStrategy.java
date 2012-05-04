@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.sopeco.engine.analysis.IPredictionFunctionStrategy;
 import org.sopeco.engine.registry.ISoPeCoExtension;
-import org.sopeco.model.configuration.analysis.AnalysisConfiguration;
-import org.sopeco.model.configuration.environment.ParameterDefinition;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetInputColumn;
 import org.sopeco.persistence.dataset.DataSetObservationColumn;
+import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 public abstract class AbstractPredictionFunctionStrategy extends AbstractRStrategy implements IPredictionFunctionStrategy {
 

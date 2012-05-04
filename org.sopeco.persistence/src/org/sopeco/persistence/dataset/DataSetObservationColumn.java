@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.sopeco.model.configuration.environment.ParameterDefinition;
-import org.sopeco.model.configuration.environment.ParameterRole;
 import org.sopeco.persistence.dataset.util.ParameterType;
 import org.sopeco.persistence.dataset.util.ParameterUtil;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterRole;
 
 
 public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T>

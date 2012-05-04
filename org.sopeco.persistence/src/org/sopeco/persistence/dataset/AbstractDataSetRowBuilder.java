@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.sopeco.model.configuration.environment.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 /**
  * Abstract class for row based DataSet builder. Current implementations are

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.sopeco.model.configuration.environment.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 
 /**

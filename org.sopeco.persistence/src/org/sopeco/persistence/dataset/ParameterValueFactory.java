@@ -1,8 +1,8 @@
 package org.sopeco.persistence.dataset;
 
-import org.sopeco.model.configuration.environment.ParameterDefinition;
 import org.sopeco.persistence.dataset.util.ParameterType;
 import org.sopeco.persistence.dataset.util.ParameterUtil;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 public class ParameterValueFactory {
 	private static final double SMALL_NUMBER = 0.0000001;

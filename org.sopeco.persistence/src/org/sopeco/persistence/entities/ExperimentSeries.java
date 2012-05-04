@@ -5,16 +5,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import org.sopeco.model.configuration.ScenarioDefinition;
-import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
-import org.sopeco.model.util.ScenarioDefinitionUtil;
+import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.keys.ExperimentSeriesPK;
 
 @Entity
@@ -32,9 +32,9 @@ public class ExperimentSeries implements Serializable {
 	})
 	private ScenarioInstance scenarioInstance;
 	
-//	@Lob
-//	@Column(name = "experimentSeriesDefinition")
-//	private String experimentSeriesDefinition;
+	@Lob
+	@Column(name = "experimentSeriesDefinition")
+	private ExperimentSeriesDefinition experimentSeriesDefinition;
 	
 	@OneToMany(cascade=CascadeType.ALL, mappedBy = "experimentSeries", orphanRemoval=true)
 	private List<ExperimentSeriesRun> experimentSeriesRuns = new ArrayList<ExperimentSeriesRun>();
@@ -70,25 +70,14 @@ public class ExperimentSeries implements Serializable {
 
 	public ExperimentSeriesDefinition getExperimentSeriesDefinition() {
 		
-		ExperimentSeriesDefinition returnValue;
-		
-		ScenarioDefinition sd = this.scenarioInstance.getScenarioDefinition();
-		
-		returnValue = ScenarioDefinitionUtil.getExperimentSeriesDefinition(this.getName(), sd);
-		
-		return returnValue;
+		return this.experimentSeriesDefinition;
 	}
 
 
-//	public void setExperimentSeriesDefinition(
-//			ExperimentSeriesDefinition experimentSeriesDefinition) {
-//		try {
-//			this.experimentSeriesDefinition = EMFUtil.saveToString(experimentSeriesDefinition);
-//		} catch (IOException e) {
-//			throw new RuntimeException("Cannot serialize object.", e);
-//		}
-//		
-//	}
+	public void setExperimentSeriesDefinition(ExperimentSeriesDefinition experimentSeriesDefinition) {
+		
+		this.experimentSeriesDefinition = experimentSeriesDefinition;
+	}
 	
 	public List<ExperimentSeriesRun> getExperimentSeriesRuns(){
 		return this.experimentSeriesRuns;

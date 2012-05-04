@@ -2,10 +2,10 @@ package org.sopeco.plugin.std.analysis.util;
 
 import java.util.List;
 
-import org.sopeco.model.configuration.environment.ParameterDefinition;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.util.ParameterType;
 import org.sopeco.persistence.dataset.util.ParameterUtil;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 /**
  * Class creates a comma seperated string representation for a given set of

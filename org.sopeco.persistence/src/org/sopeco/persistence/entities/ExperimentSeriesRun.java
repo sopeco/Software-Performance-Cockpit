@@ -92,11 +92,10 @@ public class ExperimentSeriesRun implements Serializable {
 		DataSetAppender appender = new DataSetAppender();
 		if(resultDataSet!=null) appender.append(resultDataSet);
 		appender.append(experimentRunResults);
-		this.resultDataSet = appender.createDataSet();
+		this.setResultDataSet(appender.createDataSet());
 		
 	}
-
-
+	
 	/*
 	 * Overrides
 	 */

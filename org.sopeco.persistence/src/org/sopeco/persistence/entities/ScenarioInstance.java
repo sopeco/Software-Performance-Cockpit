@@ -1,6 +1,5 @@
 package org.sopeco.persistence.entities;
 
-import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +12,7 @@ import javax.persistence.Lob;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
-import org.sopeco.model.configuration.ScenarioDefinition;
-import org.sopeco.model.util.EMFUtil;
+import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.persistence.entities.keys.ScenarioInstancePK;
 
 /**
@@ -43,29 +41,7 @@ public class ScenarioInstance implements Serializable {
 	
 	@Lob
 	@Column(name = "scenarioDefinition")
-	private String scenarioDefinition;
-
-	public ScenarioDefinition getScenarioDefinition() {
-		if (this.scenarioDefinition == null){
-			throw new IllegalStateException("ScenarioDefinition has not been set. Please use the PersistenceProviderFactory to properly create entity instances.");
-		}
-		
-		ScenarioDefinition returnValue;
-		try {
-			returnValue = (ScenarioDefinition) EMFUtil.loadFromSting(this.scenarioDefinition);
-		} catch (IOException e) {
-			throw new RuntimeException("Cannot deserialize object.", e);
-		}
-		return returnValue;
-	}
-
-	public void setScenarioDefinition(ScenarioDefinition scenarioDefinition) {
-		try {
-			this.scenarioDefinition = EMFUtil.saveToString(scenarioDefinition);
-		} catch (IOException e) {
-			throw new RuntimeException("Cannot serialize object.", e);
-		}
-	}
+	private ScenarioDefinition scenarioDefinition;
 
 	/*
 	 * Foreign Key Attributes
@@ -104,6 +80,18 @@ public class ScenarioInstance implements Serializable {
 	
 	public ScenarioInstancePK getPrimaryKey() {
 		return primaryKey;
+	}
+	
+	public ScenarioDefinition getScenarioDefinition() {
+		if (this.scenarioDefinition == null){
+			throw new IllegalStateException("ScenarioDefinition has not been set. Please use the PersistenceProviderFactory to properly create entity instances.");
+		}
+		return this.scenarioDefinition;
+	}
+
+	public void setScenarioDefinition(ScenarioDefinition scenarioDefinition) {
+		
+		this.scenarioDefinition = scenarioDefinition;	
 	}
 	
 	/*

@@ -4,8 +4,8 @@
 package org.sopeco.engine.experimentseries;
 
 import org.sopeco.engine.registry.ISoPeCoExtensionArtifact;
-import org.sopeco.model.configuration.measurements.ConstantValueAssignment;
 import org.sopeco.persistence.dataset.ParameterValue;
+import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 
 /**
  * The interface for constant assignment extension artifacts. 

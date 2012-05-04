@@ -1,6 +1,5 @@
 package org.sopeco.engine.analysis;
 
-import java.util.List;
 
 /**
  * Contains the result of a correlation based analysis of the influence of

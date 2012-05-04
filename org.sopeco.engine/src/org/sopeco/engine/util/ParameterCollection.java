@@ -9,8 +9,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import org.sopeco.model.configuration.environment.ParameterDefinition;
 import org.sopeco.persistence.dataset.ParameterValue;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 /**
  * A smart collection of {@link ParameterDefinition} or {@link ParameterValue} that 

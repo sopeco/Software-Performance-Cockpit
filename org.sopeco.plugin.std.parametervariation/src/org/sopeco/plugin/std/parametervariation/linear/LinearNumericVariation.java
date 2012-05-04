@@ -4,18 +4,18 @@
 package org.sopeco.plugin.std.parametervariation.linear;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.NoSuchElementException;
 
-import org.eclipse.emf.common.util.EMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.engine.experimentseries.IParameterVariation;
 import org.sopeco.engine.registry.AbstractSoPeCoExtensionArtifact;
-import org.sopeco.model.configuration.environment.ParameterDefinition;
-import org.sopeco.model.configuration.measurements.DynamicValueAssignment;
-import org.sopeco.model.configuration.measurements.ParameterValueAssignment;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueFactory;
+import org.sopeco.persistence.entities.definition.DynamicValueAssignment;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterValueAssignment;
 import org.sopeco.util.Tools;
 import org.sopeco.util.Tools.SupportedTypes;
 
@@ -58,7 +58,7 @@ public class LinearNumericVariation extends AbstractSoPeCoExtensionArtifact impl
 	public void initialize(ParameterValueAssignment configuration) {
 		final String paramType = configuration.getParameter().getType();
 		final DynamicValueAssignment dva = (DynamicValueAssignment) configuration;
-		final EMap<String, String> params = dva.getConfiguration();
+		final Map<String, String> params = dva.getConfiguration();
 
 		parameterType = SupportedTypes.get(paramType);
 		if (parameterType == null) {

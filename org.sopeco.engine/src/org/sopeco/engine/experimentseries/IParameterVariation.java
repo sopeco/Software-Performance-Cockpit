@@ -3,9 +3,9 @@ package org.sopeco.engine.experimentseries;
 import java.util.Iterator;
 
 import org.sopeco.engine.registry.ISoPeCoExtensionArtifact;
-import org.sopeco.model.configuration.environment.ParameterDefinition;
-import org.sopeco.model.configuration.measurements.ParameterValueAssignment;
 import org.sopeco.persistence.dataset.ParameterValue;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterValueAssignment;
 
 /**
  * Extension artifact interface that determines the values of a parameter based on its configuration.

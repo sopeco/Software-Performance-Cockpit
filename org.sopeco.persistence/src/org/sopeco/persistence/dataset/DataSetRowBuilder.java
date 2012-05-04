@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.sopeco.model.configuration.environment.ParameterDefinition;
-import org.sopeco.model.configuration.environment.ParameterRole;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterRole;
 
 /**
  * Builder for DataSets using rows.

@@ -1,22 +1,10 @@
 package org.sopeco.persistence;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.fail;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.sopeco.model.configuration.ScenarioDefinition;
-import org.sopeco.model.configuration.SoPeCoModelFactoryHandler;
-import org.sopeco.model.configuration.environment.EnvironmentFactory;
-import org.sopeco.model.configuration.environment.ParameterDefinition;
-import org.sopeco.model.configuration.environment.ParameterRole;
-import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
-import org.sopeco.model.util.EMFUtil;
-import org.sopeco.model.util.ScenarioDefinitionUtil;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetColumnBuilder;
 import org.sopeco.persistence.dataset.DataSetModifier;
@@ -24,6 +12,10 @@ import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
+import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterRole;
+import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
 public class DummyFactory {
 

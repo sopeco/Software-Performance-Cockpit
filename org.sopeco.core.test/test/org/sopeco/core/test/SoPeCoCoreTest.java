@@ -19,14 +19,13 @@ import org.sopeco.engine.experimentseries.IParameterVariationExtension;
 import org.sopeco.engine.helper.ConfigurationBuilder;
 import org.sopeco.engine.helper.DummyMEController;
 import org.sopeco.engine.registry.IExtensionRegistry;
-import org.sopeco.model.configuration.environment.ParameterDefinition;
-import org.sopeco.model.configuration.environment.ParameterRole;
-import org.sopeco.model.configuration.measurements.DynamicValueAssignment;
-import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
-import org.sopeco.model.configuration.measurements.ExplorationStrategy;
-import org.sopeco.model.configuration.measurements.MeasurementsFactory;
 import org.sopeco.persistence.dataset.util.ParameterType;
 import org.sopeco.persistence.entities.ExperimentSeries;
+import org.sopeco.persistence.entities.definition.DynamicValueAssignment;
+import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
+import org.sopeco.persistence.entities.definition.ExplorationStrategy;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterRole;
 
 public class SoPeCoCoreTest {
 

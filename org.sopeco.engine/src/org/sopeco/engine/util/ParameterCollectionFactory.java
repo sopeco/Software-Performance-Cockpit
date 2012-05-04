@@ -5,8 +5,8 @@ package org.sopeco.engine.util;
 
 import java.util.Collection;
 
-import org.sopeco.model.configuration.environment.ParameterDefinition;
 import org.sopeco.persistence.dataset.ParameterValue;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 /**
  * Creates instances of {@link ParameterCollection}.

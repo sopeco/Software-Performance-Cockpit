@@ -11,14 +11,14 @@ import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.experimentseries.IParameterVariation;
 import org.sopeco.engine.util.ParameterCollection;
 import org.sopeco.engine.util.ParameterCollectionFactory;
-import org.sopeco.model.configuration.analysis.AnalysisConfiguration;
-import org.sopeco.model.configuration.environment.ParameterDefinition;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.dataset.AbstractDataSetColumn;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetModifier;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
+import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.plugin.std.exploration.breakdown.space.RelativePosition;
 
 /**

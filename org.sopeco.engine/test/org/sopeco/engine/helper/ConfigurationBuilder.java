@@ -8,20 +8,17 @@ import org.sopeco.engine.experiment.impl.ExperimentController;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
 import org.sopeco.engine.util.ParameterCollection;
 import org.sopeco.engine.util.ParameterCollectionFactory;
-import org.sopeco.model.configuration.ConfigurationFactory;
-import org.sopeco.model.configuration.ScenarioDefinition;
-import org.sopeco.model.configuration.environment.EnvironmentFactory;
-import org.sopeco.model.configuration.environment.MeasurementEnvironmentDefinition;
-import org.sopeco.model.configuration.environment.ParameterDefinition;
-import org.sopeco.model.configuration.environment.ParameterNamespace;
-import org.sopeco.model.configuration.environment.ParameterRole;
-import org.sopeco.model.configuration.measurements.DynamicValueAssignment;
-import org.sopeco.model.configuration.measurements.ExperimentTerminationCondition;
-import org.sopeco.model.configuration.measurements.MeasurementsFactory;
-import org.sopeco.model.configuration.measurements.NumberOfRepetitions;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueFactory;
 import org.sopeco.persistence.dataset.util.ParameterType;
+import org.sopeco.persistence.entities.definition.DynamicValueAssignment;
+import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
+import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
+import org.sopeco.persistence.entities.definition.NumberOfRepetitions;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterNamespace;
+import org.sopeco.persistence.entities.definition.ParameterRole;
+import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
 
 public class ConfigurationBuilder {

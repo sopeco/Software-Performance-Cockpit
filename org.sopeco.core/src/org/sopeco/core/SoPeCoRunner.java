@@ -12,9 +12,8 @@ import org.sopeco.config.IConfiguration;
 import org.sopeco.config.exception.ConfigurationException;
 import org.sopeco.engine.EngineFactory;
 import org.sopeco.engine.IEngine;
-import org.sopeco.model.configuration.ScenarioDefinition;
-import org.sopeco.model.util.EMFUtil;
 import org.sopeco.persistence.entities.ScenarioInstance;
+import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
 /**
  * The main runner class of SoPeCo. 

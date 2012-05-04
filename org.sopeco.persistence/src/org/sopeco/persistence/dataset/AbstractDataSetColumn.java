@@ -2,7 +2,7 @@ package org.sopeco.persistence.dataset;
 
 import java.util.List;
 
-import org.sopeco.model.configuration.environment.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 public abstract class AbstractDataSetColumn<T> {
 	/**

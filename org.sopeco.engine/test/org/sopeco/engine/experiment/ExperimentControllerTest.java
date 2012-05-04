@@ -9,9 +9,9 @@ import org.junit.Test;
 import org.sopeco.engine.helper.ConfigurationBuilder;
 import org.sopeco.engine.helper.DummyDataSet;
 import org.sopeco.engine.helper.DummyMEController;
-import org.sopeco.model.configuration.environment.ParameterRole;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.util.ParameterType;
+import org.sopeco.persistence.entities.definition.ParameterRole;
 
 public class ExperimentControllerTest {
 	

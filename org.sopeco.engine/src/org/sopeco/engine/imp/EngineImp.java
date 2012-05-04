@@ -13,12 +13,12 @@ import org.sopeco.engine.experimentseries.IExperimentSeriesManager;
 import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.engine.registry.IExtensionRegistry;
 import org.sopeco.engine.util.EngineTools;
-import org.sopeco.model.configuration.ScenarioDefinition;
-import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.PersistenceProviderFactory;
 import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ScenarioInstance;
+import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
+import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 
 /**

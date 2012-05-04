@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.sopeco.model.configuration.environment.ParameterDefinition;
-import org.sopeco.model.configuration.environment.ParameterRole;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterRole;
 
 /**
  * A DataSet is a column-based storage for data. It contains the values
@@ -21,7 +21,7 @@ import org.sopeco.model.configuration.environment.ParameterRole;
  * @author Jens Happe
  * 
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings({"rawtypes"})
 public class DataSetAggregated implements
 		Iterable<DataSetRow>, Serializable {
 
@@ -35,12 +35,12 @@ public class DataSetAggregated implements
 	 */
 
 	
-	private Map<ParameterDefinition, DataSetInputColumn> inputColumnMap;
+	private Map<String, DataSetInputColumn> inputColumnMap;
 
 	/**
 	 * Data in form of columns associated to a observation parameter.
 	 */
-	private Map<ParameterDefinition, DataSetObservationColumn> observationColumnMap;
+	private Map<String, DataSetObservationColumn> observationColumnMap;
 
 	// /**
 	// * Indexes of the columns represented by the according parameter
@@ -67,18 +67,18 @@ public class DataSetAggregated implements
 			String id) {
 		super();
 		this.id = id;
-		this.inputColumnMap = new HashMap<ParameterDefinition, DataSetInputColumn>();
-		this.observationColumnMap = new HashMap<ParameterDefinition, DataSetObservationColumn>();
+		this.inputColumnMap = new HashMap<String, DataSetInputColumn>();
+		this.observationColumnMap = new HashMap<String, DataSetObservationColumn>();
 		// this.parameterIndexes = new HashMap<Integer, ParameterDefinition>();
 		this.size = size;
 		// int index = 0;
 		for (DataSetInputColumn column : inputColumns) {
-			inputColumnMap.put(column.getParameter(), column);
+			inputColumnMap.put(column.getParameter().getFullName(), column);
 			// parameterIndexes.put(index, column.getParameter());
 			// index++;
 		}
 		for (DataSetObservationColumn column : observationColumns) {
-			observationColumnMap.put(column.getParameter(), column);
+			observationColumnMap.put(column.getParameter().getFullName(), column);
 			// parameterIndexes.put(index, column.getParameter());
 			// index++;
 		}
@@ -113,7 +113,10 @@ public class DataSetAggregated implements
 	 * @return All columns held by the dataset.
 	 */
 	public Collection<DataSetInputColumn> getInputColumns() {
-		return new ArrayList<DataSetInputColumn>(inputColumnMap.values());
+		
+		Collection<DataSetInputColumn> col = inputColumnMap.values();
+		List<DataSetInputColumn> list = new ArrayList<DataSetInputColumn>(col);
+		return list;
 	}
 
 	/**
@@ -234,8 +237,14 @@ public class DataSetAggregated implements
 	 */
 	public Collection<ParameterDefinition> getParameterDefinitions() {
 		ArrayList<ParameterDefinition> result = new ArrayList<ParameterDefinition>();
-		result.addAll(inputColumnMap.keySet());
-		result.addAll(observationColumnMap.keySet());
+		for(DataSetInputColumn dic : inputColumnMap.values()){
+			result.add(dic.getParameter());
+		}
+		
+		for(DataSetObservationColumn doc: observationColumnMap.values()){
+			result.add(doc.getParameter());
+		}
+		
 		return result;
 	}
 
@@ -438,9 +447,9 @@ public class DataSetAggregated implements
 			setSize(col.size());
 		}
 		if (col instanceof DataSetInputColumn) {
-			inputColumnMap.put(col.getParameter(), (DataSetInputColumn) col);
+			inputColumnMap.put(col.getParameter().getFullName(), (DataSetInputColumn) col);
 		} else if (col instanceof DataSetObservationColumn) {
-			observationColumnMap.put(col.getParameter(),
+			observationColumnMap.put(col.getParameter().getFullName(),
 					(DataSetObservationColumn) col);
 		}
 
@@ -511,16 +520,16 @@ public class DataSetAggregated implements
 	}
 
 	
-	// TODO: check whats the problem when sending dataset over RMI
-	public void reconstructDataSet() {
-		for (Entry<ParameterDefinition, DataSetInputColumn> entry : inputColumnMap
-				.entrySet()) {
-			entry.getValue().parameter = entry.getKey();
-		}
-		for (Entry<ParameterDefinition, DataSetObservationColumn> entry : observationColumnMap
-				.entrySet()) {
-			entry.getValue().parameter = entry.getKey();
-		}
-	}
+//	// TODO: check whats the problem when sending dataset over RMI
+//	public void reconstructDataSet() {
+//		for (Entry<String, DataSetInputColumn> entry : inputColumnMap
+//				.entrySet()) {
+//			entry.getValue().parameter = entry.getKey();
+//		}
+//		for (Entry<String, DataSetObservationColumn> entry : observationColumnMap
+//				.entrySet()) {
+//			entry.getValue().parameter = entry.getKey();
+//		}
+//	}
 
 }

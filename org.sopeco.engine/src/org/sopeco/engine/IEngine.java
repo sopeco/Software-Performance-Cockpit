@@ -7,9 +7,9 @@ import org.sopeco.config.IConfiguration;
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.experimentseries.IExperimentSeriesManager;
 import org.sopeco.engine.registry.IExtensionRegistry;
-import org.sopeco.model.configuration.ScenarioDefinition;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.entities.ScenarioInstance;
+import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
 /**
  * Interface of the SoPeCo Engine.

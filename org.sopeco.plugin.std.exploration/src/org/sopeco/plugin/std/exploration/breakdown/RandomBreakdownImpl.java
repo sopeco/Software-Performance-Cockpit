@@ -3,8 +3,8 @@ package org.sopeco.plugin.std.exploration.breakdown;
 import java.util.List;
 
 import org.sopeco.engine.registry.ISoPeCoExtension;
-import org.sopeco.model.configuration.environment.ParameterDefinition;
-import org.sopeco.model.configuration.measurements.ExplorationStrategy;
+import org.sopeco.persistence.entities.definition.ExplorationStrategy;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.plugin.std.exploration.breakdown.environment.EnvironmentCachedAccess;
 import org.sopeco.plugin.std.exploration.breakdown.environment.EnvironmentCachedAccess.MeasurementCacheResult;
 import org.sopeco.plugin.std.exploration.breakdown.space.RelativePosition;

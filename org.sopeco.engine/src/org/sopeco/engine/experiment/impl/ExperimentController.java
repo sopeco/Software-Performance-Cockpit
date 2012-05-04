@@ -6,16 +6,15 @@ import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
 import org.sopeco.engine.util.ParameterCollection;
 import org.sopeco.engine.util.ParameterCollectionFactory;
-import org.sopeco.model.configuration.environment.MeasurementEnvironmentDefinition;
-import org.sopeco.model.configuration.environment.ParameterDefinition;
-import org.sopeco.model.configuration.measurements.ExperimentTerminationCondition;
-import org.sopeco.model.util.ScenarioDefinitionUtil;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetRowBuilder;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
+import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
+import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 
 /**
@@ -63,7 +62,7 @@ public class ExperimentController implements IExperimentController {
 		meController.prepareExperimentSeries(preparationPVs);
 		
 		ParameterCollection<ParameterDefinition> observationParams = 
-				ParameterCollectionFactory.createParameterDefinitionCollection(ScenarioDefinitionUtil.collectObservationParameters(meDefinition.getRoot()));
+				ParameterCollectionFactory.createParameterDefinitionCollection(meDefinition.getRoot().getObservationParameters());
 		meController.setObservationParameters(observationParams);
 	}
 	

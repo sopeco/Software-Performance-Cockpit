@@ -12,10 +12,10 @@ import org.sopeco.engine.experimentseries.IParameterVariation;
 import org.sopeco.engine.registry.AbstractSoPeCoExtensionArtifact;
 import org.sopeco.engine.registry.ISoPeCoExtension;
 import org.sopeco.engine.util.EngineTools;
-import org.sopeco.model.configuration.environment.ParameterDefinition;
-import org.sopeco.model.configuration.measurements.ConstantValueAssignment;
-import org.sopeco.model.configuration.measurements.ParameterValueAssignment;
 import org.sopeco.persistence.dataset.ParameterValue;
+import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterValueAssignment;
 
 /**
  * Provides a constant value variation, which is basically returning the constant value as 

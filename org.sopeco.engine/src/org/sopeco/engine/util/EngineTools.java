@@ -8,8 +8,8 @@ import java.util.Collection;
 import org.sopeco.engine.experimentseries.IConstantAssignment;
 import org.sopeco.engine.experimentseries.IConstantAssignmentExtension;
 import org.sopeco.engine.registry.ExtensionRegistry;
-import org.sopeco.model.configuration.measurements.ConstantValueAssignment;
 import org.sopeco.persistence.dataset.ParameterValue;
+import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 
 /**
  * A collection of utility methods needed in the context of SoPeCo experiments. 

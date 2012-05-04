@@ -17,17 +17,14 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.sopeco.engine.analysis.IPredictionFunctionResult;
 import org.sopeco.engine.analysis.IPredictionFunctionStrategy;
-import org.sopeco.model.configuration.ScenarioDefinition;
-import org.sopeco.model.configuration.SoPeCoModelFactoryHandler;
-import org.sopeco.model.configuration.analysis.AnalysisConfiguration;
-import org.sopeco.model.configuration.environment.ParameterDefinition;
-import org.sopeco.model.util.EMFUtil;
-import org.sopeco.model.util.ScenarioDefinitionUtil;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetColumnBuilder;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueFactory;
 import org.sopeco.persistence.dataset.ParameterValueList;
+import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
 /**
  * Test class for implementations of the {@link IPredictionFunctionStrategy}

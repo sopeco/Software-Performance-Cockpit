@@ -11,10 +11,10 @@ import javax.script.ScriptException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.engine.analysis.IPredictionFunctionResult;
-import org.sopeco.model.configuration.analysis.AnalysisConfiguration;
-import org.sopeco.model.configuration.environment.ParameterDefinition;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueFactory;
+import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 /**
  * This class provides an implementation of {@link IPredictionFunctionResult}

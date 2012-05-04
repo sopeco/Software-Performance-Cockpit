@@ -6,13 +6,11 @@ import static junit.framework.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.sopeco.model.configuration.ScenarioDefinition;
-import org.sopeco.model.configuration.SoPeCoModelFactoryHandler;
-import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
-import org.sopeco.model.util.ScenarioDefinitionUtil;
 import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
+import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
+import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
 /**
  * Test class for the {@link PersistenceProviderFactory}.

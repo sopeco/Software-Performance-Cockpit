@@ -1,6 +1,6 @@
 package org.sopeco.plugin.std.exploration.breakdown.stop;
 
-import org.sopeco.model.configuration.measurements.ExplorationStrategy;
+import org.sopeco.persistence.entities.definition.ExplorationStrategy;
 import org.sopeco.plugin.std.exploration.breakdown.environment.AlgorithmsEnvironment;
 import org.sopeco.plugin.std.exploration.breakdown.util.BreakdownConfiguration;
 import org.sopeco.plugin.std.exploration.breakdown.util.IMeasurementSeriesAwareable;

@@ -6,7 +6,6 @@ import static junit.framework.Assert.fail;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.sopeco.model.configuration.SoPeCoModelFactoryHandler;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 

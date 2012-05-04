@@ -26,7 +26,8 @@ Export-Package: org.sopeco.model.configuration,
  org.sopeco.model.util
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.ecore;visibility:=reexport,
- org.junit;bundle-version="4.8.2"
+ org.junit;bundle-version="4.8.2",
+ org.sopeco.persistence;bundle-version="0.2.0"
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.emf.compare.util,
  org.eclipse.emf.ecore.xmi.impl

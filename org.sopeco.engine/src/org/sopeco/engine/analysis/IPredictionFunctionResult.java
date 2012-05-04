@@ -2,8 +2,8 @@ package org.sopeco.engine.analysis;
 
 import java.util.List;
 
-import org.sopeco.model.configuration.analysis.AnalysisConfiguration;
 import org.sopeco.persistence.dataset.ParameterValue;
+import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 
 
 /**

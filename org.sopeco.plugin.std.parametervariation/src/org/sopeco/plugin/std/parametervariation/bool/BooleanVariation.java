@@ -6,16 +6,14 @@ package org.sopeco.plugin.std.parametervariation.bool;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sopeco.engine.experimentseries.IParameterVariation;
 import org.sopeco.engine.registry.AbstractSoPeCoExtensionArtifact;
 import org.sopeco.engine.registry.ISoPeCoExtension;
-import org.sopeco.model.configuration.environment.ParameterDefinition;
-import org.sopeco.model.configuration.measurements.DynamicValueAssignment;
-import org.sopeco.model.configuration.measurements.ParameterValueAssignment;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueFactory;
+import org.sopeco.persistence.entities.definition.DynamicValueAssignment;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterValueAssignment;
 import org.sopeco.util.Tools.SupportedTypes;
 
 /**

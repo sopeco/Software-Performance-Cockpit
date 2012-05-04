@@ -4,9 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.sopeco.model.configuration.environment.ParameterDefinition;
 import org.sopeco.persistence.dataset.util.ParameterType;
 import org.sopeco.persistence.dataset.util.ParameterUtil;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class ParameterValueList<T> implements Serializable {

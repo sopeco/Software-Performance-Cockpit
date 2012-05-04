@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import org.sopeco.model.configuration.environment.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.plugin.std.exploration.breakdown.environment.AbstractEnvironmentValue;
 import org.sopeco.plugin.std.exploration.breakdown.environment.EnvironmentCachedAccess;
 import org.sopeco.plugin.std.exploration.breakdown.environment.EnvironmentCachedAccess.MeasurementCacheResult;

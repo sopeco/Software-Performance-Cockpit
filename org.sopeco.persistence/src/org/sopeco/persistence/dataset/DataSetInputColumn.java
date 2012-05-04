@@ -7,10 +7,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.sopeco.model.configuration.environment.ParameterDefinition;
-import org.sopeco.model.configuration.environment.ParameterRole;
 import org.sopeco.persistence.dataset.util.ParameterType;
 import org.sopeco.persistence.dataset.util.ParameterUtil;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterRole;
 
 /**
  * DataSetColumn represents a column in a DataSet consisting of a parameter and
