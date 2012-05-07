@@ -113,6 +113,31 @@ public class PersistenceProviderTest {
 		}
 
 	}
+	
+	@Test
+	public void testLoadAllScenarioInstances() {
+
+		try {
+			// init
+			provider.store(dummyScenarioInstance);
+			checkTableSizes();
+
+			// load instances
+			List<ScenarioInstance> loadedInstances = provider.loadAllScenarioInstances();
+
+			// there should be only one scenario instance which is the one that
+			// we stored
+			assertNotNull(loadedInstances);
+			assertTrue(loadedInstances.size() == 1);
+			assertTrue(dummyScenarioInstance.equals(loadedInstances.get(0)));
+
+			// check sub tree
+			checkAvailableExperimentSeries(loadedInstances.get(0));
+		} catch (DataNotFoundException e) {
+			fail(e.getMessage());
+		}
+
+	}
 
 	@Test
 	public void testUpdateViaScenarioInstance() {

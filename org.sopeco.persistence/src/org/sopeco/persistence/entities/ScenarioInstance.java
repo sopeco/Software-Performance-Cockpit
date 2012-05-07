@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
@@ -20,10 +21,14 @@ import org.sopeco.persistence.entities.keys.ScenarioInstancePK;
  * 
  * @author Dennis Westermann
  */
+@NamedQueries({
+@NamedQuery(
+    name="findAllScenarioInstances",
+    query="SELECT o FROM ScenarioInstance o"),
 @NamedQuery(
     name="findScenarioInstancesByName",
-    query="SELECT o FROM ScenarioInstance o WHERE o.primaryKey.name = :name"
-)
+    query="SELECT o FROM ScenarioInstance o WHERE o.primaryKey.name = :name")
+})
 @Entity
 public class ScenarioInstance implements Serializable {
 

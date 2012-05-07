@@ -26,6 +26,8 @@ public interface IPersistenceProvider {
 	/* read */
 	List<ScenarioInstance> loadScenarioInstances(String scenarioName) throws DataNotFoundException;
 	
+	List<ScenarioInstance> loadAllScenarioInstances() throws DataNotFoundException;
+	
 	ScenarioInstance loadScenarioInstance(String scenarioName, String measurementEnvironmentUrl) throws DataNotFoundException;
 
 	ScenarioInstance loadScenarioInstance(ScenarioInstancePK primaryKey)

@@ -234,6 +234,36 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 		
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<ScenarioInstance> loadAllScenarioInstances() throws DataNotFoundException {
+		List<ScenarioInstance> scenarioInstances;
+		String errorMsg = "Could not find a scenario instance in the database.";
+		
+		EntityManager em = emf.createEntityManager();
+		
+		try {
+			
+			Query query = em.createNamedQuery("findAllScenarioInstances");
+			scenarioInstances = query.getResultList();
+			
+		} catch (Exception e) {
+			
+			logger.error(errorMsg);
+			throw new DataNotFoundException(errorMsg, e);
+		}  finally {
+			em.close();
+		}
+		
+		// check if query was successful
+		if(scenarioInstances != null){
+			return scenarioInstances;
+		} else {
+			logger.debug(errorMsg);
+			throw new DataNotFoundException(errorMsg);
+		}
+	}
+	
 	@Override
 	public ScenarioInstance loadScenarioInstance(ScenarioInstancePK primaryKey) throws DataNotFoundException {
 		return loadScenarioInstance(primaryKey.getName(), primaryKey.getMeasurementEnvironmentUrl());
@@ -368,6 +398,8 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 		}
 		
 	}
+
+
 	
 //	private void removeAllSeries(ScenarioInstance scenarioInstance, EntityManager em){
 //		for(ExperimentSeries series : scenarioInstance.getExperimentSeries()){
