@@ -5,7 +5,6 @@ Bundle-SymbolicName: org.sopeco.core
 Bundle-Version: 0.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.sopeco.engine;bundle-version="0.2.0";visibility:=reexport,
- org.sopeco.model;bundle-version="0.2.0";visibility:=reexport,
  org.sopeco.config;bundle-version="0.2.0";visibility:=reexport,
  org.sopeco.util;bundle-version="1.0.0";visibility:=reexport,
  org.sopeco.persistence;bundle-version="0.2.0";visibility:=reexport,

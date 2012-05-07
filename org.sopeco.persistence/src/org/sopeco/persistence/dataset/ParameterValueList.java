@@ -8,6 +8,8 @@ import org.sopeco.persistence.dataset.util.ParameterType;
 import org.sopeco.persistence.dataset.util.ParameterUtil;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
+// TODO documentation!
+
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class ParameterValueList<T> implements Serializable {
 

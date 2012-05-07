@@ -7,7 +7,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.sopeco.config;bundle-version="0.2.0",
  org.sopeco.core;bundle-version="0.2.0",
  org.sopeco.engine;bundle-version="0.2.0",
- org.sopeco.model;bundle-version="1.0.0",
  org.sopeco.persistence;bundle-version="0.2.0",
  org.sopeco.util;bundle-version="1.0.0",
  org.junit,
