@@ -18,7 +18,6 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.sopeco.engine.analysis.IPredictionFunctionResult;
 import org.sopeco.engine.analysis.IPredictionFunctionStrategy;
-import org.sopeco.model.configuration.SoPeCoModelFactoryHandler;
 import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetColumnBuilder;
@@ -69,7 +68,6 @@ public class PredictionFunctionAnalysisStrategyTest {
 
 	@Before
 	public void setUp() throws Exception {
-		SoPeCoModelFactoryHandler.initFactories();
 		scenarioDefinition = loadScenarioDefinition();
 	}
 
