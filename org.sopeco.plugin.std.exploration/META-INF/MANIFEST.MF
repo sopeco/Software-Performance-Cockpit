@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Standard Exploration Strategies
 Bundle-SymbolicName: org.sopeco.plugin.std.exploration;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.sopeco.persistence;bundle-version="0.2.0",
  org.sopeco.core;bundle-version="0.2.0",

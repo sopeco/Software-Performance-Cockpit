@@ -5,6 +5,12 @@ import java.util.List;
 
 import org.sopeco.persistence.dataset.ParameterValue;
 
+/**
+ * Represents a row of a {@link ValidationObject} dataset.
+ * 
+ * @author Dennis Westermann
+ *
+ */
 public class ValidationRow {
 	private ParameterValue<?> dependentParameterValue;
 	private String dependentParameterName;
