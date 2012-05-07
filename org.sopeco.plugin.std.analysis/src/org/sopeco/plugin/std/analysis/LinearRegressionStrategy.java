@@ -3,11 +3,11 @@ package org.sopeco.plugin.std.analysis;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.engine.analysis.IPredictionFunctionResult;
+import org.sopeco.engine.analysis.PredictionFunctionResult;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.plugin.std.analysis.common.AbstractPredictionFunctionStrategy;
-import org.sopeco.plugin.std.analysis.common.PredictionFunctionResult;
 import org.sopeco.plugin.std.analysis.util.CSVStringGenerator;
 import org.sopeco.plugin.std.analysis.util.RAdapter;
 

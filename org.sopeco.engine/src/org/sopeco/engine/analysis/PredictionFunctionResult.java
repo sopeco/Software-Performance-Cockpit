@@ -1,4 +1,4 @@
-package org.sopeco.plugin.std.analysis.common;
+package org.sopeco.engine.analysis;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -10,7 +10,6 @@ import javax.script.ScriptException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sopeco.engine.analysis.IPredictionFunctionResult;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueFactory;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
