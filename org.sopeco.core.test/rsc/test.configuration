@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<org.sopeco.core.model:ScenarioDefinition xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:measurements="http://sopeco.org/configuration/measurements" xmlns:org.sopeco.core.model="http://sopeco.org/configuration" name="Fibonacci 2.0">
+<org.sopeco.core.model:ScenarioDefinition xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:measurements="http://sopeco.org/configuration/measurements" xmlns:org.sopeco.core.model="http://sopeco.org/configuration" name="SoPeCo Test Scenario">
   <measurementEnvironmentDefinition>
     <root name="Main">
       <children name="Preparation" parent="//@measurementEnvironmentDefinition/@root">
