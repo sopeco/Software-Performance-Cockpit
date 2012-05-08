@@ -13,6 +13,8 @@ public class ParameterNamespace implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	private static final String DEFAULT_NAMESPACE_DELIMITER = ".";
+	
 	protected List<ParameterNamespace> children;
 
 	protected String name = null;
@@ -20,6 +22,7 @@ public class ParameterNamespace implements Serializable {
 	protected List<ParameterDefinition> parameters;
 
 	protected ParameterNamespace parent;
+	
 
 	public ParameterNamespace() {
 		super();
@@ -54,6 +57,31 @@ public class ParameterNamespace implements Serializable {
 
 	public void setParent(ParameterNamespace newParent) {
 		parent = newParent;
+	}
+	
+	/**
+	 * Returns the full name of a parameter namespace. The full name is a concatenation of the namespace hierarchy.
+	 * The different hierarchy levels are delimited by the default delimiter '.'.
+	 * Example: "org.sopeco".
+	 * 
+	 * @return the full name (namespace + all parent namespaces) of the namespace where the namespaces are delimited by the default delimitter '.'
+	 */
+	public String getFullName(){
+		return createFullNamespaceString("", this, DEFAULT_NAMESPACE_DELIMITER);
+	}
+	
+	private String createFullNamespaceString(String fullNamespace, ParameterNamespace namespace, String namespaceDelimitter) {
+
+		if (namespace != null && !namespace.getName().isEmpty()) {
+			fullNamespace = namespace.getName() + namespaceDelimitter + fullNamespace;
+			return createFullNamespaceString(fullNamespace, namespace.getParent(), namespaceDelimitter);
+		}
+
+		if(fullNamespace.isEmpty()) {
+		 return fullNamespace;
+		} else {
+			return fullNamespace.substring(0, fullNamespace.lastIndexOf(DEFAULT_NAMESPACE_DELIMITER));
+		}
 	}
 
 	
