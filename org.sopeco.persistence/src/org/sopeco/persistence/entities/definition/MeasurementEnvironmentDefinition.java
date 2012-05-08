@@ -33,27 +33,18 @@ public class MeasurementEnvironmentDefinition implements Serializable {
 	}
 
 	private ParameterNamespace searchNamespace(ParameterNamespace parent, String name) {
-		if (parent.getName().equals(name)) {
+		if (parent.getFullName().equals(name)) {
 			return parent;
 		} else {
 			for (ParameterNamespace child : parent.getChildren()) {
-				if (searchNamespace(child, name) != null) {
-					return child;
+				ParameterNamespace childSearchResult = searchNamespace(child, name);
+				if ( childSearchResult != null) {
+					return childSearchResult;
 				}
 			}
 		}
 
 		return null;
-	}
-
-	private String createFullNamespaceString(String fullNamespace, ParameterNamespace namespace, String namespaceDelimitter) {
-
-		if (namespace != null && !namespace.getName().isEmpty()) {
-			fullNamespace = namespace.getName() + namespaceDelimitter + fullNamespace;
-			return createFullNamespaceString(fullNamespace, namespace.getParent(), namespaceDelimitter);
-		}
-
-		return fullNamespace;
 	}
 
 }
