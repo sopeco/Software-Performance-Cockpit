@@ -20,41 +20,41 @@ public abstract class BreakdownConfiguration {
 	public static final String ADAPTIVE_RANDOM_BREAKDOWN = "Adaptive Random Breakdown";
 	public static final String ADAPTIVE_EQUIDISTANT_BREAKDOWN = "Adaptive Equidistant Breakdown";
 
-	private static final String MAIN_PERFORMANCE_INDICATOR = "MainPerformanceIndicator";
+	public static final String MAIN_PERFORMANCE_INDICATOR = "MainPerformanceIndicator";
 	
-	private static final String DIMINUTION_OF_VALIDATIONS = "DiminutionOfValidations";
+	public static final String DIMINUTION_OF_VALIDATIONS = "DiminutionOfValidations";
 	private static final Double DIMINUTION_OF_VALIDATIONS_DEFAULT_VALUE = 1.2;
 
-	private static final String BORDER_MEASUREMENT_DEPTH = "BorderMeasurementDepth";
+	public static final String BORDER_MEASUREMENT_DEPTH = "BorderMeasurementDepth";
 	private static final Integer BORDER_MEASUREMENT_DEPTH_DEFAULT_VALUE = 1;
 	
-	private static final String ACCURACY_DETERMINATION_METHOD = "AccuracyDeterminationMethod";
+	public static final String ACCURACY_DETERMINATION_METHOD = "AccuracyDeterminationMethod";
 	public enum AccuracyDetermination { RandomValidationSet, DynamicSector }
 	private static final AccuracyDetermination ACCURACY_DETERMINATION_METHOD_DEFAULT_VALUE = AccuracyDetermination.RandomValidationSet;
 	
-	private static final String DYNAMIC_SECTOR_ACCURACY_SCOPE = "DynamicSectorAccuracyScope";
+	public static final String DYNAMIC_SECTOR_ACCURACY_SCOPE = "DynamicSectorAccuracyScope";
     public enum DynamicSectorAccuracyScope{Local, Global};
 	private static final DynamicSectorAccuracyScope DYNAMIC_SECTOR_ACCURACY_SCOPE_DEFAULT_VALUE = DynamicSectorAccuracyScope.Local;
 	
-	private static final String SIZE_OF_VALIDATION_SET = "SizeOfValidationSet";
+	public static final String SIZE_OF_VALIDATION_SET = "SizeOfValidationSet";
 	private static final Integer SIZE_OF_VALIDATION_SET_DEFAULT_VALUE = 10;
 	
-	private static final String DESIRED_MODEL_ACCURACY = "DesiredModelAccuracy";
+	public static final String DESIRED_MODEL_ACCURACY = "DesiredModelAccuracy";
 	private static final Double DESIRED_MODEL_ACCURACY_DEFAULT_VALUE = 0.3;
 	
-	private static final String MAX_EXPLORATION_TIME_IN_MIN = "MaxExplorationTimeInMin";
+	public static final String MAX_EXPLORATION_TIME_IN_MIN = "MaxExplorationTimeInMin";
 	private static final Long MAX_EXPLORATION_TIME_IN_MIN_DEFAULT_VALUE = null;
 	
-	private static final String MAX_NUMBER_OF_EXPERIMENTS = "MaxNumberOfExperiments";
+	public static final String MAX_NUMBER_OF_EXPERIMENTS = "MaxNumberOfExperiments";
 	private static final Integer MAX_NUMBER_OF_EXPERIMENTS_DEFAULT_VALUE = null;
 	
-	private static final String NUMBER_OF_EXPERIMENTS_PER_ITERATION = "NumberOfExperimentsPerIteration";
+	public static final String NUMBER_OF_EXPERIMENTS_PER_ITERATION = "NumberOfExperimentsPerIteration";
 	private static final Integer NUMBER_OF_EXPERIMENTS_PER_ITERATION_DEFAULT_VALUE = null;
 	
-	private static final String NUMBER_OF_EXPERIMENTS_PER_SECTION_SPLIT = "NumberOfExperimentsPerSectionSplit";
+	public static final String NUMBER_OF_EXPERIMENTS_PER_SECTION_SPLIT = "NumberOfExperimentsPerSectionSplit";
 	private static final Integer NUMBER_OF_EXPERIMENTS_PER_SECTION_SPLIT_DEFAULT_VALUE = 5;
 	
-	private static final String IRRELEVANT_PARAMETER_THRESHOLD = "IrrelevantParameterThreshold";
+	public static final String IRRELEVANT_PARAMETER_THRESHOLD = "IrrelevantParameterThreshold";
 	private static final Double IRRELEVANT_PARAMETER_THRESHOLD_DEFAULT_VALUE = 0.0;
 
 
