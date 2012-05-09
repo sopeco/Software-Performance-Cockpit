@@ -29,12 +29,10 @@
     </experimentSeriesDefinitions>
     <experimentSeriesDefinitions name="Iterative">
       <explorationStrategy name="Full Exploration Strategy"/>
-      <experimentAssignments xsi:type="measurements:DynamicValueAssignment" name="Linear Numeric Variation" parameter="//@measurementEnvironmentDefinition/@root/@parameters.0">
-        <configuration key="min" value="5"/>
-        <configuration key="max" value="15"/>
-        <configuration key="step" value="5"/>
-      </experimentAssignments>
       <experimentAssignments xsi:type="measurements:ConstantValueAssignment" parameter="//@measurementEnvironmentDefinition/@root/@parameters.1" value="Iterative"/>
+      <experimentAssignments xsi:type="measurements:DynamicValueAssignment" name="CSV" parameter="//@measurementEnvironmentDefinition/@root/@parameters.0">
+        <configuration key="values" value="1, 2, 10...15, 20, 30 ... 32"/>
+      </experimentAssignments>
       <experimentTerminationCondition xsi:type="measurements:NumberOfRepetitions" numberOfRepetitions="2"/>
       <preperationAssignments parameter="//@measurementEnvironmentDefinition/@root/@children.0/@parameters.0" value="8"/>
       <preperationAssignments parameter="//@measurementEnvironmentDefinition/@root/@children.0/@parameters.1" value="4096"/>
