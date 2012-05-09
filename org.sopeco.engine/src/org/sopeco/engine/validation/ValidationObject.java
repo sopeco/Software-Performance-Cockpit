@@ -39,11 +39,11 @@ public class ValidationObject implements Iterable<ValidationRow> {
 		this.validationRows = DataSetToValidationRows.convert(this.validationDataSet, this.nameOfDependentParameter, this.namesOfIndependentParameters);
 	}
 
-	protected ValidationRow getValidationRow(int index) {
+	public ValidationRow getValidationRow(int index) {
 		return validationRows.get(index);
 	}
 
-	protected int getSize() {
+	public int getSize() {
 		return this.size;
 	}
 
