@@ -77,5 +77,85 @@ public interface IConfiguration {
 	 * @throws ConfigurationException if there is any problem with command line arguments
 	 */
 	public void processCommandLineArguments(String[] args) throws ConfigurationException;
+
+	/**
+	 * Sets the value of scenario description file name.
+	 *  
+	 * @param fileName file name
+	 * @see #CONF_SCENARIO_DESCRIPTION_FILE_NAME
+	 */
+	public void setScenarioDescriptionFileName(String fileName);
 	
+	/**
+	 * Sets the sceanrio description as the given object. This 
+	 * property in effect overrides the value of 
+	 * scenario description file name ({@link IConfiguration#CONF_SCENARIO_DESCRIPTION_FILE_NAME}).
+	 * 
+	 * @param sceanrioDescription an instance of a scenario description
+	 * @see #CONF_SCENARIO_DESCRIPTION
+	 */
+	public void setScenarioDescription(Object sceanrioDescription);
+	
+	/**
+	 * Sets the measurement controller URI. 
+	 * 
+	 * @param uri a URI as an String
+	 * @see #CONF_MEASUREMENT_CONTROLLER_URI
+	 */
+	public void setMeasurementControllerURI(String uri);
+	
+	/**
+	 * Sets the measurement controller class name. This also 
+	 * sets the measurement controller URI to be '<code>class://[CLASS_NAME]</code>'.
+	 * 
+	 * @param className the full name of the class
+	 * @see #CONF_MEASUREMENT_CONTROLLER_CLASS_NAME
+	 */
+	public void setMeasurementControllerClassName(String className);
+	
+	/**
+	 * Sets the application name for this executable instance.
+	 * 
+	 * @param appName an application name
+	 */
+	public void setApplicationName(String appName);
+
+	/**
+	 * Returns the application root directory.
+	 */
+	public String getAppRootDirectory();
+
+	/**
+	 * Gets the value of scenario description file name.
+	 *  
+	 * @see #CONF_SCENARIO_DESCRIPTION_FILE_NAME
+	 */
+	public String getScenarioDescriptionFileName();
+	
+	/**
+	 * Gets the sceanrio description as the given object. 
+	 * 
+	 * @see #CONF_SCENARIO_DESCRIPTION
+	 */
+	public Object getScenarioDescription();
+	
+	/**
+	 * Gets the measurement controller URI as a String. 
+	 * 
+	 * @see #CONF_MEASUREMENT_CONTROLLER_URI
+	 */
+	public String getMeasurementControllerURI();
+	
+	/**
+	 * Gets the measurement controller class name. 
+	 * 
+	 * @see #CONF_MEASUREMENT_CONTROLLER_CLASS_NAME
+	 */
+	public String getMeasurementControllerClassName();
+	
+	/**
+	 * Gets the application name for this executable instance.
+	 */
+	public String getApplicationName();
+
 }

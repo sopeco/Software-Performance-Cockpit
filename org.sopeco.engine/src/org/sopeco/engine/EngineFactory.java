@@ -31,11 +31,11 @@ public class EngineFactory {
 		IPersistenceProvider persistenceProvider = PersistenceProviderFactory.getPersistenceProvider();
 		
 		IExperimentController experimentController;
-		String meClassName = config.getPropertyAsStr(IConfiguration.CONF_MEASUREMENT_CONTROLLER_CLASS_NAME);
+		String meClassName = config.getMeasurementControllerClassName();
 		
 		// if the measurement environment class is not set
 		if (meClassName == null) {
-			final String meURI = config.getPropertyAsStr(IConfiguration.CONF_MEASUREMENT_CONTROLLER_URI);
+			final String meURI = config.getMeasurementControllerURI();
 			final IMeasurementEnvironmentController meController = MEConnector.getMeasurementEnvironmentController(meURI);
 			
 			logger.debug("Connected to the measurement environment controller service.");
