@@ -12,7 +12,7 @@ public class DynamicValueAssignment extends ParameterValueAssignment {
 	
 	private static final long serialVersionUID = 1L;
 
-	protected Map<String, String> configuration;
+	protected HashMap<String, String> configuration;
 
 	protected String name = null;
 
@@ -33,6 +33,17 @@ public class DynamicValueAssignment extends ParameterValueAssignment {
 
 	public void setName(String newName) {
 		name = newName;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.sopeco.persistence.entities.definition.ParameterValueAssignment#clone()
+	 */
+	@Override
+	public DynamicValueAssignment clone() {
+		DynamicValueAssignment target = new DynamicValueAssignment();
+		target.setParameter(this.getParameter());
+		target.getConfiguration().putAll(configuration);
+		return target;
 	}
 	
 } 

@@ -26,5 +26,14 @@ public class ConstantValueAssignment extends ParameterValueAssignment {
 		value = newValue;
 	}
 
-	
+	/* (non-Javadoc)
+	 * @see org.sopeco.persistence.entities.definition.ParameterValueAssignment#clone()
+	 */
+	@Override
+	public ConstantValueAssignment clone() {
+		ConstantValueAssignment target = new ConstantValueAssignment();
+		target.setParameter(this.getParameter());
+		target.setValue(this.getValue());
+		return target;
+	}
 } 
