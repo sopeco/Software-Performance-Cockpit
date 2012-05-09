@@ -19,5 +19,11 @@
             class="org.sopeco.plugin.std.parametervariation.bool.BooleanVariationExtension">
       </strategy>
    </extension>
+   <extension
+         point="org.sopeco.engine.experimentseries.parametervariation">
+      <strategy
+            class="org.sopeco.plugin.std.parametervariation.constant.ConstantVariationExtension">
+      </strategy>
+   </extension>
 
 </plugin>

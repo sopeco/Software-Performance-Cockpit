@@ -6,6 +6,7 @@ org.sopeco.plugin.std.exploration.breakdown.extensions.AdaptiveEquidistantBreakd
 org.sopeco.plugin.std.parametervariation.linear.LinearNumericVariationExtension
 org.sopeco.plugin.std.parametervariation.constant.ConstantVariationExtension
 org.sopeco.plugin.std.parametervariation.bool.BooleanVariationExtension
+org.sopeco.plugin.std.parametervariation.csv.CSVVariationExtension
 org.sopeco.plugin.std.constantassignment.BooleanConstantValueAssignmentExtension
 org.sopeco.plugin.std.constantassignment.IntegerConstantValueAssignmentExtension
 org.sopeco.plugin.std.constantassignment.DoubleConstantValueAssignmentExtension
