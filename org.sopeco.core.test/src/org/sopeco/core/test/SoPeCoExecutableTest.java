@@ -52,22 +52,17 @@ public class SoPeCoExecutableTest {
 			runner.setArguments(arguments);
 			runner.run();
 		/**/
-		/**/
+
 		IConfiguration config = Configuration.getSingleton();
 
 		// setting the MEController class name
-		final String className = "org.sopeco.core.test.SampleMEController";
-		config.setProperty(IConfiguration.CONF_MEASUREMENT_CONTROLLER_CLASS_NAME, "org.sopeco.core.test.SampleMEController");
-		config.setProperty(IConfiguration.CONF_MEASUREMENT_CONTROLLER_URI, "class://" + className);
+		config.setMeasurementControllerClassName("org.sopeco.core.test.SampleMEController");
 		
 		// setting the scenario definition file name
-		config.setProperty(IConfiguration.CONF_SCENARIO_DESCRIPTION_FILE_NAME, "rsc/test.configuration");
+		config.setScenarioDescriptionFileName("rsc/test.configuration");
 
-		
-		
 		SoPeCoRunner runner = new SoPeCoRunner();
 		runner.run();
-		/**/
 		
 		ScenarioInstance si = runner.getScenarioInstance();
 		

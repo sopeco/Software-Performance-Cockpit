@@ -64,9 +64,9 @@ public class SoPeCoRunner implements Runnable {
 		
 		ScenarioDefinition scenario = null;
 
-		Object scenarioObj = config.getProperty(IConfiguration.CONF_SCENARIO_DESCRIPTION);
+		Object scenarioObj = config.getScenarioDescription();
 		if (scenarioObj == null) {
-			final String fileName = config.getPropertyAsStr((IConfiguration.CONF_SCENARIO_DESCRIPTION_FILE_NAME));
+			final String fileName = config.getScenarioDescriptionFileName();
 			
 			// if the scenario definition is not set as an object,
 			// then a filename should have been given

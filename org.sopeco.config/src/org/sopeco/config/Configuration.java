@@ -197,7 +197,7 @@ public class Configuration implements IConfiguration {
 	    }
 
 	    // -sd 
-	    setProperty(CONF_SCENARIO_DESCRIPTION_FILE_NAME, line.getOptionValue(scenarioDef.getOpt()));
+	    setScenarioDescriptionFileName(line.getOptionValue(scenarioDef.getOpt()));
 	    
 	    // -config
 	    if (line.hasOption(config.getOpt())) {
@@ -208,14 +208,13 @@ public class Configuration implements IConfiguration {
 	    // -uri
 	    if (line.hasOption(meURI.getOpt())) {
 	    	final String uriStr = line.getOptionValue(meURI.getOpt());
-	    	setProperty(CONF_MEASUREMENT_CONTROLLER_URI, uriStr);
+	    	setMeasurementControllerURI(uriStr);
 	    }
 	    
 	    // -meClass
 	    if (line.hasOption(meClass.getOpt())) {
 	    	final String className = line.getOptionValue(meClass.getOpt());
-	    	setProperty(CONF_MEASUREMENT_CONTROLLER_CLASS_NAME, className);
-	    	setProperty(CONF_MEASUREMENT_CONTROLLER_URI, "class://" + className);
+	    	setMeasurementControllerClassName(className);
 	    }
 
 	    // -logconfig
@@ -262,7 +261,7 @@ public class Configuration implements IConfiguration {
 	 * Sets the default property values. 
 	 */
 	private void setDefaultValues() {
-		setProperty(CONF_APP_NAME, "sopeco");
+		setApplicationName("sopeco");
 		setProperty(CONF_PLUGINS_FOLDER, "plugins");
 		setProperty(CONF_APP_ROOT_FOLDER, Tools.getRootFolder());
 		
@@ -285,7 +284,7 @@ public class Configuration implements IConfiguration {
 		HelpFormatter formatter = new HelpFormatter();
 		formatter.setWidth(120);
 		formatter.setArgName("Test");
-		formatter.printHelp(getProperty(CONF_APP_NAME).toString(), options, true );
+		formatter.printHelp(getApplicationName(), options, true );
 	}
 
 	/**
@@ -353,6 +352,67 @@ public class Configuration implements IConfiguration {
 			}
 		}
 		return extensions;
+	}
+
+	@Override
+	public void setScenarioDescriptionFileName(String fileName) {
+		setProperty(CONF_SCENARIO_DESCRIPTION_FILE_NAME, fileName);
+	}
+
+	@Override
+	public void setScenarioDescription(Object sceanrioDescription) {
+		setProperty(CONF_SCENARIO_DESCRIPTION, sceanrioDescription);
+	}
+
+	@Override
+	public void setMeasurementControllerURI(String uri) {
+		setProperty(CONF_MEASUREMENT_CONTROLLER_URI, uri);
+	}
+
+	@Override
+	public void setMeasurementControllerClassName(String className) {
+		setProperty(CONF_MEASUREMENT_CONTROLLER_CLASS_NAME, className);
+		setProperty(CONF_MEASUREMENT_CONTROLLER_URI, "class://" + className);
+	}
+
+	@Override
+	public void setApplicationName(String appName) {
+		setProperty(CONF_APP_NAME, appName);
+	}
+
+	@Override
+	public String getScenarioDescriptionFileName() {
+		return getPropertyAsStr(CONF_SCENARIO_DESCRIPTION_FILE_NAME);
+	}
+
+	@Override
+	public Object getScenarioDescription() {
+		return getProperty(CONF_SCENARIO_DESCRIPTION);
+	}
+
+	@Override
+	public String getMeasurementControllerURI() {
+		return getPropertyAsStr(CONF_MEASUREMENT_CONTROLLER_URI);
+	}
+
+	@Override
+	public String getMeasurementControllerClassName() {
+		return getPropertyAsStr(CONF_MEASUREMENT_CONTROLLER_CLASS_NAME);
+	}
+
+	@Override
+	public String getApplicationName() {
+		return getPropertyAsStr(CONF_APP_NAME);
+	}
+	
+	@Override
+	public String getAppRootDirectory() {
+		String result = getPropertyAsStr(CONF_APP_ROOT_FOLDER);
+		if (result == null) {
+			result = Tools.getRootFolder();
+			setProperty(CONF_APP_ROOT_FOLDER, result);
+		}
+		return result;
 	}
 
 }
