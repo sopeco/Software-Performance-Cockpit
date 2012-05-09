@@ -37,14 +37,37 @@ public class SoPeCoExecutableTest {
 	 * Test one run of SoPeCo
 	 */
 	public static void run() {
-		String[] arguments = new String[] {
-				"-meClass", "org.sopeco.core.test.SampleMEController",
-				"-sd", "rsc/test.configuration"
-		};
+		
+		/*
+		 * If you would like to mimic the command-line call of the runner,
+		 * you would use the following code:
+		 *
+		 
+			String[] arguments = new String[] {
+					"-meClass", "org.sopeco.core.test.SampleMEController",
+					"-sd", "rsc/test.configuration"
+			};
+			
+			SoPeCoRunner runner = new SoPeCoRunner();
+			runner.setArguments(arguments);
+			runner.run();
+		/**/
+		/**/
+		IConfiguration config = Configuration.getSingleton();
+
+		// setting the MEController class name
+		final String className = "org.sopeco.core.test.SampleMEController";
+		config.setProperty(IConfiguration.CONF_MEASUREMENT_CONTROLLER_CLASS_NAME, "org.sopeco.core.test.SampleMEController");
+		config.setProperty(IConfiguration.CONF_MEASUREMENT_CONTROLLER_URI, "class://" + className);
+		
+		// setting the scenario definition file name
+		config.setProperty(IConfiguration.CONF_SCENARIO_DESCRIPTION_FILE_NAME, "rsc/test.configuration");
+
+		
 		
 		SoPeCoRunner runner = new SoPeCoRunner();
-		runner.setArguments(arguments);
 		runner.run();
+		/**/
 		
 		ScenarioInstance si = runner.getScenarioInstance();
 		
