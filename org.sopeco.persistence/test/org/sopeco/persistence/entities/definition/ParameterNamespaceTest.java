@@ -1,6 +1,7 @@
 package org.sopeco.persistence.entities.definition;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,6 +29,10 @@ public class ParameterNamespaceTest {
 		org.setParent(emptyRoot);
 		org.getChildren().add(sopeco);
 		sopeco.setParent(org);
+		
+		ParameterDefinition paramDef = EntityFactory.createParameterDefinition("dummy", "Double", ParameterRole.INPUT);
+		sopeco.getParameters().add(paramDef);
+		paramDef.setNamespace(sopeco);
 	}
 
 	@Test
@@ -35,6 +40,14 @@ public class ParameterNamespaceTest {
 		assertEquals("", emptyRoot.getFullName());
 		assertEquals("org", org.getFullName());
 		assertEquals("org.sopeco", sopeco.getFullName());
+	}
+	
+	@Test
+	public void testGetParameterByName() {
+		assertNotNull(sopeco.getParameter("dummy"));
+		assertEquals(null, org.getParameter("dummy"));
+		assertEquals(null, sopeco.getParameter("foo"));
+		
 	}
 	
 }

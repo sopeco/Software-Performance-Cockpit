@@ -7,14 +7,14 @@ import java.util.List;
 
 /**
  * @author Dennis Westermann
- *
+ * 
  */
 public class ParameterNamespace implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private static final String DEFAULT_NAMESPACE_DELIMITER = ".";
-	
+
 	protected List<ParameterNamespace> children;
 
 	protected String name = null;
@@ -22,7 +22,6 @@ public class ParameterNamespace implements Serializable {
 	protected List<ParameterDefinition> parameters;
 
 	protected ParameterNamespace parent;
-	
 
 	public ParameterNamespace() {
 		super();
@@ -54,22 +53,23 @@ public class ParameterNamespace implements Serializable {
 		return parent;
 	}
 
-
 	public void setParent(ParameterNamespace newParent) {
 		parent = newParent;
 	}
-	
+
 	/**
-	 * Returns the full name of a parameter namespace. The full name is a concatenation of the namespace hierarchy.
-	 * The different hierarchy levels are delimited by the default delimiter '.'.
-	 * Example: "org.sopeco".
+	 * Returns the full name of a parameter namespace. The full name is a
+	 * concatenation of the namespace hierarchy. The different hierarchy levels
+	 * are delimited by the default delimiter '.'. Example: "org.sopeco".
 	 * 
-	 * @return the full name (namespace + all parent namespaces) of the namespace where the namespaces are delimited by the default delimitter '.'
+	 * @return the full name (namespace + all parent namespaces) of the
+	 *         namespace where the namespaces are delimited by the default
+	 *         delimitter '.'
 	 */
-	public String getFullName(){
+	public String getFullName() {
 		return createFullNamespaceString("", this, DEFAULT_NAMESPACE_DELIMITER);
 	}
-	
+
 	private String createFullNamespaceString(String fullNamespace, ParameterNamespace namespace, String namespaceDelimitter) {
 
 		if (namespace != null && !namespace.getName().isEmpty()) {
@@ -77,20 +77,41 @@ public class ParameterNamespace implements Serializable {
 			return createFullNamespaceString(fullNamespace, namespace.getParent(), namespaceDelimitter);
 		}
 
-		if(fullNamespace.isEmpty()) {
-		 return fullNamespace;
+		if (fullNamespace.isEmpty()) {
+			return fullNamespace;
 		} else {
 			return fullNamespace.substring(0, fullNamespace.lastIndexOf(DEFAULT_NAMESPACE_DELIMITER));
 		}
 	}
 
-	
 	/*
 	 * Utility functions
 	 */
-	
+
 	/**
-	 * Collects all observation parameters of this namespace (including all child namespaces). 
+	 * Looks in the current namespace (but not in its children) for a parameter
+	 * with the given name (not full name).
+	 * 
+	 * @param name
+	 *            the name of the parameter of this namespace (not the fullname)
+	 * @return the {@link ParameterDefinition} with the given name located in
+	 *         this namespace; <code>null</code> if this namespace does not
+	 *         contain a parameter with the given name.
+	 */
+	public ParameterDefinition getParameter(String name) {
+
+		for (ParameterDefinition pd : this.getParameters()) {
+			if (pd.getName().equals(name)) {
+				return pd;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Collects all observation parameters of this namespace (including all
+	 * child namespaces).
 	 * 
 	 * @return the set of parameter definitions
 	 */
@@ -99,30 +120,33 @@ public class ParameterNamespace implements Serializable {
 		collectObservationParameters(this, result);
 		return result;
 	}
-	
-	
+
 	/**
-	 * Collects all observation parameters of the namespace (including all child namespaces). 
+	 * Collects all observation parameters of the namespace (including all child
+	 * namespaces).
 	 * 
 	 * @param namespace
-	 * @param observationParameterList - the collection in which the observation parameters should be stored (must not be null)
+	 * @param observationParameterList
+	 *            - the collection in which the observation parameters should be
+	 *            stored (must not be null)
 	 */
 	private static void collectObservationParameters(ParameterNamespace namespace, Collection<ParameterDefinition> observationParameterList) {
-		
-		for(ParameterDefinition parameter : namespace.getParameters()){
-			if(parameter.getRole().equals(ParameterRole.OBSERVATION)){
+
+		for (ParameterDefinition parameter : namespace.getParameters()) {
+			if (parameter.getRole().equals(ParameterRole.OBSERVATION)) {
 				observationParameterList.add(parameter);
 			}
 		}
-		
-		for(ParameterNamespace child : namespace.getChildren()){
+
+		for (ParameterNamespace child : namespace.getChildren()) {
 			collectObservationParameters(child, observationParameterList);
 		}
-		
+
 	}
-	
+
 	/**
-	 * Collects all parameters (input and observation) of this namespace (including all child namespaces). 
+	 * Collects all parameters (input and observation) of this namespace
+	 * (including all child namespaces).
 	 * 
 	 * @return the set of parameter definitions
 	 */
@@ -131,23 +155,26 @@ public class ParameterNamespace implements Serializable {
 		collectAllParameters(this, result);
 		return result;
 	}
-	
+
 	/**
-	 * Collects all parameters of the given namespace (including all child namespaces). 
+	 * Collects all parameters of the given namespace (including all child
+	 * namespaces).
 	 * 
 	 * @param namespace
-	 * @param parameterList - the list in which the parameters should be stored (must not be null)
+	 * @param parameterList
+	 *            - the list in which the parameters should be stored (must not
+	 *            be null)
 	 */
 	private static void collectAllParameters(ParameterNamespace namespace, Collection<ParameterDefinition> parameterList) {
-		
-		for(ParameterDefinition parameter : namespace.getParameters()){
+
+		for (ParameterDefinition parameter : namespace.getParameters()) {
 			parameterList.add(parameter);
 		}
-		
-		for(ParameterNamespace child : namespace.getChildren()){
+
+		for (ParameterNamespace child : namespace.getChildren()) {
 			collectAllParameters(child, parameterList);
 		}
-		
+
 	}
 
 }
