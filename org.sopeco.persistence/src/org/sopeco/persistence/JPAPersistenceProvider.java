@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
+import org.sopeco.persistence.entities.analysis.AnalysisResultStorageContainer;
+import org.sopeco.persistence.entities.analysis.IStorableAnalysisResult;
 import org.sopeco.persistence.entities.keys.ExperimentSeriesPK;
 import org.sopeco.persistence.entities.keys.ScenarioInstancePK;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
@@ -95,6 +97,25 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 			em.close();
 		}
 		
+	}
+	
+	@Override
+	public void store(String resultId, IStorableAnalysisResult analysisResult) {
+		AnalysisResultStorageContainer containerEntity = EntityFactory.createAnalysisResultStorageContainer(resultId, analysisResult);
+	
+		EntityManager em = emf.createEntityManager();
+		try {
+			
+			em.getTransaction().begin();
+			em.merge(containerEntity);
+			em.getTransaction().commit();
+		
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
 	}
 	
 	/* default */ int getSize(final Class<?> entityType) {
@@ -308,6 +329,34 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 	}
 	
 	
+	public IStorableAnalysisResult loadAnalysisResult(String resultId) throws DataNotFoundException {
+		AnalysisResultStorageContainer container;
+		IStorableAnalysisResult resultObject;
+		String errorMsg = "Could not find analysis result with id "	+ resultId + " .";
+		
+		EntityManager em = emf.createEntityManager();
+		try {
+			
+			container = em.find(AnalysisResultStorageContainer.class, resultId);
+			resultObject = container.getResultObject();
+		} catch (Exception e) {
+			
+			logger.error(errorMsg);
+			throw new DataNotFoundException(errorMsg, e);
+		}  finally {
+
+			em.close();
+		}
+		
+		// check if query was successful
+		if(resultObject != null){
+			return resultObject;
+		} else {
+			logger.debug(errorMsg);
+			throw new DataNotFoundException(errorMsg);
+		}
+	}
+	
 	@Override
 	public void remove(ExperimentSeriesRun experimentSeriesRun) throws DataNotFoundException{
 		
@@ -400,6 +449,32 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 	}
 
 
+	public void remove(String analysisResultId) throws DataNotFoundException {
+		final String errorMsg = "Could not remove analysis result with id " + analysisResultId;
+		
+		EntityManager em = emf.createEntityManager();
+		try {
+			
+			em.getTransaction().begin();
+			
+			// load entity to make it "managed"
+			AnalysisResultStorageContainer container = em.find(AnalysisResultStorageContainer.class, analysisResultId);
+			
+			em.remove(container);
+
+			em.getTransaction().commit();
+		} catch(Exception e){
+			
+			throw new DataNotFoundException(errorMsg, e);
+			
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
+		
+	}
 	
 //	private void removeAllSeries(ScenarioInstance scenarioInstance, EntityManager em){
 //		for(ExperimentSeries series : scenarioInstance.getExperimentSeries()){

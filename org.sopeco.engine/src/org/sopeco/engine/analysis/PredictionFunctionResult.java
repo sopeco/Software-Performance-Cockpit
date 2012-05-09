@@ -26,6 +26,8 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
 public class PredictionFunctionResult implements IPredictionFunctionResult {
 
 	private static Logger logger = LoggerFactory.getLogger(PredictionFunctionResult.class);
+	
+	String resultId;
 	String predictionFunction;
 	ScriptEngineManager scriptEngineManager;
 	ScriptEngine javaScriptEngine;
@@ -104,5 +106,15 @@ public class PredictionFunctionResult implements IPredictionFunctionResult {
 	@Override
 	public AnalysisConfiguration getAnalysisStrategyConfiguration() {
 		return analysisConfiguration;
+	}
+
+	@Override
+	public String getId() {
+		return this.resultId;
+	}
+
+	@Override
+	public String setId(String id) {
+		return this.resultId = id;
 	}
 }

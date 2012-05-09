@@ -1,5 +1,7 @@
 package org.sopeco.engine.analysis;
 
-public interface IAnalysisResult {
+import org.sopeco.persistence.entities.analysis.IStorableAnalysisResult;
+
+public interface IAnalysisResult extends IStorableAnalysisResult {
 
 }

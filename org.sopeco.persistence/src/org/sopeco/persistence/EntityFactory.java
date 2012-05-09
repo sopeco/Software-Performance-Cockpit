@@ -5,6 +5,8 @@ import java.util.Map;
 import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
+import org.sopeco.persistence.entities.analysis.AnalysisResultStorageContainer;
+import org.sopeco.persistence.entities.analysis.IStorableAnalysisResult;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.DynamicValueAssignment;
@@ -73,6 +75,12 @@ public class EntityFactory {
 		return expSeriesRun;
 	}
 	
+	public static AnalysisResultStorageContainer createAnalysisResultStorageContainer(String resultId, IStorableAnalysisResult resultObject) {
+		AnalysisResultStorageContainer container = new AnalysisResultStorageContainer();
+		container.setResultId(resultId);
+		container.setResultObject(resultObject);
+		return container;
+	}
 	
 	public static ScenarioDefinition createScenarioDefinition(String name) {
 		ScenarioDefinition sd = new ScenarioDefinition();
