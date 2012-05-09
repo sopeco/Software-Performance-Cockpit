@@ -26,7 +26,8 @@ public class SoPeCoRunner implements Runnable {
 
 	protected static final Logger logger = LoggerFactory.getLogger(SoPeCoRunner.class);
 	
-	protected String[] args = new String[] {};
+	protected String[] args = null;
+	
 	protected ScenarioInstance lastExecutedScenarioInstance = null;
 	
 	/**
@@ -45,30 +46,54 @@ public class SoPeCoRunner implements Runnable {
 	}
 
 	/**
-	 * Assuming that the required parameters are set in 
+	 * Assuming that the required command-line arguments (if any) are set already, using {@link SoPeCoRunner#setArguments(String[]). 
 	 */
 	@Override
 	public void run() {
 		lastExecutedScenarioInstance = null;
 		IConfiguration config = Configuration.getSingleton();
-		
-		try {
-			config.processCommandLineArguments(args);
-		} catch (ConfigurationException e) {
-			return;
+	
+		// if the user has set any command-line arguments
+		if (args != null) {
+			try {
+				config.processCommandLineArguments(args);
+			} catch (ConfigurationException e) {
+				return;
+			}
 		}
 		
 		ScenarioDefinition scenario = null;
-		final String fileName = config.getProperty(IConfiguration.CONF_SCENARIO_DESCRIPTION_FILE_NAME).toString();
-		try {
-			scenario = (ScenarioDefinition) EMFUtil.loadFromFilePath(fileName);
+
+		Object scenarioObj = config.getProperty(IConfiguration.CONF_SCENARIO_DESCRIPTION);
+		if (scenarioObj == null) {
+			final String fileName = config.getPropertyAsStr((IConfiguration.CONF_SCENARIO_DESCRIPTION_FILE_NAME));
 			
-			logger.debug("Scenario definition file loaded.");
+			// if the scenario definition is not set as an object,
+			// then a filename should have been given
+			if (fileName == null) {
+				throw new RuntimeException(new ConfigurationException("Scenario definition is not provided."));
+			}
 			
-		} catch (IOException e) {
-			logger.error("Cannot load scenario definition file ({}). Reason: ({}) {}", fileName, e.getMessage());
-			logger.debug("IO Exception occured.", e);
-			return;
+			try {
+				scenario = (ScenarioDefinition) EMFUtil.loadFromFilePath(fileName);
+				
+				logger.debug("Scenario definition file loaded.");
+				
+			} catch (IOException e) {
+				logger.error("Cannot load scenario definition file ({}). Reason: ({}) {}", fileName, e.getMessage());
+				logger.debug("IO Exception occured.", e);
+				return;
+			}
+		} else {
+			if (scenarioObj instanceof ScenarioDefinition)
+				scenario = (ScenarioDefinition) scenarioObj;
+			else {
+				final String msg = "Scenario definition object is not of class " + ScenarioDefinition.class.getName() + ".";
+				// TODO do it properly
+				throw new RuntimeException(new ConfigurationException(msg));
+			}
+			
+			logger.debug("Scenario definition is passed as an object.");
 		}
 		
 		IEngine engine = EngineFactory.INSTANCE.createEngine();

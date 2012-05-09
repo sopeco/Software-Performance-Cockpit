@@ -140,7 +140,6 @@ public class Configuration implements IConfiguration {
 		// option: scenario definition
 		Option scenarioDef = OptionBuilder.withArgName("file")
 										.hasArg()
-										.isRequired()
 										.withDescription("scenario definition file")
 										.create("sd");
 
