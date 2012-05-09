@@ -21,4 +21,5 @@ Export-Package: org.sopeco.engine,
  org.sopeco.engine.helper,
  org.sopeco.engine.measurementenvironment,
  org.sopeco.engine.registry,
- org.sopeco.engine.util
+ org.sopeco.engine.util,
+ org.sopeco.engine.validation
