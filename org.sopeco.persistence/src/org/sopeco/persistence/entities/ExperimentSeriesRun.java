@@ -34,8 +34,12 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 	private Long timestamp;
 
 	@Lob
-	@Column(name = "restultDataSet")
-	private DataSetAggregated resultDataSet;
+	@Column(name = "successfulResultDataSet")
+	private DataSetAggregated successfulResultDataSet;
+
+	@Lob
+	@Column(name = "failedRestultDataSet")
+	private DataSetAggregated failedResultDataSet;
 
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
 	@JoinColumns({ @JoinColumn(name = "scenarioInstanceName", referencedColumnName = "scenarioInstanceName"),
@@ -59,12 +63,20 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 		this.experimentSeries = experimentSeries;
 	}
 
-	public DataSetAggregated getResultDataSet() {
-		return resultDataSet;
+	public DataSetAggregated getSuccessfulResultDataSet() {
+		return successfulResultDataSet;
 	}
 
-	public void setResultDataSet(DataSetAggregated resultDataSet) {
-		this.resultDataSet = resultDataSet;
+	public DataSetAggregated getFailedResultDataSet() {
+		return failedResultDataSet;
+	}
+
+	public void setSuccessfulResultDataSet(DataSetAggregated resultDataSet) {
+		this.successfulResultDataSet = resultDataSet;
+	}
+
+	public void setFailedResultDataSet(DataSetAggregated resultDataSet) {
+		this.failedResultDataSet = resultDataSet;
 	}
 
 	public Long getTimestamp() {
@@ -80,21 +92,38 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 	 */
 
 	/**
-	 * Adds the given experiment run results to the result data set of this
+	 * Adds the given successful experiment run results to the result data set of this
 	 * {@link ExperimentSeriesRun}.
 	 * 
 	 * @param experimentRunResults
 	 *            - a dataSet containing the parameter values of one or many
 	 *            experiment runs
 	 */
-	public void append(DataSetAggregated experimentRunResults) {
+	public void appendSuccessfulResults(DataSetAggregated experimentRunResults) {
 
 		DataSetAppender appender = new DataSetAppender();
-		if (resultDataSet != null)
-			appender.append(resultDataSet);
+		if (successfulResultDataSet != null)
+			appender.append(successfulResultDataSet);
 		appender.append(experimentRunResults);
-		this.setResultDataSet(appender.createDataSet());
+		this.setSuccessfulResultDataSet(appender.createDataSet());
 
+	}
+
+	/**
+	 * Adds the given failed experiment run results to the result data set of this
+	 * {@link ExperimentSeriesRun}.
+	 * 
+	 * @param experimentRunResults
+	 *            - a dataSet containing the parameter values of one or many
+	 *            experiment runs that failed
+	 */
+	public void appendFailedResults(DataSetAggregated experimentRunResults) {
+
+		DataSetAppender appender = new DataSetAppender();
+		if (failedResultDataSet != null)
+			appender.append(failedResultDataSet);
+		appender.append(experimentRunResults);
+		this.setFailedResultDataSet(appender.createDataSet());
 	}
 
 	/*

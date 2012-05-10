@@ -78,7 +78,8 @@ public class ExperimentControllerTest {
 		builder.createParameterValue(EXPERIMENT_VALUE);
 		builder.createNumberOfRunsCondition(10);
 		
-		DataSetAggregated resultDataSet = expController.runExperiment(builder.getPVList(), builder.getTerminationCondition());
+		expController.runExperiment(builder.getPVList(), builder.getTerminationCondition());
+		DataSetAggregated resultDataSet = expController.getLastSuccessfulExperimentResults();
 		DummyDataSet result = new DummyDataSet(resultDataSet);
 		
 		assertEquals(1, result.getNumberOfRows());

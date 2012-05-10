@@ -40,10 +40,8 @@ public interface IExperimentController {
 	/**
 	 * Runs a single experiment with the given arguments.
 	 * It also appends the data to the already-persisted data using the persistence provider.
-	 * 
-	 * @return the single data row that is generated as the result of the experiment
 	 */
-	public DataSetAggregated runExperiment(ParameterCollection<ParameterValue<?>> inputPVs, ExperimentTerminationCondition terminationCondition);
+	public void runExperiment(ParameterCollection<ParameterValue<?>> inputPVs, ExperimentTerminationCondition terminationCondition);
 
 	/**
 	 * Finalizes the experiment; a proxy method to the measurement environment controller.
@@ -52,5 +50,17 @@ public interface IExperimentController {
 	 */
 	public void finalizeExperimentSeries();
 
-	
+	/**
+	 * Returns the single data row that is generated as the result of the last successful experiment.
+	 * 
+	 * @return successful result set, if the last experiment was successful, or <code>null</code> otherwise.
+	 */
+	public DataSetAggregated getLastSuccessfulExperimentResults();
+
+	/**
+	 * Returns the single data row that is generated as the result of the last failed experiment.
+	 * 
+	 * @return failed result set, if the last experiment failed, or <code>null</code> otherwise.
+	 */
+	public DataSetAggregated getLastFailedExperimentResults();
 }

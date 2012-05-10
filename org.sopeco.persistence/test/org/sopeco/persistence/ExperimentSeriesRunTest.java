@@ -31,15 +31,15 @@ public class ExperimentSeriesRunTest {
 	
 		try {
 			DataSetAggregated dataSet = DummyFactory.createDummyResultDataSet();
-			dummyRun.append(dataSet);
+			dummyRun.appendSuccessfulResults(dataSet);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
 		
-		assertNotNull(dummyRun.getResultDataSet());
-		assertEquals(2, dummyRun.getResultDataSet().getColumns().size());
-		assertEquals(2, dummyRun.getResultDataSet().size());
+		assertNotNull(dummyRun.getSuccessfulResultDataSet());
+		assertEquals(2, dummyRun.getSuccessfulResultDataSet().getColumns().size());
+		assertEquals(2, dummyRun.getSuccessfulResultDataSet().size());
 		
 	}
 	
@@ -48,16 +48,16 @@ public class ExperimentSeriesRunTest {
 	
 		try {
 			DataSetAggregated dataSet = DummyFactory.createDummyResultDataSet();
-			dummyRun.setResultDataSet(dataSet);
-			dummyRun.append(dataSet);
+			dummyRun.setSuccessfulResultDataSet(dataSet);
+			dummyRun.appendSuccessfulResults(dataSet);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
 		
-		assertNotNull(dummyRun.getResultDataSet());
-		assertEquals(2, dummyRun.getResultDataSet().getColumns().size());
-		assertEquals(4, dummyRun.getResultDataSet().size());
+		assertNotNull(dummyRun.getSuccessfulResultDataSet());
+		assertEquals(2, dummyRun.getSuccessfulResultDataSet().getColumns().size());
+		assertEquals(4, dummyRun.getSuccessfulResultDataSet().size());
 		
 	}
 	

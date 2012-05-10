@@ -147,6 +147,13 @@ public interface IConfiguration {
 	public void setMainClass(Class<?> mainClass);
 
 	/**
+	 * Sets the logger configuration file name and triggers logger configuration.
+	 *  
+	 * @param fileName a file name
+	 */
+	public void setLoggerConfigFileName(String fileName);
+	
+	/**
 	 * Returns the application root directory.
 	 */
 	public String getAppRootDirectory();

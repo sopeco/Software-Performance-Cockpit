@@ -233,30 +233,7 @@ public class Configuration implements IConfiguration {
 
 	    // -logconfig
 	    if (line.hasOption(logconfig.getOpt())) {
-	    	String logbackConfigFilePath = line.getOptionValue(logconfig.getOpt());
-	    	
-	    	// The following code loads the logback config file using JoranConfigurator.
-	    	// Alternatively, you can specify the location of the config file using
-	    	// the system property 'logback.configurationFile'
-	    	// e.g., 
-	    	// $ java -Dlogback.configurationFile=/path/to/config.xml ...
-	    	
-	        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-	        
-	        try {
-	          JoranConfigurator configurator = new JoranConfigurator();
-	          configurator.setContext(lc);
-	          // the context was probably already configured by default configuration 
-	          // rules
-	          lc.reset(); 
-	          configurator.doConfigure(logbackConfigFilePath);
-	        } catch (JoranException je) {
-	           logger.warn("Failed loading the logback configuration file. Using default configuration. Error message: {}", je.getMessage());
-	        }
-
-	        setProperty(CONF_LOGGER_CONFIG_FILE_NAME, logbackConfigFilePath);
-	        
-	    	logger.debug("Configured logback using '{}'.", logbackConfigFilePath);
+	    	setLoggerConfigFileName(line.getOptionValue(logconfig.getOpt()));
 	    }
 	    
 	    // -lv
@@ -460,6 +437,31 @@ public class Configuration implements IConfiguration {
 	@Override
 	public Class<?> getMainClass() {
 		return (Class<?>) getProperty(CONF_MAIN_CLASS);
+	}
+
+	@Override
+	public void setLoggerConfigFileName(String fileName) {
+    	// The following code loads the logback config file using JoranConfigurator.
+    	// Alternatively, you can specify the location of the config file using
+    	// the system property 'logback.configurationFile'
+    	// e.g., 
+    	// $ java -Dlogback.configurationFile=/path/to/config.xml ...
+        LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+        
+        try {
+          JoranConfigurator configurator = new JoranConfigurator();
+          configurator.setContext(lc);
+          // the context was probably already configured by default configuration 
+          // rules
+          lc.reset(); 
+          configurator.doConfigure(fileName);
+        } catch (JoranException je) {
+           logger.warn("Failed loading the logback configuration file. Using default configuration. Error message: {}", je.getMessage());
+        }
+
+        setProperty(CONF_LOGGER_CONFIG_FILE_NAME, fileName);
+        
+    	logger.debug("Configured logback using '{}'.", fileName);
 	}
 
 }

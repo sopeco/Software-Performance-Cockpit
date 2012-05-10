@@ -89,16 +89,33 @@ public class ExperimentSeries implements Serializable {
 	/*
 	 * Utility Functions
 	 */
+
 	/**
 	 * 
-	 * @return all data measured during the experiment series runs of this
+	 * @return all data measured during the successful experiment series runs of this
 	 *         experiment series
 	 */
-	public DataSetAggregated getAllExperimentSeriesRunResultsInOneDataSet() {
+	public DataSetAggregated getAllExperimentSeriesRunSuccessfulResultsInOneDataSet() {
 		DataSetAppender appender = new DataSetAppender();
 		for (ExperimentSeriesRun seriesRun : getExperimentSeriesRuns()) {
-			if (seriesRun.getResultDataSet() != null) {
-				appender.append(seriesRun.getResultDataSet());
+			if (seriesRun.getSuccessfulResultDataSet() != null) {
+				appender.append(seriesRun.getSuccessfulResultDataSet());
+			}
+		}
+
+		return appender.createDataSet();
+	}
+
+	/**
+	 * 
+	 * @return all data measured during the failed experiment series runs of this
+	 *         experiment series
+	 */
+	public DataSetAggregated getAllExperimentSeriesRunFailedResultsInOneDataSet() {
+		DataSetAppender appender = new DataSetAppender();
+		for (ExperimentSeriesRun seriesRun : getExperimentSeriesRuns()) {
+			if (seriesRun.getFailedResultDataSet() != null) {
+				appender.append(seriesRun.getFailedResultDataSet());
 			}
 		}
 

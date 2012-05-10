@@ -63,7 +63,7 @@ public class DummyFactory {
 		for (int i = 0; i < numberOfRunsToCreate; i++) {
 			
 			ExperimentSeriesRun run = EntityFactory.createExperimentSeriesRun();
-			run.setResultDataSet(createDummyResultDataSet());
+			run.setSuccessfulResultDataSet(createDummyResultDataSet());
 			runs.add(run);
 		}
 		

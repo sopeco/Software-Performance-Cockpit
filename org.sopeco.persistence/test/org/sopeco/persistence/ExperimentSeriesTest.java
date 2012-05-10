@@ -32,9 +32,9 @@ public class ExperimentSeriesTest {
 		ExperimentSeries dummySeries = dummyScenarioInstance.getExperimentSeriesList().get(0);
 		ExperimentSeriesRun dummySeriesRun = dummySeries.getExperimentSeriesRuns().get(0);
 		
-		assertEquals(2, dummySeriesRun.getResultDataSet().size());
-		assertNotNull(dummySeries.getAllExperimentSeriesRunResultsInOneDataSet());
-		assertEquals(20, dummySeries.getAllExperimentSeriesRunResultsInOneDataSet().size());
+		assertEquals(2, dummySeriesRun.getSuccessfulResultDataSet().size());
+		assertNotNull(dummySeries.getAllExperimentSeriesRunSuccessfulResultsInOneDataSet());
+		assertEquals(20, dummySeries.getAllExperimentSeriesRunSuccessfulResultsInOneDataSet().size());
 		
 	}
 	
