@@ -33,23 +33,26 @@ public class LinearRegressionStrategy extends AbstractPredictionFunctionStrategy
 	
 		logger.debug("Starting linear regression analysis.");
 		
-		validate(dataset, config);
+		deriveDependentAndIndependentParameters(dataset, config);
 	
-		loadDataSetInR(dataset.convertToSimpleDataSet());
+		DataSetAggregated analysisDataSet = extractAnalysisDataSet(dataset);
+		
+		loadDataSetInR(analysisDataSet.convertToSimpleDataSet());
 		
 		// build and execute R command
 		StringBuilder cmdBuilder = new StringBuilder();
 		cmdBuilder.append(getId());
 		cmdBuilder.append(" <- lm(");
-		cmdBuilder.append(observationParameterDefintion.getFullName("_"));
+		cmdBuilder.append(dependentParameterDefintion.getFullName("_"));
 		cmdBuilder.append(" ~ ");
-		cmdBuilder.append(CSVStringGenerator.generateParameterString(" + ", inputParameterDefinitions));
+		cmdBuilder.append(CSVStringGenerator.generateParameterString(" + ", independentParameterDefinitions));
 		cmdBuilder.append(")");
 		logger.debug("Running R Command: {}", cmdBuilder.toString());
 		RAdapter.getWrapper().executeRCommandString(cmdBuilder.toString());
 		
 	}
-	
+
+
 	@Override
 	public IPredictionFunctionResult getPredictionFunctionResult() {
 		// create and return result object
@@ -64,7 +67,7 @@ public class LinearRegressionStrategy extends AbstractPredictionFunctionStrategy
 		functionBuilder.append(RAdapter.getWrapper().executeRCommandString(
 				"cat(" + getId() + "$coefficients[1])"));
 		int index = 1;
-		for (ParameterDefinition inputParameter : inputParameterDefinitions) {
+		for (ParameterDefinition inputParameter : independentParameterDefinitions) {
 			index++;
 			functionBuilder.append(" + ");
 			functionBuilder.append(RAdapter.getWrapper().executeRCommandString(
@@ -77,7 +80,7 @@ public class LinearRegressionStrategy extends AbstractPredictionFunctionStrategy
 	
 	
 	private IPredictionFunctionResult buildResultObject(){
-		return new PredictionFunctionResult(getFunctionAsString(), observationParameterDefintion, config);
+		return new PredictionFunctionResult(getFunctionAsString(), dependentParameterDefintion, config);
 	}
 
 

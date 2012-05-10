@@ -38,14 +38,16 @@ public class MarsStrategy extends AbstractPredictionFunctionStrategy {
 
 		logger.debug("Starting MARS analysis.");
 
-		validate(dataset, config);
+		deriveDependentAndIndependentParameters(dataset, config);
 
-		loadDataSetInR(createValidSimpleDataSet(dataset));
+		DataSetAggregated analysisDataSet = extractAnalysisDataSet(dataset);
+		
+		loadDataSetInR(createValidSimpleDataSet(analysisDataSet));
 		
 		StringBuilder cmdBuilder = new StringBuilder();
 		cmdBuilder.append(getId());
 		cmdBuilder.append(" <- earth(");
-		cmdBuilder.append(observationParameterDefintion.getFullName("_"));
+		cmdBuilder.append(dependentParameterDefintion.getFullName("_"));
 		cmdBuilder.append(" ~ . , data =");
 		cmdBuilder.append(data.getId());
 		cmdBuilder.append(", penalty=-1,  fast.k=0, degree=2)");
@@ -56,7 +58,7 @@ public class MarsStrategy extends AbstractPredictionFunctionStrategy {
 
 	@Override
 	public IPredictionFunctionResult getPredictionFunctionResult() {
-		return new PredictionFunctionResult(getFunctionAsString(), observationParameterDefintion, config);
+		return new PredictionFunctionResult(getFunctionAsString(), dependentParameterDefintion, config);
 	}
 
 	/**
