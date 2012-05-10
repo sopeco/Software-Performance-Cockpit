@@ -1,9 +1,12 @@
 package org.sopeco.config;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,8 +46,6 @@ import ch.qos.logback.core.joran.spi.JoranException;
  */
 public class Configuration implements IConfiguration {
 
-	public static final String DEFAULT_CONFIG_FILE_NAME = "/sopeco-defaults.conf";
-	
 	private static final Logger logger = LoggerFactory.getLogger(Configuration.class);
 
 	/** Holds the singleton reference to this class. */
@@ -265,13 +266,14 @@ public class Configuration implements IConfiguration {
 		setProperty(CONF_PLUGINS_FOLDER, "plugins");
 		setProperty(CONF_APP_ROOT_FOLDER, Tools.getRootFolder());
 		
-		InputStream in = this.getClass().getResourceAsStream(DEFAULT_CONFIG_FILE_NAME);
+		String configFileName = getAppConfDirectory() + File.separator + DEFAULT_CONFIG_FILE_NAME;
+		InputStream in = this.getClass().getResourceAsStream(configFileName);
 		
 		if (in != null) {
 			loadConfigFromStream(in);
 			logger.debug("Loaded default configuration file.");
 		} else {
-			logger.warn("Could not find default configuration file ('{}').", DEFAULT_CONFIG_FILE_NAME);
+			logger.warn("Could not find default configuration file ('{}').", configFileName);
 		}
 	}
 
@@ -365,8 +367,13 @@ public class Configuration implements IConfiguration {
 	}
 
 	@Override
-	public void setMeasurementControllerURI(String uri) {
-		setProperty(CONF_MEASUREMENT_CONTROLLER_URI, uri);
+	public void setMeasurementControllerURI(String uri) throws ConfigurationException {
+		try {
+			setProperty(CONF_MEASUREMENT_CONTROLLER_URI, new URI(uri));
+		} catch (URISyntaxException e) {
+			logger.error("Could not parse the URI {}. Error: {}", uri, e.getMessage());
+			throw new ConfigurationException(e);
+		}
 	}
 
 	@Override
@@ -391,8 +398,8 @@ public class Configuration implements IConfiguration {
 	}
 
 	@Override
-	public String getMeasurementControllerURI() {
-		return getPropertyAsStr(CONF_MEASUREMENT_CONTROLLER_URI);
+	public URI getMeasurementControllerURI() {
+		return (URI) getProperty(CONF_MEASUREMENT_CONTROLLER_URI);
 	}
 
 	@Override
@@ -413,6 +420,11 @@ public class Configuration implements IConfiguration {
 			setProperty(CONF_APP_ROOT_FOLDER, result);
 		}
 		return result;
+	}
+
+	@Override
+	public String getAppConfDirectory() {
+		return getAppRootDirectory() + File.separator + CONFIGURATION_FOLDER;
 	}
 
 }

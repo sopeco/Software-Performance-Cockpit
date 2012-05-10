@@ -63,7 +63,7 @@ public class EngineImp implements IEngine {
 	@Override
 	public ScenarioInstance run(ScenarioDefinition scenario) {
 		
-		ScenarioInstance scenarioInstance = EntityFactory.createScenarioInstance(scenario, getConfiguration().getMeasurementControllerURI());
+		ScenarioInstance scenarioInstance = EntityFactory.createScenarioInstance(scenario, getConfiguration().getMeasurementControllerURI().toString());
 		
 		persistenceProvider.store(scenarioInstance);
 		

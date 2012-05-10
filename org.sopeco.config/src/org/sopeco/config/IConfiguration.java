@@ -3,6 +3,8 @@
  */
 package org.sopeco.config;
 
+import java.net.URI;
+
 import org.sopeco.config.exception.ConfigurationException;
 
 /**
@@ -28,6 +30,12 @@ public interface IConfiguration {
 
 	public static final String CLA_EXTENSION_ID = "org.sopeco.config.commandlinearguments";
 
+	
+	/** Folder for configuration files relative to the application root folder */
+	public static final String CONFIGURATION_FOLDER = "conf";
+
+	public static final String DEFAULT_CONFIG_FILE_NAME = "sopeco-defaults.conf";
+	
 	/**
 	 * Returns the configured value of the given property in SoPeCo. 
 	 * 
@@ -100,9 +108,10 @@ public interface IConfiguration {
 	 * Sets the measurement controller URI. 
 	 * 
 	 * @param uri a URI as an String
+	 * @throws ConfigurationException 
 	 * @see #CONF_MEASUREMENT_CONTROLLER_URI
 	 */
-	public void setMeasurementControllerURI(String uri);
+	public void setMeasurementControllerURI(String uriStr) throws ConfigurationException;
 	
 	/**
 	 * Sets the measurement controller class name. This also 
@@ -124,6 +133,11 @@ public interface IConfiguration {
 	 * Returns the application root directory.
 	 */
 	public String getAppRootDirectory();
+	
+	/**
+	 * Returns the application's configuration directory.
+	 */
+	public String getAppConfDirectory();
 
 	/**
 	 * Gets the value of scenario description file name.
@@ -144,7 +158,7 @@ public interface IConfiguration {
 	 * 
 	 * @see #CONF_MEASUREMENT_CONTROLLER_URI
 	 */
-	public String getMeasurementControllerURI();
+	public URI getMeasurementControllerURI();
 	
 	/**
 	 * Gets the measurement controller class name. 

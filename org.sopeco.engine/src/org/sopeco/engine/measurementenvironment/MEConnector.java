@@ -1,6 +1,7 @@
 package org.sopeco.engine.measurementenvironment;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RMISecurityManager;
@@ -9,6 +10,7 @@ import java.rmi.registry.LocateRegistry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.config.Configuration;
 
 public class MEConnector {
 	private static Logger logger = LoggerFactory.getLogger(MEConnector.class);
@@ -17,26 +19,30 @@ public class MEConnector {
 	 * Connects to a remote measurement environment controller (via RMI) identified by the given URI and
 	 * returns a local instance. 
 	 * 
-	 * @param uri the URI of the RMI service
+	 * @param meURI the URI of the RMI service
 	 * @return a local instance of the controller
 	 */
-	public static IMeasurementEnvironmentController getMeasurementEnvironmentController(String uri){
+	public static IMeasurementEnvironmentController getMeasurementEnvironmentController(URI meURI){
 
-		// set path to java policy file TODO: Read path from Config-File
-		System.setProperty("java.security.policy", "rsc/wideopen.policy");
-	
+		String securityPolicyFile = Configuration.getSingleton().getPropertyAsStr("java.security.policy");
+		if (securityPolicyFile != null){
+			System.setProperty("java.security.policy", securityPolicyFile);
+		}
+		
+		
+		
 		if (System.getSecurityManager() == null)
        		System.setSecurityManager ( new RMISecurityManager() );
     
 		try {
-			  	LocateRegistry.getRegistry("localhost", 1099);
+			  	LocateRegistry.getRegistry(meURI.getHost(), meURI.getPort());
 				
-				logger.debug("Looking up {}", uri);
+				logger.debug("Looking up {}", meURI);
 				
 				IMeasurementEnvironmentController meController = 
-				(IMeasurementEnvironmentController) Naming.lookup(uri);
+				(IMeasurementEnvironmentController) Naming.lookup(meURI.toString());
 						
-				logger.info("Received SatelliteController instance from {}", uri);
+				logger.info("Received SatelliteController instance from {}", meURI);
 				
 				return meController;
 		    
@@ -45,7 +51,7 @@ public class MEConnector {
 			throw new IllegalStateException("Cannot access remote controller.", e);
 		} catch (MalformedURLException e) {
 			
-			throw new IllegalStateException("Malformed URL.", e);
+			throw new IllegalStateException("Malformed URI.", e);
 		} catch (NotBoundException e) {
 		
 			throw new IllegalStateException("NotBoundException: ", e);
