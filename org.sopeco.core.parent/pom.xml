@@ -30,7 +30,7 @@
 		<module>../org.sopeco.core.updatesite</module>
 		<module>../org.sopeco.plugin.std.exploration</module>
 		<module>../org.sopeco.plugin.std.parametervariation</module>
-		<module>../org.sopeco.plugin.std.analysis</module> 
+		<module>../org.sopeco.plugin.std.analysis</module>
 		<module>../org.sopeco.plugin.std.constantassignment</module>
 	</modules>
 
@@ -66,6 +66,18 @@
 					<failOnViolation>false</failOnViolation>
 					<violationSeverity>error</violationSeverity>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>plugin-source</id>
+						<goals>
+							<goal>plugin-source</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
