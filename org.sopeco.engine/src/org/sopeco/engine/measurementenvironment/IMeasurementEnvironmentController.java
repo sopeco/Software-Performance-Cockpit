@@ -1,5 +1,7 @@
 package org.sopeco.engine.measurementenvironment;
 
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 import java.util.Collection;
 
 import org.sopeco.engine.util.ParameterCollection;
@@ -15,7 +17,7 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
  * @author Dennis Westermann, Roozbeh Farahbod
  *
  */
-public interface IMeasurementEnvironmentController {
+public interface IMeasurementEnvironmentController extends Remote {
 
 	/**
 	 * Initializes the measurement environment controller with a list 
@@ -23,7 +25,7 @@ public interface IMeasurementEnvironmentController {
 	 * 
 	 * @param initializationPVs the collection of constant values defined in the scenario as initialization assignments
 	 */
-	public void initialize(ParameterCollection<ParameterValue<?>> initializationPVs);
+	public void initialize(ParameterCollection<ParameterValue<?>> initializationPVs) throws RemoteException;
 
 	/**
 	 * Prepares the measurement environment for a series of experiments with a collection 
@@ -31,7 +33,7 @@ public interface IMeasurementEnvironmentController {
 	 *   
 	 * @param preparationPVs a collection of constant value assignments
 	 */
-	public void prepareExperimentSeries(ParameterCollection<ParameterValue<?>> preparationPVs);
+	public void prepareExperimentSeries(ParameterCollection<ParameterValue<?>> preparationPVs) throws RemoteException;
 	
 	/**
 	 * Runs a single experiment on the measurement environment. As a result, for every 
@@ -42,18 +44,18 @@ public interface IMeasurementEnvironmentController {
 	 * 
 	 * @return a collection of parameter value lists that includes one parameter value list for every observation parameter
 	 */
-	public Collection<ParameterValueList<?>> runExperiment(ParameterCollection<ParameterValue<?>> inputPVs, ExperimentTerminationCondition  terminationCondition);
+	public Collection<ParameterValueList<?>> runExperiment(ParameterCollection<ParameterValue<?>> inputPVs, ExperimentTerminationCondition  terminationCondition) throws RemoteException;
 	
 	/**
 	 * Finalizes the measurement environment.
 	 */
-	public void finalizeExperimentSeries();
+	public void finalizeExperimentSeries() throws RemoteException;
 
 	/**
 	 * Sets the collection of observation parameters. 
 	 * 
 	 * @param observationParameters the collection of observation parameters
 	 */
-	void setObservationParameters(ParameterCollection<ParameterDefinition> observationParameters);
+	void setObservationParameters(ParameterCollection<ParameterDefinition> observationParameters) throws RemoteException;
 	
 }
