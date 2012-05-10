@@ -15,6 +15,7 @@ import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.common.util.ResourceLocator;
 
+import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
@@ -24,6 +25,7 @@ import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 
 import org.sopeco.model.configuration.analysis.AnalysisConfiguration;
 
+import org.sopeco.model.configuration.analysis.AnalysisPackage;
 import org.sopeco.model.configuration.measurements.provider.ExtensibleElementItemProvider;
 
 import org.sopeco.model.configuration.provider.SoPeCoConfigurationEditPlugin;
@@ -63,8 +65,54 @@ public class AnalysisConfigurationItemProvider
 		if (itemPropertyDescriptors == null) {
 			super.getPropertyDescriptors(object);
 
+			addDependentParametersPropertyDescriptor(object);
+			addIndependentParametersPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
+	}
+
+	/**
+	 * This adds a property descriptor for the Dependent Parameters feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addDependentParametersPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_AnalysisConfiguration_dependentParameters_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_AnalysisConfiguration_dependentParameters_feature", "_UI_AnalysisConfiguration_type"),
+				 AnalysisPackage.Literals.ANALYSIS_CONFIGURATION__DEPENDENT_PARAMETERS,
+				 true,
+				 false,
+				 true,
+				 null,
+				 null,
+				 null));
+	}
+
+	/**
+	 * This adds a property descriptor for the Independent Parameters feature.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected void addIndependentParametersPropertyDescriptor(Object object) {
+		itemPropertyDescriptors.add
+			(createItemPropertyDescriptor
+				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+				 getResourceLocator(),
+				 getString("_UI_AnalysisConfiguration_independentParameters_feature"),
+				 getString("_UI_PropertyDescriptor_description", "_UI_AnalysisConfiguration_independentParameters_feature", "_UI_AnalysisConfiguration_type"),
+				 AnalysisPackage.Literals.ANALYSIS_CONFIGURATION__INDEPENDENT_PARAMETERS,
+				 true,
+				 false,
+				 true,
+				 null,
+				 null,
+				 null));
 	}
 
 	/**

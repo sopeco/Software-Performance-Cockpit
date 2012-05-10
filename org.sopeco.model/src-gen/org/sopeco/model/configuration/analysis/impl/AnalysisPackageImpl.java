@@ -9,6 +9,7 @@ package org.sopeco.model.configuration.analysis.impl;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 
+import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
 import org.sopeco.model.configuration.ConfigurationPackage;
@@ -134,6 +135,24 @@ public class AnalysisPackageImpl extends EPackageImpl implements AnalysisPackage
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EReference getAnalysisConfiguration_DependentParameters() {
+		return (EReference)analysisConfigurationEClass.getEStructuralFeatures().get(0);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public EReference getAnalysisConfiguration_IndependentParameters() {
+		return (EReference)analysisConfigurationEClass.getEStructuralFeatures().get(1);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public AnalysisFactory getAnalysisFactory() {
 		return (AnalysisFactory)getEFactoryInstance();
 	}
@@ -158,6 +177,8 @@ public class AnalysisPackageImpl extends EPackageImpl implements AnalysisPackage
 
 		// Create classes and their features
 		analysisConfigurationEClass = createEClass(ANALYSIS_CONFIGURATION);
+		createEReference(analysisConfigurationEClass, ANALYSIS_CONFIGURATION__DEPENDENT_PARAMETERS);
+		createEReference(analysisConfigurationEClass, ANALYSIS_CONFIGURATION__INDEPENDENT_PARAMETERS);
 	}
 
 	/**
@@ -185,6 +206,7 @@ public class AnalysisPackageImpl extends EPackageImpl implements AnalysisPackage
 
 		// Obtain other dependent packages
 		MeasurementsPackage theMeasurementsPackage = (MeasurementsPackage)EPackage.Registry.INSTANCE.getEPackage(MeasurementsPackage.eNS_URI);
+		EnvironmentPackage theEnvironmentPackage = (EnvironmentPackage)EPackage.Registry.INSTANCE.getEPackage(EnvironmentPackage.eNS_URI);
 
 		// Create type parameters
 
@@ -195,6 +217,8 @@ public class AnalysisPackageImpl extends EPackageImpl implements AnalysisPackage
 
 		// Initialize classes and features; add operations and parameters
 		initEClass(analysisConfigurationEClass, AnalysisConfiguration.class, "AnalysisConfiguration", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+		initEReference(getAnalysisConfiguration_DependentParameters(), theEnvironmentPackage.getParameterDefinition(), null, "dependentParameters", null, 0, -1, AnalysisConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getAnalysisConfiguration_IndependentParameters(), theEnvironmentPackage.getParameterDefinition(), null, "independentParameters", null, 0, -1, AnalysisConfiguration.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 	}
 
 } //AnalysisPackageImpl

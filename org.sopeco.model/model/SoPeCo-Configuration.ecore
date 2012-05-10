@@ -111,7 +111,12 @@
     <eClassifiers xsi:type="ecore:EClass" name="DynamicValueAssignment" eSuperTypes="#//measurements/ExtensibleElement #//measurements/ParameterValueAssignment"/>
   </eSubpackages>
   <eSubpackages name="analysis" nsURI="http://sopeco.org/configuration/analysis" nsPrefix="analysis">
-    <eClassifiers xsi:type="ecore:EClass" name="AnalysisConfiguration" eSuperTypes="#//measurements/ExtensibleElement"/>
+    <eClassifiers xsi:type="ecore:EClass" name="AnalysisConfiguration" eSuperTypes="#//measurements/ExtensibleElement">
+      <eStructuralFeatures xsi:type="ecore:EReference" name="dependentParameters"
+          upperBound="-1" eType="#//environment/ParameterDefinition"/>
+      <eStructuralFeatures xsi:type="ecore:EReference" name="independentParameters"
+          upperBound="-1" eType="#//environment/ParameterDefinition"/>
+    </eClassifiers>
   </eSubpackages>
   <eSubpackages name="common" nsURI="http://sopeco.org/configuration/common" nsPrefix="common">
     <eClassifiers xsi:type="ecore:EClass" name="Serializable" instanceClassName="java.io.Serializable"

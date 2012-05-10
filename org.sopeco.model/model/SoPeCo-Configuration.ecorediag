@@ -724,6 +724,25 @@
       <element xmi:type="ecore:EClass" href="SoPeCo-Configuration.ecore#//measurements/ConfigurationNode"/>
       <layoutConstraint xmi:type="notation:Bounds" xmi:id="_HCwKAoiNEeGsxel2bY8qIg" x="540" y="145"/>
     </children>
+    <children xmi:type="notation:Node" xmi:id="_3AWm4JpzEeGgjYH-ddqWYw" type="1001">
+      <eAnnotations xmi:type="ecore:EAnnotation" xmi:id="_3Aqv8JpzEeGgjYH-ddqWYw" source="Shortcut">
+        <details xmi:type="ecore:EStringToStringMapEntry" xmi:id="_3Aqv8ZpzEeGgjYH-ddqWYw" key="modelID" value="EcoreTools"/>
+      </eAnnotations>
+      <children xmi:type="notation:Node" xmi:id="_3AYcEJpzEeGgjYH-ddqWYw" type="4001"/>
+      <children xmi:type="notation:Node" xmi:id="_3AZDIJpzEeGgjYH-ddqWYw" type="5001">
+        <styles xmi:type="notation:DrawerStyle" xmi:id="_3AZDIZpzEeGgjYH-ddqWYw"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_3AZDIppzEeGgjYH-ddqWYw"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_3AZDI5pzEeGgjYH-ddqWYw"/>
+      </children>
+      <children xmi:type="notation:Node" xmi:id="_3AZqMJpzEeGgjYH-ddqWYw" type="5002">
+        <styles xmi:type="notation:DrawerStyle" xmi:id="_3AZqMZpzEeGgjYH-ddqWYw"/>
+        <styles xmi:type="notation:SortingStyle" xmi:id="_3AZqMppzEeGgjYH-ddqWYw"/>
+        <styles xmi:type="notation:FilteringStyle" xmi:id="_3AZqM5pzEeGgjYH-ddqWYw"/>
+      </children>
+      <styles xmi:type="notation:ShapeStyle" xmi:id="_3AWm4ZpzEeGgjYH-ddqWYw" fontColor="4210752" fontName="Segoe UI" fontHeight="10" fillColor="13761016" lineColor="8421504"/>
+      <element xmi:type="ecore:EClass" href="SoPeCo-Configuration.ecore#//environment/ParameterDefinition"/>
+      <layoutConstraint xmi:type="notation:Bounds" xmi:id="_3AWm4ppzEeGgjYH-ddqWYw" x="600" y="280"/>
+    </children>
     <styles xmi:type="notation:DiagramStyle" xmi:id="_0_c8oYiMEeGsxel2bY8qIg"/>
     <element xmi:type="ecore:EPackage" href="SoPeCo-Configuration.ecore#//analysis"/>
     <edges xmi:type="notation:Edge" xmi:id="_CsKkQIiNEeGsxel2bY8qIg" type="3003" source="_A1D4sIiNEeGsxel2bY8qIg" target="_AYR2EIiNEeGsxel2bY8qIg">
@@ -744,6 +763,34 @@
       <styles xmi:type="notation:FontStyle" xmi:id="_HC7JIoiNEeGsxel2bY8qIg" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
       <element xmi:type="ecore:EReference" href="SoPeCo-Configuration.ecore#//measurements/ExtensibleElement/configuration"/>
       <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_HC7JI4iNEeGsxel2bY8qIg" points="[-57, -33, 267, 154]$[-323, -187, 1, 0]"/>
+    </edges>
+    <edges xmi:type="notation:Edge" xmi:id="_39-FsJpzEeGgjYH-ddqWYw" type="3002" source="_A1D4sIiNEeGsxel2bY8qIg" target="_3AWm4JpzEeGgjYH-ddqWYw">
+      <children xmi:type="notation:Node" xmi:id="_39_T0JpzEeGgjYH-ddqWYw" type="4011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_39_T0ZpzEeGgjYH-ddqWYw" x="-63" y="-15"/>
+      </children>
+      <children xmi:type="notation:Node" xmi:id="_39_T0ppzEeGgjYH-ddqWYw" type="4012">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_39_T05pzEeGgjYH-ddqWYw" x="10" y="10"/>
+      </children>
+      <styles xmi:type="notation:ConnectorStyle" xmi:id="_39-FsZpzEeGgjYH-ddqWYw" lineColor="4210752"/>
+      <styles xmi:type="notation:FontStyle" xmi:id="_39-FsppzEeGgjYH-ddqWYw" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+      <element xmi:type="ecore:EReference" href="SoPeCo-Configuration.ecore#//analysis/AnalysisConfiguration/dependentParameters"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_39-Fs5pzEeGgjYH-ddqWYw" points="[11, -2, -175, -21]$[85, -35, -101, -54]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3-BJAJpzEeGgjYH-ddqWYw" id="(0.9430051813471503,0.46987951807228917)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="_FuU3MJp0EeGgjYH-ddqWYw" id="(0.0,0.30708661417322836)"/>
+    </edges>
+    <edges xmi:type="notation:Edge" xmi:id="__6ScAJpzEeGgjYH-ddqWYw" type="3002" source="_A1D4sIiNEeGsxel2bY8qIg" target="_3AWm4JpzEeGgjYH-ddqWYw">
+      <children xmi:type="notation:Node" xmi:id="__6URMJpzEeGgjYH-ddqWYw" type="4011">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="__6URMZpzEeGgjYH-ddqWYw" x="-78" y="12"/>
+      </children>
+      <children xmi:type="notation:Node" xmi:id="__6URMppzEeGgjYH-ddqWYw" type="4012">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="__6URM5pzEeGgjYH-ddqWYw" x="10" y="10"/>
+      </children>
+      <styles xmi:type="notation:ConnectorStyle" xmi:id="__6ScAZpzEeGgjYH-ddqWYw" lineColor="4210752"/>
+      <styles xmi:type="notation:FontStyle" xmi:id="__6ScAppzEeGgjYH-ddqWYw" fontColor="4210752" fontName="Segoe UI" fontHeight="10"/>
+      <element xmi:type="ecore:EReference" href="SoPeCo-Configuration.ecore#//analysis/AnalysisConfiguration/independentParameters"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="__6ScA5pzEeGgjYH-ddqWYw" points="[23, 5, -133, -26]$[157, 61, 1, 30]"/>
+      <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="__6WGYJpzEeGgjYH-ddqWYw" id="(0.8808290155440415,0.7349397590361446)"/>
+      <targetAnchor xmi:type="notation:IdentityAnchor" xmi:id="__6WGYZpzEeGgjYH-ddqWYw" id="(0.01951219512195122,0.5354330708661418)"/>
     </edges>
   </notation:Diagram>
   <notation:Diagram xmi:id="_NGv3AInxEeGNPZBf8351QA" type="EcoreTools" name="SerializableObjects" measurementUnit="Pixel">

@@ -9,6 +9,7 @@ package org.sopeco.model.configuration.analysis;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EPackage;
 
+import org.eclipse.emf.ecore.EReference;
 import org.sopeco.model.configuration.measurements.MeasurementsPackage;
 
 /**
@@ -88,13 +89,31 @@ public interface AnalysisPackage extends EPackage {
 	int ANALYSIS_CONFIGURATION__NAME = MeasurementsPackage.EXTENSIBLE_ELEMENT__NAME;
 
 	/**
+	 * The feature id for the '<em><b>Dependent Parameters</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ANALYSIS_CONFIGURATION__DEPENDENT_PARAMETERS = MeasurementsPackage.EXTENSIBLE_ELEMENT_FEATURE_COUNT + 0;
+
+	/**
+	 * The feature id for the '<em><b>Independent Parameters</b></em>' reference list.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int ANALYSIS_CONFIGURATION__INDEPENDENT_PARAMETERS = MeasurementsPackage.EXTENSIBLE_ELEMENT_FEATURE_COUNT + 1;
+
+	/**
 	 * The number of structural features of the '<em>Configuration</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int ANALYSIS_CONFIGURATION_FEATURE_COUNT = MeasurementsPackage.EXTENSIBLE_ELEMENT_FEATURE_COUNT + 0;
+	int ANALYSIS_CONFIGURATION_FEATURE_COUNT = MeasurementsPackage.EXTENSIBLE_ELEMENT_FEATURE_COUNT + 2;
 
 
 	/**
@@ -106,6 +125,28 @@ public interface AnalysisPackage extends EPackage {
 	 * @generated
 	 */
 	EClass getAnalysisConfiguration();
+
+	/**
+	 * Returns the meta object for the reference list '{@link org.sopeco.model.configuration.analysis.AnalysisConfiguration#getDependentParameters <em>Dependent Parameters</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Dependent Parameters</em>'.
+	 * @see org.sopeco.model.configuration.analysis.AnalysisConfiguration#getDependentParameters()
+	 * @see #getAnalysisConfiguration()
+	 * @generated
+	 */
+	EReference getAnalysisConfiguration_DependentParameters();
+
+	/**
+	 * Returns the meta object for the reference list '{@link org.sopeco.model.configuration.analysis.AnalysisConfiguration#getIndependentParameters <em>Independent Parameters</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the reference list '<em>Independent Parameters</em>'.
+	 * @see org.sopeco.model.configuration.analysis.AnalysisConfiguration#getIndependentParameters()
+	 * @see #getAnalysisConfiguration()
+	 * @generated
+	 */
+	EReference getAnalysisConfiguration_IndependentParameters();
 
 	/**
 	 * Returns the factory that creates the instances of the model.
@@ -138,6 +179,20 @@ public interface AnalysisPackage extends EPackage {
 		 * @generated
 		 */
 		EClass ANALYSIS_CONFIGURATION = eINSTANCE.getAnalysisConfiguration();
+		/**
+		 * The meta object literal for the '<em><b>Dependent Parameters</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ANALYSIS_CONFIGURATION__DEPENDENT_PARAMETERS = eINSTANCE.getAnalysisConfiguration_DependentParameters();
+		/**
+		 * The meta object literal for the '<em><b>Independent Parameters</b></em>' reference list feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EReference ANALYSIS_CONFIGURATION__INDEPENDENT_PARAMETERS = eINSTANCE.getAnalysisConfiguration_IndependentParameters();
 
 	}
 

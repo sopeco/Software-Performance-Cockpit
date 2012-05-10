@@ -23,6 +23,7 @@ import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.entities.analysis.IStorableAnalysisResult;
+import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
@@ -115,7 +116,7 @@ public class PersistenceProviderTest {
 		}
 
 	}
-	
+
 	@Test
 	public void testLoadAllScenarioInstances() {
 
@@ -491,51 +492,56 @@ public class PersistenceProviderTest {
 		}
 
 	}
-	
+
 	@Test
 	public void testStoreAndLoadAnalysisResult(){
-		DummyAnalysisResult dummyAnalysisResult = new DummyAnalysisResult("a = b + c", DummyFactory.createDummyObservationParameterDefinition("DummyDependentParameter"), EntityFactory.createAnalysisConfiguration("JUPITER", Collections.EMPTY_MAP));
+		AnalysisConfiguration dummyAnalysisConfig = dummyScenarioInstance.getScenarioDefinition().getMeasurementSpecification().getExperimentSeriesDefinitions().get(0).getExplorationStrategy().getAnalysisConfigurations().get(0);
+		DummyAnalysisResult dummyAnalysisResult = new DummyAnalysisResult("a = b + c", dummyAnalysisConfig.getDependentParameters().get(0), dummyAnalysisConfig);
 		provider.store("DummyResult", dummyAnalysisResult);
 		try {
 			IStorableAnalysisResult analysisResult = provider.loadAnalysisResult("DummyResult");
 			assertNotNull(analysisResult);
 			assertNotNull(((DummyAnalysisResult)analysisResult).getAnalysisStrategyConfiguration());
-			assertEquals("JUPITER", ((DummyAnalysisResult)analysisResult).getAnalysisStrategyConfiguration().getName());
+			assertEquals(1, ((DummyAnalysisResult)analysisResult).getAnalysisStrategyConfiguration().getDependentParameters().size());
+			assertEquals("DummyOutput", ((DummyAnalysisResult)analysisResult).getAnalysisStrategyConfiguration().getDependentParameters().get(0).getName());
+			assertEquals("MARS", ((DummyAnalysisResult)analysisResult).getAnalysisStrategyConfiguration().getName());
 			assertNotNull(((DummyAnalysisResult)analysisResult).getDependentParameter());
-			assertEquals("DummyDependentParameter", ((DummyAnalysisResult)analysisResult).getDependentParameter().getName());
+			assertEquals("DummyOutput", ((DummyAnalysisResult)analysisResult).getDependentParameter().getName());
 		} catch (DataNotFoundException e) {
 			e.printStackTrace();
 			fail();
 		}
 	}
-	
+
 	@Test
-	public void testUpdateAnalysisResult(){
-		DummyAnalysisResult dummyAnalysisResult = new DummyAnalysisResult("a = b + c", DummyFactory.createDummyObservationParameterDefinition("DummyDependentParameter"), EntityFactory.createAnalysisConfiguration("JUPITER", Collections.EMPTY_MAP));
+	public void testUpdateAnalysisResult() {
+		AnalysisConfiguration dummyAnalysisConfig = dummyScenarioInstance.getScenarioDefinition().getMeasurementSpecification().getExperimentSeriesDefinitions().get(0).getExplorationStrategy().getAnalysisConfigurations().get(0);
+		DummyAnalysisResult dummyAnalysisResult = new DummyAnalysisResult("a = b + c", dummyAnalysisConfig.getDependentParameters().get(0), dummyAnalysisConfig);
 		provider.store("DummyResult", dummyAnalysisResult);
 		try {
 			IStorableAnalysisResult loadedResult1 = provider.loadAnalysisResult("DummyResult");
-			
-			assertEquals("a = b + c", ((DummyAnalysisResult)loadedResult1).getFunctionAsString());
-			
-			((DummyAnalysisResult)loadedResult1).setFunctionAsString("x = y + z");
-			
+
+			assertEquals("a = b + c", ((DummyAnalysisResult) loadedResult1).getFunctionAsString());
+
+			((DummyAnalysisResult) loadedResult1).setFunctionAsString("x = y + z");
+
 			provider.store("DummyResult", loadedResult1);
-			
+
 			IStorableAnalysisResult loadedResult2 = provider.loadAnalysisResult("DummyResult");
-			
-			assertEquals("x = y + z", ((DummyAnalysisResult)loadedResult2).getFunctionAsString());
-	
+
+			assertEquals("x = y + z", ((DummyAnalysisResult) loadedResult2).getFunctionAsString());
+
 		} catch (DataNotFoundException e) {
 			e.printStackTrace();
 			fail();
 		}
 	}
-	
-	
+
 	@Test
-	public void testRemoveAnalysisResult(){
-		DummyAnalysisResult dummyAnalysisResult = new DummyAnalysisResult("a = b + c", DummyFactory.createDummyObservationParameterDefinition("DummyDependentParameter"), EntityFactory.createAnalysisConfiguration("JUPITER", Collections.EMPTY_MAP));
+	public void testRemoveAnalysisResult() {
+		AnalysisConfiguration dummyAnalysisConfig = dummyScenarioInstance.getScenarioDefinition().getMeasurementSpecification().getExperimentSeriesDefinitions().get(0).getExplorationStrategy().getAnalysisConfigurations().get(0);
+		DummyAnalysisResult dummyAnalysisResult = new DummyAnalysisResult("a = b + c", dummyAnalysisConfig.getDependentParameters().get(0), dummyAnalysisConfig);
+		
 		provider.store("DummyResult", dummyAnalysisResult);
 		try {
 			provider.remove("DummyResult");
@@ -543,15 +549,14 @@ public class PersistenceProviderTest {
 			e.printStackTrace();
 			fail();
 		}
-		
+
 		try {
 			provider.loadAnalysisResult("DummyResult");
 			fail();
 		} catch (DataNotFoundException e) {
 			// this is the expected case
 		}
-		
-		
+
 	}
 
 	private DataSetAggregated simulateExperimentRun(DataSetAggregated dataset) {
@@ -675,7 +680,7 @@ public class PersistenceProviderTest {
 		assertTrue(expSeries.getExperimentSeriesRuns().get(0).getResultDataSet().getInputColumns().size() == 1);
 
 		DataSetInputColumn col = ((DataSetInputColumn<?>) expSeries.getExperimentSeriesRuns().get(0).getResultDataSet().getInputColumns().toArray()[0]);
-		
+
 		// Result Data Set should have the ParameterDefinitions
 		assertNotNull(((DataSetInputColumn<?>) expSeries.getExperimentSeriesRuns().get(0).getResultDataSet().getInputColumns().toArray()[0]).getParameter());
 

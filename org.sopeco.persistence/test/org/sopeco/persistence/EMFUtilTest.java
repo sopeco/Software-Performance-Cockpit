@@ -7,6 +7,7 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 import org.sopeco.model.configuration.SoPeCoModelFactoryHandler;
+import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.persistence.util.EMFUtil;
 
@@ -40,6 +41,8 @@ public class EMFUtilTest {
 		try
 		{
 			assertEquals("default.DummyInput", scenarioDefinition.getMeasurementEnvironmentDefinition().getRoot().getParameters().get(0).getFullName());
+			assertEquals("default.DummyInput", scenarioDefinition.getMeasurementSpecification().getExperimentSeriesDefinitions().get(0).getExplorationStrategy().getAnalysisConfigurations().get(0).getIndependentParameters().get(0).getFullName());
+			
 		} catch (UnsupportedOperationException uoe){
 			fail("Factory override did not work");
 		}

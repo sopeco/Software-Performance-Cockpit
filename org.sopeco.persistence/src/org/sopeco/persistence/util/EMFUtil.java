@@ -136,7 +136,7 @@ public class EMFUtil {
 		org.sopeco.persistence.entities.definition.ParameterNamespace pojoRootNamespace = EntityFactory.createNamespace(emfRootNamespace.getName());
 		pojoMeasurementEnvDef.setRoot(pojoRootNamespace);
 
-		List<org.sopeco.persistence.entities.definition.ParameterDefinition> pojoParameters = convertParameters(emfRootNamespace);
+		List<org.sopeco.persistence.entities.definition.ParameterDefinition> pojoParameters = convertParameters(emfRootNamespace.getParameters());
 		for (org.sopeco.persistence.entities.definition.ParameterDefinition pojoParameter : pojoParameters) {
 			pojoParameter.setNamespace(pojoRootNamespace);
 			pojoRootNamespace.getParameters().add(pojoParameter);
@@ -243,6 +243,15 @@ public class EMFUtil {
 
 			org.sopeco.persistence.entities.definition.AnalysisConfiguration pojoAnalysisConfiguration = EntityFactory.createAnalysisConfiguration(
 					emfAnalysisConfig.getName(), emfAnalysisConfig.getConfiguration().map());
+			
+			for (ParameterDefinition emfParameter : emfAnalysisConfig.getDependentParameters()) {
+				pojoAnalysisConfiguration.getDependentParameters().add(pojoScenarioDefinition.getParameterDefinition(emfParameter.getFullName()));
+			}
+			
+			for (ParameterDefinition emfParameter : emfAnalysisConfig.getIndependentParameters()) {
+				pojoAnalysisConfiguration.getIndependentParameters().add(pojoScenarioDefinition.getParameterDefinition(emfParameter.getFullName()));
+			}
+			
 			pojoAnalysisConfigurations.add(pojoAnalysisConfiguration);
 		}
 
@@ -281,7 +290,7 @@ public class EMFUtil {
 
 			org.sopeco.persistence.entities.definition.ParameterNamespace pojoChildNamespace = EntityFactory.createNamespace(emfChildNamespace.getName());
 
-			List<org.sopeco.persistence.entities.definition.ParameterDefinition> pojoParameters = convertParameters(emfChildNamespace);
+			List<org.sopeco.persistence.entities.definition.ParameterDefinition> pojoParameters = convertParameters(emfChildNamespace.getParameters());
 			for (org.sopeco.persistence.entities.definition.ParameterDefinition pojoParameter : pojoParameters) {
 				pojoParameter.setNamespace(pojoChildNamespace);
 				pojoChildNamespace.getParameters().add(pojoParameter);
@@ -299,10 +308,10 @@ public class EMFUtil {
 		return pojoChildNameSpaces;
 	}
 
-	private static List<org.sopeco.persistence.entities.definition.ParameterDefinition> convertParameters(ParameterNamespace emfNamespace) {
+	private static List<org.sopeco.persistence.entities.definition.ParameterDefinition> convertParameters(List<ParameterDefinition> emfParameters) {
 
 		List<org.sopeco.persistence.entities.definition.ParameterDefinition> resultList = new LinkedList<org.sopeco.persistence.entities.definition.ParameterDefinition>();
-		for (Object emfParamDefObj : emfNamespace.getParameters()) {
+		for (Object emfParamDefObj : emfParameters) {
 			ParameterDefinition emfParamDef = (ParameterDefinition) emfParamDefObj;
 
 			resultList.add(EntityFactory.createParameterDefinition(emfParamDef.getName(), emfParamDef.getType(), convertRole(emfParamDef.getRole())));

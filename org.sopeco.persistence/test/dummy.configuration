@@ -8,7 +8,9 @@
   </measurementEnvironmentDefinition>
   <measurementSpecification>
     <experimentSeriesDefinitions name="Dummy0">
-      <explorationStrategy name="Full Exploration Strategy"/>
+      <explorationStrategy name="Full Exploration Strategy">
+        <analysisConfigurations name="MARS" dependentParameters="//@measurementEnvironmentDefinition/@root/@parameters.1" independentParameters="//@measurementEnvironmentDefinition/@root/@parameters.0"/>
+      </explorationStrategy>
       <experimentAssignments xsi:type="measurements:DynamicValueAssignment" name="Linear Numeric Variation" parameter="//@measurementEnvironmentDefinition/@root/@parameters.0">
         <configuration key="min" value="0"/>
         <configuration key="max" value="100"/>
@@ -22,7 +24,9 @@
       <experimentTerminationCondition xsi:type="measurements:NumberOfRepetitions" numberOfRepetitions="4"/>
     </experimentSeriesDefinitions>
     <experimentSeriesDefinitions name="Dummy1">
-      <explorationStrategy name="Full Exploration Strategy"/>
+      <explorationStrategy name="Full Exploration Strategy">
+        <analysisConfigurations name="MARS" dependentParameters="//@measurementEnvironmentDefinition/@root/@parameters.1" independentParameters="//@measurementEnvironmentDefinition/@root/@parameters.0"/>
+      </explorationStrategy>
       <experimentAssignments xsi:type="measurements:DynamicValueAssignment" name="Linear Numeric Variation" parameter="//@measurementEnvironmentDefinition/@root/@parameters.0">
         <configuration key="min" value="0"/>
         <configuration key="max" value="100"/>
@@ -35,6 +39,5 @@
       </experimentAssignments>
       <experimentTerminationCondition xsi:type="measurements:NumberOfRepetitions" numberOfRepetitions="4"/>
     </experimentSeriesDefinitions>
-    
   </measurementSpecification>
 </org.sopeco.core.model:ScenarioDefinition>
