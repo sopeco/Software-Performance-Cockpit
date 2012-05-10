@@ -7,20 +7,19 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
 public class ParameterValueFactory {
 	private static final double SMALL_NUMBER = 0.0000001;
 
-	public static ParameterValue<?> createParameterValue(
-			ParameterDefinition parameter, Object value) {
+	public static <T extends Object> ParameterValue<T> createParameterValue(ParameterDefinition parameter, T value) {
 		Object convertedValue = convertValue(value, ParameterUtil.getTypeEnumeration(parameter.getType()));
 		if (convertedValue instanceof Double) {
-			return new ParameterValue<Double>(parameter,
+			return (ParameterValue<T>) new ParameterValue<Double>(parameter,
 					(Double) convertedValue);
 		} else if (convertedValue instanceof Integer) {
-			return new ParameterValue<Integer>(parameter,
+			return (ParameterValue<T>) new ParameterValue<Integer>(parameter,
 					(Integer) convertedValue);
 		} else if (convertedValue instanceof Boolean) {
-			return new ParameterValue<Boolean>(parameter,
+			return (ParameterValue<T>) new ParameterValue<Boolean>(parameter,
 					(Boolean) convertedValue);
 		} else if (convertedValue instanceof String) {
-			return new ParameterValue<String>(parameter,
+			return (ParameterValue<T>) new ParameterValue<String>(parameter,
 					(String) convertedValue);
 		} else {
 			throw new IllegalArgumentException(

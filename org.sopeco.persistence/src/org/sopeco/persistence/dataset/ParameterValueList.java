@@ -29,6 +29,17 @@ public class ParameterValueList<T> implements Serializable {
 		this.values = values;
 	}
 
+	/**
+	 * Creates a single value parameter value list.
+	 * @param singleParameterValue a single parameter value instance
+	 */
+	public ParameterValueList(ParameterValue<T> singleParameterValue) {
+		super();
+		this.parameter = singleParameterValue.getParameter();
+		this.values = new ArrayList<T>();
+		this.values.add(singleParameterValue.getValue());
+	}
+	
 	public ParameterDefinition getParameter() {
 		return parameter;
 	}
