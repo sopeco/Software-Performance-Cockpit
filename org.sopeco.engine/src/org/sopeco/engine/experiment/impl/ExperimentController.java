@@ -3,7 +3,10 @@ package org.sopeco.engine.experiment.impl;
 import java.rmi.RemoteException;
 import java.util.Collection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sopeco.engine.experiment.IExperimentController;
+import org.sopeco.engine.measurementenvironment.ExperimentFailedException;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
 import org.sopeco.engine.util.ParameterCollection;
 import org.sopeco.engine.util.ParameterCollectionFactory;
@@ -11,6 +14,7 @@ import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetRowBuilder;
 import org.sopeco.persistence.dataset.ParameterValue;
+import org.sopeco.persistence.dataset.ParameterValueFactory;
 import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
@@ -28,6 +32,8 @@ import org.sopeco.persistence.exceptions.DataNotFoundException;
  */
 public class ExperimentController implements IExperimentController {
 
+	private final static Logger logger = LoggerFactory.getLogger(ExperimentController.class);
+	
 	MeasurementEnvironmentDefinition meDefinition = null;
 	IMeasurementEnvironmentController meController = null;
 	IPersistenceProvider persistenceProvider = null;
@@ -35,6 +41,9 @@ public class ExperimentController implements IExperimentController {
 	ParameterCollection<ParameterValue<?>> initializationPVs = ParameterCollectionFactory.createParameterValueCollection();
 	ParameterCollection<ParameterValue<?>> preparationPVs = ParameterCollectionFactory.createParameterValueCollection();
 
+	private DataSetAggregated failedDataSet = null;
+	private DataSetAggregated successfulDataSet = null;
+	
 	@Override
 	public void initialize(ParameterCollection<ParameterValue<?>> initializationPVs, MeasurementEnvironmentDefinition meDefinition) {
 
@@ -81,21 +90,24 @@ public class ExperimentController implements IExperimentController {
 	}
 
 	@Override
-	public DataSetAggregated runExperiment(ParameterCollection<ParameterValue<?>> inputPVs, ExperimentTerminationCondition terminationCondition) {
+	public void runExperiment(ParameterCollection<ParameterValue<?>> inputPVs, ExperimentTerminationCondition terminationCondition) {
 		if (terminationCondition == null)
 			throw new IllegalArgumentException("TerminationCondition must be set (not null).");
 
-		DataSetAggregated experimentRunResult = runExperimentOnME(meController, inputPVs, terminationCondition);
+		boolean experimentWasSuccessful = runExperimentOnME(meController, inputPVs, terminationCondition);
 
 		try {
 			currentExperimentSeriesRun = persistenceProvider.loadExperimentSeriesRun(currentExperimentSeriesRun.getPrimaryKey());
-			currentExperimentSeriesRun.append(experimentRunResult);
+			if (experimentWasSuccessful) {
+				currentExperimentSeriesRun.appendSuccessfulResults(successfulDataSet);
+			} else {
+				currentExperimentSeriesRun.appendFailedResults(failedDataSet);
+			}
 			persistenceProvider.store(currentExperimentSeriesRun);
 		} catch (DataNotFoundException e) {
 			throw new IllegalStateException("ExperimentSeriesRun with Id " + currentExperimentSeriesRun + " could not be loaded from database.", e);
 		}
 
-		return experimentRunResult;
 	}
 
 	public void setPersistenceProvider(IPersistenceProvider persistenceProvider) {
@@ -126,13 +138,21 @@ public class ExperimentController implements IExperimentController {
 	 * termination condition, on the given measurement environment controller,
 	 * and aggregates the results into an instance of {@link DataSetAggregated}.
 	 */
-	private DataSetAggregated runExperimentOnME(IMeasurementEnvironmentController meController, ParameterCollection<ParameterValue<?>> inputPVs,
+	private boolean runExperimentOnME(IMeasurementEnvironmentController meController, ParameterCollection<ParameterValue<?>> inputPVs,
 			ExperimentTerminationCondition terminationCondition) {
 
 		try {
 
+			boolean experimentSuccessful = false;
+			
 			// 1. run the experiment
-			Collection<ParameterValueList<?>> observations = meController.runExperiment(inputPVs, terminationCondition);
+			Collection<ParameterValueList<?>> observations = null;
+			try {
+				observations = meController.runExperiment(inputPVs, terminationCondition);
+				experimentSuccessful = true;
+			} catch (ExperimentFailedException e) {
+				logger.warn("An experiment failed.");
+			}
 
 			// 2. aggregate the results
 			DataSetRowBuilder builder = new DataSetRowBuilder();
@@ -150,17 +170,37 @@ public class ExperimentController implements IExperimentController {
 			for (ParameterValue<?> parameterValue : inputPVs)
 				builder.addInputParameterValue(parameterValue.getParameter(), parameterValue.getValue());
 
-			// 2.4. add observation values
-			for (ParameterValueList<?> pvl : observations)
-				builder.addObservationParameterValues(pvl);
+			// 2.4. add observation values, if the experiment was successful
+			if (experimentSuccessful) {
+				for (ParameterValueList<?> pvl : observations)
+					builder.addObservationParameterValues(pvl);
+			} 
 
 			builder.finishRow();
 
-			return builder.createDataSet();
+			if (experimentSuccessful) {
+				successfulDataSet = builder.createDataSet();
+				failedDataSet = null;
+			} else {
+				successfulDataSet = null;
+				failedDataSet = builder.createDataSet();
+			}
+
+			return experimentSuccessful;
 
 		} catch (RemoteException e) {
 			throw new RuntimeException("RemoteException.", e);
 		}
 
+	}
+
+	@Override
+	public DataSetAggregated getLastSuccessfulExperimentResults() {
+		return  successfulDataSet;
+	}
+
+	@Override
+	public DataSetAggregated getLastFailedExperimentResults() {
+		return failedDataSet;
 	}
 }

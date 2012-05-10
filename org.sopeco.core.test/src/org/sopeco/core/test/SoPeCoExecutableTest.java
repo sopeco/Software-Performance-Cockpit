@@ -46,7 +46,7 @@ public class SoPeCoExecutableTest {
 		
 		ScenarioInstance si = runner.getScenarioInstance();
 		
-		DataSetAggregated data = si.getExperimentSeriesList().get(0).getExperimentSeriesRuns().get(0).getResultDataSet();
+		DataSetAggregated data = si.getExperimentSeriesList().get(0).getExperimentSeriesRuns().get(0).getSuccessfulResultDataSet();
 		
 		logger.debug("Logging the result of the first experiement series run:");
 		

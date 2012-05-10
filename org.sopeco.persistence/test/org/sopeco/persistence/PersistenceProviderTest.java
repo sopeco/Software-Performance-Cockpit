@@ -374,14 +374,14 @@ public class PersistenceProviderTest {
 			// load
 			final ExperimentSeriesRun loaded1 = provider.loadExperimentSeriesRun(dummyRun.getPrimaryKey());
 			assertNotNull(loaded1);
-			assertTrue(loaded1.getResultDataSet().getObservationColumns().size() == 1);
-			assertTrue(loaded1.getResultDataSet().getInputColumns().size() == 1);
+			assertTrue(loaded1.getSuccessfulResultDataSet().getObservationColumns().size() == 1);
+			assertTrue(loaded1.getSuccessfulResultDataSet().getInputColumns().size() == 1);
 			assertTrue(loaded1.getExperimentSeries().getScenarioInstance().getDescription() == null);
 
 			// update
-			DataSetAggregated resultDataSet = loaded1.getResultDataSet();
+			DataSetAggregated resultDataSet = loaded1.getSuccessfulResultDataSet();
 			DummyFactory.addDummyObservationColumn(resultDataSet);
-			assertTrue(loaded1.getResultDataSet().getObservationColumns().size() == 2);
+			assertTrue(loaded1.getSuccessfulResultDataSet().getObservationColumns().size() == 2);
 			loaded1.getExperimentSeries().getScenarioInstance().setDescription("Dummy");
 
 			// store updated entity
@@ -393,7 +393,7 @@ public class PersistenceProviderTest {
 			assertEquals(loaded1, loaded2);
 
 			// number of observation columns should have changed
-			assertTrue(loaded2.getResultDataSet().getObservationColumns().size() == 2);
+			assertTrue(loaded2.getSuccessfulResultDataSet().getObservationColumns().size() == 2);
 			checkRetrievalViaExperimentSeries(dummyRun.getExperimentSeries());
 
 			// scenario instance should have been updated as well
@@ -412,7 +412,7 @@ public class PersistenceProviderTest {
 
 		final ExperimentSeries loaded1 = provider.loadExperimentSeries(series.getPrimaryKey());
 		for (ExperimentSeriesRun run : loaded1.getExperimentSeriesRuns()) {
-			if (run.getResultDataSet().getObservationColumns().size() == 2)
+			if (run.getSuccessfulResultDataSet().getObservationColumns().size() == 2)
 				return;
 		}
 		fail("No run with 2 observation columns found.");
@@ -477,9 +477,9 @@ public class PersistenceProviderTest {
 
 			dataSet1 = DummyFactory.createDummyResultDataSet();
 
-			run.append(dataSet1);
+			run.appendSuccessfulResults(dataSet1);
 			provider.store(run);
-			run.append(simulateExperimentRun(dataSet1));
+			run.appendSuccessfulResults(simulateExperimentRun(dataSet1));
 			provider.store(run);
 
 			provider.loadScenarioInstance(scenarioInstance.getPrimaryKey());
@@ -675,14 +675,14 @@ public class PersistenceProviderTest {
 		assertTrue(expSeries.equals(expSeries.getExperimentSeriesRuns().get(0).getExperimentSeries()));
 
 		// ExperimentSeriesRun should contain a result data set
-		assertNotNull(expSeries.getExperimentSeriesRuns().get(0).getResultDataSet());
-		assertTrue(expSeries.getExperimentSeriesRuns().get(0).getResultDataSet().getObservationColumns().size() == 1);
-		assertTrue(expSeries.getExperimentSeriesRuns().get(0).getResultDataSet().getInputColumns().size() == 1);
+		assertNotNull(expSeries.getExperimentSeriesRuns().get(0).getSuccessfulResultDataSet());
+		assertTrue(expSeries.getExperimentSeriesRuns().get(0).getSuccessfulResultDataSet().getObservationColumns().size() == 1);
+		assertTrue(expSeries.getExperimentSeriesRuns().get(0).getSuccessfulResultDataSet().getInputColumns().size() == 1);
 
-		DataSetInputColumn col = ((DataSetInputColumn<?>) expSeries.getExperimentSeriesRuns().get(0).getResultDataSet().getInputColumns().toArray()[0]);
+		DataSetInputColumn col = ((DataSetInputColumn<?>) expSeries.getExperimentSeriesRuns().get(0).getSuccessfulResultDataSet().getInputColumns().toArray()[0]);
 
 		// Result Data Set should have the ParameterDefinitions
-		assertNotNull(((DataSetInputColumn<?>) expSeries.getExperimentSeriesRuns().get(0).getResultDataSet().getInputColumns().toArray()[0]).getParameter());
+		assertNotNull(((DataSetInputColumn<?>) expSeries.getExperimentSeriesRuns().get(0).getSuccessfulResultDataSet().getInputColumns().toArray()[0]).getParameter());
 
 	}
 

@@ -93,7 +93,7 @@ public class EntityFactoryTest {
 			assertEquals(series, seriesRun.getExperimentSeries());
 			assertEquals(scenarioInstance, seriesRun.getExperimentSeries().getScenarioInstance());
 			assertNotNull(seriesRun.getTimestamp());
-			assertEquals(null, seriesRun.getResultDataSet());
+			assertEquals(null, seriesRun.getSuccessfulResultDataSet());
 			assertEquals(1, series.getExperimentSeriesRuns().size());
 			assertEquals(seriesRun, series.getExperimentSeriesRuns().get(0));
 			

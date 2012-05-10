@@ -44,7 +44,7 @@ public interface IMeasurementEnvironmentController extends Remote {
 	 * 
 	 * @return a collection of parameter value lists that includes one parameter value list for every observation parameter
 	 */
-	public Collection<ParameterValueList<?>> runExperiment(ParameterCollection<ParameterValue<?>> inputPVs, ExperimentTerminationCondition  terminationCondition) throws RemoteException;
+	public Collection<ParameterValueList<?>> runExperiment(ParameterCollection<ParameterValue<?>> inputPVs, ExperimentTerminationCondition  terminationCondition) throws RemoteException, ExperimentFailedException;
 	
 	/**
 	 * Finalizes the measurement environment.
