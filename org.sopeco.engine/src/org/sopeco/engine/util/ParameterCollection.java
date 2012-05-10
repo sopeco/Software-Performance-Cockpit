@@ -3,6 +3,7 @@
  */
 package org.sopeco.engine.util;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -20,7 +21,10 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
  * @param <K> a type of either {@link ParameterDefinition} or {@link ParameterValue}
  *
  */
-public class ParameterCollection<V> implements Set<V> {
+public class ParameterCollection<V> implements Set<V>, Serializable {
+	
+	/** Version ID for serialization. */
+	private static final long serialVersionUID = 1L;
 	
 	/** Holds a map view to this collection. */
 	private Map<String, V> map = new HashMap<String, V>();
