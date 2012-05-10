@@ -72,7 +72,7 @@ public class PredictionFunctionAnalysisStrategyTest {
 	}
 
 	@Test
-	public void testAnalysisWithLargeDataSet() {
+	public void testAnalysis() {
 
 			assertTrue(strategy.supports(analysisConfiguration));
 
@@ -95,6 +95,16 @@ public class PredictionFunctionAnalysisStrategyTest {
 			assertNotNull(result.getFunctionAsString());
 
 			System.out.println(result.getFunctionAsString());
+
+	}
+	
+	@Test
+	public void testAnalysisWithConfiguredDependentAndIndependentParameter() {
+
+		this.analysisConfiguration.getDependentParameters().add(scenarioDefinition.getParameterDefinition("default.DummyOutput"));
+		this.analysisConfiguration.getIndependentParameters().add(scenarioDefinition.getParameterDefinition("default.DummyInput"));
+		
+		this.testAnalysis();
 
 	}
 	
@@ -164,5 +174,7 @@ public class PredictionFunctionAnalysisStrategyTest {
 
 		return builder.createDataSet();
 	}
+	
+	
 
 }
