@@ -61,12 +61,14 @@ public abstract class AbstractPredictionFunctionStrategy extends AbstractRStrate
 			dependentParameterDefintion = config.getDependentParameters().get(0);
 		} else {
 			dependentParameterDefintion = ((DataSetObservationColumn<?>) observationColumns.toArray()[0]).getParameter();
+			this.config.getDependentParameters().add(dependentParameterDefintion);
 		}
 
 		if (config.getIndependentParameters().size() > 0) {
 			independentParameterDefinitions = config.getIndependentParameters();
 		} else {
 			independentParameterDefinitions = getParameterDefintions(inputColumns);
+			this.config.getIndependentParameters().addAll(independentParameterDefinitions);
 		}
 	}
 
