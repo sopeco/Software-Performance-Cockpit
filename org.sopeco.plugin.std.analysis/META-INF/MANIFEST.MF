@@ -8,3 +8,6 @@ Require-Bundle: org.sopeco.orbit.de.uka.ipd.sdq.rwrapper;bundle-version="2.12.1"
  org.sopeco.core;bundle-version="0.2.0",
  org.sopeco.orbit.logging;bundle-version="1.0.0",
  org.junit4;bundle-version="4.8.1"
+Export-Package: org.sopeco.plugin.std.analysis,
+ org.sopeco.plugin.std.analysis.common,
+ org.sopeco.plugin.std.analysis.util
