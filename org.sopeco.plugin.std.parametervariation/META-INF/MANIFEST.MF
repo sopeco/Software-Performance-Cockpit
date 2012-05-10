@@ -8,3 +8,7 @@ Require-Bundle: org.sopeco.core;bundle-version="0.2.0",
  org.sopeco.orbit.logging;bundle-version="1.0.0",
  org.sopeco.persistence;bundle-version="0.2.0",
  org.junit
+Export-Package: org.sopeco.plugin.std.parametervariation.bool,
+ org.sopeco.plugin.std.parametervariation.constant,
+ org.sopeco.plugin.std.parametervariation.csv,
+ org.sopeco.plugin.std.parametervariation.linear
