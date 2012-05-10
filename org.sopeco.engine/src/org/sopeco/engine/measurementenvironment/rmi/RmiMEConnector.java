@@ -92,6 +92,8 @@ public class RmiMEConnector {
 	public static void startRemoteMEController(IMeasurementEnvironmentController meController, URI meURI) {
 
 		try {
+			
+			logger.info("Publishing MEController under: {}", meURI.toString());
 
 			Registry registry = getRegistry(meURI);
 
@@ -101,6 +103,8 @@ public class RmiMEConnector {
 
 			registry.rebind(getName(meURI), meControllerStub);
 
+			logger.info("Publishing finished.", meURI.toString());
+			
 		} catch (RemoteException e) {
 			
 			logger.error("Cannot start the RMI server.", e);

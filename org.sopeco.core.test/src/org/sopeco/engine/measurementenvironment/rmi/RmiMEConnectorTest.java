@@ -60,7 +60,7 @@ public class RmiMEConnectorTest {
 		
 		ScenarioInstance si = runner.getScenarioInstance();
 		
-		DataSetAggregated data = si.getExperimentSeriesList().get(0).getExperimentSeriesRuns().get(0).getResultDataSet();
+		DataSetAggregated data = si.getExperimentSeriesList().get(0).getExperimentSeriesRuns().get(0).getSuccessfulResultDataSet();
 		
 		assertTrue(data.getInputColumns().size() > 0);
 		
