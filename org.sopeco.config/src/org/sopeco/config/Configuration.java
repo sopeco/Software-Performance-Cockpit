@@ -398,10 +398,15 @@ public class Configuration implements IConfiguration {
 	}
 
 	@Override
-	public URI getMeasurementControllerURI() {
-		return (URI) getProperty(CONF_MEASUREMENT_CONTROLLER_URI);
+	public String getMeasurementControllerURIAsStr() {
+		return getPropertyAsStr(CONF_MEASUREMENT_CONTROLLER_URI);
 	}
 
+	@Override
+	public URI getMeasurementControllerURI() {
+		return (URI)getProperty(CONF_MEASUREMENT_CONTROLLER_URI);
+	}
+	
 	@Override
 	public String getMeasurementControllerClassName() {
 		return getPropertyAsStr(CONF_MEASUREMENT_CONTROLLER_CLASS_NAME);
