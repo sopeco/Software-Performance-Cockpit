@@ -1,5 +1,7 @@
 package org.sopeco.engine;
 
+import java.net.URI;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.config.Configuration;
@@ -35,7 +37,7 @@ public class EngineFactory {
 		
 		// if the measurement environment class is not set
 		if (meClassName == null) {
-			final String meURI = config.getMeasurementControllerURI();
+			final URI meURI = config.getMeasurementControllerURI();
 			final IMeasurementEnvironmentController meController = MEConnector.getMeasurementEnvironmentController(meURI);
 			
 			logger.debug("Connected to the measurement environment controller service.");
