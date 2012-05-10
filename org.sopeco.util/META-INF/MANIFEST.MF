@@ -4,7 +4,9 @@ Bundle-Name: SoPeCo Utilities
 Bundle-SymbolicName: org.sopeco.util
 Bundle-Version: 0.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.sopeco.util
+Export-Package: org.sopeco.util,
+ org.sopeco.util.system
 Require-Bundle: org.junit,
  org.apache.ant;bundle-version="1.8.2",
- org.sopeco.orbit.logging;bundle-version="1.0.0"
+ org.sopeco.orbit.logging;bundle-version="1.0.0",
+ org.sopeco.orbit.com.hyperic.sigar;bundle-version="1.6.3"

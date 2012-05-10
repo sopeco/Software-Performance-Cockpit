@@ -3,9 +3,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 
-	<artifactId>org.sopeco.core.test</artifactId>
+	<artifactId>org.sopeco.plugin.std.constantassignment</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>SoPeCo Core Test</name>
+	<name>Standard Constant Assignment Strategies</name>
 
 	<parent>
 		<artifactId>org.sopeco.core.parent</artifactId>

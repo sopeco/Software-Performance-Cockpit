@@ -2,15 +2,10 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SoPeCo Core Test
 Bundle-SymbolicName: org.sopeco.core.test
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 0.2.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.sopeco.config;bundle-version="0.2.0",
- org.sopeco.core;bundle-version="0.2.0",
- org.sopeco.engine;bundle-version="0.2.0",
- org.sopeco.persistence;bundle-version="0.2.0",
- org.sopeco.util;bundle-version="0.2.0",
+Require-Bundle: org.sopeco.core;bundle-version="0.2.0",
  org.junit,
- org.sopeco.orbit.logging;bundle-version="1.0.0",
  org.sopeco.plugin.std.analysis;bundle-version="0.2.0",
  org.sopeco.plugin.std.constantassignment;bundle-version="0.2.0",
  org.sopeco.plugin.std.exploration;bundle-version="0.2.0",

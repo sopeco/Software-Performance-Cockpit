@@ -3,9 +3,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 
-	<artifactId>org.sopeco.core.test</artifactId>
+	<artifactId>org.sopeco.plugin.std.analysis</artifactId>
 	<packaging>eclipse-plugin</packaging>
-	<name>SoPeCo Core Test</name>
+	<name>Standard Analysis Strategies</name>
 
 	<parent>
 		<artifactId>org.sopeco.core.parent</artifactId>
