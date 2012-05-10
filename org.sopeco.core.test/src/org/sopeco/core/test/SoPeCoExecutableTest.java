@@ -10,8 +10,6 @@ import org.sopeco.config.IConfiguration;
 import org.sopeco.core.SoPeCoRunner;
 import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.engine.registry.IExtensionRegistry;
-import org.sopeco.persistence.IPersistenceProvider;
-import org.sopeco.persistence.PersistenceProviderFactory;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetInputColumn;
 import org.sopeco.persistence.entities.ScenarioInstance;
@@ -27,10 +25,7 @@ public class SoPeCoExecutableTest {
 	private static final Logger logger = LoggerFactory.getLogger(SoPeCoExecutableTest.class);
 	
 	public static void main(String[] args) {
-//		testPluginRegistry();
-		
 		run();
-		
 	}
 
 	/* 
@@ -38,22 +33,7 @@ public class SoPeCoExecutableTest {
 	 */
 	public static void run() {
 		
-		/*
-		 * If you would like to mimic the command-line call of the runner,
-		 * you would use the following code:
-		 *
-		 
-			String[] arguments = new String[] {
-					"-meClass", "org.sopeco.core.test.SampleMEController",
-					"-sd", "rsc/test.configuration"
-			};
-			
-			SoPeCoRunner runner = new SoPeCoRunner();
-			runner.setArguments(arguments);
-			runner.run();
-		/**/
-
-		IConfiguration config = Configuration.getSingleton();
+		IConfiguration config = Configuration.getSingleton(SoPeCoExecutableTest.class);
 
 		// setting the MEController class name
 		config.setMeasurementControllerClassName("org.sopeco.core.test.SampleMEController");
@@ -74,11 +54,22 @@ public class SoPeCoExecutableTest {
 			logger.debug("{}: {}", ic.getParameter().getName(), ic.getValueList());
 		}
 
-		IPersistenceProvider pp = PersistenceProviderFactory.getPersistenceProvider();
 	}
 	
-	public static void testPluginRegistry() {
-		IConfiguration conf = Configuration.getSingleton();
-		IExtensionRegistry registry = ExtensionRegistry.getSingleton();
-	}
 }
+
+/*
+ * If you would like to mimic the command-line call of the runner,
+ * you would use the following code:
+ *
+ 
+	String[] arguments = new String[] {
+			"-meClass", "org.sopeco.core.test.SampleMEController",
+			"-sd", "rsc/test.configuration"
+	};
+	
+	SoPeCoRunner runner = new SoPeCoRunner();
+	runner.setArguments(arguments);
+	runner.run();
+/**/
+

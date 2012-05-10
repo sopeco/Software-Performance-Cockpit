@@ -15,12 +15,21 @@ import org.sopeco.config.exception.ConfigurationException;
  */
 public interface IConfiguration {
 
+	public static final String ENV_SOPECO_HOME = "SOPECO_HOME";
+
 	public static final String CONF_LOGGER_CONFIG_FILE_NAME = "sopeco.config.loggerConfigFileName";
+	
 	public static final String CONF_SCENARIO_DESCRIPTION_FILE_NAME = "sopeco.config.measurementSpecFileName";
+	
 	public static final String CONF_SCENARIO_DESCRIPTION = "sopeco.config.measurementSpecification";
+	
 	public static final String CONF_MEASUREMENT_CONTROLLER_URI = "sopeco.config.measurementControllerURI";
+	
 	public static final String CONF_MEASUREMENT_CONTROLLER_CLASS_NAME = "sopeco.config.measurementControllerClassName";
+	
 	public static final String CONF_APP_NAME = "sopeco.config.applicationName";
+	
+	public static final String CONF_MAIN_CLASS = "sopeco.config.mainClass";
 	
 	/** Holds the path to the root folder of SoPeCo. */ 
 	public static final String CONF_APP_ROOT_FOLDER = "sopeco.config.rootFolder";
@@ -130,6 +139,14 @@ public interface IConfiguration {
 	public void setApplicationName(String appName);
 
 	/**
+	 * Sets the main class that runs this thread. This will also be
+	 * used in finding the root folder
+	 * 
+	 * @param mainClass
+	 */
+	public void setMainClass(Class<?> mainClass);
+
+	/**
 	 * Returns the application root directory.
 	 */
 	public String getAppRootDirectory();
@@ -179,4 +196,9 @@ public interface IConfiguration {
 	 */
 	public String getApplicationName();
 
+	/**
+	 * Returns the main class that runs this thread. This value
+	 * must have been set by a call to {@link IConfiguration#setMainClass(Class)}.
+	 */
+	public Class<?> getMainClass();
 }

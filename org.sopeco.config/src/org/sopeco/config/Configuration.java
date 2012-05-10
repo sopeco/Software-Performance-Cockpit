@@ -58,12 +58,12 @@ public class Configuration implements IConfiguration {
 	
 	/** Holds the configured property values. */
 	private Map<String, Object> properties = new HashMap<String, Object>();
-	
+
 	/*
 	 * Preventing the instantiation of the class by other classes.
 	 */
-	private Configuration() {
-		setDefaultValues();
+	private Configuration(Class<?> mainClass) {
+		setDefaultValues(mainClass);
 	};
 	
 	/**
@@ -72,7 +72,20 @@ public class Configuration implements IConfiguration {
 	 */
 	public static IConfiguration getSingleton() {
 		if (SINGLETON == null)
-			SINGLETON = new Configuration();
+			SINGLETON = new Configuration(null);
+		
+		return SINGLETON;
+	}
+
+	/**
+	 * Returns a singleton instance of the kernel with 
+	 * the given main class.
+	 * 
+	 * @see #setMainClass(Class)
+	 */
+	public static IConfiguration getSingleton(Class<?> mainClass) {
+		if (SINGLETON == null)
+			SINGLETON = new Configuration(mainClass);
 		
 		return SINGLETON;
 	}
@@ -261,9 +274,14 @@ public class Configuration implements IConfiguration {
 	/**
 	 * Sets the default property values. 
 	 */
-	private void setDefaultValues() {
+	private void setDefaultValues(Class<?> mainClass) {
+		if (mainClass != null)
+			setMainClass(mainClass);
+		
 		setApplicationName("sopeco");
 		setProperty(CONF_PLUGINS_FOLDER, "plugins");
+		
+		if (getAppRootDirectory() == null)
 		setProperty(CONF_APP_ROOT_FOLDER, Tools.getRootFolder());
 		
 		String configFileName = getAppConfDirectory() + File.separator + DEFAULT_CONFIG_FILE_NAME;
@@ -421,7 +439,10 @@ public class Configuration implements IConfiguration {
 	public String getAppRootDirectory() {
 		String result = getPropertyAsStr(CONF_APP_ROOT_FOLDER);
 		if (result == null) {
-			result = Tools.getRootFolder();
+			result = System.getenv(ENV_SOPECO_HOME);
+			if (result == null) {
+				result = Tools.getRootFolder(getMainClass());
+			}
 			setProperty(CONF_APP_ROOT_FOLDER, result);
 		}
 		return result;
@@ -430,6 +451,15 @@ public class Configuration implements IConfiguration {
 	@Override
 	public String getAppConfDirectory() {
 		return getAppRootDirectory() + File.separator + CONFIGURATION_FOLDER;
+	}
+	
+	public void setMainClass(Class<?> mainClass) {
+		setProperty(CONF_MAIN_CLASS, mainClass);
+	}
+
+	@Override
+	public Class<?> getMainClass() {
+		return (Class<?>) getProperty(CONF_MAIN_CLASS);
 	}
 
 }
