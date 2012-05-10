@@ -12,7 +12,7 @@ import org.sopeco.engine.experimentseries.IExperimentSeriesManager;
 import org.sopeco.engine.experimentseries.impl.ExperimentSeriesManager;
 import org.sopeco.engine.imp.EngineImp;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
-import org.sopeco.engine.measurementenvironment.MEConnector;
+import org.sopeco.engine.measurementenvironment.rmi.RmiMEConnector;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.PersistenceProviderFactory;
 
@@ -38,7 +38,7 @@ public class EngineFactory {
 		// if the measurement environment class is not set
 		if (meClassName == null) {
 			final URI meURI = config.getMeasurementControllerURI();
-			final IMeasurementEnvironmentController meController = MEConnector.getMeasurementEnvironmentController(meURI);
+			final IMeasurementEnvironmentController meController = RmiMEConnector.connectToMEController(meURI);
 			
 			logger.debug("Connected to the measurement environment controller service.");
 			

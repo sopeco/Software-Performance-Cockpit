@@ -290,7 +290,12 @@ public class Tools {
 		}
 		
 		// replace the java separator with the 
-		fullPath = fullPath.replaceAll("/", File.separator);
+		fullPath = fullPath.replace('/', File.separatorChar);
+		
+		// remove leading backslash
+		if (fullPath.startsWith("\\")){
+			fullPath = fullPath.substring(1);
+		}
 		
 		// remove the final 'bin'
 		final int binIndex = fullPath.indexOf(File.separator + "bin");
