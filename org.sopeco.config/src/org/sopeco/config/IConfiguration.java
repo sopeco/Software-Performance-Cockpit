@@ -154,11 +154,18 @@ public interface IConfiguration {
 	public Object getScenarioDescription();
 	
 	/**
-	 * Gets the measurement controller URI as a String. 
+	 * Gets the measurement controller URI. 
 	 * 
 	 * @see #CONF_MEASUREMENT_CONTROLLER_URI
 	 */
 	public URI getMeasurementControllerURI();
+	
+	/**
+	 * Gets the measurement controller URI as a String. 
+	 * 
+	 * @see #CONF_MEASUREMENT_CONTROLLER_URI
+	 */
+	public String getMeasurementControllerURIAsStr();
 	
 	/**
 	 * Gets the measurement controller class name. 
