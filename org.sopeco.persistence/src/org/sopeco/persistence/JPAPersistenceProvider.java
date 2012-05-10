@@ -101,6 +101,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 	
 	@Override
 	public void store(String resultId, IStorableAnalysisResult analysisResult) {
+		analysisResult.setId(resultId);
 		AnalysisResultStorageContainer containerEntity = EntityFactory.createAnalysisResultStorageContainer(resultId, analysisResult);
 	
 		EntityManager em = emf.createEntityManager();
