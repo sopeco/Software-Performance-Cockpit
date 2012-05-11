@@ -99,6 +99,25 @@ public class ScenarioInstance implements Serializable {
 		this.scenarioDefinition = scenarioDefinition;	
 	}
 	
+	
+	/*
+	 * Utility Functions
+	 */
+	/**
+	 * @param name the name of the experiment series that is included in this scenario instance
+	 * @return the experiment series instance with the given name; <code>null</code> if no series with that name exists
+	 */
+	public ExperimentSeries getExperimentSeries(String name){
+		for(ExperimentSeries series : getExperimentSeriesList()) {
+			if(series.getName().equals(name)) {
+				return series;
+			}
+		}
+		
+		return null;
+	}
+	
+	
 	/*
 	 * Overrides
 	 */
