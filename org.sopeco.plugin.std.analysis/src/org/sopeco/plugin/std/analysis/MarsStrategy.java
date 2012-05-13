@@ -1,16 +1,22 @@
 package org.sopeco.plugin.std.analysis;
 
+import java.util.Random;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.engine.analysis.IPredictionFunctionResult;
 import org.sopeco.engine.analysis.PredictionFunctionResult;
 import org.sopeco.engine.registry.ISoPeCoExtension;
 import org.sopeco.persistence.dataset.DataSetAggregated;
+import org.sopeco.persistence.dataset.DataSetRow;
+import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.SimpleDataSet;
+import org.sopeco.persistence.dataset.SimpleDataSetRow;
 import org.sopeco.persistence.dataset.SimpleDataSetRowBuilder;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.plugin.std.analysis.common.AbstractPredictionFunctionStrategy;
 import org.sopeco.plugin.std.analysis.util.RAdapter;
+import org.sopeco.util.Tools;
 
 /**
  * This analysis strategy allows deriving Multivariate Adaptive Regression
@@ -88,7 +94,33 @@ public class MarsStrategy extends AbstractPredictionFunctionStrategy {
 		
 		SimpleDataSetRowBuilder rb = new SimpleDataSetRowBuilder();
 		while (rb.size() < 8) {
-			rb.appendRows(givenDataSet.getRowList());
+			
+			for(SimpleDataSetRow row : givenDataSet.getRowList()){
+				rb.startRow();
+				for (ParameterValue<?> pv : row.getRowValues()){
+					
+					if(pv.getParameter().equals(dependentParameterDefintion)) {
+						// scatter due to Mars Error "cannot scale y (values are all equal to ..)"
+						Object newValue;
+						switch(Tools.SupportedTypes.get(pv.getParameter().getType())){
+						case Double:
+							Random r = new Random();
+							newValue = pv.getValueAsDouble() * (1.0001 + 0.0001 * r.nextDouble());
+							break;
+						case Integer:
+							newValue = pv.getValueAsInteger() + 1;
+							break;
+						default:
+							throw new IllegalArgumentException("Unsopported parameter type: " + pv.getParameter().getType());
+						}
+						pv.setValue(newValue);
+					}
+					
+					rb.addParameterValue(pv.getParameter(), pv.getValue());
+				}
+				rb.finishRow(); 
+			}
+			
 		}
 		return rb.createDataSet();
 	}
