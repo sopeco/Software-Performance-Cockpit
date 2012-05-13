@@ -145,6 +145,10 @@ public class ExperimentController implements IExperimentController {
 
 			boolean experimentSuccessful = false;
 			
+			// 0. prepare to pass all parameter values to me controller
+			inputPVs.addAll(initializationPVs);
+			inputPVs.addAll(preparationPVs);
+			
 			// 1. run the experiment
 			Collection<ParameterValueList<?>> observations = null;
 			try {
@@ -158,13 +162,13 @@ public class ExperimentController implements IExperimentController {
 			DataSetRowBuilder builder = new DataSetRowBuilder();
 			builder.startRow();
 
-			// 2.1. add initialization values
-			for (ParameterValue<?> pv : initializationPVs)
-				builder.addInputParameterValue(pv.getParameter(), pv.getValue());
-
-			// 2.2. add preparation values
-			for (ParameterValue<?> pv : preparationPVs)
-				builder.addInputParameterValue(pv.getParameter(), pv.getValue());
+//			// 2.1. add initialization values
+//			for (ParameterValue<?> pv : initializationPVs)
+//				builder.addInputParameterValue(pv.getParameter(), pv.getValue());
+//
+//			// 2.2. add preparation values
+//			for (ParameterValue<?> pv : preparationPVs)
+//				builder.addInputParameterValue(pv.getParameter(), pv.getValue());
 
 			// 2.3. add input values
 			for (ParameterValue<?> parameterValue : inputPVs)
