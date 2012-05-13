@@ -15,10 +15,12 @@ import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.dataset.AbstractDataSetColumn;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetModifier;
+import org.sopeco.persistence.dataset.DataSetRowBuilder;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.plugin.std.exploration.breakdown.space.RelativePosition;
 
 /**
@@ -50,7 +52,7 @@ public class AlgorithmsEnvironment {
 	 * and the predictions.
 	 */
 
-	private DataSetModifier modifier = new DataSetModifier();
+	private DataSetRowBuilder dataSetBuilder = new DataSetRowBuilder();
 	// private DataSet modelDataSet = DataFactory.eINSTANCE.createDataSet();
 
 	/**
@@ -135,15 +137,23 @@ public class AlgorithmsEnvironment {
 		List<ParameterValue<?>> realDataPoint = this.getRealPosition(position);
 		realDataPoint.add(value.getValue());
 
+		dataSetBuilder.startRow();
 		for (ParameterValue<?> parameterValue : realDataPoint) {
-			AbstractDataSetColumn<?> column = null;
-			column = modifier.getColumn(parameterValue.getParameter());
-			if (column == null) {
-				column = modifier.addColumn(parameterValue.getParameter());
+//			AbstractDataSetColumn<?> column = null;
+//			column = modifier.getColumn(parameterValue.getParameter());
+//			if (column == null) {
+//				column = modifier.addColumn(parameterValue.getParameter());
+//			}
+//			column.getParameterValues().add(parameterValue);
+			if(parameterValue.getParameter().getRole().equals(ParameterRole.INPUT)) {
+				dataSetBuilder.addInputParameterValue(parameterValue.getParameter(), parameterValue.getValue());
+			} else {
+				dataSetBuilder.addObservationParameterValue(parameterValue.getParameter(), parameterValue.getValue());
 			}
-			column.getParameterValues().add(parameterValue);
 		}
 
+		dataSetBuilder.finishRow();
+		
 		// create the analysis result
 		this.resultIsInvalid = true;
 
@@ -185,7 +195,7 @@ public class AlgorithmsEnvironment {
 	 */
 	public AbstractEnvironmentValue predictValue(RelativePosition position) {
 		if (this.resultIsInvalid) {
-			this.analyser.analyse(modifier.getDataSet(), this.analysisConfig);
+			this.analyser.analyse(dataSetBuilder.createDataSet(), this.analysisConfig);
 			this.analysisResult = analyser.getPredictionFunctionResult();
 
 			this.resultIsInvalid = false;
@@ -209,7 +219,10 @@ public class AlgorithmsEnvironment {
 
 		for (Entry<String, Double> e : position.entrySet()) {
 			IParameterVariation paramVariation = this.parameterVariationIdMap.get(e.getKey());
-			int indexInVariation = (int) Math.round(paramVariation.size() * e.getValue());
+			int indexInVariation = (int) Math.ceil(paramVariation.size() * e.getValue()) -1;
+			if (indexInVariation == -1) { // special case if if e.getValue() is 0
+				indexInVariation = 0;
+			}
 			returnList.add(paramVariation.get(indexInVariation));
 		}
 
@@ -223,7 +236,7 @@ public class AlgorithmsEnvironment {
 	 * @return
 	 */
 	public DataSetAggregated getModelDataSet() {
-		return this.modifier.getDataSet();
+		return this.dataSetBuilder.createDataSet();
 	}
 
 	/**

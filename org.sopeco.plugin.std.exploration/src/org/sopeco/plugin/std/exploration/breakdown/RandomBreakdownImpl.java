@@ -21,7 +21,7 @@ import org.sopeco.plugin.std.exploration.breakdown.util.BreakdownConfiguration;
  */
 public class RandomBreakdownImpl extends AbstractBreakdownExploration implements IBreakdownExploration {
 
-	private static final int NUM_INITIAL_MODEL_POINTS = 10;
+	
 
 	public RandomBreakdownImpl(ExplorationStrategy strategyConfig, 
 			EnvironmentCachedAccess cachedEnvironmentAccess, 
@@ -54,7 +54,7 @@ public class RandomBreakdownImpl extends AbstractBreakdownExploration implements
 
 	@Override
 	public void initialise() {
-		for (int j = 0; j < NUM_INITIAL_MODEL_POINTS; j++) {
+		for (int j = 0; j < BreakdownConfiguration.getNumberOfInitialExperiments(); j++) {
 			RelativePosition point = createRandomPoint();
 			MeasurementCacheResult measuredValue = cachedEnvironmentAccess.measure(point);
 			cachedEnvironmentAccess.addToModel(point, measuredValue.value);

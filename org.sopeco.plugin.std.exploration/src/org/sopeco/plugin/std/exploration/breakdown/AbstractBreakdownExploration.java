@@ -325,14 +325,13 @@ public abstract class AbstractBreakdownExploration extends AbstractSoPeCoExtensi
 					// create a validation set manager instance
 					validationSetManager = new ValidationSetManager(cachedEnvironmentAccess, allParameters);
 					validationSetManager.createRandomValidationSet(BreakdownConfiguration.getSizeOfValidationSet(strategyConfig));
-				} else {
-
-					// determine and check current relative prediction error on validation set
-					double avgRelativePredictionError = validationSetManager.getAvgRelativePredictionError();
-					if (avgRelativePredictionError < BreakdownConfiguration.getDesiredModelAccuracy(strategyConfig)) {
-						accurateEnoughModel = true;
-					}
+				} 
+				// determine and check current relative prediction error on validation set
+				double avgRelativePredictionError = validationSetManager.getAvgRelativePredictionError();
+				if (avgRelativePredictionError < BreakdownConfiguration.getDesiredModelAccuracy(strategyConfig)) {
+					accurateEnoughModel = true;
 				}
+				
 			}
 		}
 	}
@@ -472,7 +471,7 @@ public abstract class AbstractBreakdownExploration extends AbstractSoPeCoExtensi
 	 */
 	protected boolean isTimeForValidation() {
 		// if it is null, every time should be validated
-		if (this.baseForValidationExecutionCheck == null) {
+		if (this.baseForValidationExecutionCheck == null || this.baseForValidationExecutionCheck == 0) {
 			return true;
 		}
 		
