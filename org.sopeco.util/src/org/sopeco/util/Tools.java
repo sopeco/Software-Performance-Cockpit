@@ -271,13 +271,23 @@ public class Tools {
 		if (mainClass == null)
 			mainClass = Tools.class;
 		
+		final String baseErrorMsg = "Cannot locate root folder.";
+		
 		final String classFile = mainClass.getName().replaceAll("\\.", "/") + ".class";
+		final URL classURL = ClassLoader.getSystemResource(classFile);
+		
+		if (classURL == null) {
+			logger.warn("{} The application may be running in an OSGi container.", baseErrorMsg);
+			return ".";
+		}
+		
 		String fullPath = ClassLoader.getSystemResource(classFile).toString();
 		
 		try {
 			fullPath = URLDecoder.decode(fullPath, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
-			logger.warn("Cannot find root folder. UTF-8 encoding is not supported.");
+			logger.warn("{} UTF-8 encoding is not supported.", baseErrorMsg);
+			return ".";
 		}
 		
 		if (fullPath.indexOf("file:") > -1) {
