@@ -145,14 +145,16 @@ public class ExperimentController implements IExperimentController {
 
 			boolean experimentSuccessful = false;
 			
+			ParameterCollection<ParameterValue<?>> paramCollection = ParameterCollectionFactory.createParameterValueCollection(inputPVs);
+			
 			// 0. prepare to pass all parameter values to me controller
-			inputPVs.addAll(initializationPVs);
-			inputPVs.addAll(preparationPVs);
+			paramCollection.addAll(initializationPVs);
+			paramCollection.addAll(preparationPVs);
 			
 			// 1. run the experiment
 			Collection<ParameterValueList<?>> observations = null;
 			try {
-				observations = meController.runExperiment(inputPVs, terminationCondition);
+				observations = meController.runExperiment(paramCollection, terminationCondition);
 				experimentSuccessful = true;
 			} catch (ExperimentFailedException e) {
 				logger.warn("An experiment failed.");
@@ -171,7 +173,7 @@ public class ExperimentController implements IExperimentController {
 //				builder.addInputParameterValue(pv.getParameter(), pv.getValue());
 
 			// 2.3. add input values
-			for (ParameterValue<?> parameterValue : inputPVs)
+			for (ParameterValue<?> parameterValue : paramCollection)
 				builder.addInputParameterValue(parameterValue.getParameter(), parameterValue.getValue());
 
 			// 2.4. add observation values, if the experiment was successful

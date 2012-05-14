@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.sopeco.persistence.dataset.ParameterValue;
@@ -193,4 +194,15 @@ public class ParameterCollection<V> implements Set<V>, Serializable {
 		return pDef;
 	}
 
+	public String toString() {
+		StringBuffer result = new StringBuffer();
+		for (Entry<String, V> e: map.entrySet()) {
+			result.append(", " + e.getKey() + "->" + e.getValue());
+		}
+		if (result.length() == 0) {
+			return "{}";
+		} else {
+			return "{" + result.substring(2) + "}";
+		}
+	}
 }
