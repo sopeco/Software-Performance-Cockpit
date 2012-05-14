@@ -13,12 +13,12 @@ import java.rmi.registry.LocateRegistry;
 import org.junit.Test;
 import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
-import org.sopeco.core.SoPeCoRunner;
 import org.sopeco.core.test.SampleMEController;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetInputColumn;
 import org.sopeco.persistence.entities.ScenarioInstance;
+import org.sopeco.runner.SoPeCoRunner;
 
 public class RmiMEConnectorTest {
 	

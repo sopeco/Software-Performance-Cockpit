@@ -7,12 +7,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
-import org.sopeco.core.SoPeCoRunner;
-import org.sopeco.engine.registry.ExtensionRegistry;
-import org.sopeco.engine.registry.IExtensionRegistry;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetInputColumn;
 import org.sopeco.persistence.entities.ScenarioInstance;
+import org.sopeco.runner.SoPeCoRunner;
 
 /**
  * This is a test for running SoPeCo as a simple Java application.

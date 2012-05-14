@@ -28,6 +28,7 @@
 		<module>../org.sopeco.core.test</module>
 		<module>../org.sopeco.core.feature</module>
 		<module>../org.sopeco.core.updatesite</module>
+		<module>../org.sopeco.runner</module>
 		<module>../org.sopeco.plugin.std.exploration</module>
 		<module>../org.sopeco.plugin.std.parametervariation</module>
 		<module>../org.sopeco.plugin.std.analysis</module>

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.sopeco.core;
+package org.sopeco.runner;
 
 import java.io.IOException;
 
