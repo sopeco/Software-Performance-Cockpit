@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.engine.EngineFactory;
 import org.sopeco.engine.IEngine;
+import org.sopeco.engine.exception.GenericException;
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.experimentseries.IExperimentSeriesManager;
 import org.sopeco.engine.experimentseries.IExplorationStrategy;
@@ -90,9 +91,11 @@ public class ExperimentSeriesManager implements IExperimentSeriesManager {
 				if (pv.canVary(pva)) { 
 					pv.initialize(pva);
 					pvList.add(pv);
+				} else {
+					// 	TODO proper error handling 
+					logger.error("{} does not support parameter variation for {}.", pv.getProvider().getName(), pva.getParameter().getFullName());
+					throw new GenericException();
 				}
-				// else
-				// TODO error if it is not supported
 			} 
 
 		}

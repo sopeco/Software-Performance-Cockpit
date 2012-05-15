@@ -144,6 +144,7 @@ public class ExperimentController implements IExperimentController {
 		try {
 
 			boolean experimentSuccessful = false;
+			String error = "";
 			
 			ParameterCollection<ParameterValue<?>> paramCollection = ParameterCollectionFactory.createParameterValueCollection(inputPVs);
 			
@@ -157,7 +158,9 @@ public class ExperimentController implements IExperimentController {
 				observations = meController.runExperiment(paramCollection, terminationCondition);
 				experimentSuccessful = true;
 			} catch (ExperimentFailedException e) {
-				logger.warn("An experiment failed.");
+				error = e.getMessage();
+				logger.warn("The experiment failed. Reason: {}", error);
+				// TODO can we keep the log of these errors?
 			}
 
 			// 2. aggregate the results
