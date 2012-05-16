@@ -96,6 +96,31 @@ public interface IConfiguration {
 	public void processCommandLineArguments(String[] args) throws ConfigurationException;
 
 	/**
+	 * Loads default configurations from a file name, in 
+	 * an incremental fashion; i.e., the loaded configuration 
+	 * will be added to (and overriding) the existing default configuration.
+	 * <p>
+	 * See {@link #getDefaultValue(String)}.  
+	 * 
+	 * @param fileName the full path to a properties file
+	 * @throws ConfigurationException 
+	 */
+	public void loadDefaultConfiguration(String fileName) throws ConfigurationException;
+	
+	/**
+	 * Loads default configurations from a file name in the classpath
+	 * of the given class loader. The configuration is loaded in 
+	 * an incremental fashion; i.e., the loaded configuration 
+	 * will be added to (and overriding) the existing default configuration.
+	 * <p>
+	 * See {@link #getDefaultValue(String)}.  
+	 *
+	 * @param classLoader an instance of a class loader
+	 * @param fileName the name of a properties file
+	 */
+	public void loadDefaultConfiguration(ClassLoader classLoader, String fileName)  throws ConfigurationException;
+	
+	/**
 	 * Sets the value of scenario description file name.
 	 *  
 	 * @param fileName file name

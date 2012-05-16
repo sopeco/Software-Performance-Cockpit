@@ -63,7 +63,11 @@ public class Configuration implements IConfiguration {
 	 * Preventing the instantiation of the class by other classes.
 	 */
 	private Configuration(Class<?> mainClass) {
-		setDefaultValues(mainClass);
+		try {
+			setDefaultValues(mainClass);
+		} catch (ConfigurationException e) {
+			throw new RuntimeException(e);
+		}
 	};
 	
 	/**
@@ -216,7 +220,7 @@ public class Configuration implements IConfiguration {
 	    // -config
 	    if (line.hasOption(config.getOpt())) {
 	    	final String configFilePath = line.getOptionValue(config.getOpt());
-	    	loadConfigFromFile(configFilePath);
+	    	loadConfiguration(properties, configFilePath);
 	    }
 	    
 	    // -uri
@@ -250,26 +254,16 @@ public class Configuration implements IConfiguration {
 
 	/**
 	 * Sets the default property values. 
+	 * @throws ConfigurationException 
 	 */
-	private void setDefaultValues(Class<?> mainClass) {
+	private void setDefaultValues(Class<?> mainClass) throws ConfigurationException {
 		if (mainClass != null)
-			setMainClass(mainClass);
-		
-		setApplicationName("sopeco");
-		setProperty(CONF_PLUGINS_FOLDER, "plugins");
+			defaultValues.put(CONF_MAIN_CLASS, mainClass);
 		
 		if (getAppRootDirectory() == null)
-		setProperty(CONF_APP_ROOT_FOLDER, Tools.getRootFolder());
-		
-		String configFileName = getAppConfDirectory() + File.separator + DEFAULT_CONFIG_FILE_NAME;
-		InputStream in = this.getClass().getResourceAsStream(configFileName);
-		
-		if (in != null) {
-			loadConfigFromStream(in);
-			logger.debug("Loaded default configuration file.");
-		} else {
-			logger.warn("Could not find default configuration file ('{}').", configFileName);
-		}
+		defaultValues.put(CONF_APP_ROOT_FOLDER, Tools.getRootFolder());
+
+		loadDefaultConfiguration(this.getClass().getClassLoader(), DEFAULT_CONFIG_FILE_NAME);
 	}
 
 	/**
@@ -284,39 +278,68 @@ public class Configuration implements IConfiguration {
 		formatter.printHelp(getApplicationName(), options, true );
 	}
 
+	@Override
+	public void loadDefaultConfiguration(String fileName) throws ConfigurationException {
+		loadConfiguration(defaultValues, fileName);
+	}
+
+	@Override
+	public void loadDefaultConfiguration(ClassLoader classLoader, String fileName) throws ConfigurationException {
+		loadConfiguration(defaultValues, classLoader, fileName);
+	}
+
 	/**
-	 * Loads SoPeCo configuration from a config file.
-	 * 
-	 * @param fileName file name
+	 * Loads configurations from a file into
+	 * the destination properties holder. 
 	 */
-	private void loadConfigFromFile(String fileName) {
-		logger.debug("Loading configuration from {}...", fileName);
+	private void loadConfiguration(Map<String, Object> dest, String fileName) throws ConfigurationException {
+		logger.debug("Loading configuration from '{}'...", fileName);
 		
 		try {
-			loadConfigFromStream(new FileInputStream(fileName));
+			loadConfigFromStream(dest, new FileInputStream(fileName));
 		} catch (FileNotFoundException e) {
-			logger.error("Could not load configuration from file. File not found.");
-			return;
+			final String msg = "Could not load configuration from file. File '" + fileName + "' was not found.";
+			throw new ConfigurationException(msg);
+			// logger.error("Could not load configuration from file. File not found.");
 		}
 		
 		logger.debug("Configuration file loaded.");
 	}
-	
+
 	/**
-	 * Loads SoPeCo configuration from a config stream.
+	 * Loads configurations from a file available through the given class loader into
+	 * the destination properties holder. 
+	 */
+	private void loadConfiguration(Map<String, Object> dest, ClassLoader classLoader, String fileName) throws ConfigurationException {
+		logger.debug("Loading configuration from '{}' in classpath...", fileName);
+		
+		InputStream in = classLoader.getResourceAsStream(fileName);
+			
+		if (in == null) {
+			final String msg = "Could not load configuration from file. File '" + fileName + "' was not found in the classpath.";
+			throw new ConfigurationException(msg);
+		}
+		
+		loadConfigFromStream(dest, in);
+
+		logger.debug("Configuration file loaded.");
+	}
+
+	/**
+	 * Loads configuration from a config stream into the destination
+	 * configuration holder.
 	 * 
 	 * @param stream the input stream
 	 */
-	private void loadConfigFromStream(InputStream stream) {
+	private void loadConfigFromStream(Map<String, Object> dest, InputStream stream) throws ConfigurationException {
 		Properties prop = new Properties();
 		try {
 			prop.load(stream);
 		} catch (IOException e) {
-			logger.error("Could not load configuration. (Reason: {})", e.getMessage());
-			return;
+			throw new ConfigurationException("Could not load configuration. (Reason: " + e.getMessage() + ")", e);
 		}
 		for (Entry<Object, Object> entry : prop.entrySet())
-			properties.put((String)entry.getKey(), entry.getValue());
+			dest.put((String)entry.getKey(), entry.getValue());
 	}
 	
 	/**

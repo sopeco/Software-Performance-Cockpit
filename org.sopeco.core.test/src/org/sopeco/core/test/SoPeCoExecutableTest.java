@@ -3,10 +3,13 @@
  */
 package org.sopeco.core.test;
 
+import java.io.File;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
+import org.sopeco.config.exception.ConfigurationException;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetInputColumn;
 import org.sopeco.persistence.entities.ScenarioInstance;
@@ -33,11 +36,19 @@ public class SoPeCoExecutableTest {
 		
 		IConfiguration config = Configuration.getSingleton(SoPeCoExecutableTest.class);
 
+		try {
+			config.loadDefaultConfiguration("rsc" + File.separator + "sopeco-test.conf");
+		} catch (ConfigurationException e) {
+			throw new RuntimeException(e);
+		}
+		
+		System.out.println("Application file name is: " + config.getApplicationName());
+		
 		// setting the MEController class name
 		config.setMeasurementControllerClassName("org.sopeco.core.test.SampleMEController");
 		
 		// setting the scenario definition file name
-		config.setScenarioDescriptionFileName("rsc/test.configuration");
+		config.setScenarioDescriptionFileName("rsc" + File.separator + "test.configuration");
 
 		SoPeCoRunner runner = new SoPeCoRunner();
 		runner.run();
