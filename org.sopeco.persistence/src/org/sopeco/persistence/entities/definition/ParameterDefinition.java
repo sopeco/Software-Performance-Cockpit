@@ -77,7 +77,7 @@ public class ParameterDefinition implements Serializable {
 	
 	private String createFullNamespaceString(String fullNamespace, ParameterNamespace namespace, String namespaceDelimitter){
 
-		if(namespace!=null && !namespace.getName().isEmpty()){
+		if(namespace!=null && namespace.getName() != null && !namespace.getName().isEmpty()){
 			fullNamespace = namespace.getName() + namespaceDelimitter + fullNamespace;
 			return createFullNamespaceString(fullNamespace, namespace.getParent(), namespaceDelimitter);
 		}

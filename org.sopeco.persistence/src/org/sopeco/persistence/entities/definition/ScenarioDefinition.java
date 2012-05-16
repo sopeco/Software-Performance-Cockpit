@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * @author Dennis Westermann
+ * @author Dennis Westermann, Jens Happe
  *
  */
 public class ScenarioDefinition implements Serializable {
@@ -87,7 +87,7 @@ public class ScenarioDefinition implements Serializable {
 			}
 		}
 
-		return null;
+		throw new IllegalArgumentException("Unknown Parameter: " + fullName);
 	}
 
 	/*

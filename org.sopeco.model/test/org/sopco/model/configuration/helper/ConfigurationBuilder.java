@@ -45,7 +45,6 @@ public class ConfigurationBuilder {
 		ParameterNamespace root = scenarioDefinition.getMeasurementEnvironmentDefinition().getRoot();
 		ParameterNamespace namespace = EnvironmentFactory.eINSTANCE.createParameterNamespace();
 		namespace.setName(name);
-		namespace.setParent(currentNamespace);
 		root.getChildren().add(namespace);
 		currentNamespace = namespace;
 	}
@@ -55,7 +54,6 @@ public class ConfigurationBuilder {
 		parameter.setName(name);
 		parameter.setType(type.toString());
 		parameter.setRole(role);
-		parameter.setNamespace(currentNamespace);
 		currentNamespace.getParameters().add(parameter);
 		currentParameter = parameter;
 		return parameter;

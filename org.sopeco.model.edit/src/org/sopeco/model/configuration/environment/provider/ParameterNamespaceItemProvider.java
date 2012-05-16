@@ -70,7 +70,6 @@ public class ParameterNamespaceItemProvider
 			super.getPropertyDescriptors(object);
 
 			addNamePropertyDescriptor(object);
-			addParentPropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -93,28 +92,6 @@ public class ParameterNamespaceItemProvider
 				 false,
 				 false,
 				 ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
-				 null,
-				 null));
-	}
-
-	/**
-	 * This adds a property descriptor for the Parent feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addParentPropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_ParameterNamespace_parent_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_ParameterNamespace_parent_feature", "_UI_ParameterNamespace_type"),
-				 EnvironmentPackage.Literals.PARAMETER_NAMESPACE__PARENT,
-				 true,
-				 false,
-				 true,
-				 null,
 				 null,
 				 null));
 	}

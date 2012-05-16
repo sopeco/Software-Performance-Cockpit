@@ -28,7 +28,7 @@ public class ParameterDefinitionExt extends ParameterDefinitionImpl {
 	 */
 	@Override
 	public String getFullName() {
-		ParameterNamespace namespace = this.getNamespace();
+		ParameterNamespace namespace =(ParameterNamespace) this.eContainer();
 		String result = createFullNamespaceString("", namespace, NAMESPACE_DELIMITER) + getName();
 		return result;
 	}
@@ -49,16 +49,17 @@ public class ParameterDefinitionExt extends ParameterDefinitionImpl {
 	 */
 	@Override
 	public String getFullName(String namespaceDelimiter){
-		ParameterNamespace namespace = this.getNamespace();
+		ParameterNamespace namespace = (ParameterNamespace)this.eContainer();
 		String result = createFullNamespaceString("", namespace, namespaceDelimiter) + getName();
 		return result;
 	}
 	
 	private String createFullNamespaceString(String fullNamespace, ParameterNamespace namespace, String namespaceDelimitter){
 
-		if(namespace!=null && !namespace.getName().isEmpty()){
+		if(namespace!=null && namespace.getName() != null && !namespace.getName().isEmpty()){
+			ParameterNamespace parent = (ParameterNamespace) namespace.eContainer();
 			fullNamespace = namespace.getName() + namespaceDelimitter + fullNamespace;
-			return createFullNamespaceString(fullNamespace, namespace.getParent(), namespaceDelimitter);
+			return createFullNamespaceString(fullNamespace, parent, namespaceDelimitter);
 		}
 		
 		return fullNamespace;

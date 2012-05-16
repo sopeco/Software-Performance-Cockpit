@@ -207,15 +207,6 @@ public class EnvironmentPackageImpl extends EPackageImpl implements EnvironmentP
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public EReference getParameterNamespace_Parent() {
-		return (EReference)parameterNamespaceEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public EClass getParameterDefinition() {
 		return parameterDefinitionEClass;
 	}
@@ -254,15 +245,6 @@ public class EnvironmentPackageImpl extends EPackageImpl implements EnvironmentP
 	 */
 	public EAttribute getParameterDefinition_FullName() {
 		return (EAttribute)parameterDefinitionEClass.getEStructuralFeatures().get(3);
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public EReference getParameterDefinition_Namespace() {
-		return (EReference)parameterDefinitionEClass.getEStructuralFeatures().get(4);
 	}
 
 	/**
@@ -309,14 +291,12 @@ public class EnvironmentPackageImpl extends EPackageImpl implements EnvironmentP
 		createEReference(parameterNamespaceEClass, PARAMETER_NAMESPACE__CHILDREN);
 		createEAttribute(parameterNamespaceEClass, PARAMETER_NAMESPACE__NAME);
 		createEReference(parameterNamespaceEClass, PARAMETER_NAMESPACE__PARAMETERS);
-		createEReference(parameterNamespaceEClass, PARAMETER_NAMESPACE__PARENT);
 
 		parameterDefinitionEClass = createEClass(PARAMETER_DEFINITION);
 		createEAttribute(parameterDefinitionEClass, PARAMETER_DEFINITION__NAME);
 		createEAttribute(parameterDefinitionEClass, PARAMETER_DEFINITION__TYPE);
 		createEAttribute(parameterDefinitionEClass, PARAMETER_DEFINITION__ROLE);
 		createEAttribute(parameterDefinitionEClass, PARAMETER_DEFINITION__FULL_NAME);
-		createEReference(parameterDefinitionEClass, PARAMETER_DEFINITION__NAMESPACE);
 
 		// Create enums
 		parameterRoleEEnum = createEEnum(PARAMETER_ROLE);
@@ -365,14 +345,12 @@ public class EnvironmentPackageImpl extends EPackageImpl implements EnvironmentP
 		initEReference(getParameterNamespace_Children(), this.getParameterNamespace(), null, "children", null, 0, -1, ParameterNamespace.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getParameterNamespace_Name(), ecorePackage.getEString(), "name", null, 0, 1, ParameterNamespace.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getParameterNamespace_Parameters(), this.getParameterDefinition(), null, "parameters", null, 0, -1, ParameterNamespace.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getParameterNamespace_Parent(), this.getParameterNamespace(), null, "parent", null, 0, 1, ParameterNamespace.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(parameterDefinitionEClass, ParameterDefinition.class, "ParameterDefinition", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getParameterDefinition_Name(), ecorePackage.getEString(), "name", null, 1, 1, ParameterDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getParameterDefinition_Type(), ecorePackage.getEString(), "type", null, 1, 1, ParameterDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getParameterDefinition_Role(), this.getParameterRole(), "role", null, 1, 1, ParameterDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEAttribute(getParameterDefinition_FullName(), ecorePackage.getEString(), "fullName", null, 0, 1, ParameterDefinition.class, IS_TRANSIENT, IS_VOLATILE, !IS_CHANGEABLE, IS_UNSETTABLE, !IS_ID, !IS_UNIQUE, IS_DERIVED, IS_ORDERED);
-		initEReference(getParameterDefinition_Namespace(), this.getParameterNamespace(), null, "namespace", null, 1, 1, ParameterDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		EOperation op = addEOperation(parameterDefinitionEClass, ecorePackage.getEString(), "getFullName", 0, 1, IS_UNIQUE, IS_ORDERED);
 		addEParameter(op, ecorePackage.getEString(), "namespaceDelimiter", 0, 1, IS_UNIQUE, IS_ORDERED);

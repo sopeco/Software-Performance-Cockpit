@@ -128,22 +128,13 @@ public interface EnvironmentPackage extends EPackage {
 	int PARAMETER_NAMESPACE__PARAMETERS = CommonPackage.SERIALIZABLE_FEATURE_COUNT + 2;
 
 	/**
-	 * The feature id for the '<em><b>Parent</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PARAMETER_NAMESPACE__PARENT = CommonPackage.SERIALIZABLE_FEATURE_COUNT + 3;
-
-	/**
 	 * The number of structural features of the '<em>Parameter Namespace</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PARAMETER_NAMESPACE_FEATURE_COUNT = CommonPackage.SERIALIZABLE_FEATURE_COUNT + 4;
+	int PARAMETER_NAMESPACE_FEATURE_COUNT = CommonPackage.SERIALIZABLE_FEATURE_COUNT + 3;
 
 	/**
 	 * The meta object id for the '{@link org.sopeco.model.configuration.environment.impl.ParameterDefinitionImpl <em>Parameter Definition</em>}' class.
@@ -192,22 +183,13 @@ public interface EnvironmentPackage extends EPackage {
 	int PARAMETER_DEFINITION__FULL_NAME = CommonPackage.SERIALIZABLE_FEATURE_COUNT + 3;
 
 	/**
-	 * The feature id for the '<em><b>Namespace</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 * @ordered
-	 */
-	int PARAMETER_DEFINITION__NAMESPACE = CommonPackage.SERIALIZABLE_FEATURE_COUNT + 4;
-
-	/**
 	 * The number of structural features of the '<em>Parameter Definition</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int PARAMETER_DEFINITION_FEATURE_COUNT = CommonPackage.SERIALIZABLE_FEATURE_COUNT + 5;
+	int PARAMETER_DEFINITION_FEATURE_COUNT = CommonPackage.SERIALIZABLE_FEATURE_COUNT + 4;
 
 	/**
 	 * The meta object id for the '{@link org.sopeco.model.configuration.environment.ParameterRole <em>Parameter Role</em>}' enum.
@@ -285,17 +267,6 @@ public interface EnvironmentPackage extends EPackage {
 	EReference getParameterNamespace_Parameters();
 
 	/**
-	 * Returns the meta object for the reference '{@link org.sopeco.model.configuration.environment.ParameterNamespace#getParent <em>Parent</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Parent</em>'.
-	 * @see org.sopeco.model.configuration.environment.ParameterNamespace#getParent()
-	 * @see #getParameterNamespace()
-	 * @generated
-	 */
-	EReference getParameterNamespace_Parent();
-
-	/**
 	 * Returns the meta object for class '{@link org.sopeco.model.configuration.environment.ParameterDefinition <em>Parameter Definition</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -348,17 +319,6 @@ public interface EnvironmentPackage extends EPackage {
 	 * @generated
 	 */
 	EAttribute getParameterDefinition_FullName();
-
-	/**
-	 * Returns the meta object for the reference '{@link org.sopeco.model.configuration.environment.ParameterDefinition#getNamespace <em>Namespace</em>}'.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @return the meta object for the reference '<em>Namespace</em>'.
-	 * @see org.sopeco.model.configuration.environment.ParameterDefinition#getNamespace()
-	 * @see #getParameterDefinition()
-	 * @generated
-	 */
-	EReference getParameterDefinition_Namespace();
 
 	/**
 	 * Returns the meta object for enum '{@link org.sopeco.model.configuration.environment.ParameterRole <em>Parameter Role</em>}'.
@@ -445,14 +405,6 @@ public interface EnvironmentPackage extends EPackage {
 		EReference PARAMETER_NAMESPACE__PARAMETERS = eINSTANCE.getParameterNamespace_Parameters();
 
 		/**
-		 * The meta object literal for the '<em><b>Parent</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference PARAMETER_NAMESPACE__PARENT = eINSTANCE.getParameterNamespace_Parent();
-
-		/**
 		 * The meta object literal for the '{@link org.sopeco.model.configuration.environment.impl.ParameterDefinitionImpl <em>Parameter Definition</em>}' class.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
@@ -493,14 +445,6 @@ public interface EnvironmentPackage extends EPackage {
 		 * @generated
 		 */
 		EAttribute PARAMETER_DEFINITION__FULL_NAME = eINSTANCE.getParameterDefinition_FullName();
-
-		/**
-		 * The meta object literal for the '<em><b>Namespace</b></em>' reference feature.
-		 * <!-- begin-user-doc -->
-		 * <!-- end-user-doc -->
-		 * @generated
-		 */
-		EReference PARAMETER_DEFINITION__NAMESPACE = eINSTANCE.getParameterDefinition_Namespace();
 
 		/**
 		 * The meta object literal for the '{@link org.sopeco.model.configuration.environment.ParameterRole <em>Parameter Role</em>}' enum.

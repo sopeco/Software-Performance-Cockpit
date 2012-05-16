@@ -22,7 +22,6 @@ import org.sopeco.model.configuration.common.ext.ISerializableEObject;
  *   <li>{@link org.sopeco.model.configuration.environment.ParameterDefinition#getType <em>Type</em>}</li>
  *   <li>{@link org.sopeco.model.configuration.environment.ParameterDefinition#getRole <em>Role</em>}</li>
  *   <li>{@link org.sopeco.model.configuration.environment.ParameterDefinition#getFullName <em>Full Name</em>}</li>
- *   <li>{@link org.sopeco.model.configuration.environment.ParameterDefinition#getNamespace <em>Namespace</em>}</li>
  * </ul>
  * </p>
  *
@@ -137,32 +136,6 @@ public interface ParameterDefinition extends ISerializableEObject, Serializable 
 	 * @generated
 	 */
 	boolean isSetFullName();
-
-	/**
-	 * Returns the value of the '<em><b>Namespace</b></em>' reference.
-	 * <!-- begin-user-doc -->
-	 * <p>
-	 * If the meaning of the '<em>Namespace</em>' reference isn't clear,
-	 * there really should be more of a description here...
-	 * </p>
-	 * <!-- end-user-doc -->
-	 * @return the value of the '<em>Namespace</em>' reference.
-	 * @see #setNamespace(ParameterNamespace)
-	 * @see org.sopeco.model.configuration.environment.EnvironmentPackage#getParameterDefinition_Namespace()
-	 * @model required="true"
-	 * @generated
-	 */
-	ParameterNamespace getNamespace();
-
-	/**
-	 * Sets the value of the '{@link org.sopeco.model.configuration.environment.ParameterDefinition#getNamespace <em>Namespace</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @param value the new value of the '<em>Namespace</em>' reference.
-	 * @see #getNamespace()
-	 * @generated
-	 */
-	void setNamespace(ParameterNamespace value);
 
 	/**
 	 * <!-- begin-user-doc -->

@@ -27,7 +27,6 @@
           <details key="namespace" value=""/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="parent" eType="#//environment/ParameterNamespace"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ParameterDefinition" eSuperTypes="#//common/Serializable">
       <eOperations name="getFullName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString">
@@ -46,8 +45,6 @@
           <details key="documentation" value="This is a 'derived' attribute computed out of the namespace structure and the parameter's name."/>
         </eAnnotations>
       </eStructuralFeatures>
-      <eStructuralFeatures xsi:type="ecore:EReference" name="namespace" lowerBound="1"
-          eType="#//environment/ParameterNamespace"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EEnum" name="ParameterRole">
       <eLiterals name="INPUT"/>

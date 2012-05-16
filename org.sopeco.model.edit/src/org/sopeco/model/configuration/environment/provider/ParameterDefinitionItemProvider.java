@@ -12,9 +12,7 @@ import java.util.List;
 
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.common.util.ResourceLocator;
-
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
@@ -25,10 +23,8 @@ import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
-
 import org.sopeco.model.configuration.environment.EnvironmentPackage;
 import org.sopeco.model.configuration.environment.ParameterDefinition;
-
 import org.sopeco.model.configuration.provider.SoPeCoConfigurationEditPlugin;
 
 /**
@@ -70,7 +66,6 @@ public class ParameterDefinitionItemProvider
 			addTypePropertyDescriptor(object);
 			addRolePropertyDescriptor(object);
 			addFullNamePropertyDescriptor(object);
-			addNamespacePropertyDescriptor(object);
 		}
 		return itemPropertyDescriptors;
 	}
@@ -163,27 +158,6 @@ public class ParameterDefinitionItemProvider
 				 null));
 	}
 
-	/**
-	 * This adds a property descriptor for the Namespace feature.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	protected void addNamespacePropertyDescriptor(Object object) {
-		itemPropertyDescriptors.add
-			(createItemPropertyDescriptor
-				(((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-				 getResourceLocator(),
-				 getString("_UI_ParameterDefinition_namespace_feature"),
-				 getString("_UI_PropertyDescriptor_description", "_UI_ParameterDefinition_namespace_feature", "_UI_ParameterDefinition_type"),
-				 EnvironmentPackage.Literals.PARAMETER_DEFINITION__NAMESPACE,
-				 true,
-				 false,
-				 true,
-				 null,
-				 null,
-				 null));
-	}
 
 	/**
 	 * This returns ParameterDefinition.gif.

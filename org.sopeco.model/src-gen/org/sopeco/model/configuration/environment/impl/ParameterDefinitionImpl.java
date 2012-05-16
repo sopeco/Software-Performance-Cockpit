@@ -32,7 +32,6 @@ import org.sopeco.model.configuration.environment.ParameterRole;
  *   <li>{@link org.sopeco.model.configuration.environment.impl.ParameterDefinitionImpl#getType <em>Type</em>}</li>
  *   <li>{@link org.sopeco.model.configuration.environment.impl.ParameterDefinitionImpl#getRole <em>Role</em>}</li>
  *   <li>{@link org.sopeco.model.configuration.environment.impl.ParameterDefinitionImpl#getFullName <em>Full Name</em>}</li>
- *   <li>{@link org.sopeco.model.configuration.environment.impl.ParameterDefinitionImpl#getNamespace <em>Namespace</em>}</li>
  * </ul>
  * </p>
  *
@@ -115,16 +114,6 @@ public class ParameterDefinitionImpl extends SerializableEObject implements Para
 	 * @ordered
 	 */
 	protected static final String FULL_NAME_EDEFAULT = null;
-
-	/**
-	 * The cached value of the '{@link #getNamespace() <em>Namespace</em>}' reference.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @see #getNamespace()
-	 * @generated
-	 * @ordered
-	 */
-	protected ParameterNamespace namespace;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -235,44 +224,6 @@ public class ParameterDefinitionImpl extends SerializableEObject implements Para
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public ParameterNamespace getNamespace() {
-		if (namespace != null && ((EObject)namespace).eIsProxy()) {
-			InternalEObject oldNamespace = (InternalEObject)namespace;
-			namespace = (ParameterNamespace)eResolveProxy(oldNamespace);
-			if (namespace != oldNamespace) {
-				if (eNotificationRequired())
-					eNotify(new ENotificationImpl(this, Notification.RESOLVE, EnvironmentPackage.PARAMETER_DEFINITION__NAMESPACE, oldNamespace, namespace));
-			}
-		}
-		return namespace;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public ParameterNamespace basicGetNamespace() {
-		return namespace;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setNamespace(ParameterNamespace newNamespace) {
-		ParameterNamespace oldNamespace = namespace;
-		namespace = newNamespace;
-		if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, EnvironmentPackage.PARAMETER_DEFINITION__NAMESPACE, oldNamespace, namespace));
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	public String getFullName(String namespaceDelimiter) {
 		// TODO: implement this method
 		// Ensure that you remove @generated or mark it @generated NOT
@@ -295,9 +246,6 @@ public class ParameterDefinitionImpl extends SerializableEObject implements Para
 				return getRole();
 			case EnvironmentPackage.PARAMETER_DEFINITION__FULL_NAME:
 				return getFullName();
-			case EnvironmentPackage.PARAMETER_DEFINITION__NAMESPACE:
-				if (resolve) return getNamespace();
-				return basicGetNamespace();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -318,9 +266,6 @@ public class ParameterDefinitionImpl extends SerializableEObject implements Para
 				return;
 			case EnvironmentPackage.PARAMETER_DEFINITION__ROLE:
 				setRole((ParameterRole)newValue);
-				return;
-			case EnvironmentPackage.PARAMETER_DEFINITION__NAMESPACE:
-				setNamespace((ParameterNamespace)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -343,9 +288,6 @@ public class ParameterDefinitionImpl extends SerializableEObject implements Para
 			case EnvironmentPackage.PARAMETER_DEFINITION__ROLE:
 				setRole(ROLE_EDEFAULT);
 				return;
-			case EnvironmentPackage.PARAMETER_DEFINITION__NAMESPACE:
-				setNamespace((ParameterNamespace)null);
-				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -366,8 +308,6 @@ public class ParameterDefinitionImpl extends SerializableEObject implements Para
 				return role != ROLE_EDEFAULT;
 			case EnvironmentPackage.PARAMETER_DEFINITION__FULL_NAME:
 				return isSetFullName();
-			case EnvironmentPackage.PARAMETER_DEFINITION__NAMESPACE:
-				return namespace != null;
 		}
 		return super.eIsSet(featureID);
 	}

@@ -227,7 +227,7 @@ public class EMFUtil {
 
 		org.sopeco.persistence.entities.definition.ExplorationStrategy pojoExplorationStrategy = EntityFactory.createExplorationStrategy(
 				emfExplorationStrategy.getName(), emfExplorationStrategy.getConfiguration().map());
-
+		
 		pojoExplorationStrategy.getAnalysisConfigurations().addAll(convertAnalysisStrategies(emfExplorationStrategy, pojoExplorationStrategy));
 
 		return pojoExplorationStrategy;
