@@ -27,6 +27,9 @@ public class RmiMEConnector {
 	
 	/** default logger */
 	private static Logger logger = LoggerFactory.getLogger(RmiMEConnector.class);
+	
+	/** singleton for RMI registry */
+	private static Registry registry = null;
 
 	/**
 	 * Connects to a remote measurement environment controller (via RMI)
@@ -107,7 +110,7 @@ public class RmiMEConnector {
 			
 		} catch (RemoteException e) {
 			
-			logger.error("Cannot start the RMI server.", e);
+			logger.error("Cannot start the RMI server. Error: {}", e.getMessage());
 			throw new RuntimeException("Cannot start the RMI server. Error: ", e);
 		
 		}
@@ -120,12 +123,11 @@ public class RmiMEConnector {
 	 * @param meURI
 	 * @throws RemoteException
 	 */
-	private static Registry getRegistry(URI meURI) throws RemoteException {
-		try {
-			return LocateRegistry.createRegistry(meURI.getPort());
-		} catch (RemoteException e) {
-			return LocateRegistry.getRegistry(meURI.getHost(), meURI.getPort());
+	private static synchronized Registry getRegistry(URI meURI) throws RemoteException {
+		if (registry == null){
+			registry  = LocateRegistry.createRegistry(meURI.getPort()); 
 		}
+		return registry;
 	}
 
 	/**
