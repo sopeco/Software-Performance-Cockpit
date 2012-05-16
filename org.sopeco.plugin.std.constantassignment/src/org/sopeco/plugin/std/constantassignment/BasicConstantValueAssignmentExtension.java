@@ -3,6 +3,9 @@
  */
 package org.sopeco.plugin.std.constantassignment;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.sopeco.engine.experimentseries.IConstantAssignment;
 import org.sopeco.engine.experimentseries.IConstantAssignmentExtension;
 
@@ -28,6 +31,11 @@ public abstract class BasicConstantValueAssignmentExtension implements IConstant
 	@Override
 	public IConstantAssignment createExtensionArtifact() {
 		return new BasicConstantValueAssignment(this);
+	}
+
+	@Override
+	public Map<String, String> getConfigParameters() {
+		return Collections.emptyMap();
 	}
 
 }

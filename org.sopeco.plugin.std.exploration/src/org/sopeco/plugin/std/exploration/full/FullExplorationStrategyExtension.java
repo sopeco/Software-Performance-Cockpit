@@ -3,6 +3,9 @@
  */
 package org.sopeco.plugin.std.exploration.full;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.sopeco.engine.experimentseries.IExplorationStrategy;
 import org.sopeco.engine.experimentseries.IExplorationStrategyExtension;
 
@@ -16,7 +19,7 @@ public class FullExplorationStrategyExtension implements IExplorationStrategyExt
 
 	public static final String NAME = "Full Exploration Strategy";
 	
-	public FullExplorationStrategyExtension() {}
+	public FullExplorationStrategyExtension() { }
 
 	@Override
 	public String getName() {
@@ -28,4 +31,10 @@ public class FullExplorationStrategyExtension implements IExplorationStrategyExt
 		return new FullExplorationStrategy(this);
 	}
 
+	@Override
+	public Map<String, String> getConfigParameters() {
+		return Collections.emptyMap();
+	}
+
+	
 }

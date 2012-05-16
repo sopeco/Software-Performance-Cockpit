@@ -1,5 +1,7 @@
 package org.sopeco.engine.registry;
 
+import java.util.Map;
+
 /**
  * This is root interface of all SoPeCo extensions.
  * 
@@ -20,4 +22,15 @@ public interface ISoPeCoExtension<EA extends ISoPeCoExtensionArtifact> {
 	 * Creates a new artifact for this extension. 
 	 */
 	public EA createExtensionArtifact();
+	
+	/**
+	 * Returns a set of configuration parameters needed by the artifacts
+	 * of this extension. The return value is a mapping of parameter names
+	 * to an optional default value. It is expected that in most cases the 
+	 * default values are empty String instances since they depend on the 
+	 * runtime instance of the artifact.
+	 * 
+	 * @return a map of configuration parameter names to optional default values
+	 */
+	public Map<String, String> getConfigParameters();
 }

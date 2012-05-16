@@ -3,16 +3,16 @@
  */
 package org.sopeco.plugin.std.analysis;
 
+import org.sopeco.engine.analysis.AbstractPredictionFunctionStrategyExtension;
 import org.sopeco.engine.analysis.IPredictionFunctionStrategy;
-import org.sopeco.engine.analysis.IPredictionFunctionStrategyExtension;
 
 /**
  * The extension that provides the linear regression analysis strategy.
  * 
- * @author Dennis Westermann
+ * @author Dennis Westermann, Roozbeh Farahbod
  *
  */
-public class LinearRegressionStrategyExtension implements IPredictionFunctionStrategyExtension {
+public class LinearRegressionStrategyExtension extends AbstractPredictionFunctionStrategyExtension {
 
 	public static final String NAME = "Linear Regression";
 	
@@ -27,6 +27,12 @@ public class LinearRegressionStrategyExtension implements IPredictionFunctionStr
 	public IPredictionFunctionStrategy createExtensionArtifact() {
 		
 		return new LinearRegressionStrategy(this);
+	}
+
+	@Override
+	protected void prepareConfigurationParameterMap() {
+		// TODO Dennis
+		
 	}
 
 }

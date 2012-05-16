@@ -12,4 +12,10 @@ public class EquidistantBreakdownExtension extends AbstractBreakdownExplorationE
 	public EquidistantBreakdownExtension() {
 		this.NAME = BreakdownConfiguration.EQUIDISTANT_BREAKDOWN;
 	}
+
+	@Override
+	protected void prepareConfigurationParameterMap() {
+		// TODO Dennis
+		
+	}
 }

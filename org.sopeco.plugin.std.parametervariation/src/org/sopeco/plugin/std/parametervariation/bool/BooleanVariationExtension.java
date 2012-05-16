@@ -3,8 +3,8 @@
  */
 package org.sopeco.plugin.std.parametervariation.bool;
 
+import org.sopeco.engine.experimentseries.AbstractParameterVariationExtension;
 import org.sopeco.engine.experimentseries.IParameterVariation;
-import org.sopeco.engine.experimentseries.IParameterVariationExtension;
 
 /**
  * Provides a Boolean value variation extension.
@@ -14,7 +14,7 @@ import org.sopeco.engine.experimentseries.IParameterVariationExtension;
  * @author Roozbeh Farahbod
  *
  */
-public class BooleanVariationExtension implements IParameterVariationExtension {
+public class BooleanVariationExtension extends AbstractParameterVariationExtension {
 
 	/** Holds the name of this extension. */
 	public static final String NAME = "Boolean Variation";
@@ -29,6 +29,11 @@ public class BooleanVariationExtension implements IParameterVariationExtension {
 	@Override
 	public IParameterVariation createExtensionArtifact() {
 		return new BooleanVariation(this);
+	}
+
+	@Override
+	protected void prepareConfigurationParameterMap() {
+		// nothing.
 	}
 
 

@@ -3,6 +3,7 @@
  */
 package org.sopeco.plugin.std.parametervariation.constant;
 
+import org.sopeco.engine.experimentseries.AbstractParameterVariationExtension;
 import org.sopeco.engine.experimentseries.IParameterVariation;
 import org.sopeco.engine.experimentseries.IParameterVariationExtension;
 
@@ -14,7 +15,7 @@ import org.sopeco.engine.experimentseries.IParameterVariationExtension;
  * @author Roozbeh Farahbod
  *
  */
-public class ConstantVariationExtension implements IParameterVariationExtension {
+public class ConstantVariationExtension extends AbstractParameterVariationExtension {
 
 	/** Holds the name of this extension. */
 	public static final String NAME = IParameterVariationExtension.CONSTANT_VARIATION_EXTENSION_NAME;
@@ -29,6 +30,11 @@ public class ConstantVariationExtension implements IParameterVariationExtension 
 	@Override
 	public IParameterVariation createExtensionArtifact() {
 		return new ConstantVariation(this);
+	}
+
+	@Override
+	protected void prepareConfigurationParameterMap() {
+		// nothing.
 	}
 
 

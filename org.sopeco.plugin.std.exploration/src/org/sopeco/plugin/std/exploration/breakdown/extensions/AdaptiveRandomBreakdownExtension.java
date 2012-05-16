@@ -12,4 +12,10 @@ public class AdaptiveRandomBreakdownExtension extends AbstractBreakdownExplorati
 	public AdaptiveRandomBreakdownExtension() {
 		this.NAME = BreakdownConfiguration.ADAPTIVE_RANDOM_BREAKDOWN;
 	}
+
+	@Override
+	protected void prepareConfigurationParameterMap() {
+		// TODO Dennis
+		
+	}
 }

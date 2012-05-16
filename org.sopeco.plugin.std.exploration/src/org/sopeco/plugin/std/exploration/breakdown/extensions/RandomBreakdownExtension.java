@@ -13,4 +13,9 @@ public class RandomBreakdownExtension extends AbstractBreakdownExplorationExtens
 	public RandomBreakdownExtension() {
 		this.NAME = BreakdownConfiguration.RANDOM_BREAKDOWN;
 	}
+
+	@Override
+	protected void prepareConfigurationParameterMap() {
+		// TODO Dennis
+	}
 }

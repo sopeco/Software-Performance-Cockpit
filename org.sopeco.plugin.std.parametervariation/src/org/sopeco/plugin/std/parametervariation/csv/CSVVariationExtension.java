@@ -3,8 +3,8 @@
  */
 package org.sopeco.plugin.std.parametervariation.csv;
 
+import org.sopeco.engine.experimentseries.AbstractParameterVariationExtension;
 import org.sopeco.engine.experimentseries.IParameterVariation;
-import org.sopeco.engine.experimentseries.IParameterVariationExtension;
 
 /**
  * Provides comma-separated value variation extension.
@@ -12,11 +12,11 @@ import org.sopeco.engine.experimentseries.IParameterVariationExtension;
  * @author Roozbeh Farahbod
  *
  */
-public class CSVVariationExtension implements IParameterVariationExtension {
+public class CSVVariationExtension extends AbstractParameterVariationExtension {
 
 	/** Holds the name of this extension. */
 	public static final String NAME = "CSV";
-	
+
 	public CSVVariationExtension() { }
 
 	@Override
@@ -27,6 +27,11 @@ public class CSVVariationExtension implements IParameterVariationExtension {
 	@Override
 	public IParameterVariation createExtensionArtifact() {
 		return new CSVVariation(this);
+	}
+
+	@Override
+	protected void prepareConfigurationParameterMap() {
+		configParams.put("values", "");
 	}
 
 }
