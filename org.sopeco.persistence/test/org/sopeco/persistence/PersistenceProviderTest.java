@@ -7,14 +7,12 @@ import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.sopeco.persistence.config.DBType;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetInputColumn;
 import org.sopeco.persistence.dataset.DataSetRowBuilder;
@@ -43,7 +41,6 @@ public class PersistenceProviderTest {
 	@BeforeClass
 	public static void init() throws Exception {
 
-		PersistenceProviderFactory.DB_TYPE_VALUE = DBType.SERVER;
 		provider = (JPAPersistenceProvider) PersistenceProviderFactory.getPersistenceProvider();
 		dummyScenarioInstance = DummyFactory.createDummyScenarioInstance();
 	}

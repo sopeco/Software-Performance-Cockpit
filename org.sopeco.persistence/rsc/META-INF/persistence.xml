@@ -12,8 +12,8 @@
 			
 			<property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver" />
 			<property name="javax.persistence.jdbc.url" value="jdbc:derby:memory:sopeco-jpa;create=true" />
-			<property name="javax.persistence.jdbc.user" value="test" />
-			<property name="javax.persistence.jdbc.password" value="test" />
+			<property name="javax.persistence.jdbc.user" value="app" />
+			<property name="javax.persistence.jdbc.password" value="app" />
 			
 			
 			<property name="eclipselink.target-database" value="Derby"/>  

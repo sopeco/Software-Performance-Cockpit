@@ -11,6 +11,7 @@ import javax.persistence.JoinColumns;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetAppender;
@@ -38,7 +39,7 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 	private DataSetAggregated successfulResultDataSet;
 
 	@Lob
-	@Column(name = "failedRestultDataSet")
+	@Column(name = "failedResultDataSet")
 	private DataSetAggregated failedResultDataSet;
 
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
