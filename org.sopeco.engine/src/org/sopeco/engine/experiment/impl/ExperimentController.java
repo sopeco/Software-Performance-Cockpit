@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.measurementenvironment.ExperimentFailedException;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
-import org.sopeco.engine.util.ParameterCollection;
-import org.sopeco.engine.util.ParameterCollectionFactory;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetRowBuilder;
@@ -21,6 +19,8 @@ import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
+import org.sopeco.persistence.util.ParameterCollection;
+import org.sopeco.persistence.util.ParameterCollectionFactory;
 
 /**
  * This class implements the functionality required to execute a single

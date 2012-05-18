@@ -11,13 +11,13 @@ import org.sopeco.engine.experimentseries.IExplorationStrategy;
 import org.sopeco.engine.experimentseries.IParameterVariation;
 import org.sopeco.engine.registry.AbstractSoPeCoExtensionArtifact;
 import org.sopeco.engine.registry.IExtensionRegistry;
-import org.sopeco.engine.util.ParameterCollection;
-import org.sopeco.engine.util.ParameterCollectionFactory;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
+import org.sopeco.persistence.util.ParameterCollection;
+import org.sopeco.persistence.util.ParameterCollectionFactory;
 import org.sopeco.util.Tools;
 
 /**

@@ -9,12 +9,12 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
-import org.sopeco.engine.util.ParameterCollection;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.NumberOfRepetitions;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
+import org.sopeco.persistence.util.ParameterCollection;
 
 public class DummyMEController implements IMeasurementEnvironmentController {
 

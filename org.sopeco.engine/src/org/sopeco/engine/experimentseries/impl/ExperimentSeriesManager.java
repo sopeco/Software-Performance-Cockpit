@@ -19,7 +19,6 @@ import org.sopeco.engine.experimentseries.IParameterVariation;
 import org.sopeco.engine.experimentseries.IParameterVariationExtension;
 import org.sopeco.engine.registry.IExtensionRegistry;
 import org.sopeco.engine.util.EngineTools;
-import org.sopeco.engine.util.ParameterCollection;
 import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.entities.ExperimentSeries;
@@ -28,6 +27,7 @@ import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.DynamicValueAssignment;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ParameterValueAssignment;
+import org.sopeco.persistence.util.ParameterCollection;
 
 /**
  * The default implementation of {@link ExperimentSeriesManager}.

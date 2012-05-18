@@ -5,8 +5,6 @@ import java.util.Map;
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.experiment.impl.ExperimentController;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
-import org.sopeco.engine.util.ParameterCollection;
-import org.sopeco.engine.util.ParameterCollectionFactory;
 import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueFactory;
@@ -19,6 +17,8 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.persistence.util.ParameterCollection;
+import org.sopeco.persistence.util.ParameterCollectionFactory;
 
 
 public class ConfigurationBuilder {

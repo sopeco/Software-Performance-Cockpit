@@ -10,6 +10,8 @@ import org.sopeco.engine.experimentseries.IConstantAssignmentExtension;
 import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
+import org.sopeco.persistence.util.ParameterCollection;
+import org.sopeco.persistence.util.ParameterCollectionFactory;
 
 /**
  * A collection of utility methods needed in the context of SoPeCo experiments. 

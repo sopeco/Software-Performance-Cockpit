@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.sopeco.engine.util;
+package org.sopeco.persistence.util;
 
 import java.io.Serializable;
 import java.util.Collection;
