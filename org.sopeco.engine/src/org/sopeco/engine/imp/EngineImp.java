@@ -26,6 +26,7 @@ import org.sopeco.persistence.exceptions.DataNotFoundException;
  * The default implementation of SoPeCo engine.
  * 
  * @author Roozbeh Farahbod
+ * @author Dennis Westermann
  *
  */
 public class EngineImp implements IEngine {
@@ -63,10 +64,15 @@ public class EngineImp implements IEngine {
 
 	@Override
 	public ScenarioInstance run(ScenarioDefinition scenario) {
-		
-		ScenarioInstance scenarioInstance = EntityFactory.createScenarioInstance(scenario, getConfiguration().getMeasurementControllerURIAsStr());
-		
-		persistenceProvider.store(scenarioInstance);
+		ScenarioInstance scenarioInstance;
+		try {
+			scenarioInstance = persistenceProvider.loadScenarioInstance(scenario.getName(), getConfiguration().getMeasurementControllerURIAsStr());
+			logger.debug("Loaded ScenarioInstance {} from database", scenarioInstance);
+		} catch (DataNotFoundException e) {
+			scenarioInstance = EntityFactory.createScenarioInstance(scenario, getConfiguration().getMeasurementControllerURIAsStr());
+			persistenceProvider.store(scenarioInstance);
+			logger.debug("Created new ScenarioInstance {}", scenarioInstance);
+		} 			
 		
 		experimentController.initialize(EngineTools.getConstantParameterValues(
 				scenario.getMeasurementSpecification().getInitializationAssignemts()), scenario.getMeasurementEnvironmentDefinition());
@@ -74,12 +80,15 @@ public class EngineImp implements IEngine {
 		// loop over all the experiment series in the spec
 		for (ExperimentSeriesDefinition esd: scenario.getMeasurementSpecification().getExperimentSeriesDefinitions()) {
 			
-			ExperimentSeries series = EntityFactory.createExperimentSeries(esd);
-			scenarioInstance.getExperimentSeriesList().add(series);
-			series.setScenarioInstance(scenarioInstance);
-			
-			persistenceProvider.store(series);
-			
+			ExperimentSeries series = scenarioInstance.getExperimentSeries(esd.getName());
+			if( series == null){
+				series = EntityFactory.createExperimentSeries(esd);
+				scenarioInstance.getExperimentSeriesList().add(series);
+				series.setScenarioInstance(scenarioInstance);
+					
+				persistenceProvider.store(series);	
+			}
+				
 			experimentSeriesManager.runExperimentSeries(series);
 		}
 		

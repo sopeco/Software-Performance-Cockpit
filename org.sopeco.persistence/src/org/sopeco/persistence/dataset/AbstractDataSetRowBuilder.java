@@ -41,7 +41,7 @@ public abstract class AbstractDataSetRowBuilder {
 	 * @param inputValueList
 	 *           input values of the row to be checked.
 	 */
-	protected void checkInputParameters(Collection<ParameterValue> inputValueList) {
+	protected void checkInputParameters(Collection<ParameterValue<?>> inputValueList) {
 		boolean isValid = (inputValueList.size() == inputColumnMap.size());
 		
 		for (ParameterValue value : inputValueList) {
@@ -64,7 +64,7 @@ public abstract class AbstractDataSetRowBuilder {
 	 * @param observationValueList
 	 *            Row to be checked.
 	 */
-	protected void checkOutputParameters(Collection<ParameterValueList> observationValueList) {
+	protected void checkOutputParameters(Collection<ParameterValueList<?>> observationValueList) {
 		boolean isValid = (observationColumnMap.size() == observationValueList.size());
 
 		for (ParameterValueList pvl : observationValueList) {

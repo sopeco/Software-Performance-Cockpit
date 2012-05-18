@@ -87,7 +87,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider{
 		try {
 			
 			em.getTransaction().begin();
-			em.merge(scenarioInstance);
+			ScenarioInstance si = em.merge(scenarioInstance);
 			em.getTransaction().commit();
 		
 		} finally {

@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.Lob;
@@ -41,7 +42,7 @@ public class ExperimentSeries implements Serializable {
 	@Column(name = "experimentSeriesDefinition")
 	private ExperimentSeriesDefinition experimentSeriesDefinition;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "experimentSeries", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "experimentSeries", orphanRemoval = true, fetch= FetchType.EAGER)
 	private List<ExperimentSeriesRun> experimentSeriesRuns = new ArrayList<ExperimentSeriesRun>();
 
 	@EmbeddedId

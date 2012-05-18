@@ -479,7 +479,15 @@ public class PersistenceProviderTest {
 			run.appendSuccessfulResults(simulateExperimentRun(dataSet1));
 			provider.store(run);
 
-			provider.loadScenarioInstance(scenarioInstance.getPrimaryKey());
+//			provider.store(scenarioInstance);
+			ScenarioInstance loadedInstance = provider.loadScenarioInstance(scenarioInstance.getPrimaryKey());
+			
+			assertTrue(loadedInstance.getExperimentSeriesList().size() == 1);
+			assertNotNull(loadedInstance.getExperimentSeriesList().get(0).getAllExperimentSeriesRunSuccessfulResultsInOneDataSet());
+			assertTrue(loadedInstance.getExperimentSeriesList().get(0).getAllExperimentSeriesRunSuccessfulResultsInOneDataSet().size() > 0);
+			assertNotNull(loadedInstance.getExperimentSeriesList().get(0).getExperimentSeriesRuns().get(0).getSuccessfulResultDataSet());
+			assertTrue(loadedInstance.getExperimentSeriesList().get(0).getExperimentSeriesRuns().get(0).getSuccessfulResultDataSet().getObservationColumns().size() == 1);
+			
 
 		} catch (IOException e1) {
 			fail(e1.getMessage());
@@ -658,6 +666,10 @@ public class PersistenceProviderTest {
 		assertNotNull(scenarioInstance.getExperimentSeriesList().get(0).getExperimentSeriesDefinition().getExperimentAssignments().get(0).getParameter()
 				.getType());
 
+		// Experiment run results should be accessible via experiment series
+		assertNotNull(scenarioInstance.getExperimentSeriesList().get(0).getAllExperimentSeriesRunSuccessfulResultsInOneDataSet());
+		assertTrue(scenarioInstance.getExperimentSeriesList().get(0).getAllExperimentSeriesRunSuccessfulResultsInOneDataSet().size() > 0);
+		
 		// ExperimentSeries should reference ExperimentSeriesRuns
 		checkAvailableExperimentSeriesRuns(scenarioInstance.getExperimentSeriesList().get(0));
 	}

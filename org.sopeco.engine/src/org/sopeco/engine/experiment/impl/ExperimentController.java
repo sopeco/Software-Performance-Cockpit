@@ -5,6 +5,8 @@ import java.util.Collection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.config.Configuration;
+import org.sopeco.config.IConfiguration;
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.measurementenvironment.ExperimentFailedException;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
@@ -12,8 +14,8 @@ import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetRowBuilder;
 import org.sopeco.persistence.dataset.ParameterValue;
-import org.sopeco.persistence.dataset.ParameterValueFactory;
 import org.sopeco.persistence.dataset.ParameterValueList;
+import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
@@ -33,6 +35,8 @@ import org.sopeco.persistence.util.ParameterCollectionFactory;
 public class ExperimentController implements IExperimentController {
 
 	private final static Logger logger = LoggerFactory.getLogger(ExperimentController.class);
+	
+	private static final String USE_CACHE_PROPERTY = "sopeco.config.engine.useExperimentResultCache";
 	
 	MeasurementEnvironmentDefinition meDefinition = null;
 	IMeasurementEnvironmentController meController = null;
@@ -94,10 +98,14 @@ public class ExperimentController implements IExperimentController {
 		if (terminationCondition == null)
 			throw new IllegalArgumentException("TerminationCondition must be set (not null).");
 
-		boolean experimentWasSuccessful = runExperimentOnME(meController, inputPVs, terminationCondition);
-
+		boolean experimentWasSuccessful = false;
+		
 		try {
+			// update experiment series run instance with latest database content
 			currentExperimentSeriesRun = persistenceProvider.loadExperimentSeriesRun(currentExperimentSeriesRun.getPrimaryKey());
+		
+			experimentWasSuccessful = runExperimentOnME(meController, inputPVs, terminationCondition);
+
 			if (experimentWasSuccessful) {
 				currentExperimentSeriesRun.appendSuccessfulResults(successfulDataSet);
 			} else {
@@ -109,6 +117,7 @@ public class ExperimentController implements IExperimentController {
 		}
 
 	}
+	
 
 	public void setPersistenceProvider(IPersistenceProvider persistenceProvider) {
 		this.persistenceProvider = persistenceProvider;
@@ -154,13 +163,47 @@ public class ExperimentController implements IExperimentController {
 			
 			// 1. run the experiment
 			Collection<ParameterValueList<?>> observations = null;
-			try {
-				observations = meController.runExperiment(paramCollection, terminationCondition);
-				experimentSuccessful = true;
-			} catch (ExperimentFailedException e) {
-				error = e.getMessage();
-				logger.warn("The experiment failed. Reason: {}", error);
-				// TODO can we keep the log of these errors?
+			
+			
+			//1.1 check whether experiment result cache should be used and if yes, whether the experiment is in the cache
+			boolean runExperimentOnME = true;
+			
+			IConfiguration config = Configuration.getSingleton();
+			boolean useCache = Boolean.parseBoolean(config.getPropertyAsStr(USE_CACHE_PROPERTY));
+			if(useCache) {
+				logger.debug("Trying to use cached results.");
+		
+				DataSetAggregated allMeasurementsOfExperimentSeries = currentExperimentSeriesRun.getExperimentSeries().getAllExperimentSeriesRunSuccessfulResultsInOneDataSet();
+				if (allMeasurementsOfExperimentSeries.containsRowWithInputValues(paramCollection)){
+					try {
+						observations = allMeasurementsOfExperimentSeries.getObservationParameterValues(paramCollection);
+						experimentSuccessful = true;
+						runExperimentOnME = false;
+						logger.debug("Successfully read experiment results from cache.");
+					} catch (DataNotFoundException e) {
+						throw new IllegalStateException(e);				
+					}
+				} else {
+					logger.debug("Experiment is not in the cache");
+					runExperimentOnME = true; // experiment is not in cache
+				}
+			} else {
+				runExperimentOnME = true;
+			}
+					
+
+			//1.2 run the experiment on the measurement environment
+			if(runExperimentOnME) {
+				try {
+					logger.debug("Starting experiment on measurement environment...");
+					observations = meController.runExperiment(paramCollection, terminationCondition);
+					experimentSuccessful = true;
+					logger.debug("Experiment finished successful on measurement environment.");
+				} catch (ExperimentFailedException e) {
+					error = e.getMessage();
+					logger.warn("The experiment failed. Reason: {}", error);
+					// TODO can we keep the log of these errors?
+				}
 			}
 
 			// 2. aggregate the results

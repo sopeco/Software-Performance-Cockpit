@@ -8,6 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -41,7 +42,7 @@ public class ScenarioInstance implements Serializable {
 	private String description;
 	
 	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy = "scenarioInstance", orphanRemoval=true)
+	@OneToMany(cascade=CascadeType.ALL, mappedBy = "scenarioInstance", orphanRemoval=true, fetch=FetchType.EAGER)
 	private List<ExperimentSeries> experimentSeries = new ArrayList<ExperimentSeries>();
 	
 	@Lob

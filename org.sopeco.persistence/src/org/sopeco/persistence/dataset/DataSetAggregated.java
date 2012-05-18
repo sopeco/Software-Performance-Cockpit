@@ -3,6 +3,7 @@ package org.sopeco.persistence.dataset;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -10,6 +11,8 @@ import java.util.Map.Entry;
 
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterRole;
+import org.sopeco.persistence.exceptions.DataNotFoundException;
+import org.sopeco.persistence.util.ParameterCollection;
 
 /**
  * A DataSet is a column-based storage for data. It contains the values
@@ -219,8 +222,8 @@ public class DataSetAggregated implements
 			throw new IndexOutOfBoundsException();
 		}
 
-		List<ParameterValue> inputValueList = new ArrayList<ParameterValue>();
-		List<ParameterValueList> observationValueList = new ArrayList<ParameterValueList>();
+		List<ParameterValue<?>> inputValueList = new ArrayList<ParameterValue<?>>();
+		List<ParameterValueList<?>> observationValueList = new ArrayList<ParameterValueList<?>>();
 		for (AbstractDataSetColumn column : getColumns()) {
 			if (column instanceof DataSetInputColumn) {
 
@@ -510,7 +513,7 @@ public class DataSetAggregated implements
 									+ " as observationColumns do not have the same size! ");
 				}
 
-				int pvlSize = row.getObservableRowValues().get(0).getValues()
+				int pvlSize = ((ParameterValueList<?>) row.getObservableRowValues().toArray()[0]).getValues()
 						.size();
 
 				RollOutRows(builder, row, pvlSize);
@@ -534,13 +537,13 @@ public class DataSetAggregated implements
 		}
 	}
 
-	private boolean sameSizeOfAllVPLs(List<ParameterValueList> pvls) {
-		if (pvls.size() <= 1) {
+	private boolean sameSizeOfAllVPLs(Collection<ParameterValueList<?>> collection) {
+		if (collection.size() <= 1) {
 			return true;
 		}
 		boolean first = true;
 		int relSize = 0;
-		for (ParameterValueList pvl : pvls) {
+		for (ParameterValueList pvl : collection) {
 			if (first) {
 				first = false;
 				relSize = pvl.getValues().size();
@@ -552,7 +555,31 @@ public class DataSetAggregated implements
 		}
 		return true;
 	}
+	
+	
+	public boolean containsRowWithInputValues(ParameterCollection<ParameterValue<?>> inputParameterValues){
+	 for (DataSetRow dataSetRow : this) {
+		ArrayList<ParameterValue<?>> paramValueList = new ArrayList<ParameterValue<?>>();
+		paramValueList.addAll(inputParameterValues);
+		if(dataSetRow.equalIndependentParameterValues((new DataSetRow(paramValueList, Collections.EMPTY_LIST)))){
+			return true;
+		}
+	 }
+	 
+	 return false;
+	}
 
-
+	public Collection<ParameterValueList<?>> getObservationParameterValues(ParameterCollection<ParameterValue<?>> inputParameterValues) throws DataNotFoundException{
+		 for (DataSetRow dataSetRow : this) {
+			ArrayList<ParameterValue<?>> paramValueList = new ArrayList<ParameterValue<?>>();
+			paramValueList.addAll(inputParameterValues);
+			if (dataSetRow.equalIndependentParameterValues((new DataSetRow(paramValueList, Collections.EMPTY_LIST)))){
+				return dataSetRow.getObservableRowValues();
+			}
+				
+		 }
+		 
+		 throw new DataNotFoundException("DataSet does not contain a row with the given input parameter values.");
+	}
 
 }

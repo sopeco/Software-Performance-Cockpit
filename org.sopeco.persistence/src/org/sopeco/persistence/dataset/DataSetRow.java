@@ -1,6 +1,7 @@
 package org.sopeco.persistence.dataset;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
@@ -23,20 +24,20 @@ public class DataSetRow implements Serializable {
 	/**
 	 * ParameterValues of the row.
 	 */
-	private List<ParameterValue> inputParameterValues;
+	private List<ParameterValue<?>> inputParameterValues;
 
 	/**
 	 * ParameterValues of the row.
 	 */
-	private List<ParameterValueList> observationParameterValues;
+	private List<ParameterValueList<?>> observationParameterValues;
 
 	/**
 	 * Constructor. Only to be used in builders & factories.
 	 * 
 	 * @param parameterValues
 	 */
-	protected DataSetRow(List<ParameterValue> inputParameterValues,
-			List<ParameterValueList> observationParameterValues) {
+	protected DataSetRow(List<ParameterValue<?>> inputParameterValues,
+			List<ParameterValueList<?>> observationParameterValues) {
 		super();
 		this.inputParameterValues = inputParameterValues;
 		this.observationParameterValues = observationParameterValues;
@@ -45,14 +46,14 @@ public class DataSetRow implements Serializable {
 	/**
 	 * @return The ParameterValues of this row.
 	 */
-	public List<ParameterValue> getInputRowValues() {
+	public List<ParameterValue<?>> getInputRowValues() {
 		return inputParameterValues;
 	}
 
 	/**
 	 * @return The ParameterValues of this row.
 	 */
-	public List<ParameterValueList> getObservableRowValues() {
+	public List<ParameterValueList<?>> getObservableRowValues() {
 		return observationParameterValues;
 	}
 

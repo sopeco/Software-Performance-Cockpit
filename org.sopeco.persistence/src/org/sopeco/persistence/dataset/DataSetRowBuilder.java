@@ -20,13 +20,13 @@ public class DataSetRowBuilder extends AbstractDataSetRowBuilder {
 	 * Row under construction using methods startRow, addParameterValue, and
 	 * finishRow.
 	 */
-	private List<ParameterValue> nextRowInput;
+	private List<ParameterValue<?>> nextRowInput;
 
 	/**
 	 * Row under construction using methods startRow, addParameterValue, and
 	 * finishRow.
 	 */
-	private List<ParameterValueList> nextRowObservation;
+	private List<ParameterValueList<?>> nextRowObservation;
 
 	/**
 	 * Create a new row. New ParameterValues can be added to the row calling
@@ -34,8 +34,8 @@ public class DataSetRowBuilder extends AbstractDataSetRowBuilder {
 	 * new DataSet.
 	 */
 	public void startRow() {
-		nextRowInput = new ArrayList<ParameterValue>();
-		nextRowObservation = new ArrayList<ParameterValueList>();
+		nextRowInput = new ArrayList<ParameterValue<?>>();
+		nextRowObservation = new ArrayList<ParameterValueList<?>>();
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class DataSetRowBuilder extends AbstractDataSetRowBuilder {
 		nextRowInput.add(parameterValue);
 	}
 
-	public List<ParameterValue> getConfigurationValues() {
+	public List<ParameterValue<?>> getConfigurationValues() {
 		return nextRowInput;
 	}
 
@@ -163,8 +163,8 @@ public class DataSetRowBuilder extends AbstractDataSetRowBuilder {
 	 * @param row
 	 *            Row to be added.
 	 */
-	public void appendRow(Collection<ParameterValue> inputValues,
-			List<ParameterValueList> observationValues) {
+	public void appendRow(Collection<ParameterValue<?>> inputValues,
+			List<ParameterValueList<?>> observationValues) {
 
 		if (inputColumnMap.isEmpty()) {
 			for (ParameterValue value : inputValues) {

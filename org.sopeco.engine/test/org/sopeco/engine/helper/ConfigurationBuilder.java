@@ -6,6 +6,7 @@ import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.experiment.impl.ExperimentController;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
 import org.sopeco.persistence.EntityFactory;
+import org.sopeco.persistence.PersistenceProviderFactory;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueFactory;
 import org.sopeco.persistence.dataset.util.ParameterType;
@@ -55,6 +56,7 @@ public class ConfigurationBuilder {
 	public IExperimentController createExperimentController(IMeasurementEnvironmentController meController) {
 		ExperimentController expController = new ExperimentController();
 		expController.setMeasurementEnvironmentController(meController);
+		expController.setPersistenceProvider(PersistenceProviderFactory.getPersistenceProvider());
 		return expController;
 	}
 
