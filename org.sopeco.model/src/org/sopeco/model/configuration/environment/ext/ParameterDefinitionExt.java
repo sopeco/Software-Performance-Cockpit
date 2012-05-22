@@ -57,9 +57,14 @@ public class ParameterDefinitionExt extends ParameterDefinitionImpl {
 	private String createFullNamespaceString(String fullNamespace, ParameterNamespace namespace, String namespaceDelimitter){
 
 		if(namespace!=null && namespace.getName() != null && !namespace.getName().isEmpty()){
-			ParameterNamespace parent = (ParameterNamespace) namespace.eContainer();
+			
 			fullNamespace = namespace.getName() + namespaceDelimitter + fullNamespace;
-			return createFullNamespaceString(fullNamespace, parent, namespaceDelimitter);
+			
+			if(namespace.eContainer() instanceof ParameterNamespace) {
+				ParameterNamespace parent = (ParameterNamespace) namespace.eContainer();
+				return createFullNamespaceString(fullNamespace, parent, namespaceDelimitter);
+			}
+			
 		}
 		
 		return fullNamespace;
