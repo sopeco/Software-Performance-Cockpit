@@ -10,3 +10,4 @@ Require-Bundle: org.apache.commons.cli;bundle-version="1.2.0",
  org.sopeco.util;bundle-version="0.2.0"
 Export-Package: org.sopeco.config,
  org.sopeco.config.exception
+

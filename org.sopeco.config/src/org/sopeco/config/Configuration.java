@@ -3,6 +3,7 @@ package org.sopeco.config;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -263,7 +264,12 @@ public class Configuration implements IConfiguration {
 		if (getAppRootDirectory() == null)
 		defaultValues.put(CONF_APP_ROOT_FOLDER, Tools.getRootFolder());
 
-		loadDefaultConfiguration(this.getClass().getClassLoader(), DEFAULT_CONFIG_FILE_NAME);
+		try {
+			loadDefaultConfiguration(this.getClass().getClassLoader(), DEFAULT_CONFIG_FILE_NAME);
+		} catch (ConfigurationException ce) {
+			logger.warn("Could not find the default configuration file. Trying the root folder...");
+			loadDefaultConfiguration(getAppRootDirectory() + File.separator + DEFAULT_CONFIG_FILE_NAME);
+		}
 	}
 
 	/**
@@ -487,6 +493,31 @@ public class Configuration implements IConfiguration {
     	logger.debug("Configured logback using '{}'.", fileName);
 	}
 
+	@Override
+	public void writeConfiguration(String fileName) throws IOException {
+		Properties props = new Properties();
+		
+		logger.debug("Writing configuration file to {}...", fileName);
+		
+		for (Entry<String, Object> e: defaultValues.entrySet()) 
+			copyConfigItem(e, props);
+		
+		for (Entry<String, Object> e: properties.entrySet()) 
+			copyConfigItem(e, props);
+		
+		props.store(new FileOutputStream(fileName), "SoPeCo Configuration");
+	
+		logger.debug("Configuration file written to {}.", fileName);
+	}
+
+	private void copyConfigItem(Entry<String, Object> e, Properties destination) {
+		if (e.getValue() instanceof Number
+				|| e.getValue() instanceof Boolean
+				|| e.getValue() instanceof String) {
+			destination.setProperty(e.getKey(), e.getValue().toString());
+		} else
+			logger.debug("Skipping configuration item '{}'.", e.getKey());
+	}
 }
 
 

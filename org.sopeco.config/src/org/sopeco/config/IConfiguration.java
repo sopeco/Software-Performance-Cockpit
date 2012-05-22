@@ -3,6 +3,7 @@
  */
 package org.sopeco.config;
 
+import java.io.IOException;
 import java.net.URI;
 
 import org.sopeco.config.exception.ConfigurationException;
@@ -233,4 +234,12 @@ public interface IConfiguration {
 	 * must have been set by a call to {@link IConfiguration#setMainClass(Class)}.
 	 */
 	public Class<?> getMainClass();
+
+	/**
+	 * Writes the current configuration values into a file.
+	 *   
+	 * @param fileName the name of the file
+	 */
+	public void writeConfiguration(String fileName) throws IOException;
+	
 }
