@@ -7,6 +7,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -120,6 +121,18 @@ public class Tools {
 		} while (line != null);
 		
 		return result;
+	}
+
+	/**
+	 * Writes the given lines to a file.
+	 */
+	public static void writeLines(String fileName, List<String> lines) throws IOException {
+		PrintWriter pw = new PrintWriter(new FileOutputStream(fileName));
+		
+		for (String line: lines) 
+			pw.println(line);
+		
+		pw.close();
 	}
 
 //	/**
