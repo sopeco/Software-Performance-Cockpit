@@ -1,5 +1,9 @@
 package org.sopeco.engine.analysis;
 
+import java.util.List;
+
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
+
 
 /**
  * Contains the result of a correlation based analysis of the influence of
@@ -7,24 +11,22 @@ package org.sopeco.engine.analysis;
  * 
  * @author Dennis Westermann, Pascal Meier
  */
-public interface ICorrelationResult extends IPredictionFunctionResult {
-
-	// TODO fix the interface
+public interface ICorrelationResult extends IAnalysisResult {
 	
-//	/**
-//	 * Returns a list of all ParameterCorrelation-Objects describing the
-//	 * correlation of the parameters with the dependent parameter.
-//	 * 
-//	 * @return list of ParameterCorrelations
-//	 */
-//	public List<ParameterInfluence> getAllParameterCorrelations();
-//
-//	/**
-//	 * Returns the ParameterCorrelation-Object of the specified parameter(s).
-//	 * 
-//	 * @return list of ParameterCorrelations
-//	 */
-//	public ParameterInfluence getParameterCorrelationByParam(
-//			ParameterUsage parameter);
+	/**
+	 * Returns a list of all ParameterCorrelation-Objects describing the
+	 * correlation of the parameters with the dependent parameter.
+	 * 
+	 * @return list of ParameterCorrelations
+	 */
+	public List<ParameterCorrelation> getAllParameterCorrelations();
+
+	/**
+	 * Returns the ParameterCorrelation-Object of the specified parameter(s).
+	 * 
+	 * @return list of ParameterCorrelations
+	 */
+	public ParameterCorrelation getParameterCorrelationByParam(
+			ParameterDefinition parameter);
 
 }

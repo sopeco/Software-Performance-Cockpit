@@ -3,7 +3,6 @@ package org.sopeco.engine.analysis;
 import java.util.List;
 
 import org.sopeco.persistence.dataset.ParameterValue;
-import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 
 
 /**
@@ -48,11 +47,5 @@ public interface IPredictionFunctionResult extends IAnalysisResult{
 	 */
 	public String getFunctionAsString();
 
-	/**
-	 * Returns the configuration that was used to derive this result.
-	 * 
-	 * @return Configuration used for the analysis.
-	 */
-	public AnalysisConfiguration getAnalysisStrategyConfiguration();
 
 }

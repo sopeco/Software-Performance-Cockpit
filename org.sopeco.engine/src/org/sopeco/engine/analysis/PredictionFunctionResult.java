@@ -25,6 +25,8 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
  */
 public class PredictionFunctionResult implements IPredictionFunctionResult {
 
+	private static final long serialVersionUID = 1L;
+
 	private static Logger logger = LoggerFactory.getLogger(PredictionFunctionResult.class);
 	
 	String resultId;

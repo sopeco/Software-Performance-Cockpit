@@ -19,9 +19,9 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
  * @author Dennis Westermann
  * 
  */
-public abstract class AbstractPredictionFunctionStrategy extends AbstractRStrategy implements IPredictionFunctionStrategy {
+public abstract class AbstractAnalysisStrategy extends AbstractRStrategy {
 
-	public AbstractPredictionFunctionStrategy(ISoPeCoExtension<?> provider) {
+	public AbstractAnalysisStrategy(ISoPeCoExtension<?> provider) {
 		super(provider);
 	}
 
@@ -103,7 +103,6 @@ public abstract class AbstractPredictionFunctionStrategy extends AbstractRStrate
 		return builder.createDataSet();
 	}
 
-	@Override
 	public boolean supports(AnalysisConfiguration strategyConf) {
 		return strategyConf.getName().equalsIgnoreCase(provider.getName());
 	}

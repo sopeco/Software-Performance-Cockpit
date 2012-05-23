@@ -14,12 +14,12 @@ import java.util.Map;
  * @author Roozbeh Farahbod
  *
  */
-public abstract class AbstractPredictionFunctionStrategyExtension implements IPredictionFunctionStrategyExtension {
+public abstract class AbstractAnalysisStrategyExtension {
 	
 	/** Holds a mapping of configuration parameters to their optional default values. */
 	protected final Map<String, String> configParams = new HashMap<String, String>();
 
-	protected AbstractPredictionFunctionStrategyExtension() {
+	protected AbstractAnalysisStrategyExtension() {
 		prepareConfigurationParameterMap();
 	}
 	
@@ -29,7 +29,7 @@ public abstract class AbstractPredictionFunctionStrategyExtension implements IPr
 	 */
 	protected abstract void prepareConfigurationParameterMap();
 
-	@Override
+	
 	public Map<String, String> getConfigParameters() {
 		return Collections.unmodifiableMap(configParams);
 	}

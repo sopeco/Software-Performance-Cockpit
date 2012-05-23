@@ -3,8 +3,9 @@
  */
 package org.sopeco.plugin.std.analysis;
 
-import org.sopeco.engine.analysis.AbstractPredictionFunctionStrategyExtension;
+import org.sopeco.engine.analysis.AbstractAnalysisStrategyExtension;
 import org.sopeco.engine.analysis.IPredictionFunctionStrategy;
+import org.sopeco.engine.analysis.IPredictionFunctionStrategyExtension;
 
 /**
  * The extension that provides the linear regression analysis strategy.
@@ -12,7 +13,7 @@ import org.sopeco.engine.analysis.IPredictionFunctionStrategy;
  * @author Dennis Westermann, Roozbeh Farahbod
  *
  */
-public class MarsStrategyExtension extends AbstractPredictionFunctionStrategyExtension {
+public class MarsStrategyExtension extends AbstractAnalysisStrategyExtension implements IPredictionFunctionStrategyExtension {
 
 	public static final String NAME = "MARS";
 	
@@ -31,7 +32,6 @@ public class MarsStrategyExtension extends AbstractPredictionFunctionStrategyExt
 
 	@Override
 	protected void prepareConfigurationParameterMap() {
-		// TODO Dennis
 		
 	}
 

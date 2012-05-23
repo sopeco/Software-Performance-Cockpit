@@ -37,7 +37,7 @@
 <repository location="http://nexus:8081/nexus/content/repositories/build.milestones.unzip/org/eclipse/download/modeling/emf-xsd-update/2.7.1/emf-xsd-update-2.7.1.zip-unzip/"/>
 </location>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.sopeco.orbit.feature.feature.group" version="0.1.0.201204181313"/>
+<unit id="org.sopeco.orbit.feature.feature.group" version="0.1.0.201205231045"/>
 <repository location="http://deqkal276.qkal.sap.corp:8080/jenkins/job/sopeco.orbit-master/ws/org.sopeco.orbit.updatesite/target/site/"/>
 </location>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">

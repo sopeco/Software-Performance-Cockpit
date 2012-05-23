@@ -3,11 +3,12 @@ package org.sopeco.plugin.std.analysis;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.engine.analysis.IPredictionFunctionResult;
+import org.sopeco.engine.analysis.IPredictionFunctionStrategy;
 import org.sopeco.engine.analysis.PredictionFunctionResult;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
-import org.sopeco.plugin.std.analysis.common.AbstractPredictionFunctionStrategy;
+import org.sopeco.plugin.std.analysis.common.AbstractAnalysisStrategy;
 import org.sopeco.plugin.std.analysis.util.CSVStringGenerator;
 import org.sopeco.plugin.std.analysis.util.RAdapter;
 
@@ -17,7 +18,7 @@ import org.sopeco.plugin.std.analysis.util.RAdapter;
  * @author Dennis Westermann, Jens Happe
  * 
  */
-public class LinearRegressionStrategy extends AbstractPredictionFunctionStrategy {
+public class LinearRegressionStrategy extends AbstractAnalysisStrategy implements IPredictionFunctionStrategy {
 
 	Logger logger = LoggerFactory.getLogger(LinearRegressionStrategy.class);
 	

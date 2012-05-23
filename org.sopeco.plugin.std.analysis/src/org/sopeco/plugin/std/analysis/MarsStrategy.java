@@ -5,16 +5,16 @@ import java.util.Random;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.engine.analysis.IPredictionFunctionResult;
+import org.sopeco.engine.analysis.IPredictionFunctionStrategy;
 import org.sopeco.engine.analysis.PredictionFunctionResult;
 import org.sopeco.engine.registry.ISoPeCoExtension;
 import org.sopeco.persistence.dataset.DataSetAggregated;
-import org.sopeco.persistence.dataset.DataSetRow;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.SimpleDataSet;
 import org.sopeco.persistence.dataset.SimpleDataSetRow;
 import org.sopeco.persistence.dataset.SimpleDataSetRowBuilder;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
-import org.sopeco.plugin.std.analysis.common.AbstractPredictionFunctionStrategy;
+import org.sopeco.plugin.std.analysis.common.AbstractAnalysisStrategy;
 import org.sopeco.plugin.std.analysis.util.RAdapter;
 import org.sopeco.util.Tools;
 
@@ -25,7 +25,7 @@ import org.sopeco.util.Tools;
  * @author Dennis Westermann, Jens Happe
  * 
  */
-public class MarsStrategy extends AbstractPredictionFunctionStrategy {
+public class MarsStrategy extends AbstractAnalysisStrategy implements IPredictionFunctionStrategy {
 
 	Logger logger = LoggerFactory.getLogger(MarsStrategy.class);
 
