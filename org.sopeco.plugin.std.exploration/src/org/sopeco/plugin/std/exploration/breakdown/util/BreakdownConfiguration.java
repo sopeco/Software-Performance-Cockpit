@@ -283,9 +283,4 @@ public abstract class BreakdownConfiguration {
 		}
 	}
 
-	public static int getNumberOfInitialExperiments() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 }

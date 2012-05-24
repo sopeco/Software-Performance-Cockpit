@@ -48,13 +48,13 @@ public class RandomBreakdownImpl extends AbstractBreakdownExploration implements
 
 	@Override
 	public void finishWork() {
-		// TODO Auto-generated method stub
+		// not used
 
 	}
 
 	@Override
 	public void initialise() {
-		for (int j = 0; j < BreakdownConfiguration.getNumberOfInitialExperiments(); j++) {
+		for (int j = 0; j < BreakdownConfiguration.getNumberOfInitialExperiments(strategyConfig); j++) {
 			RelativePosition point = createRandomPoint();
 			MeasurementCacheResult measuredValue = cachedEnvironmentAccess.measure(point);
 			cachedEnvironmentAccess.addToModel(point, measuredValue.value);

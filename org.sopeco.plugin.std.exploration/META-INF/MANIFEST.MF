@@ -7,7 +7,8 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.sopeco.persistence;bundle-version="0.2.0",
  org.sopeco.core;bundle-version="0.2.0",
  org.sopeco.orbit.logging;bundle-version="1.0.0",
- org.junit
+ org.junit,
+ org.sopeco.orbit.de.uka.ipd.sdq.rwrapper;bundle-version="2.12.1"
 Export-Package: org.sopeco.plugin.std.exploration,
  org.sopeco.plugin.std.exploration.breakdown,
  org.sopeco.plugin.std.exploration.breakdown.environment,
