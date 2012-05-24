@@ -1,4 +1,4 @@
-package org.sopeco.persistence;
+package org.sopeco.model.util;
 
 import static junit.framework.Assert.*;
 
@@ -7,9 +7,9 @@ import java.io.IOException;
 import org.junit.Before;
 import org.junit.Test;
 import org.sopeco.model.configuration.SoPeCoModelFactoryHandler;
+import org.sopeco.model.util.EMFUtil;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
-import org.sopeco.persistence.util.EMFUtil;
 
 /**
  * Test class for the extension implementation of the parameter definition.

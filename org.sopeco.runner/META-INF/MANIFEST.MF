@@ -8,5 +8,6 @@ Require-Bundle: org.sopeco.plugin.std.analysis;bundle-version="0.2.0",
  org.sopeco.plugin.std.constantassignment;bundle-version="0.2.0",
  org.sopeco.plugin.std.exploration;bundle-version="0.2.0",
  org.sopeco.plugin.std.parametervariation;bundle-version="0.2.0",
- org.sopeco.core;bundle-version="0.2.0"
+ org.sopeco.core;bundle-version="0.2.0",
+ org.sopeco.model;bundle-version="0.2.0"
 Export-Package: org.sopeco.runner

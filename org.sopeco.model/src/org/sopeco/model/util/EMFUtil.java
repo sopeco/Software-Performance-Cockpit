@@ -1,4 +1,4 @@
-package org.sopeco.persistence.util;
+package org.sopeco.model.util;
 
 import java.io.File;
 import java.io.IOException;

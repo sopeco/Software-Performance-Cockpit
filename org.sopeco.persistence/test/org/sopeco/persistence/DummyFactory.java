@@ -17,7 +17,6 @@ import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
-import org.sopeco.persistence.util.EMFUtil;
 
 public class DummyFactory {
 
@@ -34,8 +33,10 @@ public class DummyFactory {
 		return scenarioInstance;
 	}
 	
-	public static ScenarioDefinition loadScenarioDefinition() throws IOException{
-		return (ScenarioDefinition) EMFUtil.loadFromFilePath("test/dummy.configuration");
+	public static ScenarioDefinition loadScenarioDefinition() {
+//		return (ScenarioDefinition) EMFUtil.loadFromFilePath("test/dummy.configuration");
+		// TODO: Create scenario definition with builder.
+		return null;
 	}
 	
 	private static List<ExperimentSeries> createDummyExperimentSeries() throws IOException{
