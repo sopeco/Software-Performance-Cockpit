@@ -221,7 +221,7 @@ public class Configuration implements IConfiguration {
 	    // -config
 	    if (line.hasOption(config.getOpt())) {
 	    	final String configFilePath = line.getOptionValue(config.getOpt());
-	    	loadConfiguration(properties, configFilePath);
+	    	loadConfiguration(configFilePath);
 	    }
 	    
 	    // -uri
@@ -294,6 +294,17 @@ public class Configuration implements IConfiguration {
 		loadConfiguration(defaultValues, classLoader, fileName);
 	}
 
+	@Override
+	public void loadConfiguration(String fileName) throws ConfigurationException {
+		loadConfiguration(properties, fileName);
+		applyConfiguration();
+	}
+
+	@Override
+	public void applyConfiguration() {
+		configureLogger();
+	}
+
 	/**
 	 * Loads configurations from a file into
 	 * the destination properties holder. 
@@ -344,8 +355,12 @@ public class Configuration implements IConfiguration {
 		} catch (IOException e) {
 			throw new ConfigurationException("Could not load configuration. (Reason: " + e.getMessage() + ")", e);
 		}
-		for (Entry<Object, Object> entry : prop.entrySet())
-			dest.put((String)entry.getKey(), entry.getValue());
+		for (Entry<Object, Object> entry : prop.entrySet()) {
+			if (dest == properties) {
+				setProperty((String)entry.getKey(), entry.getValue());
+			} else
+				dest.put((String)entry.getKey(), entry.getValue());
+		}
 	}
 	
 	/**
@@ -470,29 +485,39 @@ public class Configuration implements IConfiguration {
 
 	@Override
 	public void setLoggerConfigFileName(String fileName) {
+        setProperty(CONF_LOGGER_CONFIG_FILE_NAME, fileName);
+        configureLogger();
+	}
+
+	/**
+	 * Configures the logging system with the provided logger configuration file.
+	 */
+	private void configureLogger() {
     	// The following code loads the logback config file using JoranConfigurator.
     	// Alternatively, you can specify the location of the config file using
     	// the system property 'logback.configurationFile'
     	// e.g., 
     	// $ java -Dlogback.configurationFile=/path/to/config.xml ...
         LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-        
-        try {
-          JoranConfigurator configurator = new JoranConfigurator();
-          configurator.setContext(lc);
-          // the context was probably already configured by default configuration 
-          // rules
-          lc.reset(); 
-          configurator.doConfigure(fileName);
-        } catch (JoranException je) {
-           logger.warn("Failed loading the logback configuration file. Using default configuration. Error message: {}", je.getMessage());
+
+        final String fileName = getPropertyAsStr(CONF_LOGGER_CONFIG_FILE_NAME);
+        if (fileName != null) {
+	        try {
+	          JoranConfigurator configurator = new JoranConfigurator();
+	          configurator.setContext(lc);
+	          // the context was probably already configured by default configuration 
+	          // rules
+	          lc.reset(); 
+	          configurator.doConfigure(fileName);
+	        } catch (JoranException je) {
+	           logger.warn("Failed loading the logback configuration file. Using default configuration. Error message: {}", je.getMessage());
+	        }
+	        
+	    	logger.debug("Configured logback using '{}'.", fileName);
         }
-
-        setProperty(CONF_LOGGER_CONFIG_FILE_NAME, fileName);
-        
-    	logger.debug("Configured logback using '{}'.", fileName);
 	}
-
+	
+	
 	@Override
 	public void writeConfiguration(String fileName) throws IOException {
 		Properties props = new Properties();
@@ -518,6 +543,7 @@ public class Configuration implements IConfiguration {
 		} else
 			logger.debug("Skipping configuration item '{}'.", e.getKey());
 	}
+
 }
 
 
