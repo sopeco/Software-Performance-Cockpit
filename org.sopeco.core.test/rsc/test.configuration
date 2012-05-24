@@ -2,16 +2,16 @@
 <org.sopeco.core.model:ScenarioDefinition xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:measurements="http://sopeco.org/configuration/measurements" xmlns:org.sopeco.core.model="http://sopeco.org/configuration" name="SoPeCo Test Scenario">
   <measurementEnvironmentDefinition>
     <root name="Main">
-      <children name="Preparation" parent="//@measurementEnvironmentDefinition/@root">
-        <parameters name="CPUCores" type="Integer" namespace="//@measurementEnvironmentDefinition/@root/@children.0"/>
-        <parameters name="MaxMem" type="Integer" namespace="//@measurementEnvironmentDefinition/@root/@children.0"/>
+      <children name="Preparation">
+        <parameters name="CPUCores" type="Integer"/>
+        <parameters name="MaxMem" type="Integer"/>
       </children>
-      <children name="Initialization" parent="//@measurementEnvironmentDefinition/@root">
-        <parameters name="Platform" type="String" namespace="//@measurementEnvironmentDefinition/@root/@children.1"/>
+      <children name="Initialization">
+        <parameters name="Platform" type="String"/>
       </children>
-      <parameters name="Value" type="Integer" namespace="//@measurementEnvironmentDefinition/@root"/>
-      <parameters name="Implementation" type="String" namespace="//@measurementEnvironmentDefinition/@root"/>
-      <parameters name="ResponseTime" type="Double" role="OBSERVATION" namespace="//@measurementEnvironmentDefinition/@root"/>
+      <parameters name="Value" type="Integer"/>
+      <parameters name="Implementation" type="String"/>
+      <parameters name="ResponseTime" type="Double" role="OBSERVATION"/>
     </root>
   </measurementEnvironmentDefinition>
   <measurementSpecification>
