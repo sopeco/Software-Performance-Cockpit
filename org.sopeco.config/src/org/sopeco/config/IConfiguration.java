@@ -122,6 +122,26 @@ public interface IConfiguration {
 	public void loadDefaultConfiguration(ClassLoader classLoader, String fileName)  throws ConfigurationException;
 	
 	/**
+	 * Loads configuration from the given properties file.
+	 *
+	 * Any implementation of this method should call {@link #applyConfiguration()} after
+	 * loading the configuration from file.
+	 * 
+	 * @param fileName the full path to the file.
+	 * 
+	 * @throws ConfigurationException if there is any error
+	 */
+	public void loadConfiguration(String fileName) throws ConfigurationException;
+	
+	/**
+	 * Performs any post processing of configuration settings that may be required. 
+	 * 
+	 * This method can be called after manually making changes to the configuration values. It should
+	 * be called automatically after a call to {@link IConfiguration#loadConfiguration(String)}.
+	 */
+	public void applyConfiguration();
+	
+	/**
 	 * Sets the value of scenario description file name.
 	 *  
 	 * @param fileName file name
@@ -241,5 +261,5 @@ public interface IConfiguration {
 	 * @param fileName the name of the file
 	 */
 	public void writeConfiguration(String fileName) throws IOException;
-	
+
 }
