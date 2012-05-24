@@ -114,7 +114,11 @@ public interface IConfiguration {
 	 * an incremental fashion; i.e., the loaded configuration 
 	 * will be added to (and overriding) the existing default configuration.
 	 * <p>
-	 * See {@link #getDefaultValue(String)}.  
+	 * If the configuration file cannot be found in the classpath, 
+	 * this implementation should try loading the file from the application root
+	 * folder. 
+	 * <p>
+	 * See {@link #getAppRootDirectory()} and {@link #getDefaultValue(String)}.  
 	 *
 	 * @param classLoader an instance of a class loader
 	 * @param fileName the name of a properties file

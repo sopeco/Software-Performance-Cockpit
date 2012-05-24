@@ -264,12 +264,7 @@ public class Configuration implements IConfiguration {
 		if (getAppRootDirectory() == null)
 		defaultValues.put(CONF_APP_ROOT_FOLDER, Tools.getRootFolder());
 
-		try {
-			loadDefaultConfiguration(this.getClass().getClassLoader(), DEFAULT_CONFIG_FILE_NAME);
-		} catch (ConfigurationException ce) {
-			logger.warn("Could not find the default configuration file. Trying the root folder...");
-			loadDefaultConfiguration(getAppRootDirectory() + File.separator + DEFAULT_CONFIG_FILE_NAME);
-		}
+		loadDefaultConfiguration(this.getClass().getClassLoader(), DEFAULT_CONFIG_FILE_NAME);
 	}
 
 	/**
@@ -291,7 +286,12 @@ public class Configuration implements IConfiguration {
 
 	@Override
 	public void loadDefaultConfiguration(ClassLoader classLoader, String fileName) throws ConfigurationException {
-		loadConfiguration(defaultValues, classLoader, fileName);
+		try {
+			loadConfiguration(defaultValues, classLoader, fileName);
+		} catch (ConfigurationException ce) {
+			logger.warn("Could not find the default configuration file from classpath. Trying the root folder...");
+			loadDefaultConfiguration(getAppRootDirectory() + File.separator + fileName);
+		}
 	}
 
 	@Override
