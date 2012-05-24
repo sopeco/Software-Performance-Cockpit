@@ -17,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.StringTokenizer;
 
@@ -64,6 +65,14 @@ public class Tools {
 				return Boolean;
 
 			return null;
+		}
+		
+		public static List<String> asList() {
+			ArrayList<String> supportedTypes = new ArrayList<String>();
+			for (SupportedTypes t : EnumSet.allOf(SupportedTypes.class)) {
+				supportedTypes.add(t.toString());
+			}
+			return supportedTypes;
 		}
 
 	};
