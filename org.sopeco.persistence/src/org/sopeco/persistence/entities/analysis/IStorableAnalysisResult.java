@@ -12,6 +12,6 @@ import java.io.Serializable;
 public interface IStorableAnalysisResult extends Serializable {
 	
 	String getId();
-	String setId(String id);
+	void setId(String id);
 
 }

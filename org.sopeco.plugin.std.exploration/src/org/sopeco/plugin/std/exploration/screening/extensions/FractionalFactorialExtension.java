@@ -19,8 +19,9 @@ public class FractionalFactorialExtension extends AbstractScreeningExplorationEx
 		
 		
 		/* Common Properties */
-		configParams.put(ScreeningConfiguration.USE_REPLICATION, "false");
-		configParams.put(ScreeningConfiguration.NUM_REPLICATIONS, "");
+		// Replications not yet supported by screening analysis 
+//		configParams.put(ScreeningConfiguration.USE_REPLICATION, "false");
+//		configParams.put(ScreeningConfiguration.NUM_REPLICATIONS, "");
 		configParams.put(ScreeningConfiguration.RANDOMIZE_RUNS, "false");
 		
 		/* Only for Fractional Factorial */

@@ -72,8 +72,8 @@ public class CorrelationResult implements ICorrelationResult {
 	}
 
 	@Override
-	public String setId(String id) {
-		return this.id = id;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	@Override

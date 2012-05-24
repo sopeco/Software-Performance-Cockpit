@@ -54,7 +54,7 @@ public class DummyAnalysisResult implements IStorableAnalysisResult{
 	}
 
 	@Override
-	public String setId(String id) {
-		return this.resultId = id;
+	public void setId(String id) {
+		this.resultId = id;
 	}
 }

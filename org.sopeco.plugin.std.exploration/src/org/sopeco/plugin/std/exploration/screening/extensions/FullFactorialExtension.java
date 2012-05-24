@@ -19,8 +19,9 @@ public class FullFactorialExtension extends AbstractScreeningExplorationExtensio
 		
 		
 		/* Common Properties */
-		configParams.put(ScreeningConfiguration.USE_REPLICATION, "false");
-		configParams.put(ScreeningConfiguration.NUM_REPLICATIONS, "");
+		// Replications not yet supported by screening analysis 
+//		configParams.put(ScreeningConfiguration.USE_REPLICATION, "false");
+//		configParams.put(ScreeningConfiguration.NUM_REPLICATIONS, "");
 		configParams.put(ScreeningConfiguration.RANDOMIZE_RUNS, "false");
 		
 	}
