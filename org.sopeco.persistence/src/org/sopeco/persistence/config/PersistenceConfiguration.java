@@ -2,6 +2,8 @@ package org.sopeco.persistence.config;
 
 import java.io.File;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
 import org.sopeco.config.exception.ConfigurationException;
@@ -14,12 +16,13 @@ import org.sopeco.config.exception.ConfigurationException;
  * 
  */
 public class PersistenceConfiguration {
-	
+	private Logger logger = LoggerFactory.getLogger(PersistenceConfiguration.class);
 	private IConfiguration sopecoConfig;
 	
 	private final static String DB_TYPE = "sopeco.config.persistence.dbtype";
 	public enum DBType {InMemory, Server}
 
+	private final static String DEFAULT_PERSISTENCE_CONFIG_FILE_NAME ="sopeco-persistence-defaults.conf";
 	private final static String DDL_GENERATION = "sopeco.config.persistence.ddlgeneration";
 	
 	private final static String SERVER_HOST = "sopeco.config.persistence.server.host";
@@ -30,10 +33,17 @@ public class PersistenceConfiguration {
 	public PersistenceConfiguration(){	
 		sopecoConfig = Configuration.getSingleton();
 		try {
-			sopecoConfig.loadDefaultConfiguration(this.getClass().getClassLoader(), "config" + File.separator + "sopeco-persistence-defaults.conf");
+			sopecoConfig.loadDefaultConfiguration(this.getClass().getClassLoader(), "config" + File.separator + DEFAULT_PERSISTENCE_CONFIG_FILE_NAME);
 		} catch (ConfigurationException e) {
-			throw new IllegalStateException("Cannot load default configuration");
+			logger.warn("Could not find the default persistence-configuration file. Trying the root folder...");
+			try {
+				sopecoConfig.loadDefaultConfiguration(sopecoConfig.getAppRootDirectory()+ File.separator + DEFAULT_PERSISTENCE_CONFIG_FILE_NAME);
+			} catch (ConfigurationException e1) {
+				throw new IllegalStateException("Cannot load default persistence-configuration");
+			}
 		}
+		
+		
 	}
 	
 	/**

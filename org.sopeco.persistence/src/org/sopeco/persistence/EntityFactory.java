@@ -64,14 +64,14 @@ public class EntityFactory {
 	
 	/**
 	 * Creates a new instance of the {@link ExperimentSeriesRun} entity. 
-	 * Sets the timestamp value to the current {@link System.nanoTime()}).
+	 * Sets the timestamp value to the current {@link System.currentTimeMillis()}).
 	 * 
 	 * @return a new instance of {@link ExperimentSeriesRun} based on the given parameters
 	 */
 	public static ExperimentSeriesRun createExperimentSeriesRun(){
 		ExperimentSeriesRun expSeriesRun = new ExperimentSeriesRun();
 		
-		expSeriesRun.setTimestamp(System.nanoTime());
+		expSeriesRun.setTimestamp(System.currentTimeMillis());
 		return expSeriesRun;
 	}
 	
