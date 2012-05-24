@@ -25,7 +25,6 @@ import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
-import org.sopeco.persistence.util.EMFUtil;
 
 /**
  * Test class for implementations of the {@link ICorrelationStrategy}
@@ -101,7 +100,9 @@ public class CorrelationAnalysisStrategyTest {
 	
 
 	private static ScenarioDefinition loadScenarioDefinition() throws IOException {
-		return (ScenarioDefinition) EMFUtil.loadFromFilePath("test/dummy.configuration");
+//		return (ScenarioDefinition) EMFUtil.loadFromFilePath("test/dummy.configuration");
+		// TODO: Create scenario definition with builder.
+		return null;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
