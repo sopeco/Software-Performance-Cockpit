@@ -12,7 +12,6 @@ import org.sopeco.engine.analysis.ScreeningDesignResult;
 import org.sopeco.engine.registry.ISoPeCoExtension;
 import org.sopeco.persistence.dataset.AbstractDataSetColumn;
 import org.sopeco.persistence.dataset.DataSetAggregated;
-import org.sopeco.persistence.dataset.DataSetObservationColumn;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
@@ -39,10 +38,6 @@ public class ScreeningAnalysisStrategy extends AbstractAnalysisStrategy implemen
 	 */
 	private int interactionDepth;
 
-	/**
-	 * Values of the observation parameter extracted from the dataSet
-	 */
-	DataSetObservationColumn<?> observationParameterColumn;
 	/**
 	 * Defines if the data that will be analysed includes replicated
 	 * measurements
@@ -76,21 +71,22 @@ public class ScreeningAnalysisStrategy extends AbstractAnalysisStrategy implemen
 	@Override
 	public void analyse(DataSetAggregated dataSet, AnalysisConfiguration strategy) {
 
+		this.config = strategy;
+
 		if (!(strategy.getName().equalsIgnoreCase(ScreeningAnalysisStrategyExtension.NAME))) {
 			throw new IllegalArgumentException(strategy.getName() + "is not supported by this analysis strategy (only \""
 					+ ScreeningAnalysisStrategyExtension.NAME + "\")");
 		}
-		
+
 		logger.debug("Starting screening analysis.");
-		
-		init(strategy);
-		
+
+		init(config);
+
 		deriveDependentAndIndependentParameters(dataSet, config);
-		
+
 		checkConfiguration(dataSet);
 
 		latestAnalysisResult = new ScreeningDesignResult(strategy);
-		
 
 		if (useReplication) {
 			throw new IllegalStateException("Use of replications is not yet implemented!");
@@ -137,7 +133,7 @@ public class ScreeningAnalysisStrategy extends AbstractAnalysisStrategy implemen
 	 * @throws FrameworkException
 	 */
 	private void init(AnalysisConfiguration strategy) {
-		
+
 		interactionDepth = ScreeningAnalysisStrategyConfiguration.getInteractionDepth(strategy);
 		useRandomization = ScreeningAnalysisStrategyConfiguration.randomizeRuns(strategy);
 	}
@@ -185,7 +181,7 @@ public class ScreeningAnalysisStrategy extends AbstractAnalysisStrategy implemen
 
 		if (Math.abs((value.getValueAsDouble() - maxValue)) < 0.000001) {
 			return 1;
-		} else if (Math.abs((Double) value.getValue() - minValue) < 0.000001) {
+		} else if (Math.abs(value.getValueAsDouble() - minValue) < 0.000001) {
 			return -1;
 		}
 
@@ -225,7 +221,7 @@ public class ScreeningAnalysisStrategy extends AbstractAnalysisStrategy implemen
 	 * 
 	 * @param dataSet
 	 * @return the main effects of single parameters according to the
-	 * experimental design used to get the measurement data.
+	 *         experimental design used to get the measurement data.
 	 */
 	private List<ParameterEffect> calculateMainEffects(DataSetAggregated dataSet) {
 
@@ -241,7 +237,8 @@ public class ScreeningAnalysisStrategy extends AbstractAnalysisStrategy implemen
 			List<Integer> levelsOfAllRunsOfParam = getLevelsOfAllRunsByParam(param, dataSet);
 			for (Integer level : levelsOfAllRunsOfParam) {
 
-				double observationValue = observationParameterColumn.getParameterValues().get(runIndex).getValueAsDouble();
+				double observationValue = ((ParameterValue<?>) dataSet.getColumn(dependentParameterDefintion).getParameterValues().get(runIndex))
+						.getValueAsDouble();
 				if (level == 1) {
 					effectValue = effectValue + observationValue;
 					plusCount++;
@@ -310,15 +307,15 @@ public class ScreeningAnalysisStrategy extends AbstractAnalysisStrategy implemen
 	private List<ParameterEffect> handleInteractionsOfSpecifiedDepth(int depth, List<ParameterDefinition> selectedParameters,
 			List<ParameterDefinition> workList, DataSetAggregated dataSet) {
 
-//		System.out.print("Depth: " + depth + "/ Selected: ");
-//		for (ParameterDefinition p : selectedParameters) {
-//			System.out.print(p.getID() + " ");
-//		}
-//		System.out.print(" / Working: ");
-//		for (ParameterDefinition p : workList) {
-//			System.out.print(p.getID() + " ");
-//		}
-//		System.out.println();
+		// System.out.print("Depth: " + depth + "/ Selected: ");
+		// for (ParameterDefinition p : selectedParameters) {
+		// System.out.print(p.getID() + " ");
+		// }
+		// System.out.print(" / Working: ");
+		// for (ParameterDefinition p : workList) {
+		// System.out.print(p.getID() + " ");
+		// }
+		// System.out.println();
 
 		List<ParameterEffect> parameterEffects = new ArrayList<ParameterEffect>();
 
@@ -406,10 +403,12 @@ public class ScreeningAnalysisStrategy extends AbstractAnalysisStrategy implemen
 			int minusCount = 0; // number of interaction levels with value -1
 			double effectValueSum = 0.0; // value of the effect on the
 											// observation parameter value
-			int numberOfRuns = observationParameterColumn.size();
+
+			AbstractDataSetColumn<?> depParamColumn = dataSet.getColumn(dependentParameterDefintion);
+			int numberOfRuns = depParamColumn.size();
 			for (int runIndex = 0; runIndex < numberOfRuns; runIndex++) {
 
-				double observationValue = observationParameterColumn.getParameterValues().get(runIndex).getValueAsDouble();
+				double observationValue = depParamColumn.getParameterValues().get(runIndex).getValueAsDouble();
 				// Calculate the interaction level of the current run by
 				// multiplying all the parameter levels
 				int interactionLevel = 1;
@@ -468,7 +467,6 @@ public class ScreeningAnalysisStrategy extends AbstractAnalysisStrategy implemen
 		ParameterEffect parameterEffect = new ParameterEffect(analysedParameters, dependentParameterDefintion, effectValue);
 		return parameterEffect;
 	}
-
 
 	@Override
 	public IScreeningAnalysisResult getScreeningAnalysisResult() {
