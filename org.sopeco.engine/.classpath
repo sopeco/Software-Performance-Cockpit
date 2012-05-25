@@ -5,5 +5,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="test"/>
 	<classpathentry kind="src" path="plugins"/>
+	<classpathentry kind="src" path="rsc"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

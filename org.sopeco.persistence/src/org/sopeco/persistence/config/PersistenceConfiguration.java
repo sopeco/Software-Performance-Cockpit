@@ -32,16 +32,14 @@ public class PersistenceConfiguration {
 	
 	public PersistenceConfiguration(){	
 		sopecoConfig = Configuration.getSingleton();
+		
 		try {
 			sopecoConfig.loadDefaultConfiguration(this.getClass().getClassLoader(), "config" + File.separator + DEFAULT_PERSISTENCE_CONFIG_FILE_NAME);
 		} catch (ConfigurationException e) {
-			logger.warn("Could not find the default persistence-configuration file. Trying the root folder...");
-			try {
-				sopecoConfig.loadDefaultConfiguration(sopecoConfig.getAppRootDirectory()+ File.separator + DEFAULT_PERSISTENCE_CONFIG_FILE_NAME);
-			} catch (ConfigurationException e1) {
-				throw new IllegalStateException("Cannot load default persistence-configuration");
-			}
+			logger.error("Unable to read default config.");
+			throw new RuntimeException(e);
 		}
+		
 		
 		
 	}

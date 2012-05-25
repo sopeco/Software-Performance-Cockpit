@@ -1,5 +1,6 @@
 package org.sopeco.engine;
 
+import java.io.File;
 import java.net.URI;
 
 import org.slf4j.Logger;
@@ -17,34 +18,45 @@ import org.sopeco.engine.measurementenvironment.rmi.RmiMEConnector;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.PersistenceProviderFactory;
 
+/**
+ * The factory is responsible for creating a valid instance of the SoPeCo
+ * engine.
+ * 
+ * @author Dennis Westermann
+ * @author Roozbeh Farahbod
+ */
 public class EngineFactory {
 
 	private static final Logger logger = LoggerFactory.getLogger(EngineFactory.class);
-	
+
 	public static EngineFactory INSTANCE = new EngineFactory();
 
 	protected static IEngine engine = null;
-	
+
+	private static final String DEFAULT_ENGINE_CONFIG_FILE_NAME = "sopeco-engine-defaults.conf";
+
 	/**
-	 * Creates an engine. 
+	 * Creates an engine.
 	 */
 	public IEngine createEngine() {
 		final IConfiguration config = Configuration.getSingleton();
-	
+
+		loadDefaultConfigValues();
+
 		IPersistenceProvider persistenceProvider = PersistenceProviderFactory.getPersistenceProvider();
-		
+
 		IExperimentController experimentController;
 		String meClassName = config.getMeasurementControllerClassName();
-		
+
 		// if the measurement environment class is not set
 		if (meClassName == null) {
 			final URI meURI = config.getMeasurementControllerURI();
 			final IMeasurementEnvironmentController meController = RmiMEConnector.connectToMEController(meURI);
-			
+
 			logger.debug("Connected to the measurement environment controller service.");
-			
+
 			experimentController = createExperimentController(meController, persistenceProvider);
-			
+
 		} else {
 			// load the given class
 			try {
@@ -52,7 +64,7 @@ public class EngineFactory {
 				Object o = mec.newInstance();
 				if (o instanceof IMeasurementEnvironmentController) {
 					logger.debug("Measurement environment controller is instantiated.");
-					experimentController = createExperimentController((IMeasurementEnvironmentController)o, persistenceProvider);
+					experimentController = createExperimentController((IMeasurementEnvironmentController) o, persistenceProvider);
 				} else
 					throw new RuntimeException("The measurement environment class must implement " + IMeasurementEnvironmentController.class.getName() + ".");
 			} catch (ClassNotFoundException e) {
@@ -63,21 +75,33 @@ public class EngineFactory {
 				throw new RuntimeException("Cannot instantiate the measurement environment object. Error: " + e.getMessage());
 			}
 		}
-	
+
 		logger.debug("Experiment controller is created.");
-		
+
 		IExperimentSeriesManager expSeriesManager;
 		expSeriesManager = new ExperimentSeriesManager();
-		
 
-		
 		engine = new EngineImp(experimentController, expSeriesManager, persistenceProvider);
 
 		return engine;
 	}
-	
+
 	/**
-	 * Returns the last created engine. If the engine is not created before, returns null.
+	 * Loads the configuration defaults from the specified path into the SoPeCo configuration.
+	 */
+	private void loadDefaultConfigValues() {
+		try {
+			Configuration.getSingleton()
+					.loadDefaultConfiguration(this.getClass().getClassLoader(), "config" + File.separator + DEFAULT_ENGINE_CONFIG_FILE_NAME);
+		} catch (ConfigurationException e) {
+			logger.error("Unable to read default config.");
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * Returns the last created engine. If the engine is not created before,
+	 * returns null.
 	 * 
 	 * @see #createEngine()
 	 */
@@ -86,7 +110,8 @@ public class EngineFactory {
 	}
 
 	/**
-	 * Creates an experiment controller based on the given measurement environment controller.
+	 * Creates an experiment controller based on the given measurement
+	 * environment controller.
 	 * 
 	 * @param meController
 	 * @return an instance of experiment controller

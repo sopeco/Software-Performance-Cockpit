@@ -13,6 +13,7 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
  */
 public interface IParameterInfluenceResult extends IAnalysisResult {
 
+
 	/**
 	 * Returns a list of all ParameterInfluence-Objects describing the influence
 	 * of the independent parameters on the dependent parameter.
@@ -22,7 +23,8 @@ public interface IParameterInfluenceResult extends IAnalysisResult {
 	public List<IParameterInfluenceDescriptor> getAllParameterInfluenceDescriptors();
 
 	/**
-	 * Returns the ParameterInfluenceDescriptor-Object of the specified parameter(s).
+	 * Returns the ParameterInfluenceDescriptor-Object of the specified
+	 * parameter(s).
 	 * 
 	 * @return a descriptor that describes the influence of the given
 	 *         independent parameter on the dependent parameter of the analysis
