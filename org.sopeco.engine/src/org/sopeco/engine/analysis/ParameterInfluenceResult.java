@@ -1,6 +1,5 @@
 package org.sopeco.engine.analysis;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -9,13 +8,12 @@ import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 /**
- * Class represents the result of a correlation-based analysis in R.
+ * Class represents the result of a parameter influence analysis.
  * 
- * @author Pascal Meier
  * @author Dennis Westermann
  * 
  */
-public class CorrelationResult implements ICorrelationResult {
+public class ParameterInfluenceResult implements IParameterInfluenceResult {
 
 	
 	private static final long serialVersionUID = 1L;
@@ -23,8 +21,9 @@ public class CorrelationResult implements ICorrelationResult {
 	/** An id that uniquely identifies this result instance **/
 	private String id;
 	
-	/** List to store correlation values of the parameters */
-	private HashMap<ParameterDefinition, ParameterCorrelation> parameterCorrelations;
+	/** List to store influence values of the parameters */
+	private HashMap<ParameterDefinition, IParameterInfluenceDescriptor> parameterInfluenceDescriptors;
+	
 	/**
 	 * Configuration used to derive this result object.
 	 */
@@ -36,9 +35,9 @@ public class CorrelationResult implements ICorrelationResult {
 	 * @param configuration
 	 *            configuration of the correlation analysis
 	 */
-	public CorrelationResult(AnalysisConfiguration configuration) {
+	public ParameterInfluenceResult(AnalysisConfiguration configuration) {
 		this.configuration = configuration;
-		parameterCorrelations = new HashMap<ParameterDefinition, ParameterCorrelation>();
+		parameterInfluenceDescriptors = new HashMap<ParameterDefinition, IParameterInfluenceDescriptor>();
 	}
 
 	/**
@@ -48,28 +47,13 @@ public class CorrelationResult implements ICorrelationResult {
 	 *            ParameterCorrelation that describes the correlation of a
 	 *            parameter with the observation parameter.
 	 */
-	public void addParameterCorrelation(ParameterCorrelation corr) {
-		parameterCorrelations.put(corr.getIndependentParameter(), corr);
+	public void addParameterInfluenceDescriptor(IParameterInfluenceDescriptor influenceDescriptor) {
+		parameterInfluenceDescriptors.put(influenceDescriptor.getIndependentParameter(), influenceDescriptor);
 	}
 
 	@Override
 	public AnalysisConfiguration getAnalysisStrategyConfiguration() {
 		return configuration;
-	}
-
-	@Override
-	public List<ParameterCorrelation> getAllParameterCorrelations() {
-		ArrayList<ParameterCorrelation> result = new ArrayList<ParameterCorrelation>();
-		for (ParameterCorrelation corr : parameterCorrelations.values()) {
-			result.add(corr);
-		}
-		return result;
-	}
-
-	@Override
-	public ParameterCorrelation getParameterCorrelationByParam(
-			ParameterDefinition parameter) {
-		return parameterCorrelations.get(parameter);
 	}
 
 	@Override
@@ -84,14 +68,14 @@ public class CorrelationResult implements ICorrelationResult {
 
 	@Override
 	public List<IParameterInfluenceDescriptor> getAllParameterInfluenceDescriptors() {
-		List<IParameterInfluenceDescriptor> influenceList = new LinkedList<IParameterInfluenceDescriptor>();
-		influenceList.addAll(getAllParameterCorrelations());
-		return influenceList;
+		List<IParameterInfluenceDescriptor> resultList  = new LinkedList<IParameterInfluenceDescriptor>();
+		resultList.addAll(parameterInfluenceDescriptors.values());
+		return resultList;
 	}
 
 	@Override
 	public IParameterInfluenceDescriptor getParameterInfluenceDescriptorByParam(ParameterDefinition parameter) {
-		return getParameterCorrelationByParam(parameter);
+		return parameterInfluenceDescriptors.get(parameter);
 	}
 
 }

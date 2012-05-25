@@ -8,7 +8,7 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
  * 
  * @author Dennis Westermann, Pascal Meier
  */
-public class ParameterCorrelation implements Comparable<ParameterCorrelation> {
+public class ParameterCorrelation implements Comparable<ParameterCorrelation>, IParameterInfluenceDescriptor {
 	/**
 	 * Independent parameter of which the effect is estimated
 	 */
@@ -51,6 +51,7 @@ public class ParameterCorrelation implements Comparable<ParameterCorrelation> {
 	/**
 	 * @return the independent parameter definition
 	 */
+	@Override
 	public ParameterDefinition getIndependentParameter() {
 		return indepParameter;
 	}
@@ -58,10 +59,22 @@ public class ParameterCorrelation implements Comparable<ParameterCorrelation> {
 	/**
 	 * @return the dependent parameter definition
 	 */
+	@Override
 	public ParameterDefinition getDependentParameter() {
 		return depParameter;
 	}
 
+	
+	/** 
+	 * Returns the same result as the getCorrelation() method.
+	 * 
+	 * @return the correlation value (see getCorrelation())
+	 */
+	@Override
+	public double getInfluenceValue() {
+		return this.getCorrelation();
+	}
+	
 	/**
 	 * @return a value between -1 and 1 that describes the correlation between
 	 *         the dependent and the independent parameter. The closer the value
@@ -117,5 +130,7 @@ public class ParameterCorrelation implements Comparable<ParameterCorrelation> {
 	public String toString() {
 		return indepParameter.getName() + " " + corrValue;
 	}
+
+	
 
 }

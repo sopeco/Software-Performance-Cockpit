@@ -12,7 +12,7 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
  * @author Pascal Meier
  * @author Dennis Westermann
  */
-public interface IScreeningAnalysisResult extends IAnalysisResult {
+public interface IScreeningAnalysisResult extends IParameterInfluenceResult {
 
 	/**
 	 * Returns a list of all Main- and Interaction-ParameterEffects of all

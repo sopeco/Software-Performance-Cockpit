@@ -1,9 +1,16 @@
 package org.sopeco.plugin.std.analysis;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.engine.analysis.IParameterInfluenceResult;
+import org.sopeco.engine.analysis.IParameterInfluenceStrategy;
 import org.sopeco.engine.analysis.IPredictionFunctionResult;
 import org.sopeco.engine.analysis.IPredictionFunctionStrategy;
+import org.sopeco.engine.analysis.ParameterInfluenceResult;
+import org.sopeco.engine.analysis.ParameterRegressionCoefficient;
 import org.sopeco.engine.analysis.PredictionFunctionResult;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
@@ -18,7 +25,7 @@ import org.sopeco.plugin.std.analysis.util.RAdapter;
  * @author Dennis Westermann, Jens Happe
  * 
  */
-public class LinearRegressionStrategy extends AbstractAnalysisStrategy implements IPredictionFunctionStrategy {
+public class LinearRegressionStrategy extends AbstractAnalysisStrategy implements IPredictionFunctionStrategy, IParameterInfluenceStrategy {
 
 	Logger logger = LoggerFactory.getLogger(LinearRegressionStrategy.class);
 	
@@ -82,6 +89,56 @@ public class LinearRegressionStrategy extends AbstractAnalysisStrategy implement
 	
 	private IPredictionFunctionResult buildResultObject(){
 		return new PredictionFunctionResult(getFunctionAsString(), dependentParameterDefintion, config);
+	}
+
+	
+	/**
+	 * Returns the coefficient of the specified parameter from the linear model.
+	 * 
+	 * @param parameter
+	 *            parameter for which the model coefficient is desired
+	 * @return coefficient of the specified parameter
+	 */
+	public ParameterRegressionCoefficient getCoefficientByParameter(ParameterDefinition parameter) {
+		
+		int index = independentParameterDefinitions.indexOf(parameter);
+		double coeff = RAdapter.getWrapper().executeRCommandDouble(
+				getId() + "$coefficients[" + (index + 2) + "]");
+		return new ParameterRegressionCoefficient(parameter, dependentParameterDefintion, coeff);
+	}
+
+	/**
+	 * Returns the coefficient of all parameters specified in the
+	 * parameterDependency from the linear model in the order as they are
+	 * described in the dependency.
+	 * 
+	 * @param parameter
+	 *            parameter for which the model coefficient is desired
+	 * @return coefficient of the specified parameter
+	 */
+	public List<ParameterRegressionCoefficient> getAllParameterCoefficients() {
+		ArrayList<ParameterRegressionCoefficient> resultList = new ArrayList<ParameterRegressionCoefficient>();
+		int index = 1;
+
+
+		for (int i = 0; i < independentParameterDefinitions.size(); i++) {
+			ParameterDefinition parameter = independentParameterDefinitions.get(i);
+			index++;
+			double coeff = RAdapter.getWrapper().executeRCommandDouble(
+					getId() + "$coefficients[" + index + "]");
+			resultList.add(new ParameterRegressionCoefficient(parameter, dependentParameterDefintion, coeff));
+		}
+		return resultList;
+	}
+	
+	@Override
+	public IParameterInfluenceResult getParameterInfluenceResult() {
+		ParameterInfluenceResult result = new ParameterInfluenceResult(config);
+		for(ParameterRegressionCoefficient prc : getAllParameterCoefficients()){
+			result.addParameterInfluenceDescriptor(prc);
+		}
+		
+		return result;
 	}
 
 

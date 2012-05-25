@@ -1,6 +1,7 @@
 package org.sopeco.engine.analysis;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
@@ -58,7 +59,7 @@ public class ScreeningDesignResult implements IScreeningAnalysisResult {
 	public List<ParameterEffect> getAllInteractionEffects() {
 		List<ParameterEffect> resultEffects = new ArrayList<ParameterEffect>();
 		for (ParameterEffect effect : parameterEffects) {
-			if (effect.getAnalysedParameters().size() >= 2) {
+			if (effect.getIndependentParameters().size() >= 2) {
 				resultEffects.add(effect);
 			}
 		}
@@ -69,7 +70,7 @@ public class ScreeningDesignResult implements IScreeningAnalysisResult {
 	public List<ParameterEffect> getAllMainEffects() {
 		List<ParameterEffect> resultEffects = new ArrayList<ParameterEffect>();
 		for (ParameterEffect effect : parameterEffects) {
-			if (effect.getAnalysedParameters().size() == 1) {
+			if (effect.getIndependentParameters().size() == 1) {
 				resultEffects.add(effect);
 			}
 		}
@@ -86,8 +87,8 @@ public class ScreeningDesignResult implements IScreeningAnalysisResult {
 			List<ParameterDefinition> parameters) {
 
 		for (ParameterEffect effect : parameterEffects) {
-			if (parameters.size() == effect.getAnalysedParameters().size()
-					&& effect.getAnalysedParameters().contains(parameters)) {
+			if (parameters.size() == effect.getIndependentParameters().size()
+					&& effect.getIndependentParameters().contains(parameters)) {
 				return effect;
 			}
 		}
@@ -100,7 +101,7 @@ public class ScreeningDesignResult implements IScreeningAnalysisResult {
 
 		List<ParameterEffect> resultEffects = new ArrayList<ParameterEffect>();
 		for (ParameterEffect effect : parameterEffects) {
-			if (effect.getAnalysedParameters().contains(parameters)) {
+			if (effect.getIndependentParameters().contains(parameters)) {
 				resultEffects.add(effect);
 			}
 		}
@@ -112,8 +113,8 @@ public class ScreeningDesignResult implements IScreeningAnalysisResult {
 			ParameterDefinition param) {
 		List<ParameterEffect> resultEffects = new ArrayList<ParameterEffect>();
 		for (ParameterEffect effect : parameterEffects) {
-			if (effect.getAnalysedParameters().size() >= 2) {
-				if (effect.getAnalysedParameters().contains(param)) {
+			if (effect.getIndependentParameters().size() >= 2) {
+				if (effect.getIndependentParameters().contains(param)) {
 					resultEffects.add(effect);
 				}
 			}
@@ -124,13 +125,25 @@ public class ScreeningDesignResult implements IScreeningAnalysisResult {
 	@Override
 	public ParameterEffect getMainEffectByParam(ParameterDefinition param) {
 		for (ParameterEffect effect : parameterEffects) {
-			if (effect.getAnalysedParameters().size() == 1) {
-				if (effect.getAnalysedParameters().get(0).equals(param)) {
+			if (effect.getIndependentParameters().size() == 1) {
+				if (effect.getIndependentParameters().get(0).equals(param)) {
 					return effect;
 				}
 			}
 		}
 		return null;
+	}
+	
+	@Override
+	public List<IParameterInfluenceDescriptor> getAllParameterInfluenceDescriptors() {
+		List<IParameterInfluenceDescriptor> influenceList = new LinkedList<IParameterInfluenceDescriptor>();
+		influenceList.addAll(getAllMainEffects());
+		return influenceList;
+	}
+
+	@Override
+	public IParameterInfluenceDescriptor getParameterInfluenceDescriptorByParam(ParameterDefinition parameter) {
+		return getMainEffectByParam(parameter);
 	}
 
 

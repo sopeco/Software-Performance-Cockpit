@@ -11,7 +11,7 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
  * 
  * @author Dennis Westermann, Pascal Meier
  */
-public interface ICorrelationResult extends IAnalysisResult {
+public interface ICorrelationResult extends IParameterInfluenceResult {
 	
 	/**
 	 * Returns a list of all ParameterCorrelation-Objects describing the
