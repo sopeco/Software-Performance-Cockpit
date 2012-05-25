@@ -9,6 +9,7 @@ import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
 import org.sopeco.config.exception.ConfigurationException;
 import org.sopeco.engine.IEngine;
+import org.sopeco.engine.exception.SoPeCoException;
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.experimentseries.IExperimentSeriesManager;
 import org.sopeco.engine.registry.ExtensionRegistry;
@@ -27,20 +28,20 @@ import org.sopeco.persistence.exceptions.DataNotFoundException;
  * 
  * @author Roozbeh Farahbod
  * @author Dennis Westermann
- *
+ * 
  */
 public class EngineImp implements IEngine {
 
 	private static final Logger logger = LoggerFactory.getLogger(EngineImp.class);
-	
-	private IConfiguration configuration = null; 
-	
-	private IExtensionRegistry registry = null; 
+
+	private IConfiguration configuration = null;
+
+	private IExtensionRegistry registry = null;
 
 	final private IExperimentController experimentController;
 	final private IExperimentSeriesManager experimentSeriesManager;
 	final private IPersistenceProvider persistenceProvider;
-	
+
 	public EngineImp(IExperimentController experimentController, IExperimentSeriesManager experimentSeriesManager, IPersistenceProvider persistenceProvider) {
 		super();
 		this.experimentController = experimentController;
@@ -68,30 +69,37 @@ public class EngineImp implements IEngine {
 		try {
 			scenarioInstance = persistenceProvider.loadScenarioInstance(scenario.getName(), getConfiguration().getMeasurementControllerURIAsStr());
 			logger.debug("Loaded ScenarioInstance {} from database", scenarioInstance);
+			logger.debug("Compare Scenario definition defined in the specification with the one loaded from database");
+
+			if (scenarioInstance != null && !scenario.equals(scenarioInstance.getScenarioDefinition())) {
+				throw new RuntimeException(
+						"Scenario definition has been changed! Either rename the new scenario or delete the old scenario (with the same name) from the database!");
+			}
+
 		} catch (DataNotFoundException e) {
 			scenarioInstance = EntityFactory.createScenarioInstance(scenario, getConfiguration().getMeasurementControllerURIAsStr());
 			persistenceProvider.store(scenarioInstance);
 			logger.debug("Created new ScenarioInstance {}", scenarioInstance);
-		} 			
-		
-		experimentController.initialize(EngineTools.getConstantParameterValues(
-				scenario.getMeasurementSpecification().getInitializationAssignemts()), scenario.getMeasurementEnvironmentDefinition());
-		
+		}
+
+		experimentController.initialize(EngineTools.getConstantParameterValues(scenario.getMeasurementSpecification().getInitializationAssignemts()),
+				scenario.getMeasurementEnvironmentDefinition());
+
 		// loop over all the experiment series in the spec
-		for (ExperimentSeriesDefinition esd: scenario.getMeasurementSpecification().getExperimentSeriesDefinitions()) {
-			
+		for (ExperimentSeriesDefinition esd : scenario.getMeasurementSpecification().getExperimentSeriesDefinitions()) {
+
 			ExperimentSeries series = scenarioInstance.getExperimentSeries(esd.getName());
-			if( series == null){
+			if (series == null) {
 				series = EntityFactory.createExperimentSeries(esd);
 				scenarioInstance.getExperimentSeriesList().add(series);
 				series.setScenarioInstance(scenarioInstance);
-					
-				persistenceProvider.store(series);	
+
+				persistenceProvider.store(series);
 			}
-				
+
 			experimentSeriesManager.runExperimentSeries(series);
 		}
-		
+
 		try {
 			ScenarioInstance loadedScenario = persistenceProvider.loadScenarioInstance(scenarioInstance.getPrimaryKey());
 			return loadedScenario;

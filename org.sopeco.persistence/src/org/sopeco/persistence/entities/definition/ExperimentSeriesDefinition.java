@@ -70,5 +70,56 @@ public class ExperimentSeriesDefinition implements Serializable {
 	public void setName(String newName) {
 		name = newName;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((experimentAssignments == null) ? 0 : experimentAssignments.hashCode());
+		result = prime * result + ((experimentTerminationCondition == null) ? 0 : experimentTerminationCondition.hashCode());
+		result = prime * result + ((explorationStrategy == null) ? 0 : explorationStrategy.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((preperationAssignments == null) ? 0 : preperationAssignments.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+
+		ExperimentSeriesDefinition other = (ExperimentSeriesDefinition) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (experimentAssignments == null) {
+			if (other.experimentAssignments != null)
+				return false;
+		} else if (!experimentAssignments.equals(other.experimentAssignments))
+			return false;
+		if (experimentTerminationCondition == null) {
+			if (other.experimentTerminationCondition != null)
+				return false;
+		} else if (!experimentTerminationCondition.equals(other.experimentTerminationCondition))
+			return false;
+		if (explorationStrategy == null) {
+			if (other.explorationStrategy != null)
+				return false;
+		} else if (!explorationStrategy.equals(other.explorationStrategy))
+			return false;
+		
+		if (preperationAssignments == null) {
+			if (other.preperationAssignments != null)
+				return false;
+		} else if (!preperationAssignments.equals(other.preperationAssignments))
+			return false;
+		return true;
+	}
+	
+	
 	
 } 

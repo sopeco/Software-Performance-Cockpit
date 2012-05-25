@@ -38,13 +38,29 @@ public class MeasurementEnvironmentDefinition implements Serializable {
 		} else {
 			for (ParameterNamespace child : parent.getChildren()) {
 				ParameterNamespace childSearchResult = searchNamespace(child, name);
-				if ( childSearchResult != null) {
+				if (childSearchResult != null) {
 					return childSearchResult;
 				}
 			}
 		}
 
 		return null;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null) 
+			return false;
+		
+		MeasurementEnvironmentDefinition other = (MeasurementEnvironmentDefinition) obj;
+		return this.getRoot().equals(other.getRoot());
+	}
+
+	@Override
+	public int hashCode() {
+		return getRoot() != null ? getRoot().hashCode() : 0;
 	}
 
 }

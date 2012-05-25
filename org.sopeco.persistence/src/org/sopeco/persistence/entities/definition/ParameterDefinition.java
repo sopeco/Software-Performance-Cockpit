@@ -102,17 +102,29 @@ public class ParameterDefinition implements Serializable {
 
 		 ParameterDefinition obj = (ParameterDefinition) o;
 		 if(getFullName() == null || obj.getFullName() == null) return false;
-		 return this.getFullName().equals(obj.getFullName());
+		 if(!this.getFullName().equals(obj.getFullName())){
+			 return false;
+		 }
+		 if(!this.getType().equals(obj.getType())){
+			 return false;
+		 }
+		 if(!this.getRole().equals(obj.getRole())){
+			 return false;
+		 }
+		 
+		 
+		 return true;
 
 	}
 
 	@Override
 	public int hashCode() {
-		if(this.getFullName()!=null){
-			return getFullName().hashCode();
-		} else {
-			return 0;
-		}
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((getFullName() == null) ? 0 : getFullName().hashCode());
+		result = prime * result + ((role == null) ? 0 : role.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
 	}
 
 	@Override

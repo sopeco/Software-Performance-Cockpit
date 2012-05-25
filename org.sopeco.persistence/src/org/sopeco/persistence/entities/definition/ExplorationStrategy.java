@@ -25,4 +25,28 @@ public class ExplorationStrategy extends ExtensibleElement {
 		return analysisConfigurations;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((analysisConfigurations == null) ? 0 : analysisConfigurations.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+
+		ExplorationStrategy other = (ExplorationStrategy) obj;
+		if (analysisConfigurations == null) {
+			if (other.analysisConfigurations != null)
+				return false;
+		} else if (!analysisConfigurations.equals(other.analysisConfigurations))
+			return false;
+		return true;
+	}
+
 } 
