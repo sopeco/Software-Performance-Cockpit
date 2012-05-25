@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: SoPeCo Eclipse Visualisation
+Bundle-SymbolicName: org.sopeco.visualisation.eclipse;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.eclipse.ui;bundle-version="3.7.0",
+ slf4j.api;bundle-version="1.6.4",
+ ch.qos.logback.classic;bundle-version="1.0.0",
+ ch.qos.logback.core;bundle-version="1.0.0",
+ org.eclipse.core.runtime;bundle-version="3.7.0",
+ org.sopeco.orbit.org.jfree.chart;bundle-version="1.0.13",
+ org.eclipse.core.expressions;bundle-version="3.4.300"
+Bundle-Activator: org.sopeco.visualisation.eclipse.VisualisationPlugin
+Bundle-ActivationPolicy: lazy
+Eclipse-BundleShape: dir
+Bundle-ClassPath: .,
+ lib/sopeco.jar
