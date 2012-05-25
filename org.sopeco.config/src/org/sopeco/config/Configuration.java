@@ -177,7 +177,6 @@ public class Configuration implements IConfiguration {
 		OptionGroup meGroup = new OptionGroup();
 		meGroup.addOption(meURI);
 		meGroup.addOption(meClass);
-		meGroup.setRequired(true);
 		
 		options.addOption(scenarioDef);
 		options.addOption(help);
