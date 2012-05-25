@@ -31,7 +31,7 @@
             name="%_UI_ConfigurationEditor_label"
             icon="icons/full/obj16/ConfigurationModelFile.gif"
             extensions="configuration"
-            class="org.sopeco.model.configuration.presentation.ConfigurationEditor"
+            class="org.sopeco.model.configuration.presentation.ext.ConfigurationEditorExt"
             contributorClass="org.sopeco.model.configuration.presentation.ConfigurationActionBarContributor">
       </editor>
    </extension>

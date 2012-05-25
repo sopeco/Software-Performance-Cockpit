@@ -11,9 +11,12 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.sopeco.model.configuration.analysis.provider,
  org.sopeco.model.configuration.common.provider,
  org.sopeco.model.configuration.environment.provider,
+ org.sopeco.model.configuration.environment.provider.ext,
  org.sopeco.model.configuration.measurements.provider,
+ org.sopeco.model.configuration.measurements.provider.ext,
  org.sopeco.model.configuration.provider
 Require-Bundle: org.eclipse.core.runtime,
  org.sopeco.model;visibility:=reexport,
- org.eclipse.emf.edit;visibility:=reexport
+ org.eclipse.emf.edit;visibility:=reexport,
+ org.sopeco.engine;bundle-version="0.2.0"
 Bundle-ActivationPolicy: lazy

@@ -25,7 +25,7 @@
    <extension point="org.eclipse.emf.edit.itemProviderAdapterFactories">
       <factory
             uri="http://sopeco.org/configuration/environment"
-            class="org.sopeco.model.configuration.environment.provider.EnvironmentItemProviderAdapterFactory"
+            class="org.sopeco.model.configuration.environment.provider.ext.EnvironmentItemProviderAdapterFactoryExt"
             supportedTypes=
               "org.eclipse.emf.edit.provider.IEditingDomainItemProvider
                org.eclipse.emf.edit.provider.IStructuredItemContentProvider
@@ -37,7 +37,7 @@
    <extension point="org.eclipse.emf.edit.itemProviderAdapterFactories">
       <factory
             uri="http://sopeco.org/configuration/measurements"
-            class="org.sopeco.model.configuration.measurements.provider.MeasurementsItemProviderAdapterFactory"
+            class="org.sopeco.model.configuration.measurements.provider.ext.MeasurementsItemProviderAdapterFactoryExt"
             supportedTypes=
               "org.eclipse.emf.edit.provider.IEditingDomainItemProvider
                org.eclipse.emf.edit.provider.IStructuredItemContentProvider

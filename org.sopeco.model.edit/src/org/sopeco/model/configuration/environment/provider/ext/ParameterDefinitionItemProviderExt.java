@@ -9,15 +9,8 @@ public class ParameterDefinitionItemProviderExt extends
 
 	public ParameterDefinitionItemProviderExt(AdapterFactory adapterFactory) {
 		super(adapterFactory);
-		// TODO Auto-generated constructor stub
 	}
 	
-	/**
-	 * This returns the label text for the adapted class.
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
 	@Override
 	public String getText(Object object) {
 		String label = ((ParameterDefinition)object).getFullName();
