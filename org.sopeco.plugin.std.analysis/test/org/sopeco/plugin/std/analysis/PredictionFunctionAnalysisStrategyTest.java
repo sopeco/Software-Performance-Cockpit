@@ -27,6 +27,7 @@ import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.plugin.std.analysis.util.DummyScenarioDefinitionFactory;
 
 /**
  * Test class for implementations of the {@link IPredictionFunctionStrategy}
@@ -109,9 +110,8 @@ public class PredictionFunctionAnalysisStrategyTest {
 	
 
 	private static ScenarioDefinition loadScenarioDefinition() throws IOException {
-//		return (ScenarioDefinition) EMFUtil.loadFromFilePath("test/dummy.configuration");
-		// TODO: Create scenario definition with builder.
-		return null;
+
+		return DummyScenarioDefinitionFactory.createScenarioDefinition();
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

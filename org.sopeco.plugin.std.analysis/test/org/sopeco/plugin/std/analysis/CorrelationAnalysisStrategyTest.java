@@ -25,6 +25,7 @@ import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.plugin.std.analysis.util.DummyScenarioDefinitionFactory;
 
 /**
  * Test class for implementations of the {@link ICorrelationStrategy}
@@ -44,8 +45,8 @@ public class CorrelationAnalysisStrategyTest {
 	@Parameters
 	public static Collection<Object[]> data() {
 		Object[][] data = new Object[][] {
-				{ (ICorrelationStrategy) new CorrelationAnalysisStrategyExtension().createExtensionArtifact(), "Pearson Correlation", true},
-				{ (ICorrelationStrategy) new CorrelationAnalysisStrategyExtension().createExtensionArtifact(), "Pearson Correlation", false}
+				{ (ICorrelationStrategy) new CorrelationAnalysisStrategyExtension().createExtensionArtifact(), CorrelationAnalysisStrategyExtension.NAME, true},
+				{ (ICorrelationStrategy) new CorrelationAnalysisStrategyExtension().createExtensionArtifact(), CorrelationAnalysisStrategyExtension.NAME, false}
 		};
 		return Arrays.asList(data);
 	}
@@ -100,9 +101,8 @@ public class CorrelationAnalysisStrategyTest {
 	
 
 	private static ScenarioDefinition loadScenarioDefinition() throws IOException {
-//		return (ScenarioDefinition) EMFUtil.loadFromFilePath("test/dummy.configuration");
-		// TODO: Create scenario definition with builder.
-		return null;
+		
+		return DummyScenarioDefinitionFactory.createScenarioDefinition();
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
