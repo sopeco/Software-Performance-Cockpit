@@ -190,13 +190,15 @@ public class ScenarioDefinitionBuilder {
 	 *            created
 	 * @param configuration
 	 *            the configuration values for the assignment
+	 * @return the created {@link DynamicValueAssignment} instance
 	 */
-	public void createDynamicValueAssignment(AssignmentType type, String name, ParameterDefinition parameter, Map<String, String> configuration) {
+	public DynamicValueAssignment createDynamicValueAssignment(AssignmentType type, String name, ParameterDefinition parameter,
+			Map<String, String> configuration) {
 		DynamicValueAssignment dva = EntityFactory.createDynamicValueAssignment(name, parameter, configuration);
 		switch (type) {
 		case Experiment:
 			this.currentExperimentSeriesDefintition.getExperimentAssignments().add(dva);
-			break;
+			return dva;
 		default:
 			throw new IllegalArgumentException("Invalid assignment type. DynamicValueAssignments are only allowed as ExperimentAssignments.");
 		}
@@ -217,8 +219,9 @@ public class ScenarioDefinitionBuilder {
 	 *            created
 	 * @param value
 	 *            the constant value for the assignment in String representation
+	 * @return the created {@link DynamicValueAssignment} instance
 	 */
-	public void createConstantValueAssignment(AssignmentType type, ParameterDefinition parameter, String value) {
+	public ConstantValueAssignment createConstantValueAssignment(AssignmentType type, ParameterDefinition parameter, String value) {
 		ConstantValueAssignment cva = EntityFactory.createConstantValueAssignment(parameter, value);
 
 		switch (type) {
@@ -234,6 +237,8 @@ public class ScenarioDefinitionBuilder {
 		default:
 			throw new IllegalArgumentException("Invalid assignment type.");
 		}
+		
+		return cva;
 	}
 
 	/**
@@ -313,7 +318,7 @@ public class ScenarioDefinitionBuilder {
 	}
 
 	/*
-	 * Return created ScenarioDefinition
+	 * Return created entities
 	 */
 
 	/**
@@ -322,6 +327,14 @@ public class ScenarioDefinitionBuilder {
 	 */
 	public ScenarioDefinition getScenarioDefinition() {
 		return this.scenarioDefinition;
+	}
+
+	/**
+	 * @return the experiment series definition that has been created by the
+	 *         previous method calls
+	 */
+	public ExperimentSeriesDefinition getCurrentExperimentSeriesDefinition() {
+		return this.currentExperimentSeriesDefintition;
 	}
 
 }

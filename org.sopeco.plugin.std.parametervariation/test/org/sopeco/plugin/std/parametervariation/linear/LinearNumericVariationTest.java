@@ -9,12 +9,13 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.sopeco.engine.helper.ConfigurationBuilder;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.util.ParameterType;
 import org.sopeco.persistence.entities.definition.DynamicValueAssignment;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterRole;
+import org.sopeco.persistence.util.ScenarioDefinitionBuilder;
+import org.sopeco.persistence.util.ScenarioDefinitionBuilder.AssignmentType;
 
 public class LinearNumericVariationTest {
 
@@ -27,15 +28,16 @@ public class LinearNumericVariationTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		ConfigurationBuilder builder = new ConfigurationBuilder("test");
-		builder.createNamespace("initialization");
+		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder("test");
+		builder.createNewNamespace("initialization");
 		ParameterDefinition pdef = builder.createParameter("initParameter", ParameterType.DOUBLE, ParameterRole.INPUT);
 		Map<String, String> config = new HashMap<String, String>();
 		config.put("min", String.valueOf(MIN));
 		config.put("max", String.valueOf(MAX));
 		config.put("step", String.valueOf(STEP));
 		
-		dva = builder.createDynamicValueAssignment(LinearNumericVariationExtension.NAME, pdef, config);
+		builder.createExperimentSeriesDefinition("ES");
+		dva = builder.createDynamicValueAssignment(AssignmentType.Experiment, LinearNumericVariationExtension.NAME, pdef, config);
 		lnv = new LinearNumericVariation(null);
 		lnv.initialize(dva);
 	}

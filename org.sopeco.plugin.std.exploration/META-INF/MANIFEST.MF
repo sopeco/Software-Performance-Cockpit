@@ -8,7 +8,8 @@ Require-Bundle: org.sopeco.persistence;bundle-version="0.2.0",
  org.sopeco.core;bundle-version="0.2.0",
  org.sopeco.orbit.logging;bundle-version="1.0.0",
  org.junit,
- org.sopeco.orbit.de.uka.ipd.sdq.rwrapper;bundle-version="2.12.1"
+ org.sopeco.orbit.de.uka.ipd.sdq.rwrapper;bundle-version="2.12.1",
+ org.sopeco.plugin.std.parametervariation;bundle-version="0.2.0"
 Export-Package: org.sopeco.plugin.std.exploration,
  org.sopeco.plugin.std.exploration.breakdown,
  org.sopeco.plugin.std.exploration.breakdown.environment,
