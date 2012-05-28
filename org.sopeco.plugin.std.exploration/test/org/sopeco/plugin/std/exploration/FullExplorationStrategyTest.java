@@ -50,7 +50,7 @@ public class FullExplorationStrategyTest {
 		Configuration.getSingleton().setMeasurementControllerClassName(DummyMEController.class.getName());
 		engine = EngineFactory.INSTANCE.createEngine();
 		
-		builder = new ScenarioDefinitionBuilder("test");
+		builder = new ScenarioDefinitionBuilder("test", "testDef");
 		builder.createNewNamespace("initialization");
 		ParameterDefinition pdef = builder.createParameter("initParameter", ParameterType.DOUBLE, ParameterRole.INPUT);
 

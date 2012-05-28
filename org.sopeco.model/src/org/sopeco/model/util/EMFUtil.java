@@ -46,7 +46,8 @@ public class EMFUtil {
 		// Register the appropriate resource factory to handle all file
 		// extensions.
 		//
-		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap().put(Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
+		resourceSet.getResourceFactoryRegistry().getExtensionToFactoryMap()
+				.put(Resource.Factory.Registry.DEFAULT_EXTENSION, new XMIResourceFactoryImpl());
 
 		// Register the package to ensure it is available during loading.
 		//
@@ -96,7 +97,8 @@ public class EMFUtil {
 	 * @return an instance of the EObject
 	 * @throws IOException
 	 */
-	public static org.sopeco.persistence.entities.definition.ScenarioDefinition loadFromFilePath(String filePath) throws IOException {
+	public static org.sopeco.persistence.entities.definition.ScenarioDefinition loadFromFilePath(String filePath)
+			throws IOException {
 
 		File file = new File(filePath);
 		org.eclipse.emf.common.util.URI uri = null;
@@ -113,9 +115,14 @@ public class EMFUtil {
 	 * separate class)
 	 */
 
-	private static org.sopeco.persistence.entities.definition.ScenarioDefinition convertToPojo(ScenarioDefinition emfScenarioDefinition) {
+	private static org.sopeco.persistence.entities.definition.ScenarioDefinition convertToPojo(
+			ScenarioDefinition emfScenarioDefinition) {
 
-		pojoScenarioDefinition = EntityFactory.createScenarioDefinition(emfScenarioDefinition.getName());
+		// TODO: add scenario definitionId to model and adjust editor (it
+		// should set the scenario name as the definition id if the id is not
+		// set)
+		pojoScenarioDefinition = EntityFactory.createScenarioDefinition(emfScenarioDefinition.getName(),
+				emfScenarioDefinition.getName());
 
 		org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition pojoMeasurementEnvironmentDefinition = convertMeasurementEnvironmentDefinition(emfScenarioDefinition
 				.getMeasurementEnvironmentDefinition());
@@ -133,10 +140,12 @@ public class EMFUtil {
 				.createMeasurementEnvironmentDefinition();
 
 		ParameterNamespace emfRootNamespace = emfMeasurementEnvironmentDefinition.getRoot();
-		org.sopeco.persistence.entities.definition.ParameterNamespace pojoRootNamespace = EntityFactory.createNamespace(emfRootNamespace.getName());
+		org.sopeco.persistence.entities.definition.ParameterNamespace pojoRootNamespace = EntityFactory
+				.createNamespace(emfRootNamespace.getName());
 		pojoMeasurementEnvDef.setRoot(pojoRootNamespace);
 
-		List<org.sopeco.persistence.entities.definition.ParameterDefinition> pojoParameters = convertParameters(emfRootNamespace.getParameters());
+		List<org.sopeco.persistence.entities.definition.ParameterDefinition> pojoParameters = convertParameters(emfRootNamespace
+				.getParameters());
 		for (org.sopeco.persistence.entities.definition.ParameterDefinition pojoParameter : pojoParameters) {
 			pojoParameter.setNamespace(pojoRootNamespace);
 			pojoRootNamespace.getParameters().add(pojoParameter);
@@ -151,13 +160,17 @@ public class EMFUtil {
 		return pojoMeasurementEnvDef;
 	}
 
-	private static org.sopeco.persistence.entities.definition.MeasurementSpecification convertMeasurementSpecification(ScenarioDefinition emfScenarioDefinition) {
+	private static org.sopeco.persistence.entities.definition.MeasurementSpecification convertMeasurementSpecification(
+			ScenarioDefinition emfScenarioDefinition) {
 		MeasurementSpecification emfMeasurementSpecification = emfScenarioDefinition.getMeasurementSpecification();
-		org.sopeco.persistence.entities.definition.MeasurementSpecification pojoMeasurementSpecification = EntityFactory.createMeasurementSpecification();
+		org.sopeco.persistence.entities.definition.MeasurementSpecification pojoMeasurementSpecification = EntityFactory
+				.createMeasurementSpecification();
 
-		pojoMeasurementSpecification.getInitializationAssignemts().addAll(convertInitializationAssignments(emfMeasurementSpecification));
+		pojoMeasurementSpecification.getInitializationAssignemts().addAll(
+				convertInitializationAssignments(emfMeasurementSpecification));
 
-		pojoMeasurementSpecification.getExperimentSeriesDefinitions().addAll(convertExperimentSeriesDefinitions(emfMeasurementSpecification));
+		pojoMeasurementSpecification.getExperimentSeriesDefinitions().addAll(
+				convertExperimentSeriesDefinitions(emfMeasurementSpecification));
 
 		return pojoMeasurementSpecification;
 	}
@@ -169,8 +182,9 @@ public class EMFUtil {
 		for (Object emfExpSeriesDefObj : emfMeasurementSpecification.getExperimentSeriesDefinitions()) {
 			ExperimentSeriesDefinition emfExpSeriesDef = (ExperimentSeriesDefinition) emfExpSeriesDefObj;
 
-			org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition pojoExpSeriesDef = EntityFactory.createExperimentSeriesDefinition(
-					emfExpSeriesDef.getName(), convertExperimentTerminationCondition(emfExpSeriesDef.getExperimentTerminationCondition()));
+			org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition pojoExpSeriesDef = EntityFactory
+					.createExperimentSeriesDefinition(emfExpSeriesDef.getName(),
+							convertExperimentTerminationCondition(emfExpSeriesDef.getExperimentTerminationCondition()));
 
 			pojoExpSeriesDef.setExplorationStrategy(convertExplorationStrategy(emfExpSeriesDef));
 
@@ -194,11 +208,13 @@ public class EMFUtil {
 
 			org.sopeco.persistence.entities.definition.ParameterValueAssignment pojoPVA;
 			if (emfPVA instanceof ConstantValueAssignment) {
-				pojoPVA = EntityFactory.createConstantValueAssignment(pojoScenarioDefinition.getParameterDefinition(emfPVA.getParameter().getFullName()),
+				pojoPVA = EntityFactory.createConstantValueAssignment(
+						pojoScenarioDefinition.getParameterDefinition(emfPVA.getParameter().getFullName()),
 						((ConstantValueAssignment) emfPVA).getValue());
 			} else if (emfPVA instanceof DynamicValueAssignment) {
-				pojoPVA = EntityFactory.createDynamicValueAssignment(((DynamicValueAssignment) emfPVA).getName(), pojoScenarioDefinition
-						.getParameterDefinition(emfPVA.getParameter().getFullName()), ((DynamicValueAssignment) emfPVA).getConfiguration().map());
+				pojoPVA = EntityFactory.createDynamicValueAssignment(((DynamicValueAssignment) emfPVA).getName(),
+						pojoScenarioDefinition.getParameterDefinition(emfPVA.getParameter().getFullName()),
+						((DynamicValueAssignment) emfPVA).getConfiguration().map());
 			} else {
 				throw new IllegalArgumentException("Unkown experiment assignment type: " + emfPVA.getClass().getName());
 			}
@@ -215,25 +231,31 @@ public class EMFUtil {
 		for (Object emfCVAobj : emfExpSeriesDef.getPreperationAssignments()) {
 			ConstantValueAssignment emfCVA = (ConstantValueAssignment) emfCVAobj;
 
-			org.sopeco.persistence.entities.definition.ConstantValueAssignment pojoCVA = EntityFactory.createConstantValueAssignment(
-					pojoScenarioDefinition.getParameterDefinition(emfCVA.getParameter().getFullName()), emfCVA.getValue());
+			org.sopeco.persistence.entities.definition.ConstantValueAssignment pojoCVA = EntityFactory
+					.createConstantValueAssignment(
+							pojoScenarioDefinition.getParameterDefinition(emfCVA.getParameter().getFullName()),
+							emfCVA.getValue());
 			pojoAssignments.add(pojoCVA);
 		}
 		return pojoAssignments;
 	}
 
-	private static org.sopeco.persistence.entities.definition.ExplorationStrategy convertExplorationStrategy(ExperimentSeriesDefinition emfExpSeriesDef) {
+	private static org.sopeco.persistence.entities.definition.ExplorationStrategy convertExplorationStrategy(
+			ExperimentSeriesDefinition emfExpSeriesDef) {
 		ExplorationStrategy emfExplorationStrategy = emfExpSeriesDef.getExplorationStrategy();
 
-		org.sopeco.persistence.entities.definition.ExplorationStrategy pojoExplorationStrategy = EntityFactory.createExplorationStrategy(
-				emfExplorationStrategy.getName(), emfExplorationStrategy.getConfiguration().map());
-		
-		pojoExplorationStrategy.getAnalysisConfigurations().addAll(convertAnalysisStrategies(emfExplorationStrategy, pojoExplorationStrategy));
+		org.sopeco.persistence.entities.definition.ExplorationStrategy pojoExplorationStrategy = EntityFactory
+				.createExplorationStrategy(emfExplorationStrategy.getName(), emfExplorationStrategy.getConfiguration()
+						.map());
+
+		pojoExplorationStrategy.getAnalysisConfigurations().addAll(
+				convertAnalysisStrategies(emfExplorationStrategy, pojoExplorationStrategy));
 
 		return pojoExplorationStrategy;
 	}
 
-	private static List<org.sopeco.persistence.entities.definition.AnalysisConfiguration> convertAnalysisStrategies(ExplorationStrategy emfExplorationStrategy,
+	private static List<org.sopeco.persistence.entities.definition.AnalysisConfiguration> convertAnalysisStrategies(
+			ExplorationStrategy emfExplorationStrategy,
 			org.sopeco.persistence.entities.definition.ExplorationStrategy pojoExplorationStrategy) {
 
 		List<org.sopeco.persistence.entities.definition.AnalysisConfiguration> pojoAnalysisConfigurations = new LinkedList<org.sopeco.persistence.entities.definition.AnalysisConfiguration>();
@@ -241,17 +263,20 @@ public class EMFUtil {
 		for (Object emfAnalysisConfigObj : emfExplorationStrategy.getAnalysisConfigurations()) {
 			AnalysisConfiguration emfAnalysisConfig = (AnalysisConfiguration) emfAnalysisConfigObj;
 
-			org.sopeco.persistence.entities.definition.AnalysisConfiguration pojoAnalysisConfiguration = EntityFactory.createAnalysisConfiguration(
-					emfAnalysisConfig.getName(), emfAnalysisConfig.getConfiguration().map());
-			
+			org.sopeco.persistence.entities.definition.AnalysisConfiguration pojoAnalysisConfiguration = EntityFactory
+					.createAnalysisConfiguration(emfAnalysisConfig.getName(), emfAnalysisConfig.getConfiguration()
+							.map());
+
 			for (ParameterDefinition emfParameter : emfAnalysisConfig.getDependentParameters()) {
-				pojoAnalysisConfiguration.getDependentParameters().add(pojoScenarioDefinition.getParameterDefinition(emfParameter.getFullName()));
+				pojoAnalysisConfiguration.getDependentParameters().add(
+						pojoScenarioDefinition.getParameterDefinition(emfParameter.getFullName()));
 			}
-			
+
 			for (ParameterDefinition emfParameter : emfAnalysisConfig.getIndependentParameters()) {
-				pojoAnalysisConfiguration.getIndependentParameters().add(pojoScenarioDefinition.getParameterDefinition(emfParameter.getFullName()));
+				pojoAnalysisConfiguration.getIndependentParameters().add(
+						pojoScenarioDefinition.getParameterDefinition(emfParameter.getFullName()));
 			}
-			
+
 			pojoAnalysisConfigurations.add(pojoAnalysisConfiguration);
 		}
 
@@ -264,8 +289,10 @@ public class EMFUtil {
 		for (Object emfCVAobj : emfMeasurementSpecification.getInitializationAssignemts()) {
 			ConstantValueAssignment emfCVA = (ConstantValueAssignment) emfCVAobj;
 
-			org.sopeco.persistence.entities.definition.ConstantValueAssignment pojoCVA = EntityFactory.createConstantValueAssignment(
-					pojoScenarioDefinition.getParameterDefinition(emfCVA.getParameter().getFullName()), emfCVA.getValue());
+			org.sopeco.persistence.entities.definition.ConstantValueAssignment pojoCVA = EntityFactory
+					.createConstantValueAssignment(
+							pojoScenarioDefinition.getParameterDefinition(emfCVA.getParameter().getFullName()),
+							emfCVA.getValue());
 			pojoAssignments.add(pojoCVA);
 		}
 		return pojoAssignments;
@@ -274,23 +301,30 @@ public class EMFUtil {
 	private static org.sopeco.persistence.entities.definition.ExperimentTerminationCondition convertExperimentTerminationCondition(
 			ExperimentTerminationCondition emfTerminationCondition) {
 		if (emfTerminationCondition instanceof TimeOut) {
-			return EntityFactory.createTimeOutTerminationCondition(((TimeOut) emfTerminationCondition).getMaxDuration());
+			return EntityFactory
+					.createTimeOutTerminationCondition(((TimeOut) emfTerminationCondition).getMaxDuration());
 		} else if (emfTerminationCondition instanceof NumberOfRepetitions) {
-			return EntityFactory.createNumberOfRepetitionsTerminationCondition(((NumberOfRepetitions) emfTerminationCondition).getNumberOfRepetitions());
+			return EntityFactory
+					.createNumberOfRepetitionsTerminationCondition(((NumberOfRepetitions) emfTerminationCondition)
+							.getNumberOfRepetitions());
 		}
-		throw new IllegalArgumentException("Unknown experiment termination condition: " + emfTerminationCondition.getClass().getName());
+		throw new IllegalArgumentException("Unknown experiment termination condition: "
+				+ emfTerminationCondition.getClass().getName());
 	}
 
-	private static List<org.sopeco.persistence.entities.definition.ParameterNamespace> convertChildren(ParameterNamespace emfParentNamespace) {
+	private static List<org.sopeco.persistence.entities.definition.ParameterNamespace> convertChildren(
+			ParameterNamespace emfParentNamespace) {
 
 		List<org.sopeco.persistence.entities.definition.ParameterNamespace> pojoChildNameSpaces = new LinkedList<org.sopeco.persistence.entities.definition.ParameterNamespace>();
 
 		for (Object emfChildNamespaceObj : emfParentNamespace.getChildren()) {
 			ParameterNamespace emfChildNamespace = (ParameterNamespace) emfChildNamespaceObj;
 
-			org.sopeco.persistence.entities.definition.ParameterNamespace pojoChildNamespace = EntityFactory.createNamespace(emfChildNamespace.getName());
+			org.sopeco.persistence.entities.definition.ParameterNamespace pojoChildNamespace = EntityFactory
+					.createNamespace(emfChildNamespace.getName());
 
-			List<org.sopeco.persistence.entities.definition.ParameterDefinition> pojoParameters = convertParameters(emfChildNamespace.getParameters());
+			List<org.sopeco.persistence.entities.definition.ParameterDefinition> pojoParameters = convertParameters(emfChildNamespace
+					.getParameters());
 			for (org.sopeco.persistence.entities.definition.ParameterDefinition pojoParameter : pojoParameters) {
 				pojoParameter.setNamespace(pojoChildNamespace);
 				pojoChildNamespace.getParameters().add(pojoParameter);
@@ -308,13 +342,15 @@ public class EMFUtil {
 		return pojoChildNameSpaces;
 	}
 
-	private static List<org.sopeco.persistence.entities.definition.ParameterDefinition> convertParameters(List<ParameterDefinition> emfParameters) {
+	private static List<org.sopeco.persistence.entities.definition.ParameterDefinition> convertParameters(
+			List<ParameterDefinition> emfParameters) {
 
 		List<org.sopeco.persistence.entities.definition.ParameterDefinition> resultList = new LinkedList<org.sopeco.persistence.entities.definition.ParameterDefinition>();
 		for (Object emfParamDefObj : emfParameters) {
 			ParameterDefinition emfParamDef = (ParameterDefinition) emfParamDefObj;
 
-			resultList.add(EntityFactory.createParameterDefinition(emfParamDef.getName(), emfParamDef.getType(), convertRole(emfParamDef.getRole())));
+			resultList.add(EntityFactory.createParameterDefinition(emfParamDef.getName(), emfParamDef.getType(),
+					convertRole(emfParamDef.getRole())));
 		}
 
 		return resultList;

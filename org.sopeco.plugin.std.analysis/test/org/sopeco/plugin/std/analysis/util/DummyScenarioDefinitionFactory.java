@@ -14,7 +14,7 @@ public class DummyScenarioDefinitionFactory {
 	
 	@SuppressWarnings("unchecked")
 	public static ScenarioDefinition createScenarioDefinition() {
-		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder("Dummy");
+		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder("Dummy", "DummyDef");
 		
 		builder.createNewNamespace("default");
 		ParameterDefinition dummyInputParam = builder.createParameter("DummyInput", ParameterType.INTEGER, ParameterRole.INPUT);

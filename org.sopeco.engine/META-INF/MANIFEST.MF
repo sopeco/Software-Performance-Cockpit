@@ -15,6 +15,7 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.7.0",
  org.apache.ant;bundle-version="1.8.2"
 Export-Package: org.sopeco.engine,
  org.sopeco.engine.analysis,
+ org.sopeco.engine.analysis.util,
  org.sopeco.engine.exception,
  org.sopeco.engine.experiment,
  org.sopeco.engine.experimentseries,

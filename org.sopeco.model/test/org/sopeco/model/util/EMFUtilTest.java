@@ -37,7 +37,7 @@ public class EMFUtilTest {
 			e.printStackTrace();
 			fail();return;
 		}
-		assertEquals("Dummy", scenarioDefinition.getName());
+		assertEquals("Dummy", scenarioDefinition.getScenarioName());
 		try
 		{
 			assertEquals("default.DummyInput", scenarioDefinition.getMeasurementEnvironmentDefinition().getRoot().getParameters().get(0).getFullName());

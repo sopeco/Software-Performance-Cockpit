@@ -5,13 +5,15 @@ import java.util.List;
 
 /**
  * @author Dennis Westermann, Jens Happe
- *
+ * 
  */
 public class ScenarioDefinition implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	protected String name = null;
+	protected String scenarioName = null;
+
+	protected String definitionId;
 
 	protected MeasurementEnvironmentDefinition measurementEnvironmentDefinition;
 
@@ -21,12 +23,20 @@ public class ScenarioDefinition implements Serializable {
 		super();
 	}
 
-	public String getName() {
-		return name;
+	public String getScenarioName() {
+		return scenarioName;
 	}
 
-	public void setName(String newName) {
-		name = newName;
+	public void setScenarioName(String newName) {
+		this.scenarioName = newName;
+	}
+
+	public String getDefinitionId() {
+		return definitionId;
+	}
+
+	public void setDefinitionId(String definitionId) {
+		this.definitionId = definitionId;
 	}
 
 	public MeasurementEnvironmentDefinition getMeasurementEnvironmentDefinition() {
@@ -79,7 +89,8 @@ public class ScenarioDefinition implements Serializable {
 	 */
 	public ParameterDefinition getParameterDefinition(String fullName) {
 
-		List<ParameterDefinition> listOfAllParameters = this.getMeasurementEnvironmentDefinition().getRoot().getAllParameters();
+		List<ParameterDefinition> listOfAllParameters = this.getMeasurementEnvironmentDefinition().getRoot()
+				.getAllParameters();
 
 		for (ParameterDefinition parameterDefinition : listOfAllParameters) {
 			if (parameterDefinition.getFullName().equals(fullName)) {
@@ -94,21 +105,22 @@ public class ScenarioDefinition implements Serializable {
 	 * Overrides
 	 */
 
-	
-
 	@Override
 	public String toString() {
 
-		return "ScenarioDefinition{" + "name='" + name + '\'' + '}';
+		return "ScenarioDefinition{" + "scenarioName='" + scenarioName + '\'' 
+				+ ", definitionId='" + definitionId + '\'' + '}';
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((measurementEnvironmentDefinition == null) ? 0 : measurementEnvironmentDefinition.hashCode());
+		result = prime * result
+				+ ((measurementEnvironmentDefinition == null) ? 0 : measurementEnvironmentDefinition.hashCode());
 		result = prime * result + ((measurementSpecification == null) ? 0 : measurementSpecification.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((scenarioName == null) ? 0 : scenarioName.hashCode());
+		result = prime * result + ((definitionId == null) ? 0 : definitionId.hashCode());
 		return result;
 	}
 
@@ -118,7 +130,7 @@ public class ScenarioDefinition implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		
+
 		ScenarioDefinition other = (ScenarioDefinition) obj;
 		if (measurementEnvironmentDefinition == null) {
 			if (other.measurementEnvironmentDefinition != null)
@@ -130,10 +142,15 @@ public class ScenarioDefinition implements Serializable {
 				return false;
 		} else if (!measurementSpecification.equals(other.measurementSpecification))
 			return false;
-		if (name == null) {
-			if (other.name != null)
+		if (scenarioName == null) {
+			if (other.scenarioName != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!scenarioName.equals(other.scenarioName))
+			return false;
+		if (definitionId == null) {
+			if (other.definitionId != null)
+				return false;
+		} else if (!definitionId.equals(other.definitionId))
 			return false;
 		return true;
 	}

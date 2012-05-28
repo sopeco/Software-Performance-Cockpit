@@ -39,7 +39,7 @@ public class EntityFactoryTest {
 			assertNotNull(scenarioInstance);
 			assertEquals("Dummy", scenarioInstance.getName());
 			assertEquals("Dummy", scenarioInstance.getMeasurementEnvironmentUrl());
-			assertEquals(dummyScenarioDefinition, scenarioInstance.getScenarioDefinition());
+			assertEquals(dummyScenarioDefinition, scenarioInstance.getScenarioDefinition("DummyDef"));
 
 		} catch (Exception e) {
 			e.printStackTrace();

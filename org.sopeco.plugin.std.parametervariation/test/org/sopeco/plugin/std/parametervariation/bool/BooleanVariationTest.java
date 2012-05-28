@@ -25,7 +25,7 @@ public class BooleanVariationTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder("test");
+		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder("test", "testDef");
 		builder.createNewNamespace("initialization");
 		ParameterDefinition pdef = builder.createParameter("initParameter", ParameterType.BOOLEAN, ParameterRole.INPUT);
 		Map<String, String> config = new HashMap<String, String>();

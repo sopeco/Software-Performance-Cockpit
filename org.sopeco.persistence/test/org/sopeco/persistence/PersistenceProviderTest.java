@@ -500,7 +500,7 @@ public class PersistenceProviderTest {
 
 	@Test
 	public void testStoreAndLoadAnalysisResult(){
-		AnalysisConfiguration dummyAnalysisConfig = dummyScenarioInstance.getScenarioDefinition().getMeasurementSpecification().getExperimentSeriesDefinitions().get(0).getExplorationStrategy().getAnalysisConfigurations().get(0);
+		AnalysisConfiguration dummyAnalysisConfig = dummyScenarioInstance.getScenarioDefinition("DummyDef").getMeasurementSpecification().getExperimentSeriesDefinitions().get(0).getExplorationStrategy().getAnalysisConfigurations().get(0);
 		DummyAnalysisResult dummyAnalysisResult = new DummyAnalysisResult("a = b + c", dummyAnalysisConfig.getDependentParameters().get(0), dummyAnalysisConfig);
 		provider.store("DummyResult", dummyAnalysisResult);
 		try {
@@ -520,7 +520,7 @@ public class PersistenceProviderTest {
 
 	@Test
 	public void testUpdateAnalysisResult() {
-		AnalysisConfiguration dummyAnalysisConfig = dummyScenarioInstance.getScenarioDefinition().getMeasurementSpecification().getExperimentSeriesDefinitions().get(0).getExplorationStrategy().getAnalysisConfigurations().get(0);
+		AnalysisConfiguration dummyAnalysisConfig = dummyScenarioInstance.getScenarioDefinition("DummyDef").getMeasurementSpecification().getExperimentSeriesDefinitions().get(0).getExplorationStrategy().getAnalysisConfigurations().get(0);
 		DummyAnalysisResult dummyAnalysisResult = new DummyAnalysisResult("a = b + c", dummyAnalysisConfig.getDependentParameters().get(0), dummyAnalysisConfig);
 		provider.store("DummyResult", dummyAnalysisResult);
 		try {
@@ -544,7 +544,7 @@ public class PersistenceProviderTest {
 
 	@Test
 	public void testRemoveAnalysisResult() {
-		AnalysisConfiguration dummyAnalysisConfig = dummyScenarioInstance.getScenarioDefinition().getMeasurementSpecification().getExperimentSeriesDefinitions().get(0).getExplorationStrategy().getAnalysisConfigurations().get(0);
+		AnalysisConfiguration dummyAnalysisConfig = dummyScenarioInstance.getScenarioDefinition("DummyDef").getMeasurementSpecification().getExperimentSeriesDefinitions().get(0).getExplorationStrategy().getAnalysisConfigurations().get(0);
 		DummyAnalysisResult dummyAnalysisResult = new DummyAnalysisResult("a = b + c", dummyAnalysisConfig.getDependentParameters().get(0), dummyAnalysisConfig);
 		
 		provider.store("DummyResult", dummyAnalysisResult);

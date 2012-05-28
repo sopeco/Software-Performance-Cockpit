@@ -51,9 +51,9 @@ public class ScenarioDefinitionBuilder {
 	 * @param scenarioName
 	 *            the name of the scenario definition to create
 	 */
-	public ScenarioDefinitionBuilder(String scenarioName) {
-		scenarioDefinition = EntityFactory.createScenarioDefinition(scenarioName);
-		scenarioDefinition.setName(scenarioName);
+	public ScenarioDefinitionBuilder(String scenarioName, String definitionId) {
+		scenarioDefinition = EntityFactory.createScenarioDefinition(scenarioName, definitionId);
+		scenarioDefinition.setScenarioName(scenarioName);
 
 		MeasurementEnvironmentDefinition meDefinition = EntityFactory.createMeasurementEnvironmentDefinition();
 		scenarioDefinition.setMeasurementEnvironmentDefinition(meDefinition);

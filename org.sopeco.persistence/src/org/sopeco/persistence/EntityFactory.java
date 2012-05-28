@@ -40,8 +40,8 @@ public class EntityFactory {
 	 */
 	public static ScenarioInstance createScenarioInstance(ScenarioDefinition scenarioDefinition, String measurementEnvironmentUrl){
 		ScenarioInstance si = new ScenarioInstance();
-		si.setScenarioDefinition(scenarioDefinition);
-		si.setName(scenarioDefinition.getName());
+		si.getScenarioDefinitions().add(scenarioDefinition);
+		si.setName(scenarioDefinition.getScenarioName());
 		si.setMeasurementEnvironmentUrl(measurementEnvironmentUrl);
 		return si;
 	}
@@ -82,9 +82,10 @@ public class EntityFactory {
 		return container;
 	}
 	
-	public static ScenarioDefinition createScenarioDefinition(String name) {
+	public static ScenarioDefinition createScenarioDefinition(String scenarioName, String definitionId) {
 		ScenarioDefinition sd = new ScenarioDefinition();
-		sd.setName(name);
+		sd.setScenarioName(scenarioName);
+		sd.setDefinitionId(definitionId);
 		return sd;
 	}
 	

@@ -2,6 +2,8 @@ package org.sopeco.persistence.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -23,13 +25,8 @@ import org.sopeco.persistence.entities.keys.ScenarioInstancePK;
  * @author Dennis Westermann
  */
 @NamedQueries({
-@NamedQuery(
-    name="findAllScenarioInstances",
-    query="SELECT o FROM ScenarioInstance o"),
-@NamedQuery(
-    name="findScenarioInstancesByName",
-    query="SELECT o FROM ScenarioInstance o WHERE o.primaryKey.name = :name")
-})
+		@NamedQuery(name = "findAllScenarioInstances", query = "SELECT o FROM ScenarioInstance o"),
+		@NamedQuery(name = "findScenarioInstancesByName", query = "SELECT o FROM ScenarioInstance o WHERE o.primaryKey.name = :name") })
 @Entity
 public class ScenarioInstance implements Serializable {
 
@@ -40,42 +37,44 @@ public class ScenarioInstance implements Serializable {
 	 */
 	@Column(name = "description")
 	private String description;
-	
-	
-	@OneToMany(cascade=CascadeType.ALL, mappedBy = "scenarioInstance", orphanRemoval=true, fetch=FetchType.EAGER)
+
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "scenarioInstance", orphanRemoval = true, fetch = FetchType.EAGER)
 	private List<ExperimentSeries> experimentSeries = new ArrayList<ExperimentSeries>();
-	
+
 	@Lob
-	@Column(name = "scenarioDefinition")
-	private ScenarioDefinition scenarioDefinition;
+	@Column(name = "scenarioDefinitions")
+	private Collection<ScenarioDefinition> scenarioDefinitions = new HashSet<ScenarioDefinition>();
 
 	/*
 	 * Foreign Key Attributes
 	 */
 	@EmbeddedId
-	private
-	ScenarioInstancePK primaryKey = new ScenarioInstancePK();
-	
+	private ScenarioInstancePK primaryKey = new ScenarioInstancePK();
+
 	/*
 	 * Getters and Setters
 	 */
-	
+
 	public String getName() {
 		return primaryKey.getName();
 	}
-	
+
 	public void setName(String name) {
 		this.primaryKey.setName(name);
 	}
+
 	public String getDescription() {
 		return description;
 	}
+
 	public void setDescription(String description) {
 		this.description = description;
 	}
+
 	public String getMeasurementEnvironmentUrl() {
 		return primaryKey.getMeasurementEnvironmentUrl();
 	}
+
 	public void setMeasurementEnvironmentUrl(String measurementEnvironmentUrl) {
 		this.primaryKey.setMeasurementEnvironmentUrl(measurementEnvironmentUrl);
 	}
@@ -83,61 +82,74 @@ public class ScenarioInstance implements Serializable {
 	public List<ExperimentSeries> getExperimentSeriesList() {
 		return experimentSeries;
 	}
-	
+
 	public ScenarioInstancePK getPrimaryKey() {
 		return primaryKey;
 	}
-	
-	public ScenarioDefinition getScenarioDefinition() {
-		if (this.scenarioDefinition == null){
-			throw new IllegalStateException("ScenarioDefinition has not been set. Please use the PersistenceProviderFactory to properly create entity instances.");
-		}
-		return this.scenarioDefinition;
+
+	public Collection<ScenarioDefinition> getScenarioDefinitions() {
+		return this.scenarioDefinitions;
 	}
 
-	public void setScenarioDefinition(ScenarioDefinition scenarioDefinition) {
-		
-		this.scenarioDefinition = scenarioDefinition;	
-	}
-	
-	
 	/*
 	 * Utility Functions
 	 */
 	/**
-	 * @param name the name of the experiment series that is included in this scenario instance
-	 * @return the experiment series instance with the given name; <code>null</code> if no series with that name exists
+	 * @param name
+	 *            the name of the experiment series that is included in this
+	 *            scenario instance
+	 * @return the experiment series instance with the given name;
+	 *         <code>null</code> if no series with that name exists
 	 */
-	public ExperimentSeries getExperimentSeries(String name){
-		for(ExperimentSeries series : getExperimentSeriesList()) {
-			if(series.getName().equals(name)) {
+	public ExperimentSeries getExperimentSeries(String name) {
+		for (ExperimentSeries series : getExperimentSeriesList()) {
+			if (series.getName().equals(name)) {
 				return series;
 			}
 		}
-		
+
 		return null;
 	}
-	
-	
+
+	/**
+	 * @param definitionId
+	 *            the id of the scenario definition that is included in this
+	 *            scenario instance
+	 * @return the scenario definition with the given name; <code>null</code> if
+	 *         no scenario definition with the given id exists
+	 */
+	public ScenarioDefinition getScenarioDefinition(String definitionId) {
+		for (ScenarioDefinition sd : this.scenarioDefinitions) {
+			if (sd.getDefinitionId().equals(definitionId)) {
+				return sd;
+			}
+		}
+
+		return null;
+	}
+
 	/*
 	 * Overrides
 	 */
-	
+
 	@Override
 	public boolean equals(Object o) {
 
-		 if (this == o) return true;
-		 if (o == null || getClass() != o.getClass()) return false;
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
 
-		 ScenarioInstance obj = (ScenarioInstance) o;
-		 if(primaryKey == null || obj.getPrimaryKey() == null) return false;
-		 return this.primaryKey.equals(obj.getPrimaryKey());
+		ScenarioInstance obj = (ScenarioInstance) o;
+		if (primaryKey == null || obj.getPrimaryKey() == null)
+			return false;
+		return this.primaryKey.equals(obj.getPrimaryKey());
 
 	}
 
 	@Override
 	public int hashCode() {
-		if(this.primaryKey!=null){
+		if (this.primaryKey != null) {
 			return primaryKey.hashCode();
 		} else {
 			return 0;
@@ -145,13 +157,10 @@ public class ScenarioInstance implements Serializable {
 	}
 
 	@Override
-    public String toString() {
+	public String toString() {
 
-       return "ScenarioInstance{" +
-	                 "name='" + this.primaryKey.getName() + "\' " +
-	                 "measurementEnvironmentUrl='" + this.primaryKey.getMeasurementEnvironmentUrl() + '\'' +'}';
-    }
-	
+		return "ScenarioInstance{" + "name='" + this.primaryKey.getName() + "\' " + "measurementEnvironmentUrl='"
+				+ this.primaryKey.getMeasurementEnvironmentUrl() + '\'' + '}';
+	}
 
-	
 }

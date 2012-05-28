@@ -26,7 +26,7 @@ public class ScenarioDefinitionBuilderTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.builder = new ScenarioDefinitionBuilder("TestScenario");
+		this.builder = new ScenarioDefinitionBuilder("TestScenario", "TestDef");
 	}
 
 	@Test
@@ -65,7 +65,7 @@ public class ScenarioDefinitionBuilderTest {
 		buildMeasurementSpecification();
 		
 		ScenarioDefinition scenarioDefinition = builder.getScenarioDefinition();
-		
+		assertEquals("TestDef", scenarioDefinition.getDefinitionId());
 		assertNotNull(scenarioDefinition.getMeasurementSpecification());
 		assertEquals(2, scenarioDefinition.getMeasurementSpecification().getExperimentSeriesDefinitions().size());
 		assertEquals(1, scenarioDefinition.getMeasurementSpecification().getInitializationAssignemts().size());

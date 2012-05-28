@@ -7,8 +7,6 @@ import org.sopeco.engine.analysis.IParameterInfluenceDescriptor;
 import org.sopeco.engine.analysis.IParameterInfluenceResult;
 import org.sopeco.persistence.dataset.AbstractDataSetColumn;
 import org.sopeco.persistence.dataset.DataSetAggregated;
-import org.sopeco.persistence.dataset.DataSetRow;
-import org.sopeco.persistence.dataset.DataSetRowBuilder;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 /**
@@ -52,11 +50,14 @@ public class ParameterRelevanceEstimator {
 	 * @return a result object that holds the list of relevant and irrelevant
 	 *         parameters
 	 */
-	public static ParameterRelevanceResult interpretParameterInfluenceResult(IParameterInfluenceResult parameterInfluenceAnalysisResult) {
+	public static ParameterRelevanceResult interpretParameterInfluenceResult(
+			IParameterInfluenceResult parameterInfluenceAnalysisResult) {
 
-		List<IParameterInfluenceDescriptor> parameterInfluences = parameterInfluenceAnalysisResult.getAllParameterInfluenceDescriptors();
+		List<IParameterInfluenceDescriptor> parameterInfluences = parameterInfluenceAnalysisResult
+				.getAllParameterInfluenceDescriptors();
 
-		ParameterDefinition dependentParameter = parameterInfluenceAnalysisResult.getAnalysisStrategyConfiguration().getDependentParameters().get(0);
+		ParameterDefinition dependentParameter = parameterInfluenceAnalysisResult.getAnalysisStrategyConfiguration()
+				.getDependentParameters().get(0);
 
 		ParameterRelevanceResult result = new ParameterRelevanceResult(dependentParameter);
 
@@ -69,7 +70,9 @@ public class ParameterRelevanceEstimator {
 
 		int index = parameterInfluences.size() - 1;
 		double lastRelevantParamInfluence = 0.0;
-		while (sumOfRelevantInfluences < Double.parseDouble(Configuration.getSingleton().getPropertyAsStr(INFLUENCE_SUM_TH)) * totalSumOfInfluences) {
+		while (sumOfRelevantInfluences < Double.parseDouble(Configuration.getSingleton().getPropertyAsStr(
+				INFLUENCE_SUM_TH))
+				* totalSumOfInfluences) {
 			IParameterInfluenceDescriptor influenceDescriptor = parameterInfluences.get(index);
 			index--;
 			sumOfRelevantInfluences = sumOfRelevantInfluences + Math.abs(influenceDescriptor.getInfluenceValue());
@@ -82,8 +85,8 @@ public class ParameterRelevanceEstimator {
 			IParameterInfluenceDescriptor influenceDescriptor = parameterInfluences.get(index);
 			index--;
 
-			if ((Math.abs(influenceDescriptor.getInfluenceValue()) / totalSumOfInfluences) >= (Double.parseDouble(Configuration.getSingleton()
-					.getPropertyAsStr(STILL_CONSIDER_RELEVANT_TH)) * lastRelevantParamInfluence)) {
+			if ((Math.abs(influenceDescriptor.getInfluenceValue()) / totalSumOfInfluences) >= (Double
+					.parseDouble(Configuration.getSingleton().getPropertyAsStr(STILL_CONSIDER_RELEVANT_TH)) * lastRelevantParamInfluence)) {
 				result.addRelevantParameter(influenceDescriptor.getIndependentParameter());
 			} else {
 				result.addRelevantParameter(influenceDescriptor.getIndependentParameter());
@@ -100,17 +103,20 @@ public class ParameterRelevanceEstimator {
 	 * difference between the min and the max value is greater than the result
 	 * of minValue * relevanceFactor.
 	 * 
-	 * @param rowsToCompare
-	 *            the data set rows that should be compared
+	 * @param dataSet
+	 *            the data set that contains the rows that should be compared
+	 * 
+	 * @param dependentParameter
+	 *            the parameter for which the difference should be calculated
+	 * @param relevanceFactor
+	 *            indicator for the relevance. If the difference between the
+	 *            min and the max value is greater than the result of minValue *
+	 *            relevanceFactor, it is considered as significant.
 	 * @return <code>true</code> if the values of the dependent parameter differ
 	 *         significantly, otherwise <code>false</code>
 	 */
-	public static boolean isRelevantBasedOnRelativeFactor(List<DataSetRow> rowsToCompare, ParameterDefinition dependentParameter, double relevanceFactor) {
-
-		// create a data set that contains the given rows
-		DataSetRowBuilder builder = new DataSetRowBuilder();
-		builder.appendRows(rowsToCompare);
-		DataSetAggregated dataSet = builder.createDataSet();
+	public static boolean isRelevantBasedOnRelativeFactor(DataSetAggregated dataSet,
+			ParameterDefinition dependentParameter, double relevanceFactor) {
 
 		// derive min and max value of the dependent parameter
 		AbstractDataSetColumn<?> depParamCol = dataSet.getColumn(dependentParameter);
@@ -136,15 +142,19 @@ public class ParameterRelevanceEstimator {
 	 * difference between the min and the max value is greater than the given
 	 * differenceThreshold.
 	 * 
-	 * @param rowsToCompare
+	 * @param dataSet
+	 *            the data set that contains the rows that should be compared
+	 * @param dependentParameter
+	 *            the parameter for which the difference should be calculated
+	 * @param differenceThreshold
+	 *            indicator for the relevance. If the difference between the
+	 *            min and the max value is greater than the differenceThreshold,
+	 *            it is considered as significant.
 	 * @return <code>true</code> if the values of the dependent parameter differ
 	 *         significantly, otherwise <code>false</code>
 	 */
-	public static boolean isRelevantBasedOnAbsoluteDifference(List<DataSetRow> rowsToCompare, ParameterDefinition dependentParameter, double differenceThreshold) {
-		// create a data set that contains the given rows
-		DataSetRowBuilder builder = new DataSetRowBuilder();
-		builder.appendRows(rowsToCompare);
-		DataSetAggregated dataSet = builder.createDataSet();
+	public static boolean isRelevantBasedOnAbsoluteDifference(DataSetAggregated dataSet,
+			ParameterDefinition dependentParameter, double differenceThreshold) {
 
 		// derive min and max value of the dependent parameter
 		AbstractDataSetColumn<?> depParamCol = dataSet.getColumn(dependentParameter);
