@@ -2,7 +2,6 @@ package org.sopeco.plugin.std.exploration.breakdown.extensions;
 
 import org.sopeco.plugin.std.exploration.breakdown.util.BreakdownConfiguration;
 import org.sopeco.plugin.std.exploration.breakdown.util.BreakdownConfiguration.AccuracyDetermination;
-import org.sopeco.plugin.std.exploration.breakdown.util.BreakdownConfiguration.DynamicSectorAccuracyScope;
 
 /**
  * The extension that provides the random breakdown exploration strategy.
