@@ -25,11 +25,11 @@ import org.sopeco.plugin.std.analysis.util.RAdapter;
  * @author Dennis Westermann, Jens Happe
  * 
  */
-public class LinearRegressionStrategy extends AbstractAnalysisStrategy implements IPredictionFunctionStrategy, IParameterInfluenceStrategy {
+public class LinearRegressionStrategy extends AbstractAnalysisStrategy implements IPredictionFunctionStrategy,
+		IParameterInfluenceStrategy {
 
 	Logger logger = LoggerFactory.getLogger(LinearRegressionStrategy.class);
-	
-	
+
 	protected LinearRegressionStrategy(LinearRegressionStrategyExtension provider) {
 		super(provider);
 		loadLibraries();
@@ -37,16 +37,15 @@ public class LinearRegressionStrategy extends AbstractAnalysisStrategy implement
 
 	@Override
 	public void analyse(DataSetAggregated dataset, AnalysisConfiguration config) {
-	
-	
+
 		logger.debug("Starting linear regression analysis.");
-		
+
 		deriveDependentAndIndependentParameters(dataset, config);
-	
+
 		DataSetAggregated analysisDataSet = extractAnalysisDataSet(dataset);
-		
+
 		loadDataSetInR(analysisDataSet.convertToSimpleDataSet());
-		
+
 		// build and execute R command
 		StringBuilder cmdBuilder = new StringBuilder();
 		cmdBuilder.append(getId());
@@ -57,23 +56,22 @@ public class LinearRegressionStrategy extends AbstractAnalysisStrategy implement
 		cmdBuilder.append(")");
 		logger.debug("Running R Command: {}", cmdBuilder.toString());
 		RAdapter.getWrapper().executeRCommandString(cmdBuilder.toString());
-		
-	}
 
+	}
 
 	@Override
 	public IPredictionFunctionResult getPredictionFunctionResult() {
 		// create and return result object
 		return buildResultObject();
 	}
-	
+
 	/**
-	 * @return the analysis result as a function string that conforms to the JavaScript syntax
+	 * @return the analysis result as a function string that conforms to the
+	 *         JavaScript syntax
 	 */
 	private String getFunctionAsString() {
 		StringBuilder functionBuilder = new StringBuilder();
-		functionBuilder.append(RAdapter.getWrapper().executeRCommandString(
-				"cat(" + getId() + "$coefficients[1])"));
+		functionBuilder.append(RAdapter.getWrapper().executeRCommandString("cat(" + getId() + "$coefficients[1])"));
 		int index = 1;
 		for (ParameterDefinition inputParameter : independentParameterDefinitions) {
 			index++;
@@ -83,15 +81,25 @@ public class LinearRegressionStrategy extends AbstractAnalysisStrategy implement
 			functionBuilder.append(" * ");
 			functionBuilder.append(inputParameter.getFullName("_"));
 		}
-		return functionBuilder.toString();
+
+		/*
+		 * Workaround for bug in linear regression implementation of R. R
+		 * returns a function of type 10 + NA * paramID if the value of the
+		 * parameter has not been varied. Fixing this by replacing NA with 0, to
+		 * get the single value.
+		 */
+		String functionString = functionBuilder.toString();
+		if(functionString.contains("NA")){
+			functionString = functionString.replaceAll("NA", "0");
+		}
+		
+		return functionString;
 	}
-	
-	
-	private IPredictionFunctionResult buildResultObject(){
+
+	private IPredictionFunctionResult buildResultObject() {
 		return new PredictionFunctionResult(getFunctionAsString(), dependentParameterDefintion, config);
 	}
 
-	
 	/**
 	 * Returns the coefficient of the specified parameter from the linear model.
 	 * 
@@ -100,10 +108,9 @@ public class LinearRegressionStrategy extends AbstractAnalysisStrategy implement
 	 * @return coefficient of the specified parameter
 	 */
 	public ParameterRegressionCoefficient getCoefficientByParameter(ParameterDefinition parameter) {
-		
+
 		int index = independentParameterDefinitions.indexOf(parameter);
-		double coeff = RAdapter.getWrapper().executeRCommandDouble(
-				getId() + "$coefficients[" + (index + 2) + "]");
+		double coeff = RAdapter.getWrapper().executeRCommandDouble(getId() + "$coefficients[" + (index + 2) + "]");
 		return new ParameterRegressionCoefficient(parameter, dependentParameterDefintion, coeff);
 	}
 
@@ -120,26 +127,23 @@ public class LinearRegressionStrategy extends AbstractAnalysisStrategy implement
 		ArrayList<ParameterRegressionCoefficient> resultList = new ArrayList<ParameterRegressionCoefficient>();
 		int index = 1;
 
-
 		for (int i = 0; i < independentParameterDefinitions.size(); i++) {
 			ParameterDefinition parameter = independentParameterDefinitions.get(i);
 			index++;
-			double coeff = RAdapter.getWrapper().executeRCommandDouble(
-					getId() + "$coefficients[" + index + "]");
+			double coeff = RAdapter.getWrapper().executeRCommandDouble(getId() + "$coefficients[" + index + "]");
 			resultList.add(new ParameterRegressionCoefficient(parameter, dependentParameterDefintion, coeff));
 		}
 		return resultList;
 	}
-	
+
 	@Override
 	public IParameterInfluenceResult getParameterInfluenceResult() {
 		ParameterInfluenceResult result = new ParameterInfluenceResult(config);
-		for(ParameterRegressionCoefficient prc : getAllParameterCoefficients()){
+		for (ParameterRegressionCoefficient prc : getAllParameterCoefficients()) {
 			result.addParameterInfluenceDescriptor(prc);
 		}
-		
+
 		return result;
 	}
-
 
 }

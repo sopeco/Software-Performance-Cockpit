@@ -102,13 +102,17 @@ public class MarsStrategy extends AbstractAnalysisStrategy implements IPredictio
 					if(pv.getParameter().equals(dependentParameterDefintion)) {
 						// scatter due to Mars Error "cannot scale y (values are all equal to ..)"
 						Object newValue;
+						Random r = new Random();
 						switch(Tools.SupportedTypes.get(pv.getParameter().getType())){
 						case Double:
-							Random r = new Random();
 							newValue = pv.getValueAsDouble() * (1.0001 + 0.0001 * r.nextDouble());
 							break;
 						case Integer:
-							newValue = pv.getValueAsInteger() + 1;
+							if(r.nextBoolean()) {
+								newValue = pv.getValueAsInteger() + r.nextInt(2);
+							} else {
+								newValue = pv.getValueAsInteger() - r.nextInt(2);
+							}
 							break;
 						default:
 							throw new IllegalArgumentException("Unsopported parameter type: " + pv.getParameter().getType());

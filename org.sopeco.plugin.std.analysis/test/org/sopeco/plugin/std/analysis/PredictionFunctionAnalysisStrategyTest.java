@@ -49,21 +49,25 @@ public class PredictionFunctionAnalysisStrategyTest {
 		Object[][] data = new Object[][] {
 				{ (IPredictionFunctionStrategy) new LinearRegressionStrategyExtension().createExtensionArtifact(), "Linear Regression", "Small" },
 				{ (IPredictionFunctionStrategy) new LinearRegressionStrategyExtension().createExtensionArtifact(), "Linear Regression", "Large" },
+				{ (IPredictionFunctionStrategy) new LinearRegressionStrategyExtension().createExtensionArtifact(), "Linear Regression", "NoVariation" },
 				{ (IPredictionFunctionStrategy) new MarsStrategyExtension().createExtensionArtifact(), "MARS", "Small" },
-				{ (IPredictionFunctionStrategy) new MarsStrategyExtension().createExtensionArtifact(), "MARS", "Large" }
+				{ (IPredictionFunctionStrategy) new MarsStrategyExtension().createExtensionArtifact(), "MARS", "Large" },
+				{ (IPredictionFunctionStrategy) new MarsStrategyExtension().createExtensionArtifact(), "MARS", "NoVariation" },
 		};
 		return Arrays.asList(data);
 	}
 
-	public PredictionFunctionAnalysisStrategyTest(IPredictionFunctionStrategy strategy, String name, String dataSetSize) throws IOException {
+	public PredictionFunctionAnalysisStrategyTest(IPredictionFunctionStrategy strategy, String name, String dataSet) throws IOException {
 		this.strategy = strategy;
 		this.analysisConfiguration = EntityFactory.createAnalysisConfiguration(name, new HashMap<String, String>());
-		if (dataSetSize.equalsIgnoreCase("Small")) {
+		if (dataSet.equalsIgnoreCase("Small")) {
 			this.dataset = createSmallDummyDataSet();
-		} else if (dataSetSize.equalsIgnoreCase("Large")) {
+		} else if (dataSet.equalsIgnoreCase("Large")) {
 			this.dataset = createLargeDummyDataSet();
+		} else if (dataSet.equalsIgnoreCase("NoVariation")) {
+			this.dataset = createNoVariationDummyDataSet();
 		}
-		System.out.println("\n*** Running test for " + name + " with dataset size " + dataSetSize);
+		System.out.println("\n*** Running test for " + name + " with dataset size " + dataSet);
 	}
 
 	@Before
@@ -83,6 +87,10 @@ public class PredictionFunctionAnalysisStrategyTest {
 			assertNotNull(result);
 			assertEquals(analysisConfiguration.getName(), result.getAnalysisStrategyConfiguration().getName());
 
+			assertNotNull(result.getFunctionAsString());
+			
+			assertTrue(!result.getFunctionAsString().contains("NA"));
+			
 			ParameterValue<?> inputParam = ParameterValueFactory.createParameterValue(
 					scenarioDefinition.getParameterDefinition("default.DummyInput"), 1);
 			ParameterValue<?> predParam1 = result.predictOutputParameter(inputParam);
@@ -92,7 +100,7 @@ public class PredictionFunctionAnalysisStrategyTest {
 			ParameterValue<?> predParam2 = result.predictOutputParameter(inputParamList);
 			assertEquals(predParam1.getValue(), predParam2.getValue());
 
-			assertNotNull(result.getFunctionAsString());
+			
 
 			System.out.println(result.getFunctionAsString());
 
@@ -107,6 +115,7 @@ public class PredictionFunctionAnalysisStrategyTest {
 		this.testAnalysis();
 
 	}
+	
 	
 
 	private static ScenarioDefinition loadScenarioDefinition() throws IOException {
@@ -176,6 +185,30 @@ public class PredictionFunctionAnalysisStrategyTest {
 		return builder.createDataSet();
 	}
 	
+	
+	private static DataSetAggregated createNoVariationDummyDataSet() throws IOException {
+	
+		if (scenarioDefinition == null)
+			scenarioDefinition = loadScenarioDefinition();
+
+		DataSetColumnBuilder builder = new DataSetColumnBuilder();
+		builder.startInputColumn(scenarioDefinition.getParameterDefinition("default.DummyInput"));
+		builder.addInputValue(1);
+		builder.finishColumn();
+
+		ParameterDefinition paramDef = scenarioDefinition.getParameterDefinition("default.DummyOutput");
+		@SuppressWarnings("rawtypes")
+		ArrayList<ParameterValueList> obsValueLists = new ArrayList<ParameterValueList>();
+		builder.startObservationColumn(paramDef);
+		ArrayList<Object> obsValues1 = new ArrayList<Object>();
+		obsValues1.add(10);
+		obsValueLists.add(new ParameterValueList<Object>(paramDef, obsValues1));
+
+		builder.addObservationValueLists(obsValueLists);
+		builder.finishColumn();
+
+		return builder.createDataSet();
+	}
 	
 
 }
