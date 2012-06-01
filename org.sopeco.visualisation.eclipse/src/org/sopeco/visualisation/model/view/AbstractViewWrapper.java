@@ -9,11 +9,40 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.persistence.entities.definition.ParameterValueAssignment;
 import org.sopeco.util.Tools;
+import org.sopeco.visualisation.model.ErrorStatus;
 import org.sopeco.visualisation.model.ErrorType;
 import org.sopeco.visualisation.model.IViewModel;
+import org.sopeco.visualisation.model.ViewConfiguration;
 
 public abstract class AbstractViewWrapper implements IViewModel {
 
+	
+	public ViewConfiguration getConfigurationAlternatives(ExperimentSeriesRun experimentSeriesRun, ErrorStatus errorStatus) {
+		resetErrorStatus(errorStatus);
+
+		ViewConfiguration configAlternatives = new ViewConfiguration();
+
+		for (ParameterDefinition pDef : getVariedInputParameters(experimentSeriesRun)) {
+			configAlternatives.setInputParameterAssignmentOptions(pDef, experimentSeriesRun.getSuccessfulResultDataSet().getInputColumn(pDef).getValueSet());
+		}
+
+		if (getVariedInputParameters(experimentSeriesRun).size() < 1) {
+			if (errorStatus != null) {
+				errorStatus.setErrorType(ErrorType.NoInputParameter);
+			}
+		}
+
+		configAlternatives.setOutputParameters(getNumericObservationParameters(experimentSeriesRun));
+		if (configAlternatives.getOutputParameters().size() < 1) {
+			if (errorStatus != null) {
+				errorStatus.setErrorType(ErrorType.NoObservationParameter);
+			}
+		}
+
+		// TODO: analysis
+
+		return configAlternatives;
+	}
 	
 	protected boolean isNumericParameter(ParameterDefinition pDef) {
 		if (Tools.SupportedTypes.valueOf(pDef.getType()).equals(Tools.SupportedTypes.Integer)) {
@@ -55,6 +84,11 @@ public abstract class AbstractViewWrapper implements IViewModel {
 		return variedInputParameter;
 	}
 
+	protected void resetErrorStatus(ErrorStatus errorStatus) {
+		if (errorStatus != null) {
+			errorStatus.setErrorType(ErrorType.None);
+		}
+	}
 	
 
 	

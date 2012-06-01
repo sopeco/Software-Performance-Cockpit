@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sopeco.visualisation.model.view.AbstractView;
+import org.sopeco.visualisation.model.view.DataItem;
 
 public class FunctionViewModel extends AbstractView {
 
@@ -12,23 +13,23 @@ public class FunctionViewModel extends AbstractView {
 	 */
 	private static final long serialVersionUID = -7065440902932752327L;
 	
-	private List<FunctionDataItem> dataSelection;
+	private List<DataItem> dataSelection;
 	private FunctionViewChartStyle style;
 	
 	
 	public FunctionViewModel() {
-		dataSelection = new ArrayList<FunctionDataItem>();
+		dataSelection = new ArrayList<DataItem>();
 	}
 	
-	public void setDataSelection(List<FunctionDataItem> dataSelection){
+	public void setDataSelection(List<DataItem> dataSelection){
 		this.dataSelection = dataSelection;
 	}
 	
-	public void addToDataSelection(FunctionDataItem selectedNode){
+	public void addToDataSelection(DataItem selectedNode){
 		this.dataSelection.add(selectedNode);
 	}
 	
-	public List<FunctionDataItem> getDataSelection(){
+	public List<DataItem> getDataSelection(){
 		return dataSelection;
 	}
 

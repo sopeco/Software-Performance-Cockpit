@@ -1,4 +1,4 @@
-package org.sopeco.visualisation.model.view.function;
+package org.sopeco.visualisation.model.view;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,9 +7,8 @@ import java.util.Map;
 
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
-import org.sopeco.visualisation.model.view.AbstractPreprocessingStep;
 
-public class FunctionDataItem {
+public class DataItem {
 	private ExperimentSeriesRun data;
 
 	private ParameterDefinition xParameter;
@@ -18,7 +17,7 @@ public class FunctionDataItem {
 
 	private List<AbstractPreprocessingStep> preprocessingSteps;
 
-	public FunctionDataItem() {
+	public DataItem() {
 		valueAssignments = new HashMap<ParameterDefinition, Object>();
 		preprocessingSteps = new ArrayList<AbstractPreprocessingStep>();
 	}
@@ -68,5 +67,11 @@ public class FunctionDataItem {
 			valueAssignments.put(parameter, value);
 		}
 	}
+
+	public boolean xParameterUsed() {
+		return xParameter != null;
+	}
+	
+	
 
 }

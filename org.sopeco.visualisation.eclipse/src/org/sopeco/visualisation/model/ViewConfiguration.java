@@ -10,12 +10,12 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.plugin.std.analysis.common.AbstractAnalysisStrategy;
 import org.sopeco.util.Tools;
 
-public class FunctionViewConfiguration {
+public class ViewConfiguration {
 	private Map<ParameterDefinition, Collection<Object>> inputParameterAssignmentOptions;
 	private List<ParameterDefinition> outputParameters;
 	private List<AbstractAnalysisStrategy> analysisStrategies;
 
-	public FunctionViewConfiguration() {
+	public ViewConfiguration() {
 		inputParameterAssignmentOptions = new HashMap<ParameterDefinition, Collection<Object>>();
 	}
 
@@ -29,8 +29,12 @@ public class FunctionViewConfiguration {
 		}
 		return numericInputParameter;
 	}
+	
+	public List<ParameterDefinition> getInputParameters() {
+		return new ArrayList<ParameterDefinition>(inputParameterAssignmentOptions.keySet());
+	}
 
-	public void ssetInputParameterAssignmentOptions(ParameterDefinition inputParameter, Collection<Object> values) {
+	public void setInputParameterAssignmentOptions(ParameterDefinition inputParameter, Collection<Object> values) {
 		getInputParameterAssignmentOptions().put(inputParameter, values);
 	}
 

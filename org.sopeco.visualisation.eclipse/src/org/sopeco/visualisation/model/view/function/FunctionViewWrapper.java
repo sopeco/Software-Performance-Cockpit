@@ -20,9 +20,10 @@ import org.sopeco.util.Tools;
 import org.sopeco.visualisation.model.ErrorStatus;
 import org.sopeco.visualisation.model.ErrorType;
 import org.sopeco.visualisation.model.FunctionData;
-import org.sopeco.visualisation.model.FunctionViewConfiguration;
+import org.sopeco.visualisation.model.ViewConfiguration;
 import org.sopeco.visualisation.model.IFunctionViewModel;
 import org.sopeco.visualisation.model.view.AbstractViewWrapper;
+import org.sopeco.visualisation.model.view.DataItem;
 
 public class FunctionViewWrapper extends AbstractViewWrapper implements IFunctionViewModel {
 
@@ -34,37 +35,17 @@ public class FunctionViewWrapper extends AbstractViewWrapper implements IFunctio
 		createDummyXParameter();
 	}
 
-	@Override
-	public FunctionViewConfiguration getConfigurationAlternatives(ExperimentSeriesRun experimentSeriesRun, ErrorStatus errorStatus) {
-		resetErrorStatus(errorStatus);
-
-		FunctionViewConfiguration configAlternatives = new FunctionViewConfiguration();
-
-		for(ParameterDefinition pDef : getVariedInputParameters(experimentSeriesRun)){
-			configAlternatives.ssetInputParameterAssignmentOptions(pDef, experimentSeriesRun.getSuccessfulResultDataSet().getInputColumn(pDef).getValueSet());
-		}
-		
-		if (getNumericVariedInputParameters(experimentSeriesRun).size() < 1) {
-			if (errorStatus != null) {
-				errorStatus.setErrorType(ErrorType.NoInputParameter);
-			}
-		}
-
-		configAlternatives.setOutputParameters(getNumericObservationParameters(experimentSeriesRun));
-		if (configAlternatives.getOutputParameters().size() < 1) {
-			if (errorStatus != null) {
-				errorStatus.setErrorType(ErrorType.NoObservationParameter);
-			}
-		}
-
-		// TODO: analysis
-
-		return configAlternatives;
-	}
+	
 
 	@Override
 	public void addDataItem(ExperimentSeriesRun experimentSeriesRun, ParameterDefinition yPar, ErrorStatus errorStatus) {
 		addDataItem(experimentSeriesRun, dummyXParameter, yPar, errorStatus);
+	}
+
+	@Override
+	public void addDataItem(ExperimentSeriesRun experimentSeriesRun, ParameterDefinition yPar, Map<ParameterDefinition, Object> valueAssignments,
+			ErrorStatus errorStatus) {
+		addDataItem(experimentSeriesRun, dummyXParameter, yPar, valueAssignments, errorStatus);
 	}
 
 	@Override
@@ -76,10 +57,10 @@ public class FunctionViewWrapper extends AbstractViewWrapper implements IFunctio
 	public void addDataItem(ExperimentSeriesRun experimentSeriesRun, ParameterDefinition xPar, ParameterDefinition yPar,
 			Map<ParameterDefinition, Object> valueAssignments, ErrorStatus errorStatus) {
 		resetErrorStatus(errorStatus);
-		if (!validateParameters(xPar, yPar, valueAssignments==null?new ArrayList<ParameterDefinition>():valueAssignments.keySet(), errorStatus)) {
+		if (!validateParameters(xPar, yPar, valueAssignments == null ? new ArrayList<ParameterDefinition>() : valueAssignments.keySet(), errorStatus)) {
 			return;
 		}
-		FunctionDataItem item = new FunctionDataItem();
+		DataItem item = new DataItem();
 		item.setData(experimentSeriesRun);
 		item.setxParameter(xPar);
 		item.setyParameter(yPar);
@@ -95,18 +76,17 @@ public class FunctionViewWrapper extends AbstractViewWrapper implements IFunctio
 		List<FunctionData> functions = new ArrayList<FunctionData>();
 
 		int i = 0;
-		for (FunctionDataItem item : model.getDataSelection()) {
+		for (DataItem item : model.getDataSelection()) {
 			DataSetAggregated dataset = item.getData().getSuccessfulResultDataSet();
 
 			SimpleDataSet simpleDataSet = null;
+			if (item.getValueAssignments() != null && !item.getValueAssignments().isEmpty()) {
+				dataset = dataset.select(item.getValueAssignments());
+			}
 			if (item.getxParameter().equals(dummyXParameter)) {
 				DataSetObservationColumn obsColumn = dataset.getObservationColumn(item.getyParameter());
 				simpleDataSet = createDatasetWithArtificialXParameter(obsColumn.getAllValues(), obsColumn.getParameter());
 			} else {
-				if(item.getValueAssignments() != null && !item.getValueAssignments().isEmpty()){
-					dataset = dataset.select(item.getValueAssignments());
-				}
-				
 				List<ParameterDefinition> xyParameterPair = new ArrayList<ParameterDefinition>();
 				xyParameterPair.add(item.getxParameter());
 				xyParameterPair.add(item.getyParameter());
@@ -145,11 +125,7 @@ public class FunctionViewWrapper extends AbstractViewWrapper implements IFunctio
 		return true;
 	}
 
-	private void resetErrorStatus(ErrorStatus errorStatus) {
-		if (errorStatus != null) {
-			errorStatus.setErrorType(ErrorType.None);
-		}
-	}
+	
 
 	private SimpleDataSet createDatasetWithArtificialXParameter(List<Object> observationValues, ParameterDefinition observationParameter) {
 		SimpleDataSetRowBuilder builder = new SimpleDataSetRowBuilder();
@@ -173,7 +149,5 @@ public class FunctionViewWrapper extends AbstractViewWrapper implements IFunctio
 		dummyXParameter.setRole(ParameterRole.INPUT);
 		dummyXParameter.setType(Tools.SupportedTypes.Integer.toString());
 	}
-	
-	
 
 }

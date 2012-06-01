@@ -12,11 +12,11 @@ import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.visualisation.model.BoxPlotData;
-import org.sopeco.visualisation.model.BoxPlotViewConfiguration;
 import org.sopeco.visualisation.model.ErrorStatus;
 import org.sopeco.visualisation.model.ErrorType;
 import org.sopeco.visualisation.model.IBoxPlotViewModel;
 import org.sopeco.visualisation.model.view.AbstractViewWrapper;
+import org.sopeco.visualisation.model.view.DataItem;
 
 public class BoxPlotViewWrapper extends AbstractViewWrapper implements IBoxPlotViewModel {
 	private BoxPlotViewModel model;
@@ -26,46 +26,43 @@ public class BoxPlotViewWrapper extends AbstractViewWrapper implements IBoxPlotV
 	}
 
 	@Override
-	public BoxPlotViewConfiguration getConfigurationAlternatives(ExperimentSeriesRun experimentSeriesRun, ErrorStatus errorStatus) {
-		if (errorStatus != null) {
-			errorStatus.setErrorType(ErrorType.None);
-		}
-		BoxPlotViewConfiguration configAlternatives = new BoxPlotViewConfiguration();
-
-		configAlternatives.setOutputParameters(getNumericObservationParameters(experimentSeriesRun));
-		if (configAlternatives.getOutputParameters().size() < 1) {
-			if (errorStatus != null) {
-				errorStatus.setErrorType(ErrorType.NoObservationParameter);
-			}
-
-		}
-		configAlternatives.setInputParameters(getVariedInputParameters(experimentSeriesRun));
-
-		return configAlternatives;
-	}
-
-	@Override
 	public void addDataItem(ExperimentSeriesRun experimentSeriesRun, ParameterDefinition yPar, ErrorStatus errorStatus) {
 		addDataItem(experimentSeriesRun, null, yPar, errorStatus);
 	}
 
 	@Override
 	public void addDataItem(ExperimentSeriesRun experimentSeriesRun, ParameterDefinition xPar, ParameterDefinition yPar, ErrorStatus errorStatus) {
-		if (errorStatus != null) {
-			errorStatus.setErrorType(ErrorType.None);
-		}
+		addDataItem(experimentSeriesRun, xPar, yPar, new HashMap<ParameterDefinition, Object>(), errorStatus);
+
+	}
+
+	@Override
+	public void addDataItem(ExperimentSeriesRun experimentSeriesRun, ParameterDefinition yPar, Map<ParameterDefinition, Object> valueAssignments,
+			ErrorStatus errorStatus) {
+		addDataItem(experimentSeriesRun, null, yPar, new HashMap<ParameterDefinition, Object>(), errorStatus);
+
+	}
+
+	@Override
+	public void addDataItem(ExperimentSeriesRun experimentSeriesRun, ParameterDefinition xPar, ParameterDefinition yPar,
+			Map<ParameterDefinition, Object> valueAssignments, ErrorStatus errorStatus) {
+		resetErrorStatus(errorStatus);
+
 		if (xPar != null && !getVariedInputParameters(experimentSeriesRun).contains(xPar)) {
 			if (errorStatus != null) {
 				errorStatus.setErrorType(ErrorType.InvalidParameter);
 			}
 			return;
 		}
-		BoxPlotDataItem item = new BoxPlotDataItem();
+
+		DataItem item = new DataItem();
 		item.setData(experimentSeriesRun);
 		item.setxParameter(xPar);
 		item.setyParameter(yPar);
+		if (valueAssignments != null && !valueAssignments.isEmpty()) {
+			item.setValueAssignments(valueAssignments);
+		}
 		model.addToDataSelection(item);
-
 	}
 
 	@Override
@@ -73,8 +70,13 @@ public class BoxPlotViewWrapper extends AbstractViewWrapper implements IBoxPlotV
 		List<BoxPlotData> boxes = new ArrayList<BoxPlotData>();
 
 		int i = 0;
-		for (BoxPlotDataItem item : model.getDataSelection()) {
+		for (DataItem item : model.getDataSelection()) {
 			DataSetAggregated dataset = item.getData().getSuccessfulResultDataSet();
+			
+			if (item.getValueAssignments() != null && !item.getValueAssignments().isEmpty()) {
+				dataset = dataset.select(item.getValueAssignments());
+			}
+			
 			if (item.xParameterUsed()) {
 				for (Object xValue : dataset.getInputColumn(item.getxParameter()).getValueSet()) {
 					Map<ParameterDefinition, Object> xValueAllocation = new HashMap<ParameterDefinition, Object>();
@@ -92,7 +94,6 @@ public class BoxPlotViewWrapper extends AbstractViewWrapper implements IBoxPlotV
 				i++;
 			}
 
-			
 		}
 		return boxes;
 	}

@@ -48,9 +48,6 @@ public class ValueAssignmentsDialog extends Dialog {
 
 	private void initResult() {
 		result = new HashMap<ParameterDefinition, Object>();
-		for (final ParameterDefinition parameter : parameterValueOptions.keySet()) {
-			result.put(parameter, new IgnoreValue());
-		}
 	}
 
 	/**

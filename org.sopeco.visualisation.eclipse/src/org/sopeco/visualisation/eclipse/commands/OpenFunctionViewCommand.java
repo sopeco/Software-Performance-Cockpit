@@ -20,7 +20,7 @@ import org.sopeco.visualisation.eclipse.dialogs.ValueAssignmentsDialog;
 import org.sopeco.visualisation.eclipse.navigation.PersistenceNavigation;
 import org.sopeco.visualisation.model.ErrorStatus;
 import org.sopeco.visualisation.model.ErrorType;
-import org.sopeco.visualisation.model.FunctionViewConfiguration;
+import org.sopeco.visualisation.model.ViewConfiguration;
 import org.sopeco.visualisation.model.IFunctionViewModel;
 import org.sopeco.visualisation.model.ViewModelFactory;
 
@@ -45,9 +45,9 @@ public class OpenFunctionViewCommand extends AbstractCommand {
 			IFunctionViewModel model = ViewModelFactory.getInstance().createFunctionViewModel();
 
 			ErrorStatus errorStatus = new ErrorStatus();
-			FunctionViewConfiguration alternatives = model.getConfigurationAlternatives(nodeToShow, errorStatus);
+			ViewConfiguration alternatives = model.getConfigurationAlternatives(nodeToShow, errorStatus);
 
-			if (errorStatus.getErrorType().equals(ErrorType.NoInputParameter)) {
+			if (alternatives.getNumericInputParameters().isEmpty()) {
 				boolean showWithoutInputParameter = Message.question("No input parameter found!",
 						"No input Parameter found! Show the observation data in dependence on the repetition number?");
 				if (!showWithoutInputParameter) {
@@ -57,6 +57,16 @@ public class OpenFunctionViewCommand extends AbstractCommand {
 					ParameterDefinition ypDef = ParameterSelection.selectParameter("Select output parameter (for the y-axis)!",
 							alternatives.getOutputParameters());
 					model.addDataItem(nodeToShow, ypDef, errorStatus);
+					
+					
+					ValueAssignmentsDialog dialog = new ValueAssignmentsDialog(PersistenceNavigation.getInstance().getSite().getShell(), "test", "test",
+							alternatives.getInputParameterAssignmentOptions());
+
+					if (dialog.open()) {
+						model.addDataItem(nodeToShow, ypDef, dialog.getResult(), errorStatus);
+					} else {
+						model.addDataItem(nodeToShow, ypDef, errorStatus);
+					}
 
 				}
 			} else {
