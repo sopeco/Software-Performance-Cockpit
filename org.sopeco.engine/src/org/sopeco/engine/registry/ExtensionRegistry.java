@@ -105,7 +105,7 @@ public class ExtensionRegistry implements IExtensionRegistry {
 	 */
 	private void initialize() {
 		if (!initialized)
-			loadEngineExtensions();
+			loadEngineExtensions(true);
 		else 
 			logger.warn("Plugin registry cannot be re-initialized.");
 		
@@ -114,19 +114,26 @@ public class ExtensionRegistry implements IExtensionRegistry {
 	
 	/**
 	 * Loads all the extensions that are supported by the engine.
+	 * 
+	 * @param tryEquinox if true, the method first tries loading the plugins using the Eclipse Equinox framework.
 	 */
-	private void loadEngineExtensions() {
-		final org.eclipse.core.runtime.IExtensionRegistry registry = Platform.getExtensionRegistry();
-
-		if (registry == null) {
-			logger.warn("The application is not running within an Eclipse framework.");
+	private void loadEngineExtensions(boolean tryEquinox) {
+		if (tryEquinox) {
+			final org.eclipse.core.runtime.IExtensionRegistry registry = Platform.getExtensionRegistry();
+			
+			if (registry == null) {
+				logger.warn("The application is not running within an Eclipse framework.");
+				loadExtensions();
+				return;
+			}
+			
+			// loads all extensions
+			for (String id: EXTENSION_POINTS) {
+				loadExtensions(registry, id);
+			}
+		} else {
+			logger.warn("The application is not using the Eclipse Equinox extension framework.");
 			loadExtensions();
-			return;
-		}
-	
-		// loads all extensions
-		for (String id: EXTENSION_POINTS) {
-			loadExtensions(registry, id);
 		}
 	}
 
