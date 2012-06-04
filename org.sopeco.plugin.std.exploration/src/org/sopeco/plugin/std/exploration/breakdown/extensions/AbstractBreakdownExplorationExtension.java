@@ -26,9 +26,10 @@ public abstract class AbstractBreakdownExplorationExtension implements IExplorat
 	/**
 	 * The name of the provided extension artifact.
 	 */
-	public static String NAME;
+	protected final String NAME;
 
-	protected AbstractBreakdownExplorationExtension() {
+	protected AbstractBreakdownExplorationExtension(String name) {
+		NAME = name;
 		prepareConfigurationParameterMap();
 	}
 

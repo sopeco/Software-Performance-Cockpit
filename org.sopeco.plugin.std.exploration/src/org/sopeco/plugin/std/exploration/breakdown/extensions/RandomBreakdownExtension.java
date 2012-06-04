@@ -12,7 +12,7 @@ import org.sopeco.plugin.std.exploration.breakdown.util.BreakdownConfiguration.A
 public class RandomBreakdownExtension extends AbstractBreakdownExplorationExtension {
 
 	public RandomBreakdownExtension() {
-		this.NAME = BreakdownConfiguration.RANDOM_BREAKDOWN;
+		super(BreakdownConfiguration.RANDOM_BREAKDOWN);
 	}
 
 	@Override

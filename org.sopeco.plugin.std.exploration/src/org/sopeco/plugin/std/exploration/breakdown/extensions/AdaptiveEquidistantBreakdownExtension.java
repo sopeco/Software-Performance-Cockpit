@@ -1,8 +1,5 @@
 package org.sopeco.plugin.std.exploration.breakdown.extensions;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.sopeco.plugin.std.exploration.breakdown.util.BreakdownConfiguration;
 import org.sopeco.plugin.std.exploration.breakdown.util.BreakdownConfiguration.AccuracyDetermination;
 import org.sopeco.plugin.std.exploration.breakdown.util.BreakdownConfiguration.DynamicSectorAccuracyScope;
@@ -16,7 +13,7 @@ import org.sopeco.plugin.std.exploration.breakdown.util.BreakdownConfiguration.D
 public class AdaptiveEquidistantBreakdownExtension extends AbstractBreakdownExplorationExtension {
 
 	public AdaptiveEquidistantBreakdownExtension() {
-		this.NAME = BreakdownConfiguration.EQUIDISTANT_BREAKDOWN;
+		super(BreakdownConfiguration.ADAPTIVE_EQUIDISTANT_BREAKDOWN);
 	}
 	
 	@Override

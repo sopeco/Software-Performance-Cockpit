@@ -22,7 +22,7 @@
    <extension
          point="org.sopeco.engine.experimentseries.parametervariation">
       <strategy
-            class="org.sopeco.plugin.std.parametervariation.constant.ConstantVariationExtension">
+            class="org.sopeco.plugin.std.parametervariation.csv.CSVVariationExtension">
       </strategy>
    </extension>
 

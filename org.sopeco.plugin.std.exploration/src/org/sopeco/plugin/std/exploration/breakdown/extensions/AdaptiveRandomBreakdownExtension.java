@@ -12,7 +12,7 @@ import org.sopeco.plugin.std.exploration.breakdown.util.BreakdownConfiguration.D
  */
 public class AdaptiveRandomBreakdownExtension extends AbstractBreakdownExplorationExtension {
 	public AdaptiveRandomBreakdownExtension() {
-		this.NAME = BreakdownConfiguration.ADAPTIVE_RANDOM_BREAKDOWN;
+		super(BreakdownConfiguration.ADAPTIVE_RANDOM_BREAKDOWN);
 	}
 
 	@Override
