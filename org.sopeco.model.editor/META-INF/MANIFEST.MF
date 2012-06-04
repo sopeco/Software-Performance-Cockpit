@@ -19,5 +19,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.edit.ui;visibility:=reexport,
  org.eclipse.ui.ide;visibility:=reexport,
  org.sopeco.engine;bundle-version="0.2.0",
- org.sopeco.util;bundle-version="0.2.0"
+ org.sopeco.util;bundle-version="0.2.0",
+ org.sopeco.plugin.std.analysis;bundle-version="0.2.0",
+ org.sopeco.plugin.std.constantassignment;bundle-version="0.2.0",
+ org.sopeco.plugin.std.exploration;bundle-version="0.2.0",
+ org.sopeco.plugin.std.parametervariation;bundle-version="0.2.0"
 Bundle-ActivationPolicy: lazy
