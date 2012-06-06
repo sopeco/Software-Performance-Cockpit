@@ -11,6 +11,7 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
 public class DataItem {
 	private ExperimentSeriesRun data;
 
+	private String label;
 	private ParameterDefinition xParameter;
 	private ParameterDefinition yParameter;
 	private Map<ParameterDefinition, Object> valueAssignments;
@@ -70,6 +71,14 @@ public class DataItem {
 
 	public boolean xParameterUsed() {
 		return xParameter != null;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
 	}
 	
 	

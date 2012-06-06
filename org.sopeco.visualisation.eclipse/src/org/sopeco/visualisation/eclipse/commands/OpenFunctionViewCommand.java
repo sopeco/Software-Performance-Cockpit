@@ -20,8 +20,9 @@ import org.sopeco.visualisation.eclipse.dialogs.ValueAssignmentsDialog;
 import org.sopeco.visualisation.eclipse.navigation.PersistenceNavigation;
 import org.sopeco.visualisation.model.ErrorStatus;
 import org.sopeco.visualisation.model.ErrorType;
-import org.sopeco.visualisation.model.ViewConfiguration;
+import org.sopeco.visualisation.model.ViewConfigurationOptions;
 import org.sopeco.visualisation.model.IFunctionViewModel;
+import org.sopeco.visualisation.model.ViewItemConfiguration;
 import org.sopeco.visualisation.model.ViewModelFactory;
 
 public class OpenFunctionViewCommand extends AbstractCommand {
@@ -45,7 +46,13 @@ public class OpenFunctionViewCommand extends AbstractCommand {
 			IFunctionViewModel model = ViewModelFactory.getInstance().createFunctionViewModel();
 
 			ErrorStatus errorStatus = new ErrorStatus();
-			ViewConfiguration alternatives = model.getConfigurationAlternatives(nodeToShow, errorStatus);
+			ViewConfigurationOptions alternatives = model.getConfigurationAlternatives(nodeToShow, errorStatus);
+			ViewItemConfiguration configuration = new ViewItemConfiguration();
+			configuration.setExperimentSeriesRun(nodeToShow);
+			if (errorStatus.getErrorType().equals(ErrorType.EmptyDataset)) {
+				Message.show("Empty Dataset", "Unable to open selected node! Corresponding dataset is empty or does not exist!");
+				return;
+			}
 
 			if (alternatives.getNumericInputParameters().isEmpty()) {
 				boolean showWithoutInputParameter = Message.question("No input parameter found!",
@@ -54,37 +61,47 @@ public class OpenFunctionViewCommand extends AbstractCommand {
 					return;
 				} else {
 
-					ParameterDefinition ypDef = ParameterSelection.selectParameter("Select output parameter (for the y-axis)!",
-							alternatives.getOutputParameters());
-					model.addDataItem(nodeToShow, ypDef, errorStatus);
-					
-					
-					ValueAssignmentsDialog dialog = new ValueAssignmentsDialog(PersistenceNavigation.getInstance().getSite().getShell(), "test", "test",
-							alternatives.getInputParameterAssignmentOptions());
+	
+					configuration.setyParameter(ParameterSelection.selectParameter("Select output parameter (for the y-axis)!",
+							alternatives.getOutputParameters()));
+					if(!alternatives.getInputParameterAssignmentOptions().isEmpty()){
+						ValueAssignmentsDialog dialog = new ValueAssignmentsDialog(PersistenceNavigation.getInstance().getSite().getShell(), "Value Assignments", "Specify value assignments",
+								alternatives.getInputParameterAssignmentOptions());
 
-					if (dialog.open()) {
-						model.addDataItem(nodeToShow, ypDef, dialog.getResult(), errorStatus);
-					} else {
-						model.addDataItem(nodeToShow, ypDef, errorStatus);
+						if (dialog.open()) {
+							configuration.setValueAssignments(dialog.getValueAssignments());
+							configuration.setComparisonParameter(dialog.getComparisonParameter());
+						} 
 					}
+					
+					model.addDataItem(configuration, errorStatus);
 
 				}
 			} else {
+				
+				
+				
+			
 				ParameterDefinition xpDef = ParameterSelection.selectParameter("Select input parameter (for the x-axis)!",
 						alternatives.getNumericInputParameters());
+				configuration.setxParameter(xpDef);
 				ParameterDefinition ypDef = ParameterSelection.selectParameter("Select output parameter (for the y-axis)!", alternatives.getOutputParameters());
-
+				configuration.setyParameter(ypDef);
+				
 				Map<ParameterDefinition, Collection<Object>> assignments = new HashMap<ParameterDefinition, Collection<Object>>();
 				assignments.putAll(alternatives.getInputParameterAssignmentOptions());
 				assignments.remove(xpDef);
-				ValueAssignmentsDialog dialog = new ValueAssignmentsDialog(PersistenceNavigation.getInstance().getSite().getShell(), "test", "test",
-						assignments);
+				if(!assignments.isEmpty()){
+					ValueAssignmentsDialog dialog = new ValueAssignmentsDialog(PersistenceNavigation.getInstance().getSite().getShell(), "Value Assignments", "Specify value assignments",
+							assignments);
 
-				if (dialog.open()) {
-					model.addDataItem(nodeToShow, xpDef, ypDef, dialog.getResult(), errorStatus);
-				} else {
-					model.addDataItem(nodeToShow, xpDef, ypDef, errorStatus);
+					if (dialog.open()) {
+						configuration.setValueAssignments(dialog.getValueAssignments());
+						configuration.setComparisonParameter(dialog.getComparisonParameter());
+					} 
 				}
+				
+				model.addDataItem(configuration, errorStatus);
 
 			}
 

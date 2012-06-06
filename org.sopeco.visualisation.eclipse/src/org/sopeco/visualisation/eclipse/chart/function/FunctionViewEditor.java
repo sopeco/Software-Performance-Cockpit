@@ -107,7 +107,7 @@ public class FunctionViewEditor extends EditorPart {
 			double[][] measured = getDataSeries(function.getLabel(), function.getInputParameter(), function.getObservationParameter(), function.getData());
 
 			functionDataSet.addSeries(function.getLabel(), measured);
-			Color c = CommonConstants.colors[(function.getId() == 0) ? 0 : (CommonConstants.colors.length % function.getId())];
+			Color c = CommonConstants.colors[function.getId()%CommonConstants.colors.length];
 			renderer.setSeriesPaint(function.getId(), c);
 			renderer.setSeriesLinesVisible(function.getId(), false);
 		}

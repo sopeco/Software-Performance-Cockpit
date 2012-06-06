@@ -12,16 +12,24 @@ import org.sopeco.util.Tools;
 import org.sopeco.visualisation.model.ErrorStatus;
 import org.sopeco.visualisation.model.ErrorType;
 import org.sopeco.visualisation.model.IViewModel;
-import org.sopeco.visualisation.model.ViewConfiguration;
+import org.sopeco.visualisation.model.ViewConfigurationOptions;
 
 public abstract class AbstractViewWrapper implements IViewModel {
 
 	
-	public ViewConfiguration getConfigurationAlternatives(ExperimentSeriesRun experimentSeriesRun, ErrorStatus errorStatus) {
+	public ViewConfigurationOptions getConfigurationAlternatives(ExperimentSeriesRun experimentSeriesRun, ErrorStatus errorStatus) {
 		resetErrorStatus(errorStatus);
 
-		ViewConfiguration configAlternatives = new ViewConfiguration();
+		ViewConfigurationOptions configAlternatives = new ViewConfigurationOptions();
 
+		
+		if(experimentSeriesRun.getSuccessfulResultDataSet() == null || experimentSeriesRun.getSuccessfulResultDataSet().getRowList().isEmpty()){
+			if (errorStatus != null) {
+				errorStatus.setErrorType(ErrorType.EmptyDataset);
+			}
+			return configAlternatives;
+		}
+		
 		for (ParameterDefinition pDef : getVariedInputParameters(experimentSeriesRun)) {
 			configAlternatives.setInputParameterAssignmentOptions(pDef, experimentSeriesRun.getSuccessfulResultDataSet().getInputColumn(pDef).getValueSet());
 		}

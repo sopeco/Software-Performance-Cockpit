@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,8 +21,9 @@ import org.sopeco.util.Tools;
 import org.sopeco.visualisation.model.ErrorStatus;
 import org.sopeco.visualisation.model.ErrorType;
 import org.sopeco.visualisation.model.FunctionData;
-import org.sopeco.visualisation.model.ViewConfiguration;
+import org.sopeco.visualisation.model.ViewConfigurationOptions;
 import org.sopeco.visualisation.model.IFunctionViewModel;
+import org.sopeco.visualisation.model.ViewItemConfiguration;
 import org.sopeco.visualisation.model.view.AbstractViewWrapper;
 import org.sopeco.visualisation.model.view.DataItem;
 
@@ -36,41 +38,50 @@ public class FunctionViewWrapper extends AbstractViewWrapper implements IFunctio
 	}
 
 	
-
 	@Override
-	public void addDataItem(ExperimentSeriesRun experimentSeriesRun, ParameterDefinition yPar, ErrorStatus errorStatus) {
-		addDataItem(experimentSeriesRun, dummyXParameter, yPar, errorStatus);
-	}
-
-	@Override
-	public void addDataItem(ExperimentSeriesRun experimentSeriesRun, ParameterDefinition yPar, Map<ParameterDefinition, Object> valueAssignments,
-			ErrorStatus errorStatus) {
-		addDataItem(experimentSeriesRun, dummyXParameter, yPar, valueAssignments, errorStatus);
-	}
-
-	@Override
-	public void addDataItem(ExperimentSeriesRun experimentSeriesRun, ParameterDefinition xPar, ParameterDefinition yPar, ErrorStatus errorStatus) {
-		addDataItem(experimentSeriesRun, xPar, yPar, null, errorStatus);
-	}
-
-	@Override
-	public void addDataItem(ExperimentSeriesRun experimentSeriesRun, ParameterDefinition xPar, ParameterDefinition yPar,
-			Map<ParameterDefinition, Object> valueAssignments, ErrorStatus errorStatus) {
+	public void addDataItem(ViewItemConfiguration configuration, ErrorStatus errorStatus) {
+		ExperimentSeriesRun experimentSeriesRun = configuration.getExperimentSeriesRun();
+		ParameterDefinition xPar = configuration.getxParameter();
+		ParameterDefinition yPar = configuration.getyParameter();
+		Map<ParameterDefinition, Object> valueAssignments = configuration.getValueAssignments();
+		
 		resetErrorStatus(errorStatus);
+		if(xPar == null){
+			xPar = dummyXParameter;
+		}
 		if (!validateParameters(xPar, yPar, valueAssignments == null ? new ArrayList<ParameterDefinition>() : valueAssignments.keySet(), errorStatus)) {
 			return;
 		}
-		DataItem item = new DataItem();
-		item.setData(experimentSeriesRun);
-		item.setxParameter(xPar);
-		item.setyParameter(yPar);
-		if (valueAssignments != null && !valueAssignments.isEmpty()) {
-			item.setValueAssignments(valueAssignments);
+		
+		if(configuration.getComparisonParameter() == null){
+			DataItem item = new DataItem();
+			item.setData(experimentSeriesRun);
+			item.setxParameter(xPar);
+			item.setyParameter(yPar);
+			if (valueAssignments != null && !valueAssignments.isEmpty()) {
+				item.setValueAssignments(valueAssignments);
+			}
+			model.addToDataSelection(item);
+		}else{
+			for(Object value : experimentSeriesRun.getSuccessfulResultDataSet().getInputColumn(configuration.getComparisonParameter()).getValueSet()){
+				DataItem item = new DataItem();
+				item.setData(experimentSeriesRun);
+				item.setxParameter(xPar);
+				item.setyParameter(yPar);
+				item.setLabel(value.toString());
+				Map<ParameterDefinition, Object> extendedValueAssignments = new HashMap<ParameterDefinition, Object>();
+				extendedValueAssignments.putAll(valueAssignments);
+				extendedValueAssignments.put(configuration.getComparisonParameter(), value);
+				if (extendedValueAssignments != null && !extendedValueAssignments.isEmpty()) {
+					item.setValueAssignments(extendedValueAssignments);
+				}
+				model.addToDataSelection(item);
+			}
 		}
-		model.addToDataSelection(item);
-
+		
+		
 	}
-
+	
 	@Override
 	public List<FunctionData> getFunctionsToVisualize() {
 		List<FunctionData> functions = new ArrayList<FunctionData>();
@@ -99,7 +110,7 @@ public class FunctionViewWrapper extends AbstractViewWrapper implements IFunctio
 			data.setData(simpleDataSet);
 			Date date = new Date(item.getData().getTimestamp());
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - hh:mm:ss");
-			data.setLabel(dateFormat.format(date));
+			data.setLabel(item.getLabel() +" - "+ dateFormat.format(date));
 			data.setInputParameter(item.getxParameter());
 			data.setObservationParameter(item.getyParameter());
 			functions.add(data);
@@ -149,5 +160,9 @@ public class FunctionViewWrapper extends AbstractViewWrapper implements IFunctio
 		dummyXParameter.setRole(ParameterRole.INPUT);
 		dummyXParameter.setType(Tools.SupportedTypes.Integer.toString());
 	}
+
+
+
+	
 
 }

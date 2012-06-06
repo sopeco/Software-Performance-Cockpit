@@ -1,5 +1,5 @@
 package org.sopeco.visualisation.model;
 
 public enum ErrorType {
-	None, NoInputParameter, NoObservationParameter, InvalidParameter
+	None, NoInputParameter, NoObservationParameter, InvalidParameter, EmptyDataset
 }

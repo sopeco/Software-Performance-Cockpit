@@ -24,18 +24,18 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 public class ValueAssignmentsDialog extends Dialog {
 
-	public class IgnoreValue {
-		@Override
-		public String toString() {
-
-			return "Ignore";
-		}
+	public enum FurtherOptions {
+		Ignore, Compare
 	}
 
 	private String message;
 	private boolean returnStatusOk;
 	private Map<ParameterDefinition, Collection<Object>> parameterValueOptions;
 	private Map<ParameterDefinition, Object> result;
+	private List<ComboViewer> comboBoxes;
+	private FurtherOptions ignoreValue = FurtherOptions.Ignore;
+	private FurtherOptions compareValue = FurtherOptions.Compare;
+	private ParameterDefinition compareParameter = null;
 
 	public ValueAssignmentsDialog(Shell parent, String title, String message, Map<ParameterDefinition, Collection<Object>> parameterValueOptions) {
 		super(parent, SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL);
@@ -101,34 +101,64 @@ public class ValueAssignmentsDialog extends Dialog {
 		shell.setLayout(new GridLayout(2, false));
 
 		showMessage(shell);
-
+		comboBoxes = new ArrayList<ComboViewer>();
 		for (final ParameterDefinition parameter : parameterValueOptions.keySet()) {
 			Label label = new Label(shell, SWT.NONE);
 			label.setText(parameter.getFullName());
 
 			List<Object> values = new ArrayList<Object>(parameterValueOptions.get(parameter));
-			IgnoreValue ignoreObject = new IgnoreValue();
-			values.add(ignoreObject);
-			ComboViewer comboViewer = new ComboViewer(shell);
+
+			values.add(ignoreValue);
+			values.add(compareValue);
+			final ComboViewer comboViewer = new ComboViewer(shell);
 			comboViewer.add(values.toArray());
-			comboViewer.setSelection(new StructuredSelection(ignoreObject));
+			comboViewer.setSelection(new StructuredSelection(ignoreValue));
 			comboViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+				StructuredSelection prevSelection = null;
+
 				@Override
 				public void selectionChanged(SelectionChangedEvent event) {
 					StructuredSelection selection = (StructuredSelection) event.getSelection();
-					if (selection.getFirstElement() instanceof IgnoreValue) {
+
+					if (selection.getFirstElement().equals(compareValue)) {
+						compareParameter = parameter;
+						removeCompareOptions(comboViewer);
+					} else if (selection.getFirstElement().equals(ignoreValue)) {
 						result.remove(parameter);
 					} else {
 						result.put(parameter, selection.getFirstElement());
 					}
+					if (prevSelection != null && prevSelection.getFirstElement().equals(compareValue)) {
+						compareParameter = null;
+						addCompareOptions(comboViewer);
+					}
+
+					prevSelection = selection;
 
 				}
 			});
+			comboBoxes.add(comboViewer);
 		}
 
 		Button ok = createOkButton(shell);
 		createCancelButton(shell);
 		shell.setDefaultButton(ok);
+	}
+
+	private void removeCompareOptions(ComboViewer exceptFor) {
+		for (ComboViewer combo : comboBoxes) {
+			if (combo != exceptFor) {
+				combo.remove(compareValue);
+			}
+		}
+	}
+
+	private void addCompareOptions(ComboViewer exceptFor) {
+		for (ComboViewer combo : comboBoxes) {
+			if (combo != exceptFor) {
+				combo.add(compareValue);
+			}
+		}
 	}
 
 	private void createCancelButton(final Shell shell) {
@@ -167,8 +197,12 @@ public class ValueAssignmentsDialog extends Dialog {
 		label.setLayoutData(data);
 	}
 
-	public Map<ParameterDefinition, Object> getResult() {
+	public Map<ParameterDefinition, Object> getValueAssignments() {
 		return result;
+	}
+	
+	public ParameterDefinition getComparisonParameter(){
+		return compareParameter;
 	}
 
 }

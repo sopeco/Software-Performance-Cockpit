@@ -6,7 +6,7 @@ import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 public interface IBoxPlotViewModel extends IViewModel {
-	public ViewConfiguration getConfigurationAlternatives(ExperimentSeriesRun experimentSeriesRun, ErrorStatus errorStatus);
+	public ViewConfigurationOptions getConfigurationAlternatives(ExperimentSeriesRun experimentSeriesRun, ErrorStatus errorStatus);
 
 	
 

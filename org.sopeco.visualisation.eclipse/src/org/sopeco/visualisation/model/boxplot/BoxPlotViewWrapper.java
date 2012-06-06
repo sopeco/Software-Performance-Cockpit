@@ -15,6 +15,7 @@ import org.sopeco.visualisation.model.BoxPlotData;
 import org.sopeco.visualisation.model.ErrorStatus;
 import org.sopeco.visualisation.model.ErrorType;
 import org.sopeco.visualisation.model.IBoxPlotViewModel;
+import org.sopeco.visualisation.model.ViewItemConfiguration;
 import org.sopeco.visualisation.model.view.AbstractViewWrapper;
 import org.sopeco.visualisation.model.view.DataItem;
 
@@ -24,37 +25,15 @@ public class BoxPlotViewWrapper extends AbstractViewWrapper implements IBoxPlotV
 	public BoxPlotViewWrapper() {
 		model = new BoxPlotViewModel();
 	}
-
+	
+	
 	@Override
-	public void addDataItem(ExperimentSeriesRun experimentSeriesRun, ParameterDefinition yPar, ErrorStatus errorStatus) {
-		addDataItem(experimentSeriesRun, null, yPar, errorStatus);
-	}
-
-	@Override
-	public void addDataItem(ExperimentSeriesRun experimentSeriesRun, ParameterDefinition xPar, ParameterDefinition yPar, ErrorStatus errorStatus) {
-		addDataItem(experimentSeriesRun, xPar, yPar, new HashMap<ParameterDefinition, Object>(), errorStatus);
-
-	}
-
-	@Override
-	public void addDataItem(ExperimentSeriesRun experimentSeriesRun, ParameterDefinition yPar, Map<ParameterDefinition, Object> valueAssignments,
-			ErrorStatus errorStatus) {
-		addDataItem(experimentSeriesRun, null, yPar, new HashMap<ParameterDefinition, Object>(), errorStatus);
-
-	}
-
-	@Override
-	public void addDataItem(ExperimentSeriesRun experimentSeriesRun, ParameterDefinition xPar, ParameterDefinition yPar,
-			Map<ParameterDefinition, Object> valueAssignments, ErrorStatus errorStatus) {
-		resetErrorStatus(errorStatus);
-
-		if (xPar != null && !getVariedInputParameters(experimentSeriesRun).contains(xPar)) {
-			if (errorStatus != null) {
-				errorStatus.setErrorType(ErrorType.InvalidParameter);
-			}
-			return;
-		}
-
+	public void addDataItem(ViewItemConfiguration configuration, ErrorStatus errorStatus) {
+		ExperimentSeriesRun experimentSeriesRun = configuration.getExperimentSeriesRun();
+		ParameterDefinition xPar = configuration.getxParameter();
+		ParameterDefinition yPar = configuration.getyParameter();
+		Map<ParameterDefinition, Object> valueAssignments = configuration.getValueAssignments();
+		
 		DataItem item = new DataItem();
 		item.setData(experimentSeriesRun);
 		item.setxParameter(xPar);
@@ -64,6 +43,8 @@ public class BoxPlotViewWrapper extends AbstractViewWrapper implements IBoxPlotV
 		}
 		model.addToDataSelection(item);
 	}
+
+
 
 	@Override
 	public List<BoxPlotData> getBoxesToVisualize() {
