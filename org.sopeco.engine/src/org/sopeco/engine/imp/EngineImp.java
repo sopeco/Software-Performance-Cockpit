@@ -3,6 +3,8 @@
  */
 package org.sopeco.engine.imp;
 
+import java.util.ArrayList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.config.Configuration;
@@ -40,8 +42,7 @@ public class EngineImp implements IEngine {
 	final private IExperimentSeriesManager experimentSeriesManager;
 	final private IPersistenceProvider persistenceProvider;
 
-	public EngineImp(IExperimentController experimentController, IExperimentSeriesManager experimentSeriesManager,
-			IPersistenceProvider persistenceProvider) {
+	public EngineImp(IExperimentController experimentController, IExperimentSeriesManager experimentSeriesManager, IPersistenceProvider persistenceProvider) {
 		super();
 		this.experimentController = experimentController;
 		this.experimentSeriesManager = experimentSeriesManager;
@@ -66,22 +67,20 @@ public class EngineImp implements IEngine {
 	public ScenarioInstance run(ScenarioDefinition scenario) {
 		ScenarioInstance scenarioInstance;
 		try {
-			scenarioInstance = persistenceProvider.loadScenarioInstance(scenario.getScenarioName(), getConfiguration()
-					.getMeasurementControllerURIAsStr());
+			scenarioInstance = persistenceProvider.loadScenarioInstance(scenario.getScenarioName(), getConfiguration().getMeasurementControllerURIAsStr());
 			logger.debug("Loaded ScenarioInstance {} from database", scenarioInstance);
 			logger.debug("Compare Scenario definition defined in the specification with the one loaded from database");
 
 			checkScenarioDefinition(scenarioInstance, scenario);
 
 		} catch (DataNotFoundException e) {
-			scenarioInstance = EntityFactory.createScenarioInstance(scenario, getConfiguration()
-					.getMeasurementControllerURIAsStr());
+			scenarioInstance = EntityFactory.createScenarioInstance(scenario, getConfiguration().getMeasurementControllerURIAsStr());
 			persistenceProvider.store(scenarioInstance);
 			logger.debug("Created new ScenarioInstance {}", scenarioInstance);
 		}
 
-		experimentController.initialize(EngineTools.getConstantParameterValues(scenario.getMeasurementSpecification()
-				.getInitializationAssignemts()), scenario.getMeasurementEnvironmentDefinition());
+		experimentController.initialize(EngineTools.getConstantParameterValues(scenario.getMeasurementSpecification().getInitializationAssignemts()),
+				scenario.getMeasurementEnvironmentDefinition());
 
 		// loop over all the experiment series in the spec
 		for (ExperimentSeriesDefinition esd : scenario.getMeasurementSpecification().getExperimentSeriesDefinitions()) {
@@ -99,8 +98,7 @@ public class EngineImp implements IEngine {
 		}
 
 		try {
-			ScenarioInstance loadedScenario = persistenceProvider
-					.loadScenarioInstance(scenarioInstance.getPrimaryKey());
+			ScenarioInstance loadedScenario = persistenceProvider.loadScenarioInstance(scenarioInstance.getPrimaryKey());
 			return loadedScenario;
 		} catch (DataNotFoundException e) {
 			logger.error("Cannot load the scenario from the persistnce provider. Something is seriously gone wrong.");
@@ -118,11 +116,13 @@ public class EngineImp implements IEngine {
 	 * @param scenarioDefinition
 	 */
 	private void checkScenarioDefinition(ScenarioInstance scenarioInstance, ScenarioDefinition scenarioDefinition) {
-
+		// TODO: quick fix... resolve
+		// -------------------------------
+		ArrayList<ScenarioDefinition> scDefs = new ArrayList<ScenarioDefinition>(scenarioInstance.getScenarioDefinitions());
+		// -------------------------------
 		if (scenarioInstance != null) {
 			for (ScenarioDefinition storedDef : scenarioInstance.getScenarioDefinitions()) {
-				if (storedDef.getDefinitionId().equals(scenarioDefinition.getDefinitionId())
-						&& !scenarioDefinition.equals(scenarioInstance.getScenarioDefinitions())) {
+				if (storedDef.getDefinitionId().equals(scenarioDefinition.getDefinitionId()) && !scenarioDefinition.equals(scDefs.get(0))) {
 					throw new RuntimeException(
 							"Scenario definition has been changed! Either rename the new scenario definition id or delete the old scenario definition (with the same id) from the database!");
 				}
