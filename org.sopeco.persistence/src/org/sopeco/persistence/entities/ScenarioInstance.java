@@ -2,8 +2,6 @@ package org.sopeco.persistence.entities;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -42,8 +40,8 @@ public class ScenarioInstance implements Serializable {
 	private List<ExperimentSeries> experimentSeries = new ArrayList<ExperimentSeries>();
 
 	@Lob
-	@Column(name = "scenarioDefinitions")
-	private Collection<ScenarioDefinition> scenarioDefinitions = new HashSet<ScenarioDefinition>();
+	@Column(name = "scenarioDefinition")
+	private ScenarioDefinition scenarioDefinition;
 
 	/*
 	 * Foreign Key Attributes
@@ -57,10 +55,6 @@ public class ScenarioInstance implements Serializable {
 
 	public String getName() {
 		return primaryKey.getName();
-	}
-
-	public void setName(String name) {
-		this.primaryKey.setName(name);
 	}
 
 	public String getDescription() {
@@ -87,8 +81,13 @@ public class ScenarioInstance implements Serializable {
 		return primaryKey;
 	}
 
-	public Collection<ScenarioDefinition> getScenarioDefinitions() {
-		return this.scenarioDefinitions;
+	public void setScenarioDefinition(ScenarioDefinition scenarioDefinition) {
+		this.primaryKey.setName(scenarioDefinition.getScenarioName());
+		this.scenarioDefinition = scenarioDefinition;
+	}
+
+	public ScenarioDefinition getScenarioDefinition() {
+		return this.scenarioDefinition;
 	}
 
 	/*
@@ -98,30 +97,56 @@ public class ScenarioInstance implements Serializable {
 	 * @param name
 	 *            the name of the experiment series that is included in this
 	 *            scenario instance
-	 * @return the experiment series instance with the given name;
-	 *         <code>null</code> if no series with that name exists
+	 * @return the experiment series instance with the given name (in its latest
+	 *         version); <code>null</code> if no series with that name exists
 	 */
 	public ExperimentSeries getExperimentSeries(String name) {
+		ExperimentSeries resultSeries = null;
 		for (ExperimentSeries series : getExperimentSeriesList()) {
 			if (series.getName().equals(name)) {
-				return series;
+				if (resultSeries == null) {
+					resultSeries = series;
+				} else if (resultSeries.getVersion() < series.getVersion()) {
+					resultSeries = series;
+				}
 			}
+			return resultSeries;
 		}
 
 		return null;
 	}
 
 	/**
-	 * @param definitionId
-	 *            the id of the scenario definition that is included in this
+	 * @param name
+	 *            the name of the experiment series that is included in this
 	 *            scenario instance
-	 * @return the scenario definition with the given name; <code>null</code> if
-	 *         no scenario definition with the given id exists
+	 * @return the list of experiment series with the given name (i.e. the
+	 *         different versions of the experiment series); <code>null</code>
+	 *         if no series with that name exists
 	 */
-	public ScenarioDefinition getScenarioDefinition(String definitionId) {
-		for (ScenarioDefinition sd : this.scenarioDefinitions) {
-			if (sd.getDefinitionId().equals(definitionId)) {
-				return sd;
+	public List<ExperimentSeries> getAllExperimentSeriesVersions(String name) {
+		List<ExperimentSeries> resultList = new ArrayList<ExperimentSeries>();
+		for (ExperimentSeries series : getExperimentSeriesList()) {
+			if (series.getName().equals(name)) {
+				resultList.add(series);
+			}
+			return resultList;
+		}
+
+		return null;
+	}
+
+	/**
+	 * @param name
+	 *            the name of the experiment series that is included in this
+	 *            scenario instance
+	 * @return the experiment series instance with the given name;
+	 *         <code>null</code> if no series with that name exists
+	 */
+	public ExperimentSeries getExperimentSeries(String name, Long version) {
+		for (ExperimentSeries series : getExperimentSeriesList()) {
+			if (series.getName().equals(name) && series.getVersion() == version) {
+				return series;
 			}
 		}
 

@@ -1,8 +1,10 @@
 package org.sopeco.engine.analysis;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -28,7 +30,7 @@ public class PredictionFunctionResult implements IPredictionFunctionResult {
 	private static final long serialVersionUID = 1L;
 
 	private static Logger logger = LoggerFactory.getLogger(PredictionFunctionResult.class);
-	
+
 	String resultId;
 	String predictionFunction;
 	ScriptEngineManager scriptEngineManager;
@@ -37,6 +39,7 @@ public class PredictionFunctionResult implements IPredictionFunctionResult {
 	HashSet<String> indepParameterNames = new HashSet<String>();
 	HashSet<ParameterDefinition> indepPaparameters = new HashSet<ParameterDefinition>();
 	AnalysisConfiguration analysisConfiguration;
+	private Map<ParameterDefinition, Map<Object, Integer>> nonNumericParameterEncodings = new HashMap<ParameterDefinition, Map<Object, Integer>>();
 
 	/**
 	 * Creates an instance of {@link PredictionFunctionResult} based on the
@@ -47,21 +50,28 @@ public class PredictionFunctionResult implements IPredictionFunctionResult {
 	 *            - a string representation of the prediction function in
 	 *            JavaScript syntax (@see http://www.w3schools.com/js/). The
 	 *            name of the independent parameters in the function has to be
-	 *            derived by the getFullName("_") prediction function where "_" is
-	 *            the namespace delimiters
+	 *            derived by the getFullName("_") prediction function where "_"
+	 *            is the namespace delimiters
 	 * @param dependentParameter
 	 *            - the definition of the dependent parameter in the
 	 *            predictionFunction.
 	 * @param analysisConfiguration
 	 *            - the configuration based on which the prediction function has
 	 *            been derived by SoPeCo
+	 * @param nonNumericParameterEncodings
+	 *            - a map that holds the information how the values of a
+	 *            non-numeric parameter have been encoded to an Integer
+	 *            representation
 	 */
-	public PredictionFunctionResult(String predictionFunction, ParameterDefinition dependentParameter, AnalysisConfiguration analysisConfiguration) {
+	public PredictionFunctionResult(String predictionFunction, ParameterDefinition dependentParameter,
+			AnalysisConfiguration analysisConfiguration,
+			Map<ParameterDefinition, Map<Object, Integer>> nonNumericParameterEncodings) {
 		this.predictionFunction = predictionFunction;
 		scriptEngineManager = new ScriptEngineManager();
 		javaScriptEngine = scriptEngineManager.getEngineByName("js");
 		this.dependentParameter = dependentParameter;
 		this.analysisConfiguration = analysisConfiguration;
+		this.nonNumericParameterEncodings = nonNumericParameterEncodings;
 	}
 
 	@Override
@@ -73,7 +83,12 @@ public class PredictionFunctionResult implements IPredictionFunctionResult {
 
 		for (ParameterValue<?> pv : inputParameters) {
 
-			javaScriptEngine.put(pv.getParameter().getFullName("_"), pv.getValueAsDouble());
+			if (pv.getParameter().isNumeric()) {
+				javaScriptEngine.put(pv.getParameter().getFullName("_"), pv.getValueAsDouble());
+			} else {
+				javaScriptEngine.put(pv.getParameter().getFullName("_"),
+						getNonNumericParameterEncodings().get(pv.getParameter()).get(pv.getValue()));
+			}
 			logger.debug("{}: {}", pv.getParameter().getFullName("_"), pv.getValueAsString());
 		}
 
@@ -119,4 +134,10 @@ public class PredictionFunctionResult implements IPredictionFunctionResult {
 	public void setId(String id) {
 		this.resultId = id;
 	}
+
+	@Override
+	public Map<ParameterDefinition, Map<Object, Integer>> getNonNumericParameterEncodings() {
+		return nonNumericParameterEncodings;
+	}
+
 }

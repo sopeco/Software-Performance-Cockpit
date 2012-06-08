@@ -11,6 +11,8 @@ import java.util.List;
 public class MeasurementSpecification implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	private String name;
 
 	protected List<ExperimentSeriesDefinition> experimentSeriesDefinitions;
 
@@ -19,7 +21,7 @@ public class MeasurementSpecification implements Serializable {
 	public MeasurementSpecification() {
 		super();
 	}
-
+	
 	public List<ExperimentSeriesDefinition> getExperimentSeriesDefinitions() {
 		if (experimentSeriesDefinitions == null) {
 			experimentSeriesDefinitions = new LinkedList<ExperimentSeriesDefinition>();
@@ -34,6 +36,14 @@ public class MeasurementSpecification implements Serializable {
 		return initializationAssignemts;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -63,6 +73,8 @@ public class MeasurementSpecification implements Serializable {
 			return false;
 		return true;
 	}
+
+
 
 	
 }

@@ -45,7 +45,8 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
 	@JoinColumns({ @JoinColumn(name = "scenarioInstanceName", referencedColumnName = "scenarioInstanceName"),
 			@JoinColumn(name = "measurementEnvironmentUrl", referencedColumnName = "measurementEnvironmentUrl"),
-			@JoinColumn(name = "experimentSeriesName", referencedColumnName = "name") })
+			@JoinColumn(name = "experimentSeriesName", referencedColumnName = "name"),
+			@JoinColumn(name = "experimentSeriesVersion", referencedColumnName = "version")})
 	private ExperimentSeries experimentSeries;
 
 	/*

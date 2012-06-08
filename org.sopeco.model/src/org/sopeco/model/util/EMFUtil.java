@@ -118,18 +118,17 @@ public class EMFUtil {
 	private static org.sopeco.persistence.entities.definition.ScenarioDefinition convertToPojo(
 			ScenarioDefinition emfScenarioDefinition) {
 
-		// TODO: add scenario definitionId to model and adjust editor (it
-		// should set the scenario name as the definition id if the id is not
-		// set)
-		pojoScenarioDefinition = EntityFactory.createScenarioDefinition(emfScenarioDefinition.getName(),
-				emfScenarioDefinition.getName());
+		pojoScenarioDefinition = EntityFactory.createScenarioDefinition(emfScenarioDefinition.getName());
 
 		org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition pojoMeasurementEnvironmentDefinition = convertMeasurementEnvironmentDefinition(emfScenarioDefinition
 				.getMeasurementEnvironmentDefinition());
 		pojoScenarioDefinition.setMeasurementEnvironmentDefinition(pojoMeasurementEnvironmentDefinition);
 
+		// TODO: Change model to allow multiple measurement specifications and
+		// adjust this code accordingly (loop over the measurement
+		// specifications)
 		org.sopeco.persistence.entities.definition.MeasurementSpecification pojoMeasurementSpecification = convertMeasurementSpecification(emfScenarioDefinition);
-		pojoScenarioDefinition.setMeasurementSpecification(pojoMeasurementSpecification);
+		pojoScenarioDefinition.getMeasurementSpecifications().add(pojoMeasurementSpecification);
 		return pojoScenarioDefinition;
 
 	}
@@ -163,8 +162,11 @@ public class EMFUtil {
 	private static org.sopeco.persistence.entities.definition.MeasurementSpecification convertMeasurementSpecification(
 			ScenarioDefinition emfScenarioDefinition) {
 		MeasurementSpecification emfMeasurementSpecification = emfScenarioDefinition.getMeasurementSpecification();
+
+		// TODO: Add measurement specification name to model and adjust this
+		// code (set the name of the pojo to the name given by the emf model)
 		org.sopeco.persistence.entities.definition.MeasurementSpecification pojoMeasurementSpecification = EntityFactory
-				.createMeasurementSpecification();
+				.createMeasurementSpecification("default");
 
 		pojoMeasurementSpecification.getInitializationAssignemts().addAll(
 				convertInitializationAssignments(emfMeasurementSpecification));

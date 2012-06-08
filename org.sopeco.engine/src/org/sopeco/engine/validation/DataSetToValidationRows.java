@@ -84,11 +84,11 @@ public class DataSetToValidationRows {
 	private static void validateTypes(DataSetAggregated dataSet) {
 
 		for (AbstractDataSetColumn<?> column : dataSet.getColumns()) {
-			if (!valideType(column))
-				throw new IllegalStateException (
-						"The type of the independent parameter "
-								+ column.getParameter().getFullName()
-								+ " is not valid");
+//			if (!valideType(column))
+//				throw new IllegalStateException (
+//						"The type ("+ column.getParameter().getType() +") of the independent parameter "
+//								+ column.getParameter().getFullName()
+//								+ " is not valid");
 		}
 	}
 

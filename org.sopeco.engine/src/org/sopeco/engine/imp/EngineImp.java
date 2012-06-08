@@ -3,8 +3,6 @@
  */
 package org.sopeco.engine.imp;
 
-import java.util.ArrayList;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.config.Configuration;
@@ -20,6 +18,7 @@ import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
+import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 
@@ -79,22 +78,26 @@ public class EngineImp implements IEngine {
 			logger.debug("Created new ScenarioInstance {}", scenarioInstance);
 		}
 
-		experimentController.initialize(EngineTools.getConstantParameterValues(scenario.getMeasurementSpecification().getInitializationAssignemts()),
+
+		//TODO: Check if this is the intended behaviour
+		for(MeasurementSpecification measSpec : scenario.getMeasurementSpecifications()) {
+			experimentController.initialize(EngineTools.getConstantParameterValues(measSpec.getInitializationAssignemts()),
 				scenario.getMeasurementEnvironmentDefinition());
 
-		// loop over all the experiment series in the spec
-		for (ExperimentSeriesDefinition esd : scenario.getMeasurementSpecification().getExperimentSeriesDefinitions()) {
-
-			ExperimentSeries series = scenarioInstance.getExperimentSeries(esd.getName());
-			if (series == null) {
-				series = EntityFactory.createExperimentSeries(esd);
-				scenarioInstance.getExperimentSeriesList().add(series);
-				series.setScenarioInstance(scenarioInstance);
-
-				persistenceProvider.store(series);
+			// loop over all the experiment series in the specs
+			for (ExperimentSeriesDefinition esd : measSpec.getExperimentSeriesDefinitions()) {
+		
+				ExperimentSeries series = scenarioInstance.getExperimentSeries(esd.getName());
+				if (series == null) {
+					series = EntityFactory.createExperimentSeries(esd);
+					scenarioInstance.getExperimentSeriesList().add(series);
+					series.setScenarioInstance(scenarioInstance);
+		
+					persistenceProvider.store(series);
+				}
+		
+				experimentSeriesManager.runExperimentSeries(series);
 			}
-
-			experimentSeriesManager.runExperimentSeries(series);
 		}
 
 		try {
@@ -117,17 +120,18 @@ public class EngineImp implements IEngine {
 	 */
 	private void checkScenarioDefinition(ScenarioInstance scenarioInstance, ScenarioDefinition scenarioDefinition) {
 		// TODO: quick fix... resolve
+		// TODO: implement with new version
 		// -------------------------------
-		ArrayList<ScenarioDefinition> scDefs = new ArrayList<ScenarioDefinition>(scenarioInstance.getScenarioDefinitions());
-		// -------------------------------
-		if (scenarioInstance != null) {
-			for (ScenarioDefinition storedDef : scenarioInstance.getScenarioDefinitions()) {
-				if (storedDef.getDefinitionId().equals(scenarioDefinition.getDefinitionId()) && !scenarioDefinition.equals(scDefs.get(0))) {
-					throw new RuntimeException(
-							"Scenario definition has been changed! Either rename the new scenario definition id or delete the old scenario definition (with the same id) from the database!");
-				}
-			}
-		}
+//		ArrayList<ScenarioDefinition> scDefs = new ArrayList<ScenarioDefinition>(scenarioInstance.getScenarioDefinitions());
+//		// -------------------------------
+//		if (scenarioInstance != null) {
+//			for (ScenarioDefinition storedDef : scenarioInstance.getScenarioDefinitions()) {
+//				if (storedDef.getDefinitionId().equals(scenarioDefinition.getDefinitionId()) && !scenarioDefinition.equals(scDefs.get(0))) {
+//					throw new RuntimeException(
+//							"Scenario definition has been changed! Either rename the new scenario definition id or delete the old scenario definition (with the same id) from the database!");
+//				}
+//			}
+//		}
 	}
 
 	@Override

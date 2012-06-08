@@ -28,7 +28,7 @@ public class LinearNumericVariationTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder("test", "testDef");
+		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder("test");
 		builder.createNewNamespace("initialization");
 		ParameterDefinition pdef = builder.createParameter("initParameter", ParameterType.DOUBLE, ParameterRole.INPUT);
 		Map<String, String> config = new HashMap<String, String>();
@@ -36,6 +36,7 @@ public class LinearNumericVariationTest {
 		config.put("max", String.valueOf(MAX));
 		config.put("step", String.valueOf(STEP));
 		
+		builder.createMeasurementSpecification("testSpecification");
 		builder.createExperimentSeriesDefinition("ES");
 		dva = builder.createDynamicValueAssignment(AssignmentType.Experiment, LinearNumericVariationExtension.NAME, pdef, config);
 		lnv = new LinearNumericVariation(null);

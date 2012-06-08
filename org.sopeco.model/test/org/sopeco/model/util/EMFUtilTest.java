@@ -41,7 +41,7 @@ public class EMFUtilTest {
 		try
 		{
 			assertEquals("default.DummyInput", scenarioDefinition.getMeasurementEnvironmentDefinition().getRoot().getParameters().get(0).getFullName());
-			assertEquals("default.DummyInput", scenarioDefinition.getMeasurementSpecification().getExperimentSeriesDefinitions().get(0).getExplorationStrategy().getAnalysisConfigurations().get(0).getIndependentParameters().get(0).getFullName());
+			assertEquals("default.DummyInput", scenarioDefinition.getMeasurementSpecifications().get(0).getExperimentSeriesDefinitions().get(0).getExplorationStrategy().getAnalysisConfigurations().get(0).getIndependentParameters().get(0).getFullName());
 			
 		} catch (UnsupportedOperationException uoe){
 			fail("Factory override did not work");

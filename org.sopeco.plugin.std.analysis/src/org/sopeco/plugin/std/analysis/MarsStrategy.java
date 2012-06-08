@@ -48,7 +48,9 @@ public class MarsStrategy extends AbstractAnalysisStrategy implements IPredictio
 
 		DataSetAggregated analysisDataSet = extractAnalysisDataSet(dataset);
 		
-		loadDataSetInR(createValidSimpleDataSet(analysisDataSet));
+		DataSetAggregated numericAnalysisDataSet = createNumericDataSet(analysisDataSet);
+		
+		loadDataSetInR(createValidSimpleDataSet(numericAnalysisDataSet));
 		
 		StringBuilder cmdBuilder = new StringBuilder();
 		cmdBuilder.append(getId());
@@ -64,7 +66,7 @@ public class MarsStrategy extends AbstractAnalysisStrategy implements IPredictio
 
 	@Override
 	public IPredictionFunctionResult getPredictionFunctionResult() {
-		return new PredictionFunctionResult(getFunctionAsString(), dependentParameterDefintion, config);
+		return new PredictionFunctionResult(getFunctionAsString(), dependentParameterDefintion, config, nonNumericParameterEncodings);
 	}
 
 	/**

@@ -14,8 +14,7 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
  * @param <T>
  *            Type of the value.
  */
-public class ParameterValue<T> implements Serializable,
-		Comparable<ParameterValue<?>> {
+public class ParameterValue<T> implements Serializable, Comparable<ParameterValue<?>> {
 
 	/**
 	 * 
@@ -34,20 +33,16 @@ public class ParameterValue<T> implements Serializable,
 	private void validate(ParameterDefinition parameter, Object value) {
 		if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.DOUBLE)
 				&& !(value instanceof Double)) {
-			throw new IllegalArgumentException(
-					"Invalid value type for parameter " + parameter);
+			throw new IllegalArgumentException("Invalid value type for parameter " + parameter);
 		} else if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.INTEGER)
 				&& !(value instanceof Integer)) {
-			throw new IllegalArgumentException(
-					"Invalid value type for parameter " + parameter);
+			throw new IllegalArgumentException("Invalid value type for parameter " + parameter);
 		} else if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.STRING)
 				&& !(value instanceof String)) {
-			throw new IllegalArgumentException(
-					"Invalid value type for parameter " + parameter);
+			throw new IllegalArgumentException("Invalid value type for parameter " + parameter);
 		} else if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.BOOLEAN)
 				&& !(value instanceof Boolean)) {
-			throw new IllegalArgumentException(
-					"Invalid value type for parameter " + parameter);
+			throw new IllegalArgumentException("Invalid value type for parameter " + parameter);
 		}
 	}
 
@@ -86,7 +81,8 @@ public class ParameterValue<T> implements Serializable,
 
 		} else {
 			throw new IllegalArgumentException(
-					"Comparison supported only for Double, Integer, Boolean and String ParameterValues!");
+					"Comparison supported only for Double, Integer, Boolean and String ParameterValues! But value of "
+							+ this.getParameter().getFullName() + " is of type " + this.getParameter().getType());
 		}
 	}
 
@@ -111,7 +107,8 @@ public class ParameterValue<T> implements Serializable,
 			return ((Integer) value).doubleValue();
 		} else
 			throw new IllegalStateException(
-					"The function getValueAsDouble is supported only by Double and Integer ParameterValues!");
+					"The function getValueAsDouble is supported only by Double and Integer ParameterValues! But value of "
+							+ this.getParameter().getFullName() + " is of type " + this.getParameter().getType());
 	}
 
 	public boolean getValueAsBoolean() {
@@ -119,7 +116,8 @@ public class ParameterValue<T> implements Serializable,
 			return (Boolean) value;
 		} else
 			throw new IllegalStateException(
-					"The function getValueAsBoolean is supported only by Boolean ParameterValues!");
+					"The function getValueAsBoolean is supported only by Boolean ParameterValues! But value of "
+							+ this.getParameter().getFullName() + " is of type " + this.getParameter().getType());
 	}
 
 	public int getValueAsInteger() {
@@ -129,7 +127,8 @@ public class ParameterValue<T> implements Serializable,
 			return (Integer) value;
 		} else
 			throw new IllegalStateException(
-					"The function getValueAsInteger is supported only by Double and Integer ParameterValues!");
+					"The function getValueAsInteger is supported only by Double and Integer ParameterValues! But value of "
+							+ this.getParameter().getFullName() + " is of type " + this.getParameter().getType());
 	}
 
 	public ParameterValue<?> copy() {
@@ -146,23 +145,25 @@ public class ParameterValue<T> implements Serializable,
 		return null;
 	}
 
-//	@SuppressWarnings("unchecked")
-//	public boolean isDefaultValue() {
-//		T defaultValue = null; 
-//		if (parameter.getParameterDefinition().getDefaultValue() == null){
-//			if (value instanceof Double) {
-//				defaultValue = (T)new Double(0.0);
-//			} else if (value instanceof Integer) {
-//				defaultValue = (T)new Integer(0);
-//			} else if (value instanceof Boolean) {
-//				defaultValue = (T)new Boolean(false);
-//			} else if (value instanceof String) {
-//				defaultValue = (T)"";
-//			}
-//			
-//		} else {
-//			defaultValue = (T)ParameterValueFactory.convertValue(parameter.getParameterDefinition().getDefaultValue(), parameter.getType());
-//		}
-//		return value.equals(defaultValue);
-//	}
+	// @SuppressWarnings("unchecked")
+	// public boolean isDefaultValue() {
+	// T defaultValue = null;
+	// if (parameter.getParameterDefinition().getDefaultValue() == null){
+	// if (value instanceof Double) {
+	// defaultValue = (T)new Double(0.0);
+	// } else if (value instanceof Integer) {
+	// defaultValue = (T)new Integer(0);
+	// } else if (value instanceof Boolean) {
+	// defaultValue = (T)new Boolean(false);
+	// } else if (value instanceof String) {
+	// defaultValue = (T)"";
+	// }
+	//
+	// } else {
+	// defaultValue =
+	// (T)ParameterValueFactory.convertValue(parameter.getParameterDefinition().getDefaultValue(),
+	// parameter.getType());
+	// }
+	// return value.equals(defaultValue);
+	// }
 }

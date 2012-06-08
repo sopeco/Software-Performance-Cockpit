@@ -94,6 +94,18 @@ public class ParameterDefinition implements Serializable {
 	}
 
 	
+	/**
+	 * @return <code>true</code> if parameter type is Integer or Double, otherwise <code>false</code>.
+	 */
+	public boolean isNumeric(){
+		if(this.getType().trim().equalsIgnoreCase("Integer") || 
+				this.getType().trim().equalsIgnoreCase("Double")){
+				return true;
+		} else {
+			return false;
+		}
+	}
+	
 	@Override
 	public boolean equals(Object o) {
 

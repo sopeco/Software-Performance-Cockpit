@@ -1,9 +1,10 @@
 package org.sopeco.engine.analysis;
 
 import java.util.List;
+import java.util.Map;
 
 import org.sopeco.persistence.dataset.ParameterValue;
-
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 /**
  * An AnalysisResult contains the representation of a function derived by a
@@ -12,7 +13,7 @@ import org.sopeco.persistence.dataset.ParameterValue;
  * @author Chris Heupel, Jens Happe, Dennis Westermann
  * 
  */
-public interface IPredictionFunctionResult extends IAnalysisResult{
+public interface IPredictionFunctionResult extends IAnalysisResult {
 
 	/**
 	 * Calculates the output parameter's {@link ParameterValue} for the given
@@ -23,10 +24,10 @@ public interface IPredictionFunctionResult extends IAnalysisResult{
 	 *            value.
 	 * 
 	 * @return Result computed from the input values.
-	 * @throws UnknownParameterException 
+	 * @throws UnknownParameterException
 	 * 
 	 */
-	public ParameterValue<?> predictOutputParameter(List<ParameterValue<?>> inputParameters) ;
+	public ParameterValue<?> predictOutputParameter(List<ParameterValue<?>> inputParameters);
 
 	/**
 	 * Calculates the output parameter's {@link ParameterValue} for the given
@@ -36,9 +37,9 @@ public interface IPredictionFunctionResult extends IAnalysisResult{
 	 *            Value of the input parameter used to compute the output value.
 	 * 
 	 * @return Result computed from the input values.
-	 * @throws UnknownParameterException 
+	 * @throws UnknownParameterException
 	 */
-	public ParameterValue<?> predictOutputParameter(ParameterValue<?> inputParameter) ;
+	public ParameterValue<?> predictOutputParameter(ParameterValue<?> inputParameter);
 
 	/**
 	 * Returns a String-representation of the contained function.
@@ -47,5 +48,13 @@ public interface IPredictionFunctionResult extends IAnalysisResult{
 	 */
 	public String getFunctionAsString();
 
+	/**
+	 * Returns a map that holds the information how the values of a non-numeric
+	 * parameter have been encoded to an Integer representation.
+	 * 
+	 * @return a map that holds the information how the values of a non-numeric
+	 *         parameter have been encoded to an Integer representation
+	 */
+	public Map<ParameterDefinition, Map<Object, Integer>> getNonNumericParameterEncodings();
 
 }

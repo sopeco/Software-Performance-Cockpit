@@ -40,8 +40,7 @@ public class EntityFactory {
 	 */
 	public static ScenarioInstance createScenarioInstance(ScenarioDefinition scenarioDefinition, String measurementEnvironmentUrl){
 		ScenarioInstance si = new ScenarioInstance();
-		si.getScenarioDefinitions().add(scenarioDefinition);
-		si.setName(scenarioDefinition.getScenarioName());
+		si.setScenarioDefinition(scenarioDefinition);
 		si.setMeasurementEnvironmentUrl(measurementEnvironmentUrl);
 		return si;
 	}
@@ -58,6 +57,7 @@ public class EntityFactory {
 		ExperimentSeries expSeries = new ExperimentSeries();
 		expSeries.setName(expSeriesDefinition.getName());
 		expSeries.setExperimentSeriesDefinition(expSeriesDefinition);
+		expSeries.setVersion(0L);
 		return expSeries;
 	}
 	
@@ -82,10 +82,9 @@ public class EntityFactory {
 		return container;
 	}
 	
-	public static ScenarioDefinition createScenarioDefinition(String scenarioName, String definitionId) {
+	public static ScenarioDefinition createScenarioDefinition(String scenarioName) {
 		ScenarioDefinition sd = new ScenarioDefinition();
 		sd.setScenarioName(scenarioName);
-		sd.setDefinitionId(definitionId);
 		return sd;
 	}
 	
@@ -109,8 +108,9 @@ public class EntityFactory {
 		return pd;
 	}
 	
-	public static MeasurementSpecification createMeasurementSpecification(){
+	public static MeasurementSpecification createMeasurementSpecification(String name){
 		MeasurementSpecification ms = new MeasurementSpecification();
+		ms.setName(name);
 		return ms;
 	}
 	

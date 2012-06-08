@@ -98,7 +98,7 @@ public class ScreeningAnalysisStrategyTest {
 		
 		// Full Factorial Design DataSet
 		
-		ScenarioDefinition sd = EntityFactory.createScenarioDefinition("DummyScenario", "DummyDef");
+		ScenarioDefinition sd = EntityFactory.createScenarioDefinition("DummyScenario");
 		MeasurementEnvironmentDefinition med = EntityFactory.createMeasurementEnvironmentDefinition();
 		sd.setMeasurementEnvironmentDefinition(med);
 		ParameterNamespace pns = EntityFactory.createNamespace("default");

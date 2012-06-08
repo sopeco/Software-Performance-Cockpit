@@ -40,11 +40,13 @@ public class DummyFactory {
 	
 	@SuppressWarnings("unchecked")
 	public static ScenarioDefinition loadScenarioDefinition() {
-		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder("Dummy", "DummyDef");
+		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder("Dummy");
 		
 		builder.createNewNamespace("default");
 		ParameterDefinition dummyInputParam = builder.createParameter("DummyInput", ParameterType.INTEGER, ParameterRole.INPUT);
 		ParameterDefinition dummyOutputParam = builder.createParameter("DummyOutput", ParameterType.INTEGER, ParameterRole.OBSERVATION);
+		
+		builder.createMeasurementSpecification("DummyMeasurementSpecification");
 		
 		builder.createExperimentSeriesDefinition("Dummy0");
 		builder.createNumberOfRunsCondition(4);
@@ -67,7 +69,7 @@ public class DummyFactory {
 	
 	private static List<ExperimentSeries> createDummyExperimentSeries() throws IOException{
 		List<ExperimentSeries> seriesList = new LinkedList<ExperimentSeries>();
-		for (ExperimentSeriesDefinition esd : scenarioDefinition.getMeasurementSpecification().getExperimentSeriesDefinitions()) {
+		for (ExperimentSeriesDefinition esd : scenarioDefinition.getMeasurementSpecifications().get(0).getExperimentSeriesDefinitions()) {
 			ExperimentSeries es = EntityFactory.createExperimentSeries(esd);
 			
 			for(ExperimentSeriesRun run : createDummyExperimentSeriesRuns(10)){

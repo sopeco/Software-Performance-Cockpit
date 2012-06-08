@@ -53,9 +53,11 @@ public class SoPeCoCoreTest {
 		engine = EngineFactory.INSTANCE.createEngine();
 		registry = engine.getExtensionRegistry();
 
-		builder = new ScenarioDefinitionBuilder("test", "testDef");
+		builder = new ScenarioDefinitionBuilder("test");
 		builder.createNewNamespace("initialization");
 		pdef = builder.createParameter("initParameter", ParameterType.DOUBLE, ParameterRole.INPUT);
+		
+		builder.createMeasurementSpecification("TestMeasurementSpecification");
 		
 		builder.createExperimentSeriesDefinition("experiment series");
 		builder.createNumberOfRunsCondition(2);

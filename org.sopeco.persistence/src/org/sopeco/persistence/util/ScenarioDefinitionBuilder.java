@@ -34,7 +34,9 @@ public class ScenarioDefinitionBuilder {
 	private ExperimentSeriesDefinition currentExperimentSeriesDefintition;
 	private ExplorationStrategy currentExplorationStrategy;
 	private AnalysisConfiguration currentAnalysisConfiguration;
+	private MeasurementSpecification currentMeasurementSpecification;
 
+	
 	/**
 	 * Defines the type of assignment for a parameter in an
 	 * {@link MeasurementSpecification}.
@@ -51,15 +53,13 @@ public class ScenarioDefinitionBuilder {
 	 * @param scenarioName
 	 *            the name of the scenario definition to create
 	 */
-	public ScenarioDefinitionBuilder(String scenarioName, String definitionId) {
-		scenarioDefinition = EntityFactory.createScenarioDefinition(scenarioName, definitionId);
+	public ScenarioDefinitionBuilder(String scenarioName) {
+		scenarioDefinition = EntityFactory.createScenarioDefinition(scenarioName);
 		scenarioDefinition.setScenarioName(scenarioName);
 
 		MeasurementEnvironmentDefinition meDefinition = EntityFactory.createMeasurementEnvironmentDefinition();
 		scenarioDefinition.setMeasurementEnvironmentDefinition(meDefinition);
 
-		MeasurementSpecification measurementSpecification = EntityFactory.createMeasurementSpecification();
-		scenarioDefinition.setMeasurementSpecification(measurementSpecification);
 
 		ParameterNamespace root = EntityFactory.createNamespace("");
 		meDefinition.setRoot(root);
@@ -136,6 +136,19 @@ public class ScenarioDefinitionBuilder {
 	 */
 
 	/**
+	 * Creates a new {@link MeasurementSpecification} with the given name and
+	 * adds it to the current {@link ScenarioDefinition}.
+	 * 
+	 * @param name
+	 *            the name of the measurement specification to create
+	 */
+	public void createMeasurementSpecification(String name) {
+		MeasurementSpecification measurementSpecification = EntityFactory.createMeasurementSpecification(name);
+		this.scenarioDefinition.getMeasurementSpecifications().add(measurementSpecification);
+		this.currentMeasurementSpecification = measurementSpecification;
+	}
+	
+	/**
 	 * Creates a new {@link ExperimentSeriesDefinition} with the given name and
 	 * adds it to the {@link MeasurementSpecification}.
 	 * 
@@ -145,7 +158,7 @@ public class ScenarioDefinitionBuilder {
 	public void createExperimentSeriesDefinition(String name) {
 		ExperimentSeriesDefinition expSeriesDef = new ExperimentSeriesDefinition();
 		expSeriesDef.setName(name);
-		this.scenarioDefinition.getMeasurementSpecification().getExperimentSeriesDefinitions().add(expSeriesDef);
+		this.currentMeasurementSpecification.getExperimentSeriesDefinitions().add(expSeriesDef);
 		this.currentExperimentSeriesDefintition = expSeriesDef;
 	}
 
@@ -226,7 +239,7 @@ public class ScenarioDefinitionBuilder {
 
 		switch (type) {
 		case Initialization:
-			this.scenarioDefinition.getMeasurementSpecification().getInitializationAssignemts().add(cva);
+			this.currentMeasurementSpecification.getInitializationAssignemts().add(cva);
 			break;
 		case Preparation:
 			this.currentExperimentSeriesDefintition.getPreperationAssignments().add(cva);

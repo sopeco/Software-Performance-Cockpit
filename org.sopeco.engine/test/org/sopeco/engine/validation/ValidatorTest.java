@@ -40,7 +40,7 @@ public class ValidatorTest {
 		
 		PredictionFunctionResult predObj1 = new PredictionFunctionResult(
 				"default_DummyOutput = default_DummyInput * 10", 
-				EntityFactory.createParameterDefinition("default.DummyOutput", "Integer", ParameterRole.OBSERVATION), null);
+				EntityFactory.createParameterDefinition("default.DummyOutput", "Integer", ParameterRole.OBSERVATION), null, null);
 		
 		ValidationResult validationResult1 = Validator.validate(predObj1, valObj);
 			
@@ -51,7 +51,7 @@ public class ValidatorTest {
 		
 		PredictionFunctionResult predObj2 = new PredictionFunctionResult(
 				"default_DummyOutput = default_DummyInput * 100", 
-				EntityFactory.createParameterDefinition("default.DummyOutput", "Integer", ParameterRole.OBSERVATION), null);
+				EntityFactory.createParameterDefinition("default.DummyOutput", "Integer", ParameterRole.OBSERVATION), null, null);
 		
 		ValidationResult validationResult2 = Validator.validate(predObj2, valObj);
 			

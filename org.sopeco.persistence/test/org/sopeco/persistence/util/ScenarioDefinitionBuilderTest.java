@@ -26,7 +26,7 @@ public class ScenarioDefinitionBuilderTest {
 
 	@Before
 	public void setUp() throws Exception {
-		this.builder = new ScenarioDefinitionBuilder("TestScenario", "TestDef");
+		this.builder = new ScenarioDefinitionBuilder("TestScenario");
 	}
 
 	@Test
@@ -65,11 +65,11 @@ public class ScenarioDefinitionBuilderTest {
 		buildMeasurementSpecification();
 		
 		ScenarioDefinition scenarioDefinition = builder.getScenarioDefinition();
-		assertEquals("TestDef", scenarioDefinition.getDefinitionId());
-		assertNotNull(scenarioDefinition.getMeasurementSpecification());
-		assertEquals(2, scenarioDefinition.getMeasurementSpecification().getExperimentSeriesDefinitions().size());
-		assertEquals(1, scenarioDefinition.getMeasurementSpecification().getInitializationAssignemts().size());
-		assertNotNull(scenarioDefinition.getMeasurementSpecification().getInitializationAssignemts().get(0));
+		assertNotNull(scenarioDefinition.getMeasurementSpecifications());
+		assertNotNull(scenarioDefinition.getMeasurementSpecification("TestMeasurementSpecification"));
+		assertEquals(2, scenarioDefinition.getMeasurementSpecification("TestMeasurementSpecification").getExperimentSeriesDefinitions().size());
+		assertEquals(1, scenarioDefinition.getMeasurementSpecification("TestMeasurementSpecification").getInitializationAssignemts().size());
+		assertNotNull(scenarioDefinition.getMeasurementSpecification("TestMeasurementSpecification").getInitializationAssignemts().get(0));
 		
 		ExperimentSeriesDefinition testExpSeries1 = scenarioDefinition.getExperimentSeriesDefinition("TestExpSeries1");
 		assertNotNull(testExpSeries1);
@@ -99,6 +99,8 @@ public class ScenarioDefinitionBuilderTest {
 	
 	@SuppressWarnings("unchecked")
 	private void buildMeasurementSpecification() {
+		
+		builder.createMeasurementSpecification("TestMeasurementSpecification");
 		builder.createConstantValueAssignment(AssignmentType.Initialization, builder.getScenarioDefinition().getParameterDefinition("testns2.testparam2-1"), "1");
 		
 		builder.createExperimentSeriesDefinition("TestExpSeries1");

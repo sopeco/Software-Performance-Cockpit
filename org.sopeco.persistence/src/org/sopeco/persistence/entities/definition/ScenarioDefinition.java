@@ -1,6 +1,7 @@
 package org.sopeco.persistence.entities.definition;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,11 +14,9 @@ public class ScenarioDefinition implements Serializable {
 
 	protected String scenarioName = null;
 
-	protected String definitionId;
-
 	protected MeasurementEnvironmentDefinition measurementEnvironmentDefinition;
 
-	protected MeasurementSpecification measurementSpecification;
+	protected List<MeasurementSpecification> measurementSpecifications = new ArrayList<MeasurementSpecification>();
 
 	public ScenarioDefinition() {
 		super();
@@ -31,14 +30,6 @@ public class ScenarioDefinition implements Serializable {
 		this.scenarioName = newName;
 	}
 
-	public String getDefinitionId() {
-		return definitionId;
-	}
-
-	public void setDefinitionId(String definitionId) {
-		this.definitionId = definitionId;
-	}
-
 	public MeasurementEnvironmentDefinition getMeasurementEnvironmentDefinition() {
 		return measurementEnvironmentDefinition;
 	}
@@ -47,12 +38,8 @@ public class ScenarioDefinition implements Serializable {
 		measurementEnvironmentDefinition = newMeasurementEnvironmentDefinition;
 	}
 
-	public MeasurementSpecification getMeasurementSpecification() {
-		return measurementSpecification;
-	}
-
-	public void setMeasurementSpecification(MeasurementSpecification newMeasurementSpecification) {
-		measurementSpecification = newMeasurementSpecification;
+	public List<MeasurementSpecification> getMeasurementSpecifications() {
+		return measurementSpecifications;
 	}
 
 	/*
@@ -69,9 +56,29 @@ public class ScenarioDefinition implements Serializable {
 	 *         could be found
 	 */
 	public ExperimentSeriesDefinition getExperimentSeriesDefinition(String name) {
-		for (ExperimentSeriesDefinition esd : this.getMeasurementSpecification().getExperimentSeriesDefinitions()) {
-			if (esd.getName().equals(name))
-				return esd;
+		for(MeasurementSpecification measSpec : this.measurementSpecifications) {
+			for (ExperimentSeriesDefinition esd : measSpec.getExperimentSeriesDefinitions()) {
+				if (esd.getName().equals(name))
+					return esd;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Looks for the measurement specification with the given name.
+	 * 
+	 * @param name
+	 *            - the name of the requested measurement specification
+	 * @return the {@link MeasurementSpecification} instance with the given
+	 *         name; <code>null</code> if no {@link MeasurementSpecification}
+	 *         could be found
+	 */
+	public MeasurementSpecification getMeasurementSpecification(String name) {
+		for(MeasurementSpecification measSpec : this.measurementSpecifications) {
+			if(measSpec.getName().equals(name)) {
+				return measSpec;
+			}
 		}
 		return null;
 	}
@@ -108,8 +115,7 @@ public class ScenarioDefinition implements Serializable {
 	@Override
 	public String toString() {
 
-		return "ScenarioDefinition{" + "scenarioName='" + scenarioName + '\'' 
-				+ ", definitionId='" + definitionId + '\'' + '}';
+		return "ScenarioDefinition{" + "scenarioName='" + scenarioName + "'}";
 	}
 
 	@Override
@@ -118,9 +124,8 @@ public class ScenarioDefinition implements Serializable {
 		int result = 1;
 		result = prime * result
 				+ ((measurementEnvironmentDefinition == null) ? 0 : measurementEnvironmentDefinition.hashCode());
-		result = prime * result + ((measurementSpecification == null) ? 0 : measurementSpecification.hashCode());
+		result = prime * result + ((measurementSpecifications == null) ? 0 : measurementSpecifications.hashCode());
 		result = prime * result + ((scenarioName == null) ? 0 : scenarioName.hashCode());
-		result = prime * result + ((definitionId == null) ? 0 : definitionId.hashCode());
 		return result;
 	}
 
@@ -137,20 +142,15 @@ public class ScenarioDefinition implements Serializable {
 				return false;
 		} else if (!measurementEnvironmentDefinition.equals(other.measurementEnvironmentDefinition))
 			return false;
-		if (measurementSpecification == null) {
-			if (other.measurementSpecification != null)
+		if (measurementSpecifications == null) {
+			if (other.measurementSpecifications != null)
 				return false;
-		} else if (!measurementSpecification.equals(other.measurementSpecification))
+		} else if (!measurementSpecifications.equals(other.measurementSpecifications))
 			return false;
 		if (scenarioName == null) {
 			if (other.scenarioName != null)
 				return false;
 		} else if (!scenarioName.equals(other.scenarioName))
-			return false;
-		if (definitionId == null) {
-			if (other.definitionId != null)
-				return false;
-		} else if (!definitionId.equals(other.definitionId))
 			return false;
 		return true;
 	}

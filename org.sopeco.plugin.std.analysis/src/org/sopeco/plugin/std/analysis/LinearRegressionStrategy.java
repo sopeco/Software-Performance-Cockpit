@@ -44,7 +44,9 @@ public class LinearRegressionStrategy extends AbstractAnalysisStrategy implement
 
 		DataSetAggregated analysisDataSet = extractAnalysisDataSet(dataset);
 
-		loadDataSetInR(analysisDataSet.convertToSimpleDataSet());
+		DataSetAggregated numericAnalysisDataSet = createNumericDataSet(analysisDataSet);
+		
+		loadDataSetInR(numericAnalysisDataSet.convertToSimpleDataSet());
 
 		// build and execute R command
 		StringBuilder cmdBuilder = new StringBuilder();
@@ -97,7 +99,7 @@ public class LinearRegressionStrategy extends AbstractAnalysisStrategy implement
 	}
 
 	private IPredictionFunctionResult buildResultObject() {
-		return new PredictionFunctionResult(getFunctionAsString(), dependentParameterDefintion, config);
+		return new PredictionFunctionResult(getFunctionAsString(), dependentParameterDefintion, config, nonNumericParameterEncodings);
 	}
 
 	/**

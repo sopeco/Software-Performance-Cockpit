@@ -28,6 +28,7 @@ public class ExperimentSeriesDefinition implements Serializable {
 	protected List<ConstantValueAssignment> preperationAssignments;
 
 	protected String name = null;
+	
 
 	public ExperimentSeriesDefinition() {
 		super();
@@ -71,6 +72,7 @@ public class ExperimentSeriesDefinition implements Serializable {
 		name = newName;
 	}
 
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -119,6 +121,7 @@ public class ExperimentSeriesDefinition implements Serializable {
 			return false;
 		return true;
 	}
+
 	
 	
 	

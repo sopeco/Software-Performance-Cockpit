@@ -14,11 +14,13 @@ public class DummyScenarioDefinitionFactory {
 	
 	@SuppressWarnings("unchecked")
 	public static ScenarioDefinition createScenarioDefinition() {
-		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder("Dummy", "DummyDef");
+		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder("Dummy");
 		
 		builder.createNewNamespace("default");
 		ParameterDefinition dummyInputParam = builder.createParameter("DummyInput", ParameterType.INTEGER, ParameterRole.INPUT);
 		ParameterDefinition dummyOutputParam = builder.createParameter("DummyOutput", ParameterType.INTEGER, ParameterRole.OBSERVATION);
+		
+		builder.createMeasurementSpecification("DummyMeasurementSpecification");
 		
 		builder.createExperimentSeriesDefinition("Dummy0");
 		builder.createNumberOfRunsCondition(4);

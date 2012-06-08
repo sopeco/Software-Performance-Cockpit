@@ -14,6 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
 import org.sopeco.persistence.dataset.DataSetAggregated;
@@ -26,6 +28,9 @@ import org.sopeco.persistence.entities.keys.ExperimentSeriesPK;
  * 
  */
 @Entity
+@NamedQueries({ @NamedQuery(name = "findExperimentSeriesByName", query = "SELECT o FROM ExperimentSeries o WHERE o.primaryKey.name = :name "
+		+ "AND o.primaryKey.scenarioInstanceName = :scenarioInstanceName "
+		+ "AND o.primaryKey.measurementEnvironmentUrl = :measurementEnvironmentUrl") })
 public class ExperimentSeries implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -42,7 +47,7 @@ public class ExperimentSeries implements Serializable {
 	@Column(name = "experimentSeriesDefinition")
 	private ExperimentSeriesDefinition experimentSeriesDefinition;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "experimentSeries", orphanRemoval = true, fetch= FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "experimentSeries", orphanRemoval = true, fetch = FetchType.EAGER)
 	private List<ExperimentSeriesRun> experimentSeriesRuns = new ArrayList<ExperimentSeriesRun>();
 
 	@EmbeddedId
@@ -57,6 +62,14 @@ public class ExperimentSeries implements Serializable {
 
 	public void setName(String name) {
 		this.primaryKey.setName(name);
+	}
+
+	public Long getVersion() {
+		return this.primaryKey.getVersion();
+	}
+
+	public void setVersion(Long version) {
+		this.primaryKey.setVersion(version);
 	}
 
 	public ScenarioInstance getScenarioInstance() {
@@ -93,8 +106,8 @@ public class ExperimentSeries implements Serializable {
 
 	/**
 	 * 
-	 * @return all data measured during the successful experiment series runs of this
-	 *         experiment series
+	 * @return all data measured during the successful experiment series runs of
+	 *         this experiment series
 	 */
 	public DataSetAggregated getAllExperimentSeriesRunSuccessfulResultsInOneDataSet() {
 		DataSetAppender appender = new DataSetAppender();
@@ -109,8 +122,8 @@ public class ExperimentSeries implements Serializable {
 
 	/**
 	 * 
-	 * @return all data measured during the failed experiment series runs of this
-	 *         experiment series
+	 * @return all data measured during the failed experiment series runs of
+	 *         this experiment series
 	 */
 	public DataSetAggregated getAllExperimentSeriesRunFailedResultsInOneDataSet() {
 		DataSetAppender appender = new DataSetAppender();
@@ -166,7 +179,8 @@ public class ExperimentSeries implements Serializable {
 	@Override
 	public String toString() {
 
-		return "ExperimentSeries{" + "name='" + this.primaryKey.getName() + "\' " + "scenarioInstance='" + scenarioInstance.toString() + '\'' + '}';
+		return "ExperimentSeries{" + "name='" + this.primaryKey.getName() + "\' " + "scenarioInstance='"
+				+ scenarioInstance.toString() + '\'' + '}';
 	}
 
 }
