@@ -11,8 +11,13 @@ import org.sopeco.plugin.std.exploration.breakdown.util.BreakdownConfiguration.A
  */
 public class EquidistantBreakdownExtension extends AbstractBreakdownExplorationExtension {
 	public EquidistantBreakdownExtension() {
-		super(BreakdownConfiguration.EQUIDISTANT_BREAKDOWN);
+		super();
 	}
+	
+	/**
+	 * The name of the provided extension artifact.
+	 */
+	public static final String NAME = BreakdownConfiguration.EQUIDISTANT_BREAKDOWN;
 
 	@Override
 	protected void prepareConfigurationParameterMap() {
@@ -33,5 +38,10 @@ public class EquidistantBreakdownExtension extends AbstractBreakdownExplorationE
 		// only for DynamicSector validation
 		configParams.put(BreakdownConfiguration.DYNAMIC_SECTOR_ACCURACY_SCOPE, "");
 		
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
 	}
 }

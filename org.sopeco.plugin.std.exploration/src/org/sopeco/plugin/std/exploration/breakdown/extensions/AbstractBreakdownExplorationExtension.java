@@ -23,20 +23,14 @@ public abstract class AbstractBreakdownExplorationExtension implements IExplorat
 	/** Holds a mapping of configuration parameters to their optional default values. */
 	protected final Map<String, String> configParams = new HashMap<String, String>();
 
-	/**
-	 * The name of the provided extension artifact.
-	 */
-	protected final String NAME;
 
-	protected AbstractBreakdownExplorationExtension(String name) {
-		NAME = name;
+
+	protected AbstractBreakdownExplorationExtension() {
 		prepareConfigurationParameterMap();
 	}
 
-	@Override
-	public String getName() {
-		return NAME;
-	}
+//	@Override
+//	public String getName();
 
 	@Override
 	public IExplorationStrategy createExtensionArtifact() {

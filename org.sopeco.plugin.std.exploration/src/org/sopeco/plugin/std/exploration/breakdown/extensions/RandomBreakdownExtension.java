@@ -12,9 +12,14 @@ import org.sopeco.plugin.std.exploration.breakdown.util.BreakdownConfiguration.A
 public class RandomBreakdownExtension extends AbstractBreakdownExplorationExtension {
 
 	public RandomBreakdownExtension() {
-		super(BreakdownConfiguration.RANDOM_BREAKDOWN);
+		super();
 	}
 
+	/**
+	 * The name of the provided extension artifact.
+	 */
+	public static final String NAME = BreakdownConfiguration.RANDOM_BREAKDOWN;
+	
 	@Override
 	protected void prepareConfigurationParameterMap() {
 		/* Stop Criteria */
@@ -37,5 +42,10 @@ public class RandomBreakdownExtension extends AbstractBreakdownExplorationExtens
 		// only for DynamicSector validation
 		configParams.put(BreakdownConfiguration.DYNAMIC_SECTOR_ACCURACY_SCOPE, "");
 		
+	}
+
+	@Override
+	public String getName() {
+		return NAME;
 	}
 }

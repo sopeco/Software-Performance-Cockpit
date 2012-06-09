@@ -12,8 +12,13 @@ import org.sopeco.plugin.std.exploration.breakdown.util.BreakdownConfiguration.D
  */
 public class AdaptiveRandomBreakdownExtension extends AbstractBreakdownExplorationExtension {
 	public AdaptiveRandomBreakdownExtension() {
-		super(BreakdownConfiguration.ADAPTIVE_RANDOM_BREAKDOWN);
+		super();
 	}
+	
+	/**
+	 * The name of the provided extension artifact.
+	 */
+	public static final String NAME = BreakdownConfiguration.ADAPTIVE_RANDOM_BREAKDOWN;
 
 	@Override
 	protected void prepareConfigurationParameterMap() {
@@ -37,5 +42,11 @@ public class AdaptiveRandomBreakdownExtension extends AbstractBreakdownExplorati
 		// only for RandomValidationSet validation
 		configParams.put(BreakdownConfiguration.SIZE_OF_VALIDATION_SET, "");
 		
+	}
+
+	@Override
+	public String getName() {
+		
+		return NAME;
 	}
 }
