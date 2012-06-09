@@ -110,10 +110,9 @@ public class ScenarioInstance implements Serializable {
 					resultSeries = series;
 				}
 			}
-			return resultSeries;
 		}
 
-		return null;
+		return resultSeries;
 	}
 
 	/**
