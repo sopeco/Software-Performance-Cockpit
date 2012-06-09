@@ -7,6 +7,7 @@
 		<class>org.sopeco.persistence.entities.ScenarioInstance</class>
 		<class>org.sopeco.persistence.entities.ExperimentSeries</class>
 		<class>org.sopeco.persistence.entities.ExperimentSeriesRun</class>
+		<class>org.sopeco.persistence.dataset.DataSetAggregated</class>
 		<class>org.sopeco.persistence.entities.analysis.AnalysisResultStorageContainer</class>
 		<properties>
 			

@@ -153,6 +153,24 @@ public class ScenarioInstance implements Serializable {
 		return null;
 	}
 
+	/**
+	 * Stores the data sets of all experiment runs in the database.
+	 */
+	public void storeDataSets() {
+		for (ExperimentSeries series : this.experimentSeries) {
+			series.storeDataSets();
+		}
+	}
+	
+	/**
+	 * Removes the data sets of all experiment runs in the database.
+	 */
+	public void removeDataSets() {
+		for (ExperimentSeries series : this.experimentSeries) {
+			series.removeDataSets();
+		}
+	}
+
 	/*
 	 * Overrides
 	 */

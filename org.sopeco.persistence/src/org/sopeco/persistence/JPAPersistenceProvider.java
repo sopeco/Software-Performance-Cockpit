@@ -8,6 +8,7 @@ import javax.persistence.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
@@ -48,6 +49,10 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 	@Override
 	public void store(ExperimentSeriesRun experimentSeriesRun) {
 
+		experimentSeriesRun.storeDataSets(); // required due to decoupling of
+												// data
+												// sets from entity structure
+
 		EntityManager em = emf.createEntityManager();
 		try {
 			// experimentSeriesRun.increaseVersion();
@@ -65,7 +70,29 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 	}
 
 	@Override
+	public void store(DataSetAggregated dataSet) {
+
+		EntityManager em = emf.createEntityManager();
+		try {
+			em.getTransaction().begin();
+			dataSet = em.merge(dataSet);
+			em.getTransaction().commit();
+
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
+
+	}
+
+	@Override
 	public void store(ExperimentSeries experimentSeries) {
+
+		experimentSeries.storeDataSets(); // required due to decoupling of data
+											// sets from entity structure
+
 		EntityManager em = emf.createEntityManager();
 		try {
 
@@ -84,6 +111,10 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 
 	@Override
 	public void store(ScenarioInstance scenarioInstance) {
+
+		scenarioInstance.storeDataSets(); // required due to decoupling of data
+											// sets from entity structure
+
 		EntityManager em = emf.createEntityManager();
 		try {
 
@@ -143,6 +174,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 			em.createQuery("DELETE FROM " + ExperimentSeriesRun.class.getSimpleName()).executeUpdate();
 			em.createQuery("DELETE FROM " + ExperimentSeries.class.getSimpleName()).executeUpdate();
 			em.createQuery("DELETE FROM " + ScenarioInstance.class.getSimpleName()).executeUpdate();
+			em.createQuery("DELETE FROM " + DataSetAggregated.class.getSimpleName()).executeUpdate();
 			em.getTransaction().commit();
 		} finally {
 			if (em.getTransaction().isActive()) {
@@ -196,7 +228,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 
 		String errorMsg = "Could not find an experiment series with name " + experimentSeriesName
 				+ " in scenario instance " + scenarioInstanceName + ".";
-		
+
 		ExperimentSeries resultSeries = null;
 		if (experimentSeriesWithEqualName != null) {
 			for (ExperimentSeries series : experimentSeriesWithEqualName) {
@@ -208,7 +240,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 			}
 			return resultSeries;
 		}
-		
+
 		logger.debug(errorMsg);
 		throw new DataNotFoundException(errorMsg);
 	}
@@ -277,6 +309,30 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 		// check if query was successful
 		if (experimentSeriesRun != null) {
 			return experimentSeriesRun;
+		} else {
+			logger.debug(errorMsg);
+			throw new DataNotFoundException(errorMsg);
+		}
+	}
+
+	@Override
+	public DataSetAggregated loadDataSet(String dataSetId) throws DataNotFoundException {
+		DataSetAggregated dataSet;
+		EntityManager em = emf.createEntityManager();
+		String errorMsg = "Could not find data set with id " + dataSetId + " .";
+		try {
+			dataSet = em.find(DataSetAggregated.class, dataSetId);
+		} catch (Exception e) {
+			logger.error(errorMsg);
+			throw new DataNotFoundException(errorMsg);
+		} finally {
+
+			em.close();
+		}
+
+		// check if query was successful
+		if (dataSet != null) {
+			return dataSet;
 		} else {
 			logger.debug(errorMsg);
 			throw new DataNotFoundException(errorMsg);
@@ -428,6 +484,10 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 
 		String errorMsg = "Could not remove experiment series run " + experimentSeriesRun.toString();
 
+		experimentSeriesRun.removeDataSets(); // required due to decoupling of
+												// data
+												// sets from entity structure
+
 		EntityManager em = emf.createEntityManager();
 		try {
 
@@ -458,6 +518,9 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 	public void remove(ExperimentSeries experimentSeries) throws DataNotFoundException {
 		String errorMsg = "Could not remove experiment series " + experimentSeries.toString();
 
+		experimentSeries.removeDataSets(); // required due to decoupling of data
+											// sets from entity structure
+
 		EntityManager em = emf.createEntityManager();
 		try {
 
@@ -484,6 +547,9 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 
 	@Override
 	public void remove(ScenarioInstance scenarioInstance) throws DataNotFoundException {
+
+		scenarioInstance.removeDataSets(); // required due to decoupling of data
+											// sets from entity structure
 
 		String errorMsg = "Could not remove scenario instance " + scenarioInstance.toString();
 
@@ -538,22 +604,32 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 
 	}
 
-	// private void removeAllSeries(ScenarioInstance scenarioInstance,
-	// EntityManager em){
-	// for(ExperimentSeries series : scenarioInstance.getExperimentSeries()){
-	// removeAllRuns(series, em);
-	// logger.debug("Remove Series");
-	// em.remove(series);
-	// }
-	// }
-	//
-	// private void removeAllRuns(ExperimentSeries experimentSeries,
-	// EntityManager em){
-	// for(ExperimentSeriesRun run :
-	// experimentSeries.getExperimentSeriesRuns()){
-	// logger.debug("Remove Run");
-	// em.remove(run);
-	// }
-	// }
+	@Override
+	public void remove(DataSetAggregated dataSet) throws DataNotFoundException {
+		final String errorMsg = "Could not remove DataSet with id " + dataSet.getID();
+
+		EntityManager em = emf.createEntityManager();
+		try {
+
+			em.getTransaction().begin();
+
+			// load entity to make it "managed"
+			DataSetAggregated managedDataSet = em.find(DataSetAggregated.class, dataSet.getID());
+
+			em.remove(managedDataSet);
+
+			em.getTransaction().commit();
+		} catch (Exception e) {
+
+			throw new DataNotFoundException(errorMsg, e);
+
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
+
+	}
 
 }

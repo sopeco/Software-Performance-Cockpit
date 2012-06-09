@@ -2,6 +2,7 @@ package org.sopeco.persistence;
 
 import java.util.List;
 
+import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
@@ -27,6 +28,8 @@ public interface IPersistenceProvider {
 
 	void store(String resultId, IStorableAnalysisResult analysisResult);
 
+	void store(DataSetAggregated dataSet);
+
 	/* read */
 	List<ScenarioInstance> loadScenarioInstances(String scenarioName) throws DataNotFoundException;
 
@@ -51,6 +54,8 @@ public interface IPersistenceProvider {
 	ExperimentSeriesRun loadExperimentSeriesRun(Long timestamp) throws DataNotFoundException;
 
 	IStorableAnalysisResult loadAnalysisResult(String resultId) throws DataNotFoundException;
+	
+	DataSetAggregated loadDataSet(String dataSetId) throws DataNotFoundException;
 
 	/* delete */
 	void remove(ExperimentSeriesRun experimentSeriesRun) throws DataNotFoundException;
@@ -60,5 +65,10 @@ public interface IPersistenceProvider {
 	void remove(ScenarioInstance scenarioInstance) throws DataNotFoundException;
 
 	void remove(String analysisResultId) throws DataNotFoundException;
+
+	void remove(DataSetAggregated dataSet) throws DataNotFoundException;
+
+
+	
 
 }

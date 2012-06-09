@@ -9,6 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
@@ -24,24 +29,25 @@ import org.sopeco.persistence.util.ParameterCollection;
  * 
  */
 @SuppressWarnings({"rawtypes"})
+@Entity
 public class DataSetAggregated implements
 		Iterable<DataSetRow>, Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Data in form of columns associated to a input parameter.
 	 */
 
-	
+	@Lob
+	@Column(name = "inputColumns")
 	private List<DataSetInputColumn> inputColumns;
 
 	/**
 	 * Data in form of columns associated to a observation parameter.
 	 */
+	@Lob
+	@Column(name = "observationColumns")
 	private List<DataSetObservationColumn> observationColumns;
 
 	// /**
@@ -57,6 +63,7 @@ public class DataSetAggregated implements
 	/**
 	 * Unique identifier of the DataSet
 	 */
+	@Id
 	private String id;
 
 	public DataSetAggregated(){

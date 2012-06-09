@@ -134,7 +134,7 @@ public class DataSetColumnBuilder {
 	public DataSetAggregated createDataSet() {
 		return new DataSetAggregated(new ArrayList<DataSetInputColumn>(
 				getInputColumns()), new ArrayList<DataSetObservationColumn>(
-				getObservationColumns()), size, UUID.randomUUID().toString());
+				getObservationColumns()), size, Long.toString(System.nanoTime()));
 	}
 
 	/**

@@ -137,6 +137,24 @@ public class ExperimentSeries implements Serializable {
 	}
 
 	/**
+	 * Stores the data sets of all experiment series runs in the database.
+	 */
+	public void storeDataSets() {
+		for (ExperimentSeriesRun run : this.experimentSeriesRuns) {
+			run.storeDataSets();
+		}
+	}
+	
+	/**
+	 * Removes the data sets of all experiment series runs in the database.
+	 */
+	public void removeDataSets() {
+		for (ExperimentSeriesRun run : this.experimentSeriesRuns) {
+			run.removeDataSets();
+		}
+	}
+
+	/**
 	 * 
 	 * @return the latest experiment series run that has been executed
 	 */

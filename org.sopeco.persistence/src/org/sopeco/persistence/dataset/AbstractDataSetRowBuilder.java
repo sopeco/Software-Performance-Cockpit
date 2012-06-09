@@ -89,7 +89,7 @@ public abstract class AbstractDataSetRowBuilder {
 		return new DataSetAggregated(new ArrayList<DataSetInputColumn>(
 				inputColumnMap.values()),
 				new ArrayList<DataSetObservationColumn>(observationColumnMap
-						.values()), size(), UUID.randomUUID().toString());
+						.values()), size(), Long.toString(System.nanoTime()));
 	}
 
 	/**

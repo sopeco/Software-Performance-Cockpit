@@ -62,7 +62,9 @@ public class PersistenceProviderTest {
 	public void testStoreAndLoadScenarioInstance() {
 
 		// sub tree checks
-		checkAvailableExperimentSeries(dummyScenarioInstance);
+		for (ExperimentSeries series : dummyScenarioInstance.getExperimentSeriesList()){
+			checkExperimentSeries(series);
+		}
 
 		try {
 			provider.store(dummyScenarioInstance);
@@ -85,8 +87,13 @@ public class PersistenceProviderTest {
 		assertNotNull(loadedInstance);
 		assertTrue(dummyScenarioInstance.equals(loadedInstance));
 
+		// We should have 2 ExperimentSeries in the database
+		assertTrue(loadedInstance.getExperimentSeriesList().size() == 2);
+		
 		// sub tree checks
-		checkAvailableExperimentSeries(loadedInstance);
+		for (ExperimentSeries series : loadedInstance.getExperimentSeriesList()){
+			checkExperimentSeries(series);
+		}
 	}
 
 	@Test
@@ -107,7 +114,9 @@ public class PersistenceProviderTest {
 			assertTrue(dummyScenarioInstance.equals(loadedInstances.get(0)));
 
 			// check sub tree
-			checkAvailableExperimentSeries(loadedInstances.get(0));
+			for (ExperimentSeries series : loadedInstances.get(0).getExperimentSeriesList()){
+				checkExperimentSeries(series);
+			}
 		} catch (DataNotFoundException e) {
 			fail(e.getMessage());
 		}
@@ -132,7 +141,9 @@ public class PersistenceProviderTest {
 			assertTrue(dummyScenarioInstance.equals(loadedInstances.get(0)));
 
 			// check sub tree
-			checkAvailableExperimentSeries(loadedInstances.get(0));
+			for (ExperimentSeries series : loadedInstances.get(0).getExperimentSeriesList()){
+				checkExperimentSeries(series);
+			}
 		} catch (DataNotFoundException e) {
 			fail(e.getMessage());
 		}
@@ -226,7 +237,11 @@ public class PersistenceProviderTest {
 
 			// scenario instance should have been stored as well
 			assertNotNull(loadedSeries.getScenarioInstance());
-			checkAvailableExperimentSeries(loadedSeries.getScenarioInstance());
+			
+			// We should have 2 ExperimentSeries in the database
+			assertTrue(loadedSeries.getScenarioInstance().getExperimentSeriesList().size() == 2);
+			
+			checkExperimentSeries(loadedSeries);
 		} catch (DataNotFoundException e) {
 			fail(e.getMessage());
 		}
@@ -350,7 +365,7 @@ public class PersistenceProviderTest {
 			assertTrue(dummySeriesRun.getExperimentSeries().equals(loadedSeriesRun.getExperimentSeries()));
 			assertNotNull(loadedSeriesRun.getExperimentSeries().getScenarioInstance());
 
-			checkAvailableExperimentSeriesRuns(loadedSeriesRun.getExperimentSeries());
+			checkExperimentSeriesRun(loadedSeriesRun);
 
 		} catch (DataNotFoundException e) {
 			fail(e.getMessage());
@@ -365,7 +380,7 @@ public class PersistenceProviderTest {
 
 		try {
 			// store
-			provider.store(dummyRun);
+			provider.store(dummyRun.getExperimentSeries());
 			checkTableSizes();
 
 			// load
@@ -583,6 +598,7 @@ public class PersistenceProviderTest {
 		System.out.println("ScenarioInstance: " + provider.getSize(ScenarioInstance.class));
 		System.out.println("ExperimentSeries: " + provider.getSize(ExperimentSeries.class));
 		System.out.println("ExperimentSeriesRun: " + provider.getSize(ExperimentSeriesRun.class));
+		System.out.println("DataSetAggregated: " + provider.getSize(DataSetAggregated.class));
 
 	}
 
@@ -592,6 +608,7 @@ public class PersistenceProviderTest {
 		assertEquals(1, provider.getSize(ScenarioInstance.class));
 		assertEquals(2, provider.getSize(ExperimentSeries.class));
 		assertEquals(20, provider.getSize(ExperimentSeriesRun.class));
+//		assertEquals(20, provider.getSize(DataSetAggregated.class));
 	}
 
 	private boolean isDatabaseEmpty() {
@@ -642,56 +659,58 @@ public class PersistenceProviderTest {
 		return false;
 	}
 
-	private void checkAvailableExperimentSeries(ScenarioInstance scenarioInstance) {
+	private void checkExperimentSeries(ExperimentSeries series) {
 
-		// We should have 2 ExperimentSeries in the database
-		assertTrue(scenarioInstance.getExperimentSeriesList().size() == 2);
+		
 
 		// ExperimentSeries should reference the ScenarioInstance
-		assertNotNull(scenarioInstance.getExperimentSeriesList().get(0).getScenarioInstance());
-		assertTrue(scenarioInstance.getExperimentSeriesList().get(0).getScenarioInstance().getName().equalsIgnoreCase("Dummy"));
-		assertTrue(scenarioInstance.equals(scenarioInstance.getExperimentSeriesList().get(0).getScenarioInstance()));
+		assertNotNull(series.getScenarioInstance());
+		assertTrue(series.getScenarioInstance().getName().equalsIgnoreCase("Dummy"));
 
 		// ExperimentSeries should reference the ExperimentSeriesDefintion
-		assertNotNull(scenarioInstance.getExperimentSeriesList().get(0).getExperimentSeriesDefinition());
+		assertNotNull(series.getExperimentSeriesDefinition());
 
 		// Name of ExperimentSeries should be equal to the name of its
 		// definition
-		assertTrue(scenarioInstance.getExperimentSeriesList().get(0).getName()
-				.equals(scenarioInstance.getExperimentSeriesList().get(0).getExperimentSeriesDefinition().getName()));
+		assertTrue(series.getName()
+				.equals(series.getExperimentSeriesDefinition().getName()));
 
 		// Parameters should be loaded
-		assertNotNull(scenarioInstance.getExperimentSeriesList().get(0).getExperimentSeriesDefinition().getExperimentAssignments().get(0).getParameter()
+		assertNotNull(series.getExperimentSeriesDefinition().getExperimentAssignments().get(0).getParameter()
 				.getName());
-		assertNotNull(scenarioInstance.getExperimentSeriesList().get(0).getExperimentSeriesDefinition().getExperimentAssignments().get(0).getParameter()
+		assertNotNull(series.getExperimentSeriesDefinition().getExperimentAssignments().get(0).getParameter()
 				.getType());
 
 		// Experiment run results should be accessible via experiment series
-		assertNotNull(scenarioInstance.getExperimentSeriesList().get(0).getAllExperimentSeriesRunSuccessfulResultsInOneDataSet());
-		assertTrue(scenarioInstance.getExperimentSeriesList().get(0).getAllExperimentSeriesRunSuccessfulResultsInOneDataSet().size() > 0);
+		assertNotNull(series.getAllExperimentSeriesRunSuccessfulResultsInOneDataSet());
+		assertTrue(series.getAllExperimentSeriesRunSuccessfulResultsInOneDataSet().size() > 0);
 		
 		// ExperimentSeries should reference ExperimentSeriesRuns
-		checkAvailableExperimentSeriesRuns(scenarioInstance.getExperimentSeriesList().get(0));
+		checkAvailableExperimentSeriesRuns(series);
 	}
 
 	private void checkAvailableExperimentSeriesRuns(ExperimentSeries expSeries) {
 
 		// We should have 10 ExperimentSeriesRuns in the database
 		assertTrue(expSeries.getExperimentSeriesRuns().size() == 10);
-
+		
+		checkExperimentSeriesRun(expSeries.getExperimentSeriesRuns().get(0));
+	}
+	
+	private void checkExperimentSeriesRun(ExperimentSeriesRun run) {
 		// ExperimentSeriesRun should reference the ExperimentSeries
-		assertNotNull(expSeries.getExperimentSeriesRuns().get(0).getExperimentSeries().getName());
-		assertTrue(expSeries.equals(expSeries.getExperimentSeriesRuns().get(0).getExperimentSeries()));
+		assertNotNull(run.getExperimentSeries().getName());
+		
 
 		// ExperimentSeriesRun should contain a result data set
-		assertNotNull(expSeries.getExperimentSeriesRuns().get(0).getSuccessfulResultDataSet());
-		assertTrue(expSeries.getExperimentSeriesRuns().get(0).getSuccessfulResultDataSet().getObservationColumns().size() == 1);
-		assertTrue(expSeries.getExperimentSeriesRuns().get(0).getSuccessfulResultDataSet().getInputColumns().size() == 1);
+		assertNotNull(run.getSuccessfulResultDataSet());
+		assertTrue(run.getSuccessfulResultDataSet().getObservationColumns().size() == 1);
+		assertTrue(run.getSuccessfulResultDataSet().getInputColumns().size() == 1);
 
-		DataSetInputColumn col = ((DataSetInputColumn<?>) expSeries.getExperimentSeriesRuns().get(0).getSuccessfulResultDataSet().getInputColumns().toArray()[0]);
+		DataSetInputColumn col = ((DataSetInputColumn<?>) run.getSuccessfulResultDataSet().getInputColumns().toArray()[0]);
 
 		// Result Data Set should have the ParameterDefinitions
-		assertNotNull(((DataSetInputColumn<?>) expSeries.getExperimentSeriesRuns().get(0).getSuccessfulResultDataSet().getInputColumns().toArray()[0]).getParameter());
+		assertNotNull(((DataSetInputColumn<?>) run.getSuccessfulResultDataSet().getInputColumns().toArray()[0]).getParameter());
 
 	}
 
