@@ -8,6 +8,7 @@ package org.sopeco.model.configuration.measurements.impl;
 
 import java.util.Collection;
 
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
@@ -15,6 +16,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -34,6 +36,7 @@ import org.sopeco.model.configuration.measurements.MeasurementsPackage;
  * <ul>
  *   <li>{@link org.sopeco.model.configuration.measurements.impl.MeasurementSpecificationImpl#getExperimentSeriesDefinitions <em>Experiment Series Definitions</em>}</li>
  *   <li>{@link org.sopeco.model.configuration.measurements.impl.MeasurementSpecificationImpl#getInitializationAssignemts <em>Initialization Assignemts</em>}</li>
+ *   <li>{@link org.sopeco.model.configuration.measurements.impl.MeasurementSpecificationImpl#getName <em>Name</em>}</li>
  * </ul>
  * </p>
  *
@@ -59,6 +62,26 @@ public class MeasurementSpecificationImpl extends SerializableEObject implements
 	 * @ordered
 	 */
 	protected EList<ConstantValueAssignment> initializationAssignemts;
+
+	/**
+	 * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getName()
+	 * @generated
+	 * @ordered
+	 */
+	protected static final String NAME_EDEFAULT = null;
+
+	/**
+	 * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @see #getName()
+	 * @generated
+	 * @ordered
+	 */
+	protected String name = NAME_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -108,6 +131,27 @@ public class MeasurementSpecificationImpl extends SerializableEObject implements
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	public void setName(String newName) {
+		String oldName = name;
+		name = newName;
+		if (eNotificationRequired())
+			eNotify(new ENotificationImpl(this, Notification.SET, MeasurementsPackage.MEASUREMENT_SPECIFICATION__NAME, oldName, name));
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	@Override
 	public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
 		switch (featureID) {
@@ -131,6 +175,8 @@ public class MeasurementSpecificationImpl extends SerializableEObject implements
 				return getExperimentSeriesDefinitions();
 			case MeasurementsPackage.MEASUREMENT_SPECIFICATION__INITIALIZATION_ASSIGNEMTS:
 				return getInitializationAssignemts();
+			case MeasurementsPackage.MEASUREMENT_SPECIFICATION__NAME:
+				return getName();
 		}
 		return super.eGet(featureID, resolve, coreType);
 	}
@@ -152,6 +198,9 @@ public class MeasurementSpecificationImpl extends SerializableEObject implements
 				getInitializationAssignemts().clear();
 				getInitializationAssignemts().addAll((Collection<? extends ConstantValueAssignment>)newValue);
 				return;
+			case MeasurementsPackage.MEASUREMENT_SPECIFICATION__NAME:
+				setName((String)newValue);
+				return;
 		}
 		super.eSet(featureID, newValue);
 	}
@@ -170,6 +219,9 @@ public class MeasurementSpecificationImpl extends SerializableEObject implements
 			case MeasurementsPackage.MEASUREMENT_SPECIFICATION__INITIALIZATION_ASSIGNEMTS:
 				getInitializationAssignemts().clear();
 				return;
+			case MeasurementsPackage.MEASUREMENT_SPECIFICATION__NAME:
+				setName(NAME_EDEFAULT);
+				return;
 		}
 		super.eUnset(featureID);
 	}
@@ -186,8 +238,26 @@ public class MeasurementSpecificationImpl extends SerializableEObject implements
 				return experimentSeriesDefinitions != null && !experimentSeriesDefinitions.isEmpty();
 			case MeasurementsPackage.MEASUREMENT_SPECIFICATION__INITIALIZATION_ASSIGNEMTS:
 				return initializationAssignemts != null && !initializationAssignemts.isEmpty();
+			case MeasurementsPackage.MEASUREMENT_SPECIFICATION__NAME:
+				return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
 		}
 		return super.eIsSet(featureID);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public String toString() {
+		if (eIsProxy()) return super.toString();
+
+		StringBuffer result = new StringBuffer(super.toString());
+		result.append(" (name: ");
+		result.append(name);
+		result.append(')');
+		return result.toString();
 	}
 
 } //MeasurementSpecificationImpl

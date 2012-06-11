@@ -124,11 +124,10 @@ public class EMFUtil {
 				.getMeasurementEnvironmentDefinition());
 		pojoScenarioDefinition.setMeasurementEnvironmentDefinition(pojoMeasurementEnvironmentDefinition);
 
-		// TODO: Change model to allow multiple measurement specifications and
-		// adjust this code accordingly (loop over the measurement
-		// specifications)
-		org.sopeco.persistence.entities.definition.MeasurementSpecification pojoMeasurementSpecification = convertMeasurementSpecification(emfScenarioDefinition);
-		pojoScenarioDefinition.getMeasurementSpecifications().add(pojoMeasurementSpecification);
+		for (MeasurementSpecification emfMeasurementSpecification : emfScenarioDefinition.getMeasurementSpecification()) {
+			org.sopeco.persistence.entities.definition.MeasurementSpecification pojoMeasurementSpecification = convertMeasurementSpecification(emfMeasurementSpecification);
+			pojoScenarioDefinition.getMeasurementSpecifications().add(pojoMeasurementSpecification);
+		}
 		return pojoScenarioDefinition;
 
 	}
@@ -160,11 +159,7 @@ public class EMFUtil {
 	}
 
 	private static org.sopeco.persistence.entities.definition.MeasurementSpecification convertMeasurementSpecification(
-			ScenarioDefinition emfScenarioDefinition) {
-		MeasurementSpecification emfMeasurementSpecification = emfScenarioDefinition.getMeasurementSpecification();
-
-		// TODO: Add measurement specification name to model and adjust this
-		// code (set the name of the pojo to the name given by the emf model)
+			MeasurementSpecification emfMeasurementSpecification) {
 		org.sopeco.persistence.entities.definition.MeasurementSpecification pojoMeasurementSpecification = EntityFactory
 				.createMeasurementSpecification("default");
 
@@ -173,6 +168,8 @@ public class EMFUtil {
 
 		pojoMeasurementSpecification.getExperimentSeriesDefinitions().addAll(
 				convertExperimentSeriesDefinitions(emfMeasurementSpecification));
+		
+		pojoMeasurementSpecification.setName(emfMeasurementSpecification.getName());
 
 		return pojoMeasurementSpecification;
 	}

@@ -8,7 +8,8 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="measurementEnvironmentDefinition"
         lowerBound="1" eType="#//environment/MeasurementEnvironmentDefinition" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="measurementSpecification"
-        lowerBound="1" eType="#//measurements/MeasurementSpecification" containment="true"/>
+        lowerBound="1" upperBound="-1" eType="#//measurements/MeasurementSpecification"
+        containment="true"/>
   </eClassifiers>
   <eSubpackages name="environment" nsURI="http://sopeco.org/configuration/environment"
       nsPrefix="environment">
@@ -59,6 +60,8 @@
           containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="initializationAssignemts"
           upperBound="-1" eType="#//measurements/ConstantValueAssignment" containment="true"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1"
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ExperimentSeriesDefinition" eSuperTypes="#//common/Serializable">
       <eStructuralFeatures xsi:type="ecore:EReference" name="explorationStrategy"

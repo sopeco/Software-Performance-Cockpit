@@ -90,13 +90,22 @@ public interface MeasurementsPackage extends EPackage {
 	int MEASUREMENT_SPECIFICATION__INITIALIZATION_ASSIGNEMTS = 1;
 
 	/**
+	 * The feature id for the '<em><b>Name</b></em>' attribute.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 * @ordered
+	 */
+	int MEASUREMENT_SPECIFICATION__NAME = 2;
+
+	/**
 	 * The number of structural features of the '<em>Measurement Specification</em>' class.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
 	 * @ordered
 	 */
-	int MEASUREMENT_SPECIFICATION_FEATURE_COUNT = 2;
+	int MEASUREMENT_SPECIFICATION_FEATURE_COUNT = 3;
 
 	/**
 	 * The meta object id for the '{@link org.sopeco.model.configuration.measurements.impl.ExperimentSeriesDefinitionImpl <em>Experiment Series Definition</em>}' class.
@@ -502,6 +511,17 @@ public interface MeasurementsPackage extends EPackage {
 	EReference getMeasurementSpecification_InitializationAssignemts();
 
 	/**
+	 * Returns the meta object for the attribute '{@link org.sopeco.model.configuration.measurements.MeasurementSpecification#getName <em>Name</em>}'.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @return the meta object for the attribute '<em>Name</em>'.
+	 * @see org.sopeco.model.configuration.measurements.MeasurementSpecification#getName()
+	 * @see #getMeasurementSpecification()
+	 * @generated
+	 */
+	EAttribute getMeasurementSpecification_Name();
+
+	/**
 	 * Returns the meta object for class '{@link org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition <em>Experiment Series Definition</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
@@ -804,6 +824,14 @@ public interface MeasurementsPackage extends EPackage {
 		 * @generated
 		 */
 		EReference MEASUREMENT_SPECIFICATION__INITIALIZATION_ASSIGNEMTS = eINSTANCE.getMeasurementSpecification_InitializationAssignemts();
+
+		/**
+		 * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+		 * <!-- begin-user-doc -->
+		 * <!-- end-user-doc -->
+		 * @generated
+		 */
+		EAttribute MEASUREMENT_SPECIFICATION__NAME = eINSTANCE.getMeasurementSpecification_Name();
 
 		/**
 		 * The meta object literal for the '{@link org.sopeco.model.configuration.measurements.impl.ExperimentSeriesDefinitionImpl <em>Experiment Series Definition</em>}' class.

@@ -11,6 +11,7 @@ import org.sopeco.model.configuration.environment.ParameterDefinition;
 import org.sopeco.model.configuration.environment.ParameterNamespace;
 import org.sopeco.model.configuration.environment.ParameterRole;
 import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
+import org.sopeco.model.configuration.measurements.MeasurementSpecification;
 
 /**
  * This class contains helper methods for querying a SoPeCo scenario definition ({@see ScenarioDefinition}).
@@ -28,9 +29,11 @@ public class ScenarioDefinitionUtil {
 	 * @return the {@link ExperimentSeriesDefinition} instance with the given name; <code>null</code> if no {@link ExperimentSeriesDefinition} could be found
 	 */
 	public static ExperimentSeriesDefinition getExperimentSeriesDefinition(String name, ScenarioDefinition scenario){
-		for (ExperimentSeriesDefinition esd : scenario.getMeasurementSpecification().getExperimentSeriesDefinitions()) {
-			if(esd.getName().equals(name))
-				return esd;
+		for (MeasurementSpecification measurementSpecification : scenario.getMeasurementSpecification()) {
+			for (ExperimentSeriesDefinition esd : measurementSpecification.getExperimentSeriesDefinitions()) {
+				if(esd.getName().equals(name))
+					return esd;
+			}
 		}
 		return null;
 	}

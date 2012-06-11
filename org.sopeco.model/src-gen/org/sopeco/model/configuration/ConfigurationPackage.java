@@ -88,7 +88,7 @@ public interface ConfigurationPackage extends EPackage {
 	int SCENARIO_DEFINITION__MEASUREMENT_ENVIRONMENT_DEFINITION = 1;
 
 	/**
-	 * The feature id for the '<em><b>Measurement Specification</b></em>' containment reference.
+	 * The feature id for the '<em><b>Measurement Specification</b></em>' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @generated
@@ -139,10 +139,10 @@ public interface ConfigurationPackage extends EPackage {
 	EReference getScenarioDefinition_MeasurementEnvironmentDefinition();
 
 	/**
-	 * Returns the meta object for the containment reference '{@link org.sopeco.model.configuration.ScenarioDefinition#getMeasurementSpecification <em>Measurement Specification</em>}'.
+	 * Returns the meta object for the containment reference list '{@link org.sopeco.model.configuration.ScenarioDefinition#getMeasurementSpecification <em>Measurement Specification</em>}'.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
-	 * @return the meta object for the containment reference '<em>Measurement Specification</em>'.
+	 * @return the meta object for the containment reference list '<em>Measurement Specification</em>'.
 	 * @see org.sopeco.model.configuration.ScenarioDefinition#getMeasurementSpecification()
 	 * @see #getScenarioDefinition()
 	 * @generated
@@ -198,7 +198,7 @@ public interface ConfigurationPackage extends EPackage {
 		EReference SCENARIO_DEFINITION__MEASUREMENT_ENVIRONMENT_DEFINITION = eINSTANCE.getScenarioDefinition_MeasurementEnvironmentDefinition();
 
 		/**
-		 * The meta object literal for the '<em><b>Measurement Specification</b></em>' containment reference feature.
+		 * The meta object literal for the '<em><b>Measurement Specification</b></em>' containment reference list feature.
 		 * <!-- begin-user-doc -->
 		 * <!-- end-user-doc -->
 		 * @generated

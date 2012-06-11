@@ -19,7 +19,7 @@ import org.sopeco.persistence.entities.definition.ScenarioDefinition;
  */
 public class EMFUtilTest {
 	
-	private final static String PATH_TO_SCENARIO_DEFINITION = "test/dummy.configuration";
+	private final static String PATH_TO_SCENARIO_DEFINITION = "test/test.configuration";
 
 	@Before
 	public void setUp() throws Exception {
@@ -37,11 +37,11 @@ public class EMFUtilTest {
 			e.printStackTrace();
 			fail();return;
 		}
-		assertEquals("Dummy", scenarioDefinition.getScenarioName());
+		assertEquals("Test Scenario", scenarioDefinition.getScenarioName());
 		try
 		{
-			assertEquals("default.DummyInput", scenarioDefinition.getMeasurementEnvironmentDefinition().getRoot().getParameters().get(0).getFullName());
-			assertEquals("default.DummyInput", scenarioDefinition.getMeasurementSpecifications().get(0).getExperimentSeriesDefinitions().get(0).getExplorationStrategy().getAnalysisConfigurations().get(0).getIndependentParameters().get(0).getFullName());
+			assertEquals("default.A", scenarioDefinition.getMeasurementEnvironmentDefinition().getRoot().getParameters().get(0).getFullName());
+//			assertEquals("default.DummyInput", scenarioDefinition.getMeasurementSpecifications().get(0).getExperimentSeriesDefinitions().get(0).getExplorationStrategy().getAnalysisConfigurations().get(0).getIndependentParameters().get(0).getFullName());
 			
 		} catch (UnsupportedOperationException uoe){
 			fail("Factory override did not work");

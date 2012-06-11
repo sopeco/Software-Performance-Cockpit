@@ -237,7 +237,7 @@ public class ConfigurationPackageImpl extends EPackageImpl implements Configurat
 		initEClass(scenarioDefinitionEClass, ScenarioDefinition.class, "ScenarioDefinition", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getScenarioDefinition_Name(), ecorePackage.getEString(), "name", null, 0, 1, ScenarioDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getScenarioDefinition_MeasurementEnvironmentDefinition(), theEnvironmentPackage.getMeasurementEnvironmentDefinition(), null, "measurementEnvironmentDefinition", null, 1, 1, ScenarioDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-		initEReference(getScenarioDefinition_MeasurementSpecification(), theMeasurementsPackage.getMeasurementSpecification(), null, "measurementSpecification", null, 1, 1, ScenarioDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEReference(getScenarioDefinition_MeasurementSpecification(), theMeasurementsPackage.getMeasurementSpecification(), null, "measurementSpecification", null, 1, -1, ScenarioDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		// Create resource
 		createResource(eNS_URI);

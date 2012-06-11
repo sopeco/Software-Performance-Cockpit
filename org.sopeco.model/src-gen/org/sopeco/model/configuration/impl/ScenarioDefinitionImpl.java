@@ -6,14 +6,18 @@
  */
 package org.sopeco.model.configuration.impl;
 
+import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
+import org.eclipse.emf.ecore.util.EObjectContainmentEList;
+import org.eclipse.emf.ecore.util.InternalEList;
 import org.sopeco.model.configuration.ConfigurationPackage;
 import org.sopeco.model.configuration.ScenarioDefinition;
 
@@ -70,14 +74,14 @@ public class ScenarioDefinitionImpl extends SerializableEObject implements Scena
 	protected MeasurementEnvironmentDefinition measurementEnvironmentDefinition;
 
 	/**
-	 * The cached value of the '{@link #getMeasurementSpecification() <em>Measurement Specification</em>}' containment reference.
+	 * The cached value of the '{@link #getMeasurementSpecification() <em>Measurement Specification</em>}' containment reference list.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->
 	 * @see #getMeasurementSpecification()
 	 * @generated
 	 * @ordered
 	 */
-	protected MeasurementSpecification measurementSpecification;
+	protected EList<MeasurementSpecification> measurementSpecification;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -167,42 +171,11 @@ public class ScenarioDefinitionImpl extends SerializableEObject implements Scena
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public MeasurementSpecification getMeasurementSpecification() {
+	public EList<MeasurementSpecification> getMeasurementSpecification() {
+		if (measurementSpecification == null) {
+			measurementSpecification = new EObjectContainmentEList<MeasurementSpecification>(MeasurementSpecification.class, this, ConfigurationPackage.SCENARIO_DEFINITION__MEASUREMENT_SPECIFICATION);
+		}
 		return measurementSpecification;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public NotificationChain basicSetMeasurementSpecification(MeasurementSpecification newMeasurementSpecification, NotificationChain msgs) {
-		MeasurementSpecification oldMeasurementSpecification = measurementSpecification;
-		measurementSpecification = newMeasurementSpecification;
-		if (eNotificationRequired()) {
-			ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ConfigurationPackage.SCENARIO_DEFINITION__MEASUREMENT_SPECIFICATION, oldMeasurementSpecification, newMeasurementSpecification);
-			if (msgs == null) msgs = notification; else msgs.add(notification);
-		}
-		return msgs;
-	}
-
-	/**
-	 * <!-- begin-user-doc -->
-	 * <!-- end-user-doc -->
-	 * @generated
-	 */
-	public void setMeasurementSpecification(MeasurementSpecification newMeasurementSpecification) {
-		if (newMeasurementSpecification != measurementSpecification) {
-			NotificationChain msgs = null;
-			if (measurementSpecification != null)
-				msgs = ((InternalEObject)measurementSpecification).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ConfigurationPackage.SCENARIO_DEFINITION__MEASUREMENT_SPECIFICATION, null, msgs);
-			if (newMeasurementSpecification != null)
-				msgs = ((InternalEObject)newMeasurementSpecification).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ConfigurationPackage.SCENARIO_DEFINITION__MEASUREMENT_SPECIFICATION, null, msgs);
-			msgs = basicSetMeasurementSpecification(newMeasurementSpecification, msgs);
-			if (msgs != null) msgs.dispatch();
-		}
-		else if (eNotificationRequired())
-			eNotify(new ENotificationImpl(this, Notification.SET, ConfigurationPackage.SCENARIO_DEFINITION__MEASUREMENT_SPECIFICATION, newMeasurementSpecification, newMeasurementSpecification));
 	}
 
 	/**
@@ -216,7 +189,7 @@ public class ScenarioDefinitionImpl extends SerializableEObject implements Scena
 			case ConfigurationPackage.SCENARIO_DEFINITION__MEASUREMENT_ENVIRONMENT_DEFINITION:
 				return basicSetMeasurementEnvironmentDefinition(null, msgs);
 			case ConfigurationPackage.SCENARIO_DEFINITION__MEASUREMENT_SPECIFICATION:
-				return basicSetMeasurementSpecification(null, msgs);
+				return ((InternalEList<?>)getMeasurementSpecification()).basicRemove(otherEnd, msgs);
 		}
 		return super.eInverseRemove(otherEnd, featureID, msgs);
 	}
@@ -244,6 +217,7 @@ public class ScenarioDefinitionImpl extends SerializableEObject implements Scena
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
@@ -254,7 +228,8 @@ public class ScenarioDefinitionImpl extends SerializableEObject implements Scena
 				setMeasurementEnvironmentDefinition((MeasurementEnvironmentDefinition)newValue);
 				return;
 			case ConfigurationPackage.SCENARIO_DEFINITION__MEASUREMENT_SPECIFICATION:
-				setMeasurementSpecification((MeasurementSpecification)newValue);
+				getMeasurementSpecification().clear();
+				getMeasurementSpecification().addAll((Collection<? extends MeasurementSpecification>)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);
@@ -275,7 +250,7 @@ public class ScenarioDefinitionImpl extends SerializableEObject implements Scena
 				setMeasurementEnvironmentDefinition((MeasurementEnvironmentDefinition)null);
 				return;
 			case ConfigurationPackage.SCENARIO_DEFINITION__MEASUREMENT_SPECIFICATION:
-				setMeasurementSpecification((MeasurementSpecification)null);
+				getMeasurementSpecification().clear();
 				return;
 		}
 		super.eUnset(featureID);
@@ -294,7 +269,7 @@ public class ScenarioDefinitionImpl extends SerializableEObject implements Scena
 			case ConfigurationPackage.SCENARIO_DEFINITION__MEASUREMENT_ENVIRONMENT_DEFINITION:
 				return measurementEnvironmentDefinition != null;
 			case ConfigurationPackage.SCENARIO_DEFINITION__MEASUREMENT_SPECIFICATION:
-				return measurementSpecification != null;
+				return measurementSpecification != null && !measurementSpecification.isEmpty();
 		}
 		return super.eIsSet(featureID);
 	}

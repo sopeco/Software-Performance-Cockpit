@@ -235,6 +235,15 @@ public class MeasurementsPackageImpl extends EPackageImpl implements Measurement
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
+	public EAttribute getMeasurementSpecification_Name() {
+		return (EAttribute)measurementSpecificationEClass.getEStructuralFeatures().get(2);
+	}
+
+	/**
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
 	public EClass getExperimentSeriesDefinition() {
 		return experimentSeriesDefinitionEClass;
 	}
@@ -477,6 +486,7 @@ public class MeasurementsPackageImpl extends EPackageImpl implements Measurement
 		measurementSpecificationEClass = createEClass(MEASUREMENT_SPECIFICATION);
 		createEReference(measurementSpecificationEClass, MEASUREMENT_SPECIFICATION__EXPERIMENT_SERIES_DEFINITIONS);
 		createEReference(measurementSpecificationEClass, MEASUREMENT_SPECIFICATION__INITIALIZATION_ASSIGNEMTS);
+		createEAttribute(measurementSpecificationEClass, MEASUREMENT_SPECIFICATION__NAME);
 
 		experimentSeriesDefinitionEClass = createEClass(EXPERIMENT_SERIES_DEFINITION);
 		createEReference(experimentSeriesDefinitionEClass, EXPERIMENT_SERIES_DEFINITION__EXPLORATION_STRATEGY);
@@ -562,6 +572,7 @@ public class MeasurementsPackageImpl extends EPackageImpl implements Measurement
 		initEClass(measurementSpecificationEClass, MeasurementSpecification.class, "MeasurementSpecification", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getMeasurementSpecification_ExperimentSeriesDefinitions(), this.getExperimentSeriesDefinition(), null, "experimentSeriesDefinitions", null, 1, -1, MeasurementSpecification.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 		initEReference(getMeasurementSpecification_InitializationAssignemts(), this.getConstantValueAssignment(), null, "initializationAssignemts", null, 0, -1, MeasurementSpecification.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getMeasurementSpecification_Name(), ecorePackage.getEString(), "name", null, 1, 1, MeasurementSpecification.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(experimentSeriesDefinitionEClass, ExperimentSeriesDefinition.class, "ExperimentSeriesDefinition", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEReference(getExperimentSeriesDefinition_ExplorationStrategy(), this.getExplorationStrategy(), null, "explorationStrategy", null, 1, 1, ExperimentSeriesDefinition.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
