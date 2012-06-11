@@ -57,6 +57,11 @@
      </command>
      <command
            defaultHandler="org.sopeco.visualisation.eclipse.commands.CommandHandler"
+           id="org.sopeco.visualisation.openCorrelationView"
+           name="Open Correlation View">
+     </command>
+     <command
+           defaultHandler="org.sopeco.visualisation.eclipse.commands.CommandHandler"
            id="org.sopeco.visualisation.refreshNavigation"
            name="Refresh Navigation View">
      </command>
@@ -98,6 +103,24 @@
                  commandId="org.sopeco.visualisation.openBoxPlotView"
                  icon="icons/chart_boxPlot.png"
                  id="org.sopeco.visualisation.openBoxPlotView.menuItem"
+                 style="push">
+              <visibleWhen
+                    checkEnabled="false">
+                 <and>
+                    <test
+                          property="org.sopeco.visualisation.navigation.NavigationPropertyTester.selectedOne">
+                    </test>
+                    <test
+                          property="org.sopeco.visualisation.navigation.NavigationPropertyTester.runSelected">
+                    </test>
+                 </and>
+              </visibleWhen>
+            </command>
+            
+            <command
+                 commandId="org.sopeco.visualisation.openCorrelationView"
+                 icon="icons/chart_curve.png"
+                 id="org.sopeco.visualisation.openCorrelationView.menuItem"
                  style="push">
               <visibleWhen
                     checkEnabled="false">

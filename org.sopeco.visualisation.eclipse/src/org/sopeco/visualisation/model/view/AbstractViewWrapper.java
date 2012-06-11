@@ -71,6 +71,16 @@ public abstract class AbstractViewWrapper implements IViewModel {
 		}
 		return numericObservationParameter;
 	}
+	
+	protected List<ParameterDefinition> getNumericParameters(ExperimentSeriesRun experimentSeriesRun) {
+		List<ParameterDefinition> numericParameter = new ArrayList<ParameterDefinition>();
+		for (ParameterDefinition pDef : experimentSeriesRun.getSuccessfulResultDataSet().getParameterDefinitions()) {
+			if (isNumericParameter(pDef)) {
+				numericParameter.add(pDef);
+			}
+		}
+		return numericParameter;
+	}
 
 	protected List<ParameterDefinition> getNumericVariedInputParameters(ExperimentSeriesRun experimentSeriesRun) {
 		List<ParameterDefinition> variedInputParameter = new ArrayList<ParameterDefinition>();

@@ -85,7 +85,7 @@ public class FunctionData {
 	 * 
 	 * @return
 	 */
-	public void setInputParameter(ParameterDefinition inputParameter) {
+	public void setXParameter(ParameterDefinition inputParameter) {
 		this.inputParameter = inputParameter;
 	}
 
@@ -103,7 +103,7 @@ public class FunctionData {
 	 * 
 	 * @return
 	 */
-	public void setObservationParameter(ParameterDefinition observationParameter) {
+	public void setYParameter(ParameterDefinition observationParameter) {
 		this.observationParameter = observationParameter;
 	}
 }

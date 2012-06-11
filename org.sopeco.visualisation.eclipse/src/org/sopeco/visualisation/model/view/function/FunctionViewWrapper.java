@@ -111,8 +111,8 @@ public class FunctionViewWrapper extends AbstractViewWrapper implements IFunctio
 			Date date = new Date(item.getData().getTimestamp());
 			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd - hh:mm:ss");
 			data.setLabel(item.getLabel() +" - "+ dateFormat.format(date));
-			data.setInputParameter(item.getxParameter());
-			data.setObservationParameter(item.getyParameter());
+			data.setXParameter(item.getxParameter());
+			data.setYParameter(item.getyParameter());
 			functions.add(data);
 			i++;
 		}

@@ -32,7 +32,9 @@ public class CommandExecuter {
 	
 	public static final String OPEN_FUNCTION_VIEW_COMMAND = "org.sopeco.visualisation.openFunctionView";
 	public static final String OPEN_BOXPLOT_VIEW_COMMAND = "org.sopeco.visualisation.openBoxPlotView";
+	public static final String OPEN_CORRELATION_VIEW_COMMAND = "org.sopeco.visualisation.openCorrelationView";
 	public static final String REFRESH_NAVIGATION_VIEW_COMMAND ="org.sopeco.visualisation.refreshNavigation";
 	public static final String DELETE_COMMAND ="org.sopeco.visualisation.delete";
+	
 	
 }

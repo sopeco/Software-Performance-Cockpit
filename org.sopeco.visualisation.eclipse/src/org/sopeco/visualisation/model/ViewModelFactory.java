@@ -1,6 +1,7 @@
 package org.sopeco.visualisation.model;
 
 import org.sopeco.visualisation.model.boxplot.BoxPlotViewWrapper;
+import org.sopeco.visualisation.model.view.function.CorrelationViewWrapper;
 import org.sopeco.visualisation.model.view.function.FunctionViewWrapper;
 
 public class ViewModelFactory {
@@ -22,5 +23,9 @@ public class ViewModelFactory {
 	
 	public IBoxPlotViewModel createBoxPlotViewModel(){
 		return new BoxPlotViewWrapper();
+	}
+	
+	public IFunctionViewModel createCorrelationViewModel(){
+		return new CorrelationViewWrapper();
 	}
 }

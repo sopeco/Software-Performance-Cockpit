@@ -24,6 +24,8 @@ public abstract class AbstractCommand {
 			return new OpenFunctionViewCommand();
 		} else if(commandID.equals(CommandExecuter.OPEN_BOXPLOT_VIEW_COMMAND)){
 			return new OpenBoxPlotViewCommand();
+		}else if(commandID.equals(CommandExecuter.OPEN_CORRELATION_VIEW_COMMAND)){
+			return new OpenCorrelationViewCommand();
 		}else if(commandID.equals(CommandExecuter.REFRESH_NAVIGATION_VIEW_COMMAND)){
 			return new RefreshNavigationViewCommand();
 		}else if(commandID.equals(CommandExecuter.DELETE_COMMAND)){

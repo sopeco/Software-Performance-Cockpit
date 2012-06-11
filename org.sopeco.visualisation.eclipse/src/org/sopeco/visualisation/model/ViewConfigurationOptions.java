@@ -29,7 +29,7 @@ public class ViewConfigurationOptions {
 		}
 		return numericInputParameter;
 	}
-	
+
 	public List<ParameterDefinition> getInputParameters() {
 		return new ArrayList<ParameterDefinition>(inputParameterAssignmentOptions.keySet());
 	}
