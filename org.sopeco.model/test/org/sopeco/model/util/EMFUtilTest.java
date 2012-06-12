@@ -37,12 +37,11 @@ public class EMFUtilTest {
 			e.printStackTrace();
 			fail();return;
 		}
-		assertEquals("Test Scenario", scenarioDefinition.getScenarioName());
+		assertEquals("Test", scenarioDefinition.getScenarioName());
 		try
 		{
-			assertEquals("default.A", scenarioDefinition.getMeasurementEnvironmentDefinition().getRoot().getParameters().get(0).getFullName());
-//			assertEquals("default.DummyInput", scenarioDefinition.getMeasurementSpecifications().get(0).getExperimentSeriesDefinitions().get(0).getExplorationStrategy().getAnalysisConfigurations().get(0).getIndependentParameters().get(0).getFullName());
-			
+			assertEquals("A.P1", scenarioDefinition.getMeasurementEnvironmentDefinition().getRoot().getParameters().get(0).getFullName());
+			assertEquals("A.P1", scenarioDefinition.getMeasurementSpecifications().get(0).getExperimentSeriesDefinitions().get(0).getExperimentAssignments().get(0).getParameter().getFullName());			
 		} catch (UnsupportedOperationException uoe){
 			fail("Factory override did not work");
 		}

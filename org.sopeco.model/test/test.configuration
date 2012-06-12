@@ -1,26 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<org.sopeco.core.model:ScenarioDefinition xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:measurements="http://sopeco.org/configuration/measurements" xmlns:org.sopeco.core.model="http://sopeco.org/configuration" name="Test Scenario">
+<org.sopeco.core.model:ScenarioDefinition xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:measurements="http://sopeco.org/configuration/measurements" xmlns:org.sopeco.core.model="http://sopeco.org/configuration" name="Test">
   <measurementEnvironmentDefinition>
-    <root name="default">
-      <parameters name="A" type="Integer" />
-      <parameters name="B" type="Double" />
-      <parameters name="C" type="Double" role="OBSERVATION"/>
+    <root name="A">
+      <parameters name="P1" type="Integer"/>
+      <parameters name="P2" type="Double"/>
+      <parameters name="P3" type="Double" role="OBSERVATION"/>
     </root>
   </measurementEnvironmentDefinition>
-  <measurementSpecification>
-    <experimentSeriesDefinitions name="Series 1">
+  <measurementSpecification name="MS1">
+    <experimentSeriesDefinitions name="EXPS1">
       <explorationStrategy name="Full Exploration Strategy"/>
       <experimentAssignments xsi:type="measurements:DynamicValueAssignment" name="Linear Numeric Variation" parameter="//@measurementEnvironmentDefinition/@root/@parameters.0">
         <configuration key="min" value="0"/>
-        <configuration key="max" value="100"/>
-        <configuration key="step" value="7"/>
+        <configuration key="max" value="10000"/>
+        <configuration key="step" value="5"/>
       </experimentAssignments>
       <experimentAssignments xsi:type="measurements:DynamicValueAssignment" name="Linear Numeric Variation" parameter="//@measurementEnvironmentDefinition/@root/@parameters.1">
-        <configuration key="min" value="10"/>
-        <configuration key="max" value="20"/>
-        <configuration key="step" value="2.5"/>
+        <configuration key="min" value="100"/>
+        <configuration key="max" value="60000"/>
+        <configuration key="step" value="50"/>
       </experimentAssignments>
-      <experimentTerminationCondition xsi:type="measurements:NumberOfRepetitions" numberOfRepetitions="4"/>
+      <experimentTerminationCondition xsi:type="measurements:NumberOfRepetitions" numberOfRepetitions="10"/>
     </experimentSeriesDefinitions>
   </measurementSpecification>
 </org.sopeco.core.model:ScenarioDefinition>
