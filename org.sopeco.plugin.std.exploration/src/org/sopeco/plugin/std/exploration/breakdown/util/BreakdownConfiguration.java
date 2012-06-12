@@ -75,7 +75,7 @@ public abstract class BreakdownConfiguration {
 	 */
 	public static Double getDiminutionOfValidation(ExplorationStrategy strategyConfig) {
 		String value = strategyConfig.getConfiguration().get(DIMINUTION_OF_VALIDATIONS);
-		if (value != null) {
+		if (value != null && !value.isEmpty()) {
 			return Double.valueOf(value);
 		} else {
 			return DIMINUTION_OF_VALIDATIONS_DEFAULT_VALUE;
@@ -90,7 +90,7 @@ public abstract class BreakdownConfiguration {
 	 */
 	public static Integer getBorderMeasurementDepth(ExplorationStrategy strategyConfig) {
 		String value = strategyConfig.getConfiguration().get(BORDER_MEASUREMENT_DEPTH);
-		if (value != null) {
+		if (value != null && !value.isEmpty()) {
 			return Integer.valueOf(value);
 		} else {
 			return BORDER_MEASUREMENT_DEPTH_DEFAULT_VALUE;
@@ -106,7 +106,7 @@ public abstract class BreakdownConfiguration {
 	 */
 	public static AccuracyDetermination getAccuracyDeterminationMethod(ExplorationStrategy strategyConfig) {
 		String value = strategyConfig.getConfiguration().get(ACCURACY_DETERMINATION_METHOD);
-		if (value != null) {
+		if (value != null && !value.isEmpty()) {
 			if (value.equalsIgnoreCase(AccuracyDetermination.RandomValidationSet.name())) {
 				return AccuracyDetermination.RandomValidationSet;
 			} else if (value.equalsIgnoreCase(AccuracyDetermination.DynamicSector.name())) {
@@ -127,7 +127,7 @@ public abstract class BreakdownConfiguration {
 	 */
 	public static DynamicSectorAccuracyScope getDynamicSectorAccuracyScope(ExplorationStrategy strategyConfig) {
 		String value = strategyConfig.getConfiguration().get(DYNAMIC_SECTOR_ACCURACY_SCOPE);
-		if (value != null) {
+		if (value != null && !value.isEmpty()) {
 			if (value.equalsIgnoreCase(DynamicSectorAccuracyScope.Local.name())) {
 				return DynamicSectorAccuracyScope.Local;
 			} else if (value.equalsIgnoreCase(DynamicSectorAccuracyScope.Global.name())) {
@@ -148,7 +148,7 @@ public abstract class BreakdownConfiguration {
 	 */
 	public static Integer getSizeOfValidationSet(ExplorationStrategy strategyConfig) {
 		String value = strategyConfig.getConfiguration().get(SIZE_OF_VALIDATION_SET);
-		if (value != null) {
+		if (value != null && !value.isEmpty()) {
 			return Integer.valueOf(value);
 		} else {
 			return SIZE_OF_VALIDATION_SET_DEFAULT_VALUE;
@@ -164,7 +164,7 @@ public abstract class BreakdownConfiguration {
 	 */
 	public static Double getDesiredModelAccuracy(ExplorationStrategy strategyConfig) {
 		String value = strategyConfig.getConfiguration().get(DESIRED_MODEL_ACCURACY);
-		if (value != null) {
+		if (value != null && !value.isEmpty()) {
 			return Double.valueOf(value);
 		} else {
 			return DESIRED_MODEL_ACCURACY_DEFAULT_VALUE;
@@ -180,7 +180,7 @@ public abstract class BreakdownConfiguration {
 	 */
 	public static Long getMaxExplorationTimeInMin(ExplorationStrategy strategyConfig) {
 		String value = strategyConfig.getConfiguration().get(MAX_EXPLORATION_TIME_IN_MIN);
-		if (value != null) {
+		if (value != null && !value.isEmpty()) {
 			return Long.valueOf(value);
 		} else {
 			return MAX_EXPLORATION_TIME_IN_MIN_DEFAULT_VALUE;
@@ -197,7 +197,7 @@ public abstract class BreakdownConfiguration {
 	 */
 	public static Integer getMaxNumberOfExperiments(ExplorationStrategy strategyConfig) {
 		String value = strategyConfig.getConfiguration().get(MAX_NUMBER_OF_EXPERIMENTS);
-		if (value != null) {
+		if (value != null && !value.isEmpty()) {
 			return Integer.valueOf(value);
 		} else {
 			return MAX_NUMBER_OF_EXPERIMENTS_DEFAULT_VALUE;
@@ -213,7 +213,7 @@ public abstract class BreakdownConfiguration {
 	 */
 	public static Integer getNumberOfInitialExperiments(ExplorationStrategy strategyConfig) {
 		String value = strategyConfig.getConfiguration().get(NUMBER_OF_INITIAL_EXPERIMENTS);
-		if (value != null) {
+		if (value != null && !value.isEmpty()) {
 			return Integer.valueOf(value);
 		} else {
 			return NUMBER_OF_INITIAL_EXPERIMENTS_DEFAULT_VALUE;
@@ -229,7 +229,7 @@ public abstract class BreakdownConfiguration {
 	 */
 	public static Integer getNumberOfExperimentsPerIteration(ExplorationStrategy strategyConfig) {
 		String value = strategyConfig.getConfiguration().get(NUMBER_OF_EXPERIMENTS_PER_ITERATION);
-		if (value != null) {
+		if (value != null && !value.isEmpty()) {
 			return Integer.valueOf(value);
 		} else {
 			return NUMBER_OF_EXPERIMENTS_PER_ITERATION_DEFAULT_VALUE;
@@ -245,7 +245,7 @@ public abstract class BreakdownConfiguration {
 	 */
 	public static Integer getNumberOfExperimentsPerSectionSplit(ExplorationStrategy strategyConfig) {
 		String value = strategyConfig.getConfiguration().get(NUMBER_OF_EXPERIMENTS_PER_SECTION_SPLIT);
-		if (value != null) {
+		if (value != null && !value.isEmpty()) {
 			return Integer.valueOf(value);
 		} else {
 			return NUMBER_OF_EXPERIMENTS_PER_SECTION_SPLIT_DEFAULT_VALUE;
@@ -276,7 +276,7 @@ public abstract class BreakdownConfiguration {
 	 */
 	public static Double getIrrelevantParameterThreshold(ExplorationStrategy strategyConfig) {
 		String value = strategyConfig.getConfiguration().get(IRRELEVANT_PARAMETER_THRESHOLD);
-		if (value != null) {
+		if (value != null && !value.isEmpty()) {
 			return Double.valueOf(value);
 		} else {
 			return IRRELEVANT_PARAMETER_THRESHOLD_DEFAULT_VALUE;

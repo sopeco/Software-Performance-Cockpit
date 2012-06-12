@@ -14,6 +14,7 @@ import org.sopeco.persistence.dataset.SimpleDataSet;
 import org.sopeco.persistence.dataset.SimpleDataSetRow;
 import org.sopeco.persistence.dataset.SimpleDataSetRowBuilder;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
+import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.plugin.std.analysis.common.AbstractAnalysisStrategy;
 import org.sopeco.plugin.std.analysis.util.RAdapter;
 import org.sopeco.util.Tools;
@@ -25,7 +26,8 @@ import org.sopeco.util.Tools;
  * @author Dennis Westermann, Jens Happe
  * 
  */
-public class MarsStrategy extends AbstractAnalysisStrategy implements IPredictionFunctionStrategy {
+public class MarsStrategy extends AbstractAnalysisStrategy implements
+		IPredictionFunctionStrategy {
 
 	Logger logger = LoggerFactory.getLogger(MarsStrategy.class);
 
@@ -47,11 +49,11 @@ public class MarsStrategy extends AbstractAnalysisStrategy implements IPredictio
 		deriveDependentAndIndependentParameters(dataset, config);
 
 		DataSetAggregated analysisDataSet = extractAnalysisDataSet(dataset);
-		
+
 		DataSetAggregated numericAnalysisDataSet = createNumericDataSet(analysisDataSet);
-		
+
 		loadDataSetInR(createValidSimpleDataSet(numericAnalysisDataSet));
-		
+
 		StringBuilder cmdBuilder = new StringBuilder();
 		cmdBuilder.append(getId());
 		cmdBuilder.append(" <- earth(");
@@ -66,7 +68,9 @@ public class MarsStrategy extends AbstractAnalysisStrategy implements IPredictio
 
 	@Override
 	public IPredictionFunctionResult getPredictionFunctionResult() {
-		return new PredictionFunctionResult(getFunctionAsString(), dependentParameterDefintion, config, nonNumericParameterEncodings);
+		return new PredictionFunctionResult(getFunctionAsString(),
+				dependentParameterDefintion, config,
+				nonNumericParameterEncodings);
 	}
 
 	/**
@@ -74,12 +78,18 @@ public class MarsStrategy extends AbstractAnalysisStrategy implements IPredictio
 	 *         JavaScript syntax
 	 */
 	private String getFunctionAsString() {
-		String fs = RAdapter.getWrapper().executeRCommandString("cat(format(" + getId() + ", style=\"max\"))");
+		String fs = RAdapter.getWrapper().executeRCommandString(
+				"cat(format(" + getId() + ", style=\"max\"))");
 		fs = fs.replace("\n ", "");
 		fs = fs.replace("+  ", "+ ");
 		fs = fs.replace("-  ", "- ");
 		fs = fs.replace("max", "Math.max");
 		fs = fs.replaceAll("\\s\\s+", " "); // remove double blanks
+		for (ParameterDefinition pd : independentParameterDefinitions) {
+			// workaround for the mars behaviour that it adds a 1 to the
+			// variable name if it is a boolean value
+			fs = fs.replaceAll(pd.getFullName("_") + "1", pd.getFullName("_"));
+		}
 		return fs;
 	}
 
@@ -88,45 +98,53 @@ public class MarsStrategy extends AbstractAnalysisStrategy implements IPredictio
 	 * number required by the MARS implementation. If the dataset contains less
 	 * than 8 rows the existing rows are duplicated.
 	 * 
-	 * @param dataSet the dataset passed to the analysis strategy
+	 * @param dataSet
+	 *            the dataset passed to the analysis strategy
 	 * @return a {@link SimpleDataSet} that contains at least 8 rows
 	 */
 	private SimpleDataSet createValidSimpleDataSet(DataSetAggregated dataSet) {
 		SimpleDataSet givenDataSet = dataSet.convertToSimpleDataSet();
-		
+
 		SimpleDataSetRowBuilder rb = new SimpleDataSetRowBuilder();
 		while (rb.size() < 8) {
-			
-			for(SimpleDataSetRow row : givenDataSet.getRowList()){
+
+			for (SimpleDataSetRow row : givenDataSet.getRowList()) {
 				rb.startRow();
-				for (ParameterValue<?> pv : row.getRowValues()){
-					
-					if(pv.getParameter().equals(dependentParameterDefintion)) {
-						// scatter due to Mars Error "cannot scale y (values are all equal to ..)"
+				for (ParameterValue<?> pv : row.getRowValues()) {
+
+					if (pv.getParameter().equals(dependentParameterDefintion)) {
+						// scatter due to Mars Error
+						// "cannot scale y (values are all equal to ..)"
 						Object newValue;
 						Random r = new Random();
-						switch(Tools.SupportedTypes.get(pv.getParameter().getType())){
+						switch (Tools.SupportedTypes.get(pv.getParameter()
+								.getType())) {
 						case Double:
-							newValue = pv.getValueAsDouble() * (1.0001 + 0.0001 * r.nextDouble());
+							newValue = pv.getValueAsDouble()
+									* (1.0001 + 0.0001 * r.nextDouble());
 							break;
 						case Integer:
-							if(r.nextBoolean()) {
-								newValue = pv.getValueAsInteger() + r.nextInt(2);
+							if (r.nextBoolean()) {
+								newValue = pv.getValueAsInteger()
+										+ r.nextInt(2);
 							} else {
-								newValue = pv.getValueAsInteger() - r.nextInt(2);
+								newValue = pv.getValueAsInteger()
+										- r.nextInt(2);
 							}
 							break;
 						default:
-							throw new IllegalArgumentException("Unsopported parameter type: " + pv.getParameter().getType());
+							throw new IllegalArgumentException(
+									"Unsopported parameter type: "
+											+ pv.getParameter().getType());
 						}
 						pv.setValue(newValue);
 					}
-					
+
 					rb.addParameterValue(pv.getParameter(), pv.getValue());
 				}
-				rb.finishRow(); 
+				rb.finishRow();
 			}
-			
+
 		}
 		return rb.createDataSet();
 	}
