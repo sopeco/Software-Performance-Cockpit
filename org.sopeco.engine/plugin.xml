@@ -5,5 +5,6 @@
    <extension-point id="org.sopeco.engine.analysis.analysisstrategy" name="Analysis Strategy" schema="schema/org.sopeco.engine.analysis.analysisstrategy.exsd"/>
    <extension-point id="org.sopeco.engine.experimentseries.parametervariation" name="Parameter Variation" schema="schema/org.sopeco.engine.experimentseries.parametervariation.exsd"/>
    <extension-point id="org.sopeco.engine.experimentseries.constantvalueassignment" name="Constant Value Assignment Extension" schema="schema/org.sopeco.engine.experimentseries.constantvalueassignment.exsd"/>
+   <extension-point id="org.sopeco.engine.processing" name="Data Processing Strategy" schema="schema/org.sopeco.engine.processing.exsd"/>
 
 </plugin>

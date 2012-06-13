@@ -17,3 +17,4 @@ org.sopeco.plugin.std.constantassignment.StringConstantValueAssignmentExtension
 org.sopeco.plugin.std.analysis.LinearRegressionStrategyExtension
 org.sopeco.plugin.std.analysis.MarsStrategyExtension
 org.sopeco.plugin.std.analysis.CorrelationAnalysisStrategyExtension
+org.sopeco.plugin.std.processing.basic.BasicStatisticalProcessingExtension

@@ -419,5 +419,28 @@ public class Tools {
 		
 		return result;
 	}
-	
+
+	/**
+	 * Returns the population standard deviation of the given values.
+	 * 
+	 * @param values input values
+	 * @return the population standard deviation 
+	 */
+	public static double stdDev(Double[] array) {
+		double[] temp = new double[array.length];
+		for (int i=0; i < array.length; i++)
+			temp[i] = array[i];
+		return stdDev(temp);
+	}
+
+	/**
+	 * Returns the population standard deviation of the given values.
+	 * 
+	 * @param values input values
+	 * @return the population standard deviation 
+	 */
+	public static double stdDev(Collection<Double> values) {
+		return stdDev(values.toArray(new Double[] {}));
+	}
+
 }

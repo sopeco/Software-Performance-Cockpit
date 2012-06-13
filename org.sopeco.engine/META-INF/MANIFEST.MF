@@ -21,6 +21,7 @@ Export-Package: org.sopeco.engine,
  org.sopeco.engine.experimentseries,
  org.sopeco.engine.measurementenvironment,
  org.sopeco.engine.measurementenvironment.rmi,
+ org.sopeco.engine.processing,
  org.sopeco.engine.registry,
  org.sopeco.engine.util,
  org.sopeco.engine.validation
