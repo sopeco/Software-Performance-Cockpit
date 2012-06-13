@@ -598,7 +598,7 @@ public class MeasurementsPackageImpl extends EPackageImpl implements Measurement
 		initEAttribute(getExtensibleElement_Name(), ecorePackage.getEString(), "name", null, 0, 1, ExtensibleElement.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(numberOfRepetitionsEClass, NumberOfRepetitions.class, "NumberOfRepetitions", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-		initEAttribute(getNumberOfRepetitions_NumberOfRepetitions(), ecorePackage.getELong(), "numberOfRepetitions", null, 0, 1, NumberOfRepetitions.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+		initEAttribute(getNumberOfRepetitions_NumberOfRepetitions(), ecorePackage.getEInt(), "numberOfRepetitions", null, 0, 1, NumberOfRepetitions.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
 		initEClass(timeOutEClass, TimeOut.class, "TimeOut", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 		initEAttribute(getTimeOut_MaxDuration(), ecorePackage.getELong(), "maxDuration", null, 0, 1, TimeOut.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

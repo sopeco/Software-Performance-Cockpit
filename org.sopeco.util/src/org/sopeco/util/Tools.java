@@ -17,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -144,6 +145,28 @@ public class Tools {
 		pw.close();
 	}
 
+	
+	/**
+	 * Writes the given content to the file.
+	 */
+	public static void printToFile(String content, String fileName) throws IOException  {
+		final PrintWriter pw = new PrintWriter(new FileWriter(fileName));
+		pw.println(content);
+		pw.close();
+	}
+
+
+	/**
+	 * Writes the given text to a file.
+	 */
+	public static void writeText(String fileName, String text) throws IOException {
+		PrintWriter pw = new PrintWriter(new FileOutputStream(fileName));
+		
+		pw.print(text);
+		
+		pw.close();
+	}
+
 //	/**
 //	 * Returns a list of files that their names match the given pattern.
 //	 * 
@@ -164,39 +187,33 @@ public class Tools {
 //	}
 
 	/**
-	 * Writes the given content to the file.
+	 * Reads the content of the given stream as a string
+	 * @return
+	 * @throws IOException 
 	 */
-	public static void printToFile(String content, String fileName) throws IOException  {
-		final PrintWriter pw = new PrintWriter(new FileWriter(fileName));
-		pw.println(content);
-		pw.close();
+	public static String readFromInputStream(InputStream is) throws IOException {
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+		
+		StringBuffer content = new StringBuffer();
+		String line;
+		
+		while ((line = reader.readLine()) != null)
+			content.append(line + " ");
+		
+		return content.toString();
 	}
 
 	/**
-	 * Reads the content of the given stream as a string
-	 * @return
+	 * Reads the content of the given file.
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
+	 * 
+	 * @see #readFromInputStream(InputStream)
 	 */
-	public static String readFromInputStream(InputStream is) {
-		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-			
-			StringBuffer content = new StringBuffer();
-			String line;
-			
-			while ((line = reader.readLine()) != null)
-				content.append(line + " ");
-			
-			return content.toString();
-			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-		return null;
+	public static String readFromFile(String fileName) throws FileNotFoundException, IOException {
+		return readFromInputStream(new FileInputStream(fileName));
 	}
-
+	
 	/**
 	 * Formats a <code>double</code> value into a <code>String</code>
 	 * with <i>d</i> digits after decimal point.
@@ -339,4 +356,68 @@ public class Tools {
 		return fullPath;
 	}
 
+	/**
+	 * Returns the average (mean) of the given values.
+	 * 
+	 * @param values a collection of values
+	 * @return the average as a double value
+	 */
+	public static double average(Collection<? extends Number> values) {
+		double result = 0;
+		
+		if (values.size() == 0)
+			return 0;
+		else {
+			for (Number n: values) {
+				result += n.doubleValue();
+			}
+		}
+		
+		return result / values.size();
+	}
+
+	/**
+	 * Returns the average (mean) of the given values.
+	 * 
+	 * @param values an array of values
+	 * @return the average as a double value
+	 */
+	public static double average(double[] values) {
+		double result = 0;
+		
+		if (values.length == 0)
+			return 0;
+		else {
+			for (Number n: values) {
+				result += n.doubleValue();
+			}
+		}
+		
+		return result / values.length;
+		
+	}
+
+	/**
+	 * Returns the population standard deviation of the given values.
+	 * 
+	 * @param values input values
+	 * @return the population standard deviation 
+	 */
+	public static double stdDev(double[] values) {
+		double result = 0;
+		
+		if (values.length < 1)
+			throw new IllegalArgumentException("Cannot calculated standard deviation on an empty set.");
+		
+		final double mean = average(values);
+		
+		for (double v: values) {
+			result += (v - mean) * (v - mean);
+		}
+		
+		result = Math.sqrt(result / values.length);
+		
+		return result;
+	}
+	
 }

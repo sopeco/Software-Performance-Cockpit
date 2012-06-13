@@ -8,6 +8,7 @@ import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
+import org.sopeco.persistence.entities.exceptions.ExperimentFailedException;
 import org.sopeco.persistence.util.ParameterCollection;
 
 /**

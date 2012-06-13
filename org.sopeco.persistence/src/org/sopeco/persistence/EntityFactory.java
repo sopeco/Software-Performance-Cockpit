@@ -141,7 +141,7 @@ public class EntityFactory {
 		return timeOut;
 	}
 	
-	public static NumberOfRepetitions createNumberOfRepetitionsTerminationCondition(long numberOfRepetitions){
+	public static NumberOfRepetitions createNumberOfRepetitionsTerminationCondition(int numberOfRepetitions){
 		NumberOfRepetitions numRep = new NumberOfRepetitions();
 		numRep.setNumberOfRepetitions(numberOfRepetitions);
 		return numRep;

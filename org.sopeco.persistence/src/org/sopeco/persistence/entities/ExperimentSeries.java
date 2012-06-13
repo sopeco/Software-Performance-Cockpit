@@ -21,6 +21,7 @@ import javax.persistence.OneToMany;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetAppender;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
+import org.sopeco.persistence.entities.exceptions.ExperimentFailedException;
 import org.sopeco.persistence.entities.keys.ExperimentSeriesPK;
 
 /**
@@ -125,15 +126,17 @@ public class ExperimentSeries implements Serializable {
 	 * @return all data measured during the failed experiment series runs of
 	 *         this experiment series
 	 */
-	public DataSetAggregated getAllExperimentSeriesRunFailedResultsInOneDataSet() {
-		DataSetAppender appender = new DataSetAppender();
+	public List<ExperimentFailedException> getAllExperimentFailedExceptions() {
+		List<ExperimentFailedException> result = new ArrayList<ExperimentFailedException>();
+		
 		for (ExperimentSeriesRun seriesRun : getExperimentSeriesRuns()) {
-			if (seriesRun.getFailedResultDataSet() != null) {
-				appender.append(seriesRun.getFailedResultDataSet());
+			final List<ExperimentFailedException> seriesExceptions = seriesRun.getExperimentFailedExceptions();
+			if (seriesExceptions != null) {
+				result.addAll(seriesExceptions);
 			}
 		}
 
-		return appender.createDataSet();
+		return result;
 	}
 
 	/**

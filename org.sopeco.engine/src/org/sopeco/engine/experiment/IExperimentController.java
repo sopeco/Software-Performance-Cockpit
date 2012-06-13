@@ -8,6 +8,7 @@ import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
+import org.sopeco.persistence.entities.exceptions.ExperimentFailedException;
 import org.sopeco.persistence.util.ParameterCollection;
 
 
@@ -58,9 +59,9 @@ public interface IExperimentController {
 	public DataSetAggregated getLastSuccessfulExperimentResults();
 
 	/**
-	 * Returns the single data row that is generated as the result of the last failed experiment.
+	 * Returns the experiment failed exception that is generated as the result of the last failed experiment.
 	 * 
-	 * @return failed result set, if the last experiment failed, or <code>null</code> otherwise.
+	 * @return an experiment failed exception, if the last experiment failed, or <code>null</code> otherwise.
 	 */
-	public DataSetAggregated getLastFailedExperimentResults();
+	public ExperimentFailedException getLastFailedExperimentException();
 }

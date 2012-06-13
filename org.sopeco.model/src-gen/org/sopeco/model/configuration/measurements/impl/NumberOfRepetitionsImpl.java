@@ -44,7 +44,7 @@ public class NumberOfRepetitionsImpl extends ExperimentTerminationConditionImpl 
 	 * @generated
 	 * @ordered
 	 */
-	protected static final long NUMBER_OF_REPETITIONS_EDEFAULT = 0L;
+	protected static final int NUMBER_OF_REPETITIONS_EDEFAULT = 0;
 
 	/**
 	 * The cached value of the '{@link #getNumberOfRepetitions() <em>Number Of Repetitions</em>}' attribute.
@@ -54,7 +54,7 @@ public class NumberOfRepetitionsImpl extends ExperimentTerminationConditionImpl 
 	 * @generated
 	 * @ordered
 	 */
-	protected long numberOfRepetitions = NUMBER_OF_REPETITIONS_EDEFAULT;
+	protected int numberOfRepetitions = NUMBER_OF_REPETITIONS_EDEFAULT;
 
 	/**
 	 * <!-- begin-user-doc -->
@@ -80,7 +80,7 @@ public class NumberOfRepetitionsImpl extends ExperimentTerminationConditionImpl 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public long getNumberOfRepetitions() {
+	public int getNumberOfRepetitions() {
 		return numberOfRepetitions;
 	}
 
@@ -89,8 +89,8 @@ public class NumberOfRepetitionsImpl extends ExperimentTerminationConditionImpl 
 	 * <!-- end-user-doc -->
 	 * @generated
 	 */
-	public void setNumberOfRepetitions(long newNumberOfRepetitions) {
-		long oldNumberOfRepetitions = numberOfRepetitions;
+	public void setNumberOfRepetitions(int newNumberOfRepetitions) {
+		int oldNumberOfRepetitions = numberOfRepetitions;
 		numberOfRepetitions = newNumberOfRepetitions;
 		if (eNotificationRequired())
 			eNotify(new ENotificationImpl(this, Notification.SET, MeasurementsPackage.NUMBER_OF_REPETITIONS__NUMBER_OF_REPETITIONS, oldNumberOfRepetitions, numberOfRepetitions));
@@ -119,7 +119,7 @@ public class NumberOfRepetitionsImpl extends ExperimentTerminationConditionImpl 
 	public void eSet(int featureID, Object newValue) {
 		switch (featureID) {
 			case MeasurementsPackage.NUMBER_OF_REPETITIONS__NUMBER_OF_REPETITIONS:
-				setNumberOfRepetitions((Long)newValue);
+				setNumberOfRepetitions((Integer)newValue);
 				return;
 		}
 		super.eSet(featureID, newValue);

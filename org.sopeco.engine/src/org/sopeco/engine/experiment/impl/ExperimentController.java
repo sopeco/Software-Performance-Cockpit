@@ -8,18 +8,17 @@ import org.slf4j.LoggerFactory;
 import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
 import org.sopeco.engine.experiment.IExperimentController;
-import org.sopeco.engine.measurementenvironment.ExperimentFailedException;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetRowBuilder;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
-import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
+import org.sopeco.persistence.entities.exceptions.ExperimentFailedException;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.persistence.util.ParameterCollection;
 import org.sopeco.persistence.util.ParameterCollectionFactory;
@@ -45,8 +44,8 @@ public class ExperimentController implements IExperimentController {
 	ParameterCollection<ParameterValue<?>> initializationPVs = ParameterCollectionFactory.createParameterValueCollection();
 	ParameterCollection<ParameterValue<?>> preparationPVs = ParameterCollectionFactory.createParameterValueCollection();
 
-	private DataSetAggregated failedDataSet = null;
 	private DataSetAggregated successfulDataSet = null;
+	private ExperimentFailedException experimentFailedException = null;
 	
 	@Override
 	public void initialize(ParameterCollection<ParameterValue<?>> initializationPVs, MeasurementEnvironmentDefinition meDefinition) {
@@ -109,7 +108,7 @@ public class ExperimentController implements IExperimentController {
 			if (experimentWasSuccessful) {
 				currentExperimentSeriesRun.appendSuccessfulResults(successfulDataSet);
 			} else {
-				currentExperimentSeriesRun.appendFailedResults(failedDataSet);
+				currentExperimentSeriesRun.addExperimentFailedException(experimentFailedException);
 			}
 			persistenceProvider.store(currentExperimentSeriesRun);
 		} catch (DataNotFoundException e) {
@@ -153,13 +152,13 @@ public class ExperimentController implements IExperimentController {
 		try {
 
 			boolean experimentSuccessful = false;
-			String error = "";
+			ExperimentFailedException error = null;
 			
-			ParameterCollection<ParameterValue<?>> paramCollection = ParameterCollectionFactory.createParameterValueCollection(inputPVs);
+			ParameterCollection<ParameterValue<?>> inputParamCollection = ParameterCollectionFactory.createParameterValueCollection(inputPVs);
 			
 			// 0. prepare to pass all parameter values to me controller
-			paramCollection.addAll(initializationPVs);
-			paramCollection.addAll(preparationPVs);
+			inputParamCollection.addAll(initializationPVs);
+			inputParamCollection.addAll(preparationPVs);
 			
 			// 1. run the experiment
 			Collection<ParameterValueList<?>> observations = null;
@@ -174,9 +173,9 @@ public class ExperimentController implements IExperimentController {
 				logger.debug("Trying to use cached results.");
 		
 				DataSetAggregated allMeasurementsOfExperimentSeries = currentExperimentSeriesRun.getExperimentSeries().getAllExperimentSeriesRunSuccessfulResultsInOneDataSet();
-				if (allMeasurementsOfExperimentSeries.containsRowWithInputValues(paramCollection)){
+				if (allMeasurementsOfExperimentSeries.containsRowWithInputValues(inputParamCollection)){
 					try {
-						observations = allMeasurementsOfExperimentSeries.getObservationParameterValues(paramCollection);
+						observations = allMeasurementsOfExperimentSeries.getObservationParameterValues(inputParamCollection);
 						experimentSuccessful = true;
 						runExperimentOnME = false;
 						logger.debug("Successfully read experiment results from cache.");
@@ -196,13 +195,12 @@ public class ExperimentController implements IExperimentController {
 			if(runExperimentOnME) {
 				try {
 					logger.debug("Starting experiment on measurement environment...");
-					observations = meController.runExperiment(paramCollection, terminationCondition);
+					observations = meController.runExperiment(inputParamCollection, terminationCondition);
 					experimentSuccessful = true;
-					logger.debug("Experiment finished successful on measurement environment.");
+					logger.debug("Experiment finished successfully on measurement environment.");
 				} catch (ExperimentFailedException e) {
-					error = e.getMessage();
-					logger.warn("The experiment failed. Reason: {}", error);
-					// TODO can we keep the log of these errors?
+					error = e;
+					logger.warn("The experiment failed. Reason: {}", error.getMessage());
 				}
 			}
 
@@ -219,7 +217,7 @@ public class ExperimentController implements IExperimentController {
 //				builder.addInputParameterValue(pv.getParameter(), pv.getValue());
 
 			// 2.3. add input values
-			for (ParameterValue<?> parameterValue : paramCollection)
+			for (ParameterValue<?> parameterValue : inputParamCollection)
 				builder.addInputParameterValue(parameterValue.getParameter(), parameterValue.getValue());
 
 			// 2.4. add observation values, if the experiment was successful
@@ -232,10 +230,11 @@ public class ExperimentController implements IExperimentController {
 
 			if (experimentSuccessful) {
 				successfulDataSet = builder.createDataSet();
-				failedDataSet = null;
+				experimentFailedException = null;
 			} else {
 				successfulDataSet = null;
-				failedDataSet = builder.createDataSet();
+				experimentFailedException = error;
+				experimentFailedException.setInputParameterValues(inputParamCollection);
 			}
 
 			return experimentSuccessful;
@@ -252,7 +251,7 @@ public class ExperimentController implements IExperimentController {
 	}
 
 	@Override
-	public DataSetAggregated getLastFailedExperimentResults() {
-		return failedDataSet;
+	public ExperimentFailedException getLastFailedExperimentException() {
+		return experimentFailedException;
 	}
 }

@@ -33,12 +33,12 @@ public interface NumberOfRepetitions extends ExperimentTerminationCondition {
 	 * </p>
 	 * <!-- end-user-doc -->
 	 * @return the value of the '<em>Number Of Repetitions</em>' attribute.
-	 * @see #setNumberOfRepetitions(long)
+	 * @see #setNumberOfRepetitions(int)
 	 * @see org.sopeco.model.configuration.measurements.MeasurementsPackage#getNumberOfRepetitions_NumberOfRepetitions()
 	 * @model
 	 * @generated
 	 */
-	long getNumberOfRepetitions();
+	int getNumberOfRepetitions();
 
 	/**
 	 * Sets the value of the '{@link org.sopeco.model.configuration.measurements.NumberOfRepetitions#getNumberOfRepetitions <em>Number Of Repetitions</em>}' attribute.
@@ -48,6 +48,6 @@ public interface NumberOfRepetitions extends ExperimentTerminationCondition {
 	 * @see #getNumberOfRepetitions()
 	 * @generated
 	 */
-	void setNumberOfRepetitions(long value);
+	void setNumberOfRepetitions(int value);
 
 } // NumberOfRepetitions

@@ -100,7 +100,7 @@
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="NumberOfRepetitions" eSuperTypes="#//measurements/ExperimentTerminationCondition">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="numberOfRepetitions"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EInt"/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="TimeOut" eSuperTypes="#//measurements/ExperimentTerminationCondition">
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="maxDuration" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//ELong"/>

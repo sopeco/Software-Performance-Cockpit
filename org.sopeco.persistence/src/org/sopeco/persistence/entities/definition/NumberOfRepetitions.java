@@ -9,18 +9,18 @@ public class NumberOfRepetitions extends ExperimentTerminationCondition {
 
 	private static final long serialVersionUID = 1L;
 
-	protected long numberOfRepetitions = 0;
+	protected int numberOfRepetitions = 0;
 	
 	public NumberOfRepetitions() {
 		super();
 	}
 
-	public long getNumberOfRepetitions() {
+	public int getNumberOfRepetitions() {
 		return numberOfRepetitions;
 	}
 
 	
-	public void setNumberOfRepetitions(long newNumberOfRepetitions) {
+	public void setNumberOfRepetitions(int newNumberOfRepetitions) {
 		numberOfRepetitions = newNumberOfRepetitions;
 	}
 

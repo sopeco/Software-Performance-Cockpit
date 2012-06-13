@@ -1,6 +1,8 @@
 package org.sopeco.persistence.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,10 +12,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
-import javax.persistence.PostPersist;
-import javax.persistence.PostUpdate;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Transient;
 
 import org.slf4j.Logger;
@@ -21,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.sopeco.persistence.PersistenceProviderFactory;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetAppender;
+import org.sopeco.persistence.entities.exceptions.ExperimentFailedException;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 
 /**
@@ -49,11 +48,8 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 	@Column(name = "successfulResultDataSetId")
 	private String successfulResultDataSetId;
 
-	@Transient
-	private DataSetAggregated failedResultDataSet;
-
-	@Column(name = "failedResultDataSetId")
-	private String failedResultDataSetId;
+	@Column(name = "experimentFailedExceptions")
+	private List<ExperimentFailedException> experimentFailedExceptions = new ArrayList<ExperimentFailedException>();
 
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
 	@JoinColumns({ @JoinColumn(name = "scenarioInstanceName", referencedColumnName = "scenarioInstanceName"),
@@ -91,18 +87,10 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 		return successfulResultDataSet;
 	}
 
-	public DataSetAggregated getFailedResultDataSet() {
-		if (failedResultDataSet == null && failedResultDataSetId != null) {
-			try {
-				failedResultDataSet = PersistenceProviderFactory.getPersistenceProvider().loadDataSet(
-						failedResultDataSetId);
-			} catch (DataNotFoundException e) {
-				logger.warn(e.getMessage());
-			}
-		}
-		return failedResultDataSet;
+	public List<ExperimentFailedException> getExperimentFailedExceptions() {
+		return experimentFailedExceptions;
 	}
-
+	
 	public void setSuccessfulResultDataSet(DataSetAggregated resultDataSet) {
 
 		this.successfulResultDataSet = resultDataSet;
@@ -110,11 +98,14 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 
 	}
 
-	public void setFailedResultDataSet(DataSetAggregated resultDataSet) {
-		this.failedResultDataSet = resultDataSet;
-		this.failedResultDataSetId = resultDataSet.getID();
+	public void addExperimentFailedException(ExperimentFailedException exception) {
+		this.experimentFailedExceptions.add(exception);
 	}
-
+	
+	public void setExperimentFailedExceptions(List<ExperimentFailedException> exceptions) {
+		this.experimentFailedExceptions = exceptions;
+	}
+	
 	public Long getTimestamp() {
 		return timestamp;
 	}
@@ -127,32 +118,20 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 	 * Utility functions
 	 */
 	/**
-	 * Stores the successful and the
-	 * failed result data sets in the database.
+	 * Stores the successful result data set in the database.
 	 */
 	public void storeDataSets() {
 		if(this.getSuccessfulResultDataSet()!=null) {
 			PersistenceProviderFactory.getPersistenceProvider().store(this.getSuccessfulResultDataSet());
 		}
-		if(this.getFailedResultDataSet()!=null) {
-			PersistenceProviderFactory.getPersistenceProvider().store(this.getFailedResultDataSet());
-		}
 	}
 	/**
-	 * Removes the successful and the
-	 * failed result data sets from the database.
+	 * Removes the successful result data set from the database.
 	 */
 	public void removeDataSets() {
 		if(this.successfulResultDataSetId!=null) {
 			try {
 				PersistenceProviderFactory.getPersistenceProvider().remove(this.getSuccessfulResultDataSet());
-			} catch (DataNotFoundException e) {
-				logger.warn(e.getMessage());
-			}
-		}
-		if(this.failedResultDataSetId!=null) {
-			try {
-				PersistenceProviderFactory.getPersistenceProvider().remove(this.getFailedResultDataSet());
 			} catch (DataNotFoundException e) {
 				logger.warn(e.getMessage());
 			}
@@ -175,23 +154,6 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 		appender.append(experimentRunResults);
 		this.setSuccessfulResultDataSet(appender.createDataSet());
 
-	}
-
-	/**
-	 * Adds the given failed experiment run results to the result data set of
-	 * this {@link ExperimentSeriesRun}.
-	 * 
-	 * @param experimentRunResults
-	 *            - a dataSet containing the parameter values of one or many
-	 *            experiment runs that failed
-	 */
-	public void appendFailedResults(DataSetAggregated experimentRunResults) {
-
-		DataSetAppender appender = new DataSetAppender();
-		if (this.getFailedResultDataSet() != null)
-			appender.append(failedResultDataSet);
-		appender.append(experimentRunResults);
-		this.setFailedResultDataSet(appender.createDataSet());
 	}
 
 	/*
@@ -227,7 +189,6 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 
 	@Override
 	public String toString() {
-
 		return "ExperimentSeriesRun{" + "timestamp='" + timestamp + '\'' + '}';
 	}
 
@@ -245,7 +206,5 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 	public int compareTo(ExperimentSeriesRun compareRun) {
 		return (int) (compareRun.getTimestamp() - this.getTimestamp());
 	}
-
-	
 
 }
