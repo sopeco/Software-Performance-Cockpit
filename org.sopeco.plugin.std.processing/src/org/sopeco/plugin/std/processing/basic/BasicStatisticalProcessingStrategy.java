@@ -110,7 +110,10 @@ public class BasicStatisticalProcessingStrategy extends AbstractSoPeCoExtensionA
 				
 				else 
 					if (pd.getRole() == ParameterRole.OBSERVATION) {
-						ParameterValueList<?> pvl = row.getObservableParameterValues(pd);
+						ParameterValueList<?> pvl = null;
+						try { 
+							pvl = row.getObservableParameterValues(pd);
+						} catch (Exception e) {}
 						
 						if (pvl != null) {
 							
