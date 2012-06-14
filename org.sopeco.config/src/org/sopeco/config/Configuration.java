@@ -65,6 +65,7 @@ public class Configuration implements IConfiguration {
 	 */
 	private Configuration(Class<?> mainClass) {
 		try {
+			logger.info("Initializing SoPeCo configuration module{}.", (mainClass==null?"":" with main class " + mainClass.getName() + ""));
 			setDefaultValues(mainClass);
 		} catch (ConfigurationException e) {
 			throw new RuntimeException(e);

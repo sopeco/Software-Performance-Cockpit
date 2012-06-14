@@ -35,6 +35,8 @@ import org.sopeco.util.Tools;
  */
 public class ExtensionRegistry implements IExtensionRegistry {
 
+	public static final String CONF_TRY_EQUINOX = "org.sopeco.engine.registry.tryEquinox";
+
 	private static Logger logger = LoggerFactory.getLogger(ExtensionRegistry.class);
 	
 	/**
@@ -43,7 +45,9 @@ public class ExtensionRegistry implements IExtensionRegistry {
 	public static final String[] EXTENSION_POINTS = {
 		"org.sopeco.engine.experimentseries.explorationstrategy",
 		"org.sopeco.engine.experimentseries.parametervariation",
-		"org.sopeco.engine.analysis.analysisstrategy"
+		"org.sopeco.engine.analysis.analysisstrategy",
+		"org.sopeco.engine.experimentseries.constantvalueassignment",
+		"org.sopeco.engine.processing"
 	};
 
 	private static final String EXTENSIONS_FILE_NAME = "extensions.info";
@@ -57,6 +61,7 @@ public class ExtensionRegistry implements IExtensionRegistry {
 	private Map<Class, Extensions> extensionsMap = new HashMap<Class, Extensions>();
 	
 	private boolean initialized = false;
+	private boolean tryEquinox = true;
 
 	/**
 	 * Returns a singleton instance of the extension registry.
@@ -104,8 +109,10 @@ public class ExtensionRegistry implements IExtensionRegistry {
 	 * Initializes the plugin registry.
 	 */
 	private void initialize() {
-		if (!initialized)
-			loadEngineExtensions(true);
+		if (!initialized) {
+			tryEquinox = Configuration.getSingleton().getPropertyAsBoolean(CONF_TRY_EQUINOX, true);
+			loadEngineExtensions();
+		}
 		else 
 			logger.warn("Plugin registry cannot be re-initialized.");
 		
@@ -114,10 +121,11 @@ public class ExtensionRegistry implements IExtensionRegistry {
 	
 	/**
 	 * Loads all the extensions that are supported by the engine.
-	 * 
-	 * @param tryEquinox if true, the method first tries loading the plugins using the Eclipse Equinox framework.
 	 */
-	private void loadEngineExtensions(boolean tryEquinox) {
+	private void loadEngineExtensions() {
+		logger.info("Loading SoPeCo engine extensions...");
+		
+		// if tryEquinox is true, the method first tries loading the plugins using the Eclipse Equinox framework.
 		if (tryEquinox) {
 			final org.eclipse.core.runtime.IExtensionRegistry registry = Platform.getExtensionRegistry();
 			
@@ -129,6 +137,7 @@ public class ExtensionRegistry implements IExtensionRegistry {
 			
 			// loads all extensions
 			for (String id: EXTENSION_POINTS) {
+				logger.info("Loading extensions for {}...", id);
 				loadExtensions(registry, id);
 			}
 		} else {
@@ -152,6 +161,7 @@ public class ExtensionRegistry implements IExtensionRegistry {
 				if (o instanceof ISoPeCoExtension) {
 					final ISoPeCoExtension<?> es = (ISoPeCoExtension<?>) o;
 					extensions.put(es.getName(), es);
+					logger.debug("Loading extension {}.", es.getName());
 				}
 			} catch (CoreException e) {
 				logger.warn("Could not load the {} extension. Error: {}", ext.getName(), e.getMessage());
@@ -168,7 +178,7 @@ public class ExtensionRegistry implements IExtensionRegistry {
 	@SuppressWarnings("rawtypes")
 	private void loadExtensions() {
 		final IConfiguration config = Configuration.getSingleton();
-		final String pluginsDirName = config.getPropertyAsStr(IConfiguration.CONF_APP_ROOT_FOLDER) + File.separator + config.getPropertyAsStr(IConfiguration.CONF_PLUGINS_FOLDER); 
+		final String pluginsDirName = config.getAppRootDirectory() + File.separator + config.getPropertyAsStr(IConfiguration.CONF_PLUGINS_FOLDER); 
 		final File pluginsDir = new File(pluginsDirName);
 		final String defExtensionsFileName = pluginsDirName + File.separatorChar + EXTENSIONS_FILE_NAME;
 		final File defExtensionsFile = new File(defExtensionsFileName);
@@ -181,6 +191,10 @@ public class ExtensionRegistry implements IExtensionRegistry {
 			eURLs = ClassLoader.getSystemResources(EXTENSIONS_FILE_NAME);
 			while (eURLs.hasMoreElements()) {
 				extensioInfoURLs.add(eURLs.nextElement());
+			}
+			URL enginePathURL = this.getClass().getClassLoader().getResource(EXTENSIONS_FILE_NAME);
+			if (enginePathURL != null) {
+				extensioInfoURLs.add(enginePathURL);
 			}
 		} catch (IOException e1) {
 		}
@@ -196,6 +210,8 @@ public class ExtensionRegistry implements IExtensionRegistry {
 		
 		for (URL url: extensioInfoURLs)
 			logger.debug("Found extensions info at: {}", url);
+		if (extensioInfoURLs.size() == 0)
+			logger.warn("Found no extensions information.");
 		
 		// 2. gather the list of all extension class files
 		Set<String> extensionClasses = new HashSet<String>();
@@ -207,7 +223,7 @@ public class ExtensionRegistry implements IExtensionRegistry {
 			}
 		}
 		
-		ClassLoader cl = ClassLoader.getSystemClassLoader();
+		ClassLoader cl = this.getClass().getClassLoader();
 		
 		if (pluginsDir.exists()) {
 			String[] names = Tools.getFileNames(pluginsDirName, "*.jar");

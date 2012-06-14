@@ -6,7 +6,8 @@
          <meta.schema plugin="org.sopeco.engine" id="org.sopeco.engine.processing" name="Data Processing Strategy"/>
       </appinfo>
       <documentation>
-         The extension point for providing new data processing strategies. 
+         The extension point for providing data processing methods. 
+
       </documentation>
    </annotation>
 
