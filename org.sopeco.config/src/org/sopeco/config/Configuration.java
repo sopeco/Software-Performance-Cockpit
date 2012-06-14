@@ -116,6 +116,15 @@ public class Configuration implements IConfiguration {
 	}
 
 	@Override
+	public boolean getPropertyAsBoolean(String key, boolean defaultValue) {
+		final String value = getPropertyAsStr(key);
+		if (value == null)
+			return defaultValue;
+		else
+			return Tools.strEqualName("true", value) || Tools.strEqualName("yes", value);
+	}
+
+	@Override
 	public void setProperty(String key, Object value) {
 		properties.put(key, value);
 	}

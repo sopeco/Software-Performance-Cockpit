@@ -72,6 +72,23 @@ public interface IConfiguration {
 	public String getPropertyAsStr(String key);
 
 	/**
+	 * Returns the configured value of the given property as a Boolean value.
+	 * 
+	 * This method uses the {@link #getPropertyAsStr(String)} and interprets 
+	 * values 'yes' and 'true' (case insensitive) as a Boolean <code>true</code> value and 
+	 * all other values as <code>false</code>. If the value of the given property is <code>null</code>
+	 * it returns the passed default value. 
+	 * 
+	 * @param key property key
+	 * @param defaultValue the default value returned in case of a null property value
+	 * 
+	 * @return the value of the given property as a boolean
+	 * 
+	 * @see #getProperty(String)
+	 */
+	public boolean getPropertyAsBoolean(String key, boolean defaultValue);
+
+	/**
 	 * Sets the value of a property for the current run.
 	 * 
 	 * @param key property key
