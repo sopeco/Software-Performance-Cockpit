@@ -303,6 +303,7 @@ public class Tools {
 		return getRootFolder(null);
 	}
 
+
 	/**
 	 * Detects and returns the root folder of the running application.
 	 */
@@ -311,16 +312,21 @@ public class Tools {
 			mainClass = Tools.class;
 		
 		final String baseErrorMsg = "Cannot locate root folder.";
-		
+
 		final String classFile = mainClass.getName().replaceAll("\\.", "/") + ".class";
 		final URL classURL = ClassLoader.getSystemResource(classFile);
-		
+
+		String fullPath = "";
+		String sampleClassFile = "/org/sopeco/util/Tools.class";
 		if (classURL == null) {
-			logger.warn("{} The application may be running in an OSGi container.", baseErrorMsg);
-			return ".";
+			Tools tempObject = new Tools();
+			fullPath = tempObject.getClass().getResource(sampleClassFile).toString();
+//			logger.warn("{} The application may be running in an OSGi container.", baseErrorMsg);
+//			return ".";
+		} else {
+			fullPath = classURL.toString();
 		}
 		
-		String fullPath = ClassLoader.getSystemResource(classFile).toString();
 		
 		try {
 			fullPath = URLDecoder.decode(fullPath, "UTF-8");
@@ -336,6 +342,9 @@ public class Tools {
 		if (fullPath.indexOf("jar:") > -1) {
 			fullPath = fullPath.replaceFirst("jar:", "").replaceFirst("!" + classFile, "");
 			fullPath = fullPath.substring(0, fullPath.lastIndexOf('/'));
+		}
+		if (fullPath.indexOf("bundleresource:") > -1) {
+			fullPath = fullPath.substring(0, fullPath.indexOf(sampleClassFile));
 		}
 		
 		// replace the java separator with the 
