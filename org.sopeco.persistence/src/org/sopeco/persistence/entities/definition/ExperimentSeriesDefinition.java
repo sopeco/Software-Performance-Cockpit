@@ -29,6 +29,7 @@ public class ExperimentSeriesDefinition implements Serializable {
 
 	protected String name = null;
 	
+	private long version = 0;
 
 	public ExperimentSeriesDefinition() {
 		super();
@@ -120,6 +121,14 @@ public class ExperimentSeriesDefinition implements Serializable {
 		} else if (!preperationAssignments.equals(other.preperationAssignments))
 			return false;
 		return true;
+	}
+
+	public long getVersion() {
+		return version;
+	}
+
+	public void setVersion(long version) {
+		this.version = version;
 	}
 
 	

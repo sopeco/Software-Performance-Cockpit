@@ -30,6 +30,7 @@ public class ExplorationStrategy extends ExtensibleElement {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((analysisConfigurations == null) ? 0 : analysisConfigurations.hashCode());
+		result = prime * result + ((configuration == null) ? 0 : configuration.hashCode());
 		return result;
 	}
 
@@ -45,6 +46,11 @@ public class ExplorationStrategy extends ExtensibleElement {
 			if (other.analysisConfigurations != null)
 				return false;
 		} else if (!analysisConfigurations.equals(other.analysisConfigurations))
+			return false;
+		if (configuration == null) {
+			if (other.configuration != null)
+				return false;
+		} else if (!configuration.equals(other.configuration))
 			return false;
 		return true;
 	}

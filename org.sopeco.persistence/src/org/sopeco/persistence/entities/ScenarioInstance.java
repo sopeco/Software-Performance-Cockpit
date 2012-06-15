@@ -14,6 +14,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
+import org.sopeco.persistence.EntityFactory;
+import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.persistence.entities.keys.ScenarioInstancePK;
 
@@ -22,8 +24,7 @@ import org.sopeco.persistence.entities.keys.ScenarioInstancePK;
  * 
  * @author Dennis Westermann
  */
-@NamedQueries({
-		@NamedQuery(name = "findAllScenarioInstances", query = "SELECT o FROM ScenarioInstance o"),
+@NamedQueries({ @NamedQuery(name = "findAllScenarioInstances", query = "SELECT o FROM ScenarioInstance o"),
 		@NamedQuery(name = "findScenarioInstancesByName", query = "SELECT o FROM ScenarioInstance o WHERE o.primaryKey.name = :name") })
 @Entity
 public class ScenarioInstance implements Serializable {
@@ -160,13 +161,23 @@ public class ScenarioInstance implements Serializable {
 			series.storeDataSets();
 		}
 	}
-	
+
 	/**
 	 * Removes the data sets of all experiment runs in the database.
 	 */
 	public void removeDataSets() {
 		for (ExperimentSeries series : this.experimentSeries) {
 			series.removeDataSets();
+		}
+	}
+
+	public void extendScenarioInstance(ScenarioDefinition otherSD) {
+		List<ExperimentSeriesDefinition> esdList = this.getScenarioDefinition().extendBy(otherSD);
+		for (ExperimentSeriesDefinition esd : esdList) {
+			ExperimentSeries expSeries = EntityFactory.createExperimentSeries(esd);
+			expSeries.setScenarioInstance(this);
+			this.getExperimentSeriesList().add(expSeries);
+
 		}
 	}
 

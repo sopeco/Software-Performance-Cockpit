@@ -70,7 +70,7 @@ public class EngineImp implements IEngine {
 			logger.debug("Loaded ScenarioInstance {} from database", scenarioInstance);
 			logger.debug("Compare Scenario definition defined in the specification with the one loaded from database");
 
-			checkScenarioDefinition(scenarioInstance, scenario);
+			checkScenarioDefinition(scenarioInstance, getConfiguration().getMeasurementControllerURIAsStr(), scenario);
 
 		} catch (DataNotFoundException e) {
 			scenarioInstance = EntityFactory.createScenarioInstance(scenario, getConfiguration().getMeasurementControllerURIAsStr());
@@ -78,24 +78,23 @@ public class EngineImp implements IEngine {
 			logger.debug("Created new ScenarioInstance {}", scenarioInstance);
 		}
 
-
-		//TODO: Check if this is the intended behaviour
-		for(MeasurementSpecification measSpec : scenario.getMeasurementSpecifications()) {
+		// TODO: Check if this is the intended behaviour
+		for (MeasurementSpecification measSpec : scenario.getMeasurementSpecifications()) {
 			experimentController.initialize(EngineTools.getConstantParameterValues(measSpec.getInitializationAssignemts()),
-				scenario.getMeasurementEnvironmentDefinition());
+					scenario.getMeasurementEnvironmentDefinition());
 
 			// loop over all the experiment series in the specs
 			for (ExperimentSeriesDefinition esd : measSpec.getExperimentSeriesDefinitions()) {
-		
+
 				ExperimentSeries series = scenarioInstance.getExperimentSeries(esd.getName());
 				if (series == null) {
 					series = EntityFactory.createExperimentSeries(esd);
 					scenarioInstance.getExperimentSeriesList().add(series);
 					series.setScenarioInstance(scenarioInstance);
-		
+
 					persistenceProvider.store(series);
 				}
-		
+
 				experimentSeriesManager.runExperimentSeries(series);
 			}
 		}
@@ -117,21 +116,31 @@ public class EngineImp implements IEngine {
 	 * 
 	 * @param scenarioInstance
 	 * @param scenarioDefinition
+	 * @throws DataNotFoundException
 	 */
-	private void checkScenarioDefinition(ScenarioInstance scenarioInstance, ScenarioDefinition scenarioDefinition) {
-		// TODO: quick fix... resolve
-		// TODO: implement with new version
-		// -------------------------------
-//		ArrayList<ScenarioDefinition> scDefs = new ArrayList<ScenarioDefinition>(scenarioInstance.getScenarioDefinitions());
-//		// -------------------------------
-//		if (scenarioInstance != null) {
-//			for (ScenarioDefinition storedDef : scenarioInstance.getScenarioDefinitions()) {
-//				if (storedDef.getDefinitionId().equals(scenarioDefinition.getDefinitionId()) && !scenarioDefinition.equals(scDefs.get(0))) {
-//					throw new RuntimeException(
-//							"Scenario definition has been changed! Either rename the new scenario definition id or delete the old scenario definition (with the same id) from the database!");
-//				}
-//			}
-//		}
+	private void checkScenarioDefinition(ScenarioInstance scenarioInstance, String measurementEnvironmentUrl, ScenarioDefinition scenarioDefinition)
+			throws DataNotFoundException {
+
+		if (!scenarioInstance.getScenarioDefinition().comprises(scenarioDefinition)) {
+
+			String modelChangeHandlingMode = (String) configuration.getProperty(IConfiguration.CONF_MODEL_CHANGE_HANDLING_MODE);
+			String detailMessage = "";
+			if (modelChangeHandlingMode.equals(IConfiguration.MCH_MODE_FAIL)) {
+				throw new RuntimeException(
+						"Scenario definition has been changed! The option 'fail' is used for model change handling mode. Use another mode (newVersion or overwrite), "
+								+ "rename the new scenario definition id or delete the old scenario definition (with the same id) from the database!");
+			} else if (modelChangeHandlingMode.equals(IConfiguration.MCH_MODE_OVERWRITE)) {
+				persistenceProvider.remove(scenarioInstance);
+				scenarioInstance = EntityFactory.createScenarioInstance(scenarioDefinition, measurementEnvironmentUrl);
+				detailMessage = "Model Change Handling Mode: 'overwrite'. Existing scenario instance is overwritten. Old data is lost!";
+
+			} else {
+				scenarioInstance.extendScenarioInstance(scenarioDefinition);
+				detailMessage = "Model Change Handling Mode: 'newVersion'. Existing scenario instance is extended!";
+			}
+
+			logger.warn("Scenario definition has been changed! {}", detailMessage);
+		}
 	}
 
 	@Override

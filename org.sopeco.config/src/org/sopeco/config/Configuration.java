@@ -171,6 +171,10 @@ public class Configuration implements IConfiguration {
 										.hasArg()
 										.withDescription("scenario definition file")
 										.create("sd");
+		Option modelChangeHandling = OptionBuilder.withArgName("mchMode")
+				.hasArg()
+				.withDescription("mode describing how to handle model changes")
+				.create("mch");
 
 		// option 
 		Option logVerbosity = OptionBuilder.withArgName("level")
@@ -193,6 +197,7 @@ public class Configuration implements IConfiguration {
 		options.addOption(config);
 		options.addOptionGroup(meGroup);
 		options.addOption(logconfig);
+		options.addOption(modelChangeHandling);
 //		options.addOption(logVerbosity);
 
 		/* Adding all extension options */
@@ -224,6 +229,11 @@ public class Configuration implements IConfiguration {
 	        System.exit(0);
 	    }
 
+	    if (line.hasOption(modelChangeHandling.getOpt())) {
+	    	final String mchMode = line.getOptionValue(modelChangeHandling.getOpt());
+	    	setProperty(CONF_MODEL_CHANGE_HANDLING_MODE, mchMode);
+	    }
+	    
 	    // -sd 
 	    setScenarioDescriptionFileName(line.getOptionValue(scenarioDef.getOpt()));
 	    
