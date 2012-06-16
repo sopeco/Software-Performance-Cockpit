@@ -75,6 +75,10 @@ public class ParameterEffect implements Comparable<ParameterEffect>, IParameterI
 	public double getEffectValue() {
 		return effectValue;
 	}
+	
+	protected void setEffectValue(double effectValue) {
+		this.effectValue = effectValue;
+	}
 
 	/**
 	 * Returns the same result as the getEffectValue() method.

@@ -74,8 +74,9 @@ public class ScreeningAnalysisStrategy extends AbstractAnalysisStrategy implemen
 		this.config = strategy;
 
 		if (!(strategy.getName().equalsIgnoreCase(ScreeningAnalysisStrategyExtension.NAME))) {
-			throw new IllegalArgumentException(strategy.getName() + "is not supported by this analysis strategy (only \""
-					+ ScreeningAnalysisStrategyExtension.NAME + "\")");
+			throw new IllegalArgumentException(strategy.getName()
+					+ "is not supported by this analysis strategy (only \"" + ScreeningAnalysisStrategyExtension.NAME
+					+ "\")");
 		}
 
 		logger.debug("Starting screening analysis.");
@@ -205,7 +206,8 @@ public class ScreeningAnalysisStrategy extends AbstractAnalysisStrategy implemen
 		for (Object pv : dataSet.getColumn(selectedParameter).getParameterValues()) {
 			Integer level = getLevelToParamValue((ParameterValue<?>) pv, col.getMin(), col.getMax());
 			if (level == null) {
-				logger.warn("Value of parameter {} doesn't match any level.", ((ParameterValue<?>) pv).getParameter().getFullName());
+				logger.warn("Value of parameter {} doesn't match any level.", ((ParameterValue<?>) pv).getParameter()
+						.getFullName());
 			} else {
 				list.add(level);
 			}
@@ -237,8 +239,8 @@ public class ScreeningAnalysisStrategy extends AbstractAnalysisStrategy implemen
 			List<Integer> levelsOfAllRunsOfParam = getLevelsOfAllRunsByParam(param, dataSet);
 			for (Integer level : levelsOfAllRunsOfParam) {
 
-				double observationValue = ((ParameterValue<?>) dataSet.getColumn(dependentParameterDefintion).getParameterValues().get(runIndex))
-						.getValueAsDouble();
+				double observationValue = ((ParameterValue<?>) dataSet.getColumn(dependentParameterDefintion)
+						.getParameterValues().get(runIndex)).getValueAsDouble();
 				if (level == 1) {
 					effectValue = effectValue + observationValue;
 					plusCount++;
@@ -267,8 +269,9 @@ public class ScreeningAnalysisStrategy extends AbstractAnalysisStrategy implemen
 	 */
 	private List<ParameterEffect> calculateInteractionEffects(DataSetAggregated dataSet) {
 		if (interactionDepth > independentParameterDefinitions.size()) {
-			throw new IllegalArgumentException("Desired depth of interaction effects is incorrect. Effects of depth " + interactionDepth
-					+ " are requested, but there are only " + independentParameterDefinitions.size() + " parameters.");
+			throw new IllegalArgumentException("Desired depth of interaction effects is incorrect. Effects of depth "
+					+ interactionDepth + " are requested, but there are only " + independentParameterDefinitions.size()
+					+ " parameters.");
 		}
 
 		List<ParameterEffect> parameterEffects = new ArrayList<ParameterEffect>();
@@ -304,8 +307,8 @@ public class ScreeningAnalysisStrategy extends AbstractAnalysisStrategy implemen
 	 * @return a list of all parameter interaction effects
 	 * @throws FrameworkException
 	 */
-	private List<ParameterEffect> handleInteractionsOfSpecifiedDepth(int depth, List<ParameterDefinition> selectedParameters,
-			List<ParameterDefinition> workList, DataSetAggregated dataSet) {
+	private List<ParameterEffect> handleInteractionsOfSpecifiedDepth(int depth,
+			List<ParameterDefinition> selectedParameters, List<ParameterDefinition> workList, DataSetAggregated dataSet) {
 
 		// System.out.print("Depth: " + depth + "/ Selected: ");
 		// for (ParameterDefinition p : selectedParameters) {
@@ -337,7 +340,8 @@ public class ScreeningAnalysisStrategy extends AbstractAnalysisStrategy implemen
 			while (newWorkList.size() > 1) {
 				ParameterDefinition extractedParam = newWorkList.remove(0);
 				selectedParameters.add(extractedParam);
-				parameterEffects.addAll(handleInteractionsOfSpecifiedDepth(newDepth, selectedParameters, newWorkList, dataSet));
+				parameterEffects.addAll(handleInteractionsOfSpecifiedDepth(newDepth, selectedParameters, newWorkList,
+						dataSet));
 				selectedParameters.remove(extractedParam);
 			}
 
@@ -380,8 +384,8 @@ public class ScreeningAnalysisStrategy extends AbstractAnalysisStrategy implemen
 	 * @return list of the calculated interaction effects
 	 * @throws FrameworkException
 	 */
-	private List<ParameterEffect> getEffectsForAllCombinations(List<ParameterDefinition> selectedParams, List<ParameterDefinition> workList,
-			DataSetAggregated dataSet) {
+	private List<ParameterEffect> getEffectsForAllCombinations(List<ParameterDefinition> selectedParams,
+			List<ParameterDefinition> workList, DataSetAggregated dataSet) {
 		List<ParameterEffect> resultEffectsList = new ArrayList<ParameterEffect>();
 
 		for (ParameterDefinition workParam : workList) {
@@ -431,7 +435,8 @@ public class ScreeningAnalysisStrategy extends AbstractAnalysisStrategy implemen
 				}
 			}
 
-			resultEffectsList.add(checkResultAndCreateEffectObject(analysedParameters, plusCount, minusCount, effectValueSum));
+			resultEffectsList.add(checkResultAndCreateEffectObject(analysedParameters, plusCount, minusCount,
+					effectValueSum));
 
 		}
 		return resultEffectsList;
@@ -453,7 +458,8 @@ public class ScreeningAnalysisStrategy extends AbstractAnalysisStrategy implemen
 	 * @return ParameterEffect object describing the effect
 	 * @throws FrameworkException
 	 */
-	private ParameterEffect checkResultAndCreateEffectObject(List<ParameterDefinition> analysedParameters, int plusCount, int minusCount, double effectValueSum) {
+	private ParameterEffect checkResultAndCreateEffectObject(List<ParameterDefinition> analysedParameters,
+			int plusCount, int minusCount, double effectValueSum) {
 		// Check if the design is correct. It is necessary that there is an
 		// equal amount of 1 and -1 levels.
 		// If this isn't the case, then there is a problem with the design.
@@ -464,7 +470,8 @@ public class ScreeningAnalysisStrategy extends AbstractAnalysisStrategy implemen
 		}
 		double effectValue = effectValueSum / (plusCount + minusCount);
 
-		ParameterEffect parameterEffect = new ParameterEffect(analysedParameters, dependentParameterDefintion, effectValue);
+		ParameterEffect parameterEffect = new ParameterEffect(analysedParameters, dependentParameterDefintion,
+				effectValue);
 		return parameterEffect;
 	}
 

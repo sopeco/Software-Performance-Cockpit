@@ -18,6 +18,8 @@ public class DummyScenarioDefinitionFactory {
 		
 		builder.createNewNamespace("default");
 		ParameterDefinition dummyInputParam = builder.createParameter("DummyInput", ParameterType.INTEGER, ParameterRole.INPUT);
+		ParameterDefinition dummyInputParam1 = builder.createParameter("DummyInput1", ParameterType.INTEGER, ParameterRole.INPUT);
+		ParameterDefinition dummyInputParam2 = builder.createParameter("DummyInput2", ParameterType.INTEGER, ParameterRole.INPUT);
 		ParameterDefinition dummyOutputParam = builder.createParameter("DummyOutput", ParameterType.INTEGER, ParameterRole.OBSERVATION);
 		
 		builder.createMeasurementSpecification("DummyMeasurementSpecification");

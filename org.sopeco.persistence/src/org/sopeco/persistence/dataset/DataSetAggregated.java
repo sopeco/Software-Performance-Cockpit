@@ -117,6 +117,7 @@ public class DataSetAggregated implements
 	public AbstractDataSetColumn getColumn(ParameterDefinition parameter) {
 		
 		for (AbstractDataSetColumn col : inputColumns){
+			
 			if(col.getParameter().equals(parameter)){
 				return col;
 			}

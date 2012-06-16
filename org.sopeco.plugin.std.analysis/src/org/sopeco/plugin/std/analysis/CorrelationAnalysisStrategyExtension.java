@@ -5,9 +5,9 @@ import org.sopeco.engine.analysis.ICorrelationStrategy;
 import org.sopeco.engine.analysis.ICorrelationStrategyExtension;
 
 /**
- * The extension that provides the linear regression analysis strategy.
+ * The extension that provides the correlation analysis strategy.
  * 
- * @author Dennis Westermann, Roozbeh Farahbod
+ * @author Dennis Westermann
  *
  */
 public class CorrelationAnalysisStrategyExtension extends AbstractAnalysisStrategyExtension implements ICorrelationStrategyExtension {
