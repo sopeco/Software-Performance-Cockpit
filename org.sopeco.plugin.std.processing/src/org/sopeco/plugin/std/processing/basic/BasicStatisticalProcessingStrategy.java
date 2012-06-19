@@ -105,7 +105,7 @@ public class BasicStatisticalProcessingStrategy extends AbstractSoPeCoExtensionA
 			for (ParameterDefinition pd: outputParameters) {
 				
 				if (pd.getRole() == ParameterRole.INPUT) {
-					builder.addInputParameterValue(pd, row.getInputParameterValue(pd));
+					builder.addInputParameterValue(pd, row.getInputParameterValue(pd).getValue());
 				}
 				
 				else 
