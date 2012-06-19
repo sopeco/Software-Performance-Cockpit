@@ -515,16 +515,14 @@ public class DataSetAggregated implements
 				}
 				builder.finishRow();
 			} else {
-				if (!sameSizeOfAllVPLs(row.getObservableRowValues())) {
+				final int size = sameSizeOfAllVPLs(row.getObservableRowValues()); 
+				if (size == -1) {
 					throw new IllegalStateException(
 							"Cannot convert  DataSetAggregated to SimpleDataSet"
 									+ " as observationColumns do not have the same size! ");
 				}
 
-				int pvlSize = ((ParameterValueList<?>) row.getObservableRowValues().toArray()[0]).getValues()
-						.size();
-
-				RollOutRows(builder, row, pvlSize);
+				RollOutRows(builder, row, size);
 			}
 		}
 		return builder.createDataSet();
@@ -538,16 +536,25 @@ public class DataSetAggregated implements
 				builder.addParameterValue(pv.getParameter(), pv.getValue());
 			}
 			for (ParameterValueList pvl : row.getObservableRowValues()) {
-				builder.addParameterValue(pvl.getParameter(), pvl.getValues()
-						.get(i));
+				if (pvl.getSize() == 1)
+					builder.addParameterValue(pvl.getParameter(), pvl.getValues().get(0));
+				else
+					builder.addParameterValue(pvl.getParameter(), pvl.getValues().get(i));
 			}
 			builder.finishRow();
 		}
 	}
 
-	private boolean sameSizeOfAllVPLs(Collection<ParameterValueList<?>> collection) {
+	/**
+	 * Returns the size of observation values if they are consistent (i.e., they are either 1 or the same size).
+	 * Otherwise, returns -1.
+	 * 
+	 * @param collection
+	 * @return -1, if data sizes are inconsistent, otherwise the size of observation parameter value lists.
+	 */
+	private int sameSizeOfAllVPLs(Collection<ParameterValueList<?>> collection) {
 		if (collection.size() <= 1) {
-			return true;
+			return 0;
 		}
 		boolean first = true;
 		int relSize = 0;
@@ -556,12 +563,12 @@ public class DataSetAggregated implements
 				first = false;
 				relSize = pvl.getValues().size();
 			} else {
-				if (pvl.getValues().size() != relSize) {
-					return false;
+				if (pvl.getValues().size() != 1 && pvl.getValues().size() != relSize) {
+					return -1;
 				}
 			}
 		}
-		return true;
+		return relSize;
 	}
 	
 	

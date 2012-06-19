@@ -46,6 +46,9 @@ public class ProcessedDataSet implements Serializable {
 	@Column(name= "id")
 	private String id;
 
+	@Column(name= "label")
+	private String label;
+	
 	@Lob
 	@Column(name = "dataSet")
 	private DataSetAggregated dataSet;
@@ -71,6 +74,14 @@ public class ProcessedDataSet implements Serializable {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 	public DataSetAggregated getDataSet() {

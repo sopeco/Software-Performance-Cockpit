@@ -60,6 +60,7 @@ public class ExperimentSeriesManager implements IExperimentSeriesManager {
 
 		ExperimentSeriesRun seriesRun = EntityFactory.createExperimentSeriesRun();
 		seriesRun.setExperimentSeries(expSeries);
+		seriesRun.setLabel(expSeries.getName() + " " + seriesRun.getLabel());
 		expSeries.getExperimentSeriesRuns().add(seriesRun);
 		
 		engine.getPersistenceProvider().store(seriesRun);

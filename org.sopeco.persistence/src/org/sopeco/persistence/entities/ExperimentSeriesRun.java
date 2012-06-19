@@ -43,6 +43,9 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 	@Column(name = "timestamp")
 	private Long timestamp;
 
+	@Column(name = "label")
+	private String label;
+	
 	@Transient
 	private DataSetAggregated successfulResultDataSet;
 
@@ -74,6 +77,14 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 
 	public void setExperimentSeries(ExperimentSeries experimentSeries) {
 		this.experimentSeries = experimentSeries;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 	public DataSetAggregated getSuccessfulResultDataSet() {

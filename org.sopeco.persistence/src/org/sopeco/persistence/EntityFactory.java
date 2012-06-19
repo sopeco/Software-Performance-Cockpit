@@ -1,5 +1,7 @@
 package org.sopeco.persistence;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 import org.sopeco.persistence.entities.ExperimentSeries;
@@ -72,6 +74,7 @@ public class EntityFactory {
 		ExperimentSeriesRun expSeriesRun = new ExperimentSeriesRun();
 		
 		expSeriesRun.setTimestamp(System.nanoTime());
+		expSeriesRun.setLabel(getTimeStamp());
 		return expSeriesRun;
 	}
 	
@@ -161,4 +164,26 @@ public class EntityFactory {
 		dva.getConfiguration().putAll(config);
 		return dva;
 	}
+
+	// TODO remove and replace by Tools.getTimeStamp(...)
+	/**
+	 * Returns a time stamp of the format "yy.MM.dd - HH:mm" for the given date.
+	 * 
+	 * @param date
+	 */
+	public static String getTimeStamp(Date date) {
+		SimpleDateFormat formatter = new SimpleDateFormat("yy.MM.dd - HH:mm");
+		return formatter.format(date);
+	}
+
+	/**
+	 * Returns a time stamp for the current time and date.
+	 * 
+	 * @see #getTimeStamp(Date)
+	 */
+	public static String getTimeStamp() {
+		return getTimeStamp(new Date());
+	}
+
+
 }

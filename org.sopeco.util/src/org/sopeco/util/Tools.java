@@ -16,8 +16,11 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.text.SimpleDateFormat;
+import java.text.spi.DateFormatProvider;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -450,6 +453,25 @@ public class Tools {
 	 */
 	public static double stdDev(Collection<Double> values) {
 		return stdDev(values.toArray(new Double[] {}));
+	}
+
+	/**
+	 * Returns a time stamp of the format "yy.MM.dd - HH:mm" for the given date.
+	 * 
+	 * @param date
+	 */
+	public static String getTimeStamp(Date date) {
+		SimpleDateFormat formatter = new SimpleDateFormat("yy.MM.dd - HH:mm");
+		return formatter.format(date);
+	}
+
+	/**
+	 * Returns a time stamp for the current time and date.
+	 * 
+	 * @see #getTimeStamp(Date)
+	 */
+	public static String getTimeStamp() {
+		return getTimeStamp(new Date());
 	}
 
 }
