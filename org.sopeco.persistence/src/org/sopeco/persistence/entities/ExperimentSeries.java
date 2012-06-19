@@ -51,6 +51,9 @@ public class ExperimentSeries implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "experimentSeries", orphanRemoval = true, fetch = FetchType.EAGER)
 	private List<ExperimentSeriesRun> experimentSeriesRuns = new ArrayList<ExperimentSeriesRun>();
 
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "experimentSeries", orphanRemoval = true, fetch = FetchType.EAGER)
+	private List<ProcessedDataSet> processedDataSets = new ArrayList<ProcessedDataSet>();
+	
 	@EmbeddedId
 	private ExperimentSeriesPK primaryKey = new ExperimentSeriesPK();
 
@@ -97,6 +100,18 @@ public class ExperimentSeries implements Serializable {
 		return this.experimentSeriesRuns;
 	}
 
+	public List<ProcessedDataSet> getProcessedDataSets() {
+		return processedDataSets;
+	}
+	
+	public void addProcessedDataSet(ProcessedDataSet pds) {
+		processedDataSets.add(pds);
+	}
+	
+	public void removeProcessedDataSet(ProcessedDataSet pds) {
+		processedDataSets.remove(pds);
+	}
+	
 	public ExperimentSeriesPK getPrimaryKey() {
 		return primaryKey;
 	}

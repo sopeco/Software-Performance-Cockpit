@@ -3,6 +3,8 @@
  */
 package org.sopeco.engine.processing;
 
+import java.util.Collection;
+
 import org.sopeco.engine.registry.ISoPeCoExtensionArtifact;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
@@ -16,13 +18,21 @@ import org.sopeco.persistence.util.ParameterCollection;
 public interface IProcessingStrategy extends ISoPeCoExtensionArtifact {
 
 	/**
-	 * Sets the source data set for this processing. This method has to be called
+	 * Sets the source data set(s) for this processing. This method has to be called
 	 * before any call to other methods of this strategy.
 	 * 
-	 * @param source a source data set
+	 * @param source a list of source data sets
 	 */
-	public void setSourceDataSet(DataSetAggregated source);
+	public void setSourceDataSet(DataSetAggregated... source);
 	
+	/**
+	 * Sets the source data set(s) for this processing. This method has to be called
+	 * before any call to other methods of this strategy.
+	 * 
+	 * @param source a collection of source data sets
+	 */
+	public void setSourceDataSet(Collection<DataSetAggregated> source);
+
 	/**
 	 * Processes the source data set and returns the result. 
 	 * 

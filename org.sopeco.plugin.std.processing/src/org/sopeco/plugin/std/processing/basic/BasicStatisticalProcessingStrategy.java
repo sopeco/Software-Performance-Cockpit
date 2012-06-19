@@ -3,6 +3,7 @@
  */
 package org.sopeco.plugin.std.processing.basic;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,12 +40,6 @@ public class BasicStatisticalProcessingStrategy extends AbstractSoPeCoExtensionA
 	
 	public BasicStatisticalProcessingStrategy(ISoPeCoExtension<?> provider) {
 		super(provider);
-	}
-
-	@Override
-	public void setSourceDataSet(DataSetAggregated source) {
-		this.sourceDataSet = source;
-		updateAvailableParameters();
 	}
 
 	/**
@@ -162,4 +157,20 @@ public class BasicStatisticalProcessingStrategy extends AbstractSoPeCoExtensionA
 		this.outputParameters = outputParams;
 	}
 
+	@Override
+	public void setSourceDataSet(DataSetAggregated... source) {
+		if (source.length > 0)
+			setSourceDataSet(source[0]);
+	}	
+
+	@Override
+	public void setSourceDataSet(Collection<DataSetAggregated> source) {
+		if (source.size() > 0)
+			setSourceDataSet(source.iterator().next());
+	}
+
+	protected void setSourceDataSet(DataSetAggregated source) {
+		this.sourceDataSet = source;
+		updateAvailableParameters();
+	}
 }

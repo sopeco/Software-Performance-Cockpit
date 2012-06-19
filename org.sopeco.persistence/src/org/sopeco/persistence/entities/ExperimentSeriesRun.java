@@ -53,10 +53,6 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 	@Column(name = "experimentFailedExceptions")
 	private List<ExperimentFailedException> experimentFailedExceptions = new ArrayList<ExperimentFailedException>();
 
-	@Lob
-	@Column(name = "processedDataSets")
-	private List<DataSetAggregated> processedDataSets = new ArrayList<DataSetAggregated>();
-	
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
 	@JoinColumns({ @JoinColumn(name = "scenarioInstanceName", referencedColumnName = "scenarioInstanceName"),
 			@JoinColumn(name = "measurementEnvironmentUrl", referencedColumnName = "measurementEnvironmentUrl"),
@@ -93,14 +89,6 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 		return successfulResultDataSet;
 	}
 
-	public List<DataSetAggregated> getProcessedDataSets() {
-		return processedDataSets;
-	}
-	
-	public void addProcessedDataSet(DataSetAggregated dsa) {
-		processedDataSets.add(dsa);
-	}
-	
 	public List<ExperimentFailedException> getExperimentFailedExceptions() {
 		return experimentFailedExceptions;
 	}
