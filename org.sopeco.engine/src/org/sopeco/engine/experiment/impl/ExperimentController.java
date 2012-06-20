@@ -76,6 +76,10 @@ public class ExperimentController implements IExperimentController {
 			throw new IllegalArgumentException("ExperimentSeriesRun must not be null.");
 		}
 
+		if(experimentSeriesRun.getExperimentSeries().getName().equals("ElementPropertyCostTest_uipage.table.NUMBER_OF_TEXT_VIEW_COLUMNS_1")){
+			boolean x = true;
+		}
+		
 		try {
 
 			this.currentExperimentSeriesRun = experimentSeriesRun;

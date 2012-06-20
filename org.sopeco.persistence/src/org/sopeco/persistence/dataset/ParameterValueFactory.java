@@ -65,7 +65,7 @@ public class ParameterValueFactory {
 				return Integer.parseInt((String) value);
 			break;
 		case STRING:
-			return value.toString();
+			return (String) value;
 		default:
 			break;
 		}

@@ -182,7 +182,7 @@ public class CSVVariation extends AbstractSoPeCoExtensionArtifact implements IPa
 	@Override
 	public ParameterValue<?> get(int pos) {
 		if (pos < values.size()) {
-			return ParameterValueFactory.createParameterValue(dynamicValueAssignment.getParameter(), values.get(pos));
+			return ParameterValueFactory.createParameterValue(dynamicValueAssignment.getParameter(), values.get(pos).getValue());
 		} else {
 			throw new IndexOutOfBoundsException("Parameter value index " + pos + " is out of bound [0.." + values.size() + "].");
 		}

@@ -173,12 +173,13 @@ public class ScenarioInstance implements Serializable {
 
 	public void extendScenarioInstance(ScenarioDefinition otherSD) {
 		List<ExperimentSeriesDefinition> esdList = this.getScenarioDefinition().extendBy(otherSD);
-		for (ExperimentSeriesDefinition esd : esdList) {
-			ExperimentSeries expSeries = EntityFactory.createExperimentSeries(esd);
-			expSeries.setScenarioInstance(this);
-			this.getExperimentSeriesList().add(expSeries);
-
-		}
+// Why? Introduced a bug! TODO: Discuss
+//		for (ExperimentSeriesDefinition esd : esdList) {
+//			ExperimentSeries expSeries = EntityFactory.createExperimentSeries(esd);
+//			expSeries.setScenarioInstance(this);
+//			this.getExperimentSeriesList().add(expSeries);
+//
+//		}
 	}
 
 	/*

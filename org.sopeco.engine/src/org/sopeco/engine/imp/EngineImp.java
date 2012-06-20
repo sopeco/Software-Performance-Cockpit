@@ -70,6 +70,8 @@ public class EngineImp implements IEngine {
 			logger.debug("Loaded ScenarioInstance {} from database", scenarioInstance);
 			logger.debug("Compare Scenario definition defined in the specification with the one loaded from database");
 
+			// TODO: UNIT_TEST!!!!!
+			// TODO:check ist kein guter Name da die def nicht nur gecheckt wird sondern geaendert
 			checkScenarioDefinition(scenarioInstance, getConfiguration().getMeasurementControllerURIAsStr(), scenario);
 
 		} catch (DataNotFoundException e) {
@@ -135,6 +137,7 @@ public class EngineImp implements IEngine {
 				detailMessage = "Model Change Handling Mode: 'overwrite'. Existing scenario instance is overwritten. Old data is lost!";
 
 			} else {
+//				Buggy! TODO: fix
 				scenarioInstance.extendScenarioInstance(scenarioDefinition);
 				detailMessage = "Model Change Handling Mode: 'newVersion'. Existing scenario instance is extended!";
 			}
