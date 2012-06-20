@@ -552,9 +552,9 @@ public class DataSetAggregated implements
 	 * @param collection
 	 * @return -1, if data sizes are inconsistent, otherwise the size of observation parameter value lists.
 	 */
-	private int sameSizeOfAllVPLs(Collection<ParameterValueList<?>> collection) {
-		if (collection.size() <= 1) {
-			return 0;
+	private int sameSizeOfAllVPLs(List<ParameterValueList<?>> collection) {
+		if (collection.size() == 1) {
+			return collection.get(0).getValues().size();
 		}
 		boolean first = true;
 		int relSize = 0;
