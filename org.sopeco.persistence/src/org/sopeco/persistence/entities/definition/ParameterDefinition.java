@@ -111,7 +111,8 @@ public class ParameterDefinition implements Serializable {
 
 		 if (this == o) return true;
 		 if (o == null) return false;
-
+			if (getClass() != o.getClass())
+				return false;
 		 ParameterDefinition obj = (ParameterDefinition) o;
 		 if(getFullName() == null || obj.getFullName() == null) return false;
 		 if(!this.getFullName().equals(obj.getFullName())){

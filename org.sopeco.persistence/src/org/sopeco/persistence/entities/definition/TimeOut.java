@@ -37,7 +37,8 @@ public class TimeOut extends ExperimentTerminationCondition {
 			return true;
 		if (obj == null)
 			return false;
-
+		if (getClass() != obj.getClass())
+			return false;
 		TimeOut other = (TimeOut) obj;
 		if (maxDuration != other.maxDuration)
 			return false;

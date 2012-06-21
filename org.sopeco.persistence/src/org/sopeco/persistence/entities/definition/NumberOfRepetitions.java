@@ -38,7 +38,8 @@ public class NumberOfRepetitions extends ExperimentTerminationCondition {
 			return true;
 		if (obj == null)
 			return false;
-	
+		if (getClass() != obj.getClass())
+			return false;
 		NumberOfRepetitions other = (NumberOfRepetitions) obj;
 		if (numberOfRepetitions != other.numberOfRepetitions)
 			return false;

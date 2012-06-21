@@ -55,7 +55,7 @@ public class DynamicValueAssignment extends ParameterValueAssignment {
 		int result = super.hashCode();
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((parameter == null) ? 0 : parameter.hashCode());
-		result = prime * result + ((configuration == null) ? 0 : configuration.hashCode());
+		result = prime * result + ((configuration == null|| configuration.isEmpty()) ? 0 : configuration.hashCode());
 
 		return result;
 	}
@@ -66,6 +66,7 @@ public class DynamicValueAssignment extends ParameterValueAssignment {
 			return true;
 		if (!super.equals(obj))
 			return false;
+
 		DynamicValueAssignment other = (DynamicValueAssignment) obj;
 		if (name == null) {
 			if (other.name != null)
@@ -77,8 +78,8 @@ public class DynamicValueAssignment extends ParameterValueAssignment {
 				return false;
 		} else if (!parameter.equals(other.parameter))
 			return false;
-		if (configuration == null) {
-			if (other.configuration != null)
+		if (configuration == null || configuration.isEmpty()) {
+			if (other.configuration != null && !other.configuration.isEmpty())
 				return false;
 		} else if (!configuration.equals(other.configuration))
 			return false;

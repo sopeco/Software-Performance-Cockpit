@@ -48,7 +48,8 @@ public abstract class ParameterValueAssignment implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-
+		if (getClass() != obj.getClass())
+			return false;
 		ParameterValueAssignment other = (ParameterValueAssignment) obj;
 		if (parameter == null) {
 			if (other.parameter != null)

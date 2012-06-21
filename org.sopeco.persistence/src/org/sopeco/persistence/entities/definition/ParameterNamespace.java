@@ -183,7 +183,7 @@ public class ParameterNamespace implements Serializable {
 		int result = 1;
 		result = prime * result + ((children == null) ? 0 : children.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
+		result = prime * result + ((parameters == null|| parameters.isEmpty()) ? 0 : parameters.hashCode());
 		return result;
 	}
 
@@ -193,10 +193,11 @@ public class ParameterNamespace implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-		
+		if (getClass() != obj.getClass())
+			return false;
 		ParameterNamespace other = (ParameterNamespace) obj;
-		if (children == null) {
-			if (other.children != null)
+		if (children == null || children.isEmpty()) {
+			if (other.children != null && !other.children.isEmpty())
 				return false;
 		} else if (!children.equals(other.children))
 			return false;
@@ -205,8 +206,8 @@ public class ParameterNamespace implements Serializable {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (parameters == null) {
-			if (other.parameters != null)
+		if (parameters == null || parameters.isEmpty()) {
+			if (other.parameters != null && !other.parameters.isEmpty())
 				return false;
 		} else if (!parameters.equals(other.parameters))
 			return false;

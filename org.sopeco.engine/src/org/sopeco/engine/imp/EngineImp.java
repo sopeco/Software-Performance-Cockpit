@@ -70,9 +70,8 @@ public class EngineImp implements IEngine {
 			logger.debug("Loaded ScenarioInstance {} from database", scenarioInstance);
 			logger.debug("Compare Scenario definition defined in the specification with the one loaded from database");
 
-			// TODO: UNIT_TEST!!!!!
-			// TODO:check ist kein guter Name da die def nicht nur gecheckt wird sondern geaendert
-			checkScenarioDefinition(scenarioInstance, getConfiguration().getMeasurementControllerURIAsStr(), scenario);
+			mergeScenarioDefinitions(scenarioInstance, getConfiguration().getMeasurementControllerURIAsStr(), scenario);
+			persistenceProvider.store(scenarioInstance);
 
 		} catch (DataNotFoundException e) {
 			scenarioInstance = EntityFactory.createScenarioInstance(scenario, getConfiguration().getMeasurementControllerURIAsStr());
@@ -80,7 +79,6 @@ public class EngineImp implements IEngine {
 			logger.debug("Created new ScenarioInstance {}", scenarioInstance);
 		}
 
-		// TODO: Check if this is the intended behaviour
 		for (MeasurementSpecification measSpec : scenario.getMeasurementSpecifications()) {
 			experimentController.initialize(EngineTools.getConstantParameterValues(measSpec.getInitializationAssignemts()),
 					scenario.getMeasurementEnvironmentDefinition());
@@ -88,7 +86,7 @@ public class EngineImp implements IEngine {
 			// loop over all the experiment series in the specs
 			for (ExperimentSeriesDefinition esd : measSpec.getExperimentSeriesDefinitions()) {
 
-				ExperimentSeries series = scenarioInstance.getExperimentSeries(esd.getName());
+				ExperimentSeries series = scenarioInstance.getExperimentSeries(esd.getName(), esd.getVersion());
 				if (series == null) {
 					series = EntityFactory.createExperimentSeries(esd);
 					scenarioInstance.getExperimentSeriesList().add(series);
@@ -111,19 +109,21 @@ public class EngineImp implements IEngine {
 	}
 
 	/**
-	 * Checks if the given scenario instance contains a scenario definition with
-	 * the same id as the given scenario definition. If yes, it checks whether
-	 * the scenario definition has been changed and throws a runtime exception
-	 * if this is true.
+	 * Checks whether the scneario definition contained in the passed scenario
+	 * instance contains the passed scenario definition. If the passed scenario
+	 * definition contains additional elements, these are merged into the
+	 * existing scenario definition
 	 * 
 	 * @param scenarioInstance
+	 *            Existing scenario definition to be extended
 	 * @param scenarioDefinition
+	 *            new scenario definition to compare with
 	 * @throws DataNotFoundException
 	 */
-	private void checkScenarioDefinition(ScenarioInstance scenarioInstance, String measurementEnvironmentUrl, ScenarioDefinition scenarioDefinition)
+	private void mergeScenarioDefinitions(ScenarioInstance scenarioInstance, String measurementEnvironmentUrl, ScenarioDefinition scenarioDefinition)
 			throws DataNotFoundException {
 
-		if (!scenarioInstance.getScenarioDefinition().comprises(scenarioDefinition)) {
+		if (!scenarioInstance.getScenarioDefinition().containsAllElementsOf(scenarioDefinition)) {
 
 			String modelChangeHandlingMode = (String) configuration.getProperty(IConfiguration.CONF_MODEL_CHANGE_HANDLING_MODE);
 			String detailMessage = "";
@@ -137,7 +137,6 @@ public class EngineImp implements IEngine {
 				detailMessage = "Model Change Handling Mode: 'overwrite'. Existing scenario instance is overwritten. Old data is lost!";
 
 			} else {
-//				Buggy! TODO: fix
 				scenarioInstance.extendScenarioInstance(scenarioDefinition);
 				detailMessage = "Model Change Handling Mode: 'newVersion'. Existing scenario instance is extended!";
 			}

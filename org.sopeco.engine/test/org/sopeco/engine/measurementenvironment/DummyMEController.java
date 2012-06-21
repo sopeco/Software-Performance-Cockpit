@@ -1,5 +1,7 @@
 package org.sopeco.engine.measurementenvironment;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,7 +49,7 @@ public class DummyMEController implements IMeasurementEnvironmentController {
 			ExperimentTerminationCondition terminationCondition) {
 		Map<ParameterDefinition, ParameterValueList<?>> map = new HashMap<ParameterDefinition, ParameterValueList<?>>();
 		for (ParameterDefinition pd : observationParameterList)
-			map.put(pd, new ParameterValueList<Object>(pd));
+			map.put(pd, new ParameterValueList<Serializable>(pd));
 
 		logger.debug("Run experiment: ");
 		logParameterValueCollection(inputPVList);
@@ -59,7 +61,7 @@ public class DummyMEController implements IMeasurementEnvironmentController {
 			}
 		}
 		logger.debug("Finished experiment.");
-		return map.values();
+		return new ArrayList<ParameterValueList<?>>(map.values());
 
 	}
 

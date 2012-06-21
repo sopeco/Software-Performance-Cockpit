@@ -3,10 +3,9 @@ package org.sopeco.persistence.entities.definition;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * @author Dennis Westermann
- *
+ * 
  */
 public class ExplorationStrategy extends ExtensibleElement {
 
@@ -29,8 +28,8 @@ public class ExplorationStrategy extends ExtensibleElement {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((analysisConfigurations == null) ? 0 : analysisConfigurations.hashCode());
-		result = prime * result + ((configuration == null) ? 0 : configuration.hashCode());
+		result = prime * result + ((analysisConfigurations == null || analysisConfigurations.isEmpty()) ? 0 : analysisConfigurations.hashCode());
+		result = prime * result + ((configuration == null || configuration.isEmpty()) ? 0 : configuration.hashCode());
 		return result;
 	}
 
@@ -40,19 +39,20 @@ public class ExplorationStrategy extends ExtensibleElement {
 			return true;
 		if (obj == null)
 			return false;
-
+		if (getClass() != obj.getClass())
+			return false;
 		ExplorationStrategy other = (ExplorationStrategy) obj;
-		if (analysisConfigurations == null) {
-			if (other.analysisConfigurations != null)
+		if (analysisConfigurations == null || analysisConfigurations.isEmpty()) {
+			if (other.analysisConfigurations != null && !other.analysisConfigurations.isEmpty())
 				return false;
 		} else if (!analysisConfigurations.equals(other.analysisConfigurations))
 			return false;
-		if (configuration == null) {
-			if (other.configuration != null)
+		if (configuration == null || configuration.isEmpty()) {
+			if (other.configuration != null && !other.configuration.isEmpty())
 				return false;
 		} else if (!configuration.equals(other.configuration))
 			return false;
 		return true;
 	}
 
-} 
+}

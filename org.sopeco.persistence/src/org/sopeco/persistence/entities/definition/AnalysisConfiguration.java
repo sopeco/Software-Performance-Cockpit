@@ -37,10 +37,10 @@ public class AnalysisConfiguration extends ExtensibleElement {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((dependentParameters == null) ? 0 : dependentParameters.hashCode());
-		result = prime * result + ((independentParameters == null) ? 0 : independentParameters.hashCode());
+		result = prime * result + ((dependentParameters == null || dependentParameters.isEmpty()) ? 0 : dependentParameters.hashCode());
+		result = prime * result + ((independentParameters == null || independentParameters.isEmpty()) ? 0 : independentParameters.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((configuration == null) ? 0 : configuration.hashCode());
+		result = prime * result + ((configuration == null || configuration.isEmpty()) ? 0 : configuration.hashCode());
 		return result;
 	}
 
@@ -50,6 +50,8 @@ public class AnalysisConfiguration extends ExtensibleElement {
 			return true;
 		if (obj == null)
 			return false;
+		if (getClass() != obj.getClass())
+			return false;
 		AnalysisConfiguration other = (AnalysisConfiguration) obj;
 
 		if (name == null) {
@@ -58,20 +60,20 @@ public class AnalysisConfiguration extends ExtensibleElement {
 		} else if (!name.equals(other.name))
 			return false;
 
-		if (dependentParameters == null) {
-			if (other.dependentParameters != null)
+		if (dependentParameters == null || dependentParameters.isEmpty()) {
+			if (other.dependentParameters != null && !other.dependentParameters.isEmpty())
 				return false;
 		} else if (!dependentParameters.equals(other.dependentParameters))
 			return false;
 
-		if (independentParameters == null) {
-			if (other.independentParameters != null)
+		if (independentParameters == null || independentParameters.isEmpty()) {
+			if (other.independentParameters != null && !other.independentParameters.isEmpty())
 				return false;
 		} else if (!independentParameters.equals(other.independentParameters))
 			return false;
 
-		if (configuration == null) {
-			if (other.configuration != null)
+		if (configuration == null || configuration.isEmpty()) {
+			if (other.configuration != null && !other.configuration.isEmpty())
 				return false;
 		} else if (!configuration.equals(other.configuration))
 			return false;

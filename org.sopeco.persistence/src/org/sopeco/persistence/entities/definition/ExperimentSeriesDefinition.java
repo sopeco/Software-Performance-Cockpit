@@ -78,11 +78,11 @@ public class ExperimentSeriesDefinition implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((experimentAssignments == null) ? 0 : experimentAssignments.hashCode());
+		result = prime * result + ((experimentAssignments == null|| experimentAssignments.isEmpty()) ? 0 : experimentAssignments.hashCode());
 		result = prime * result + ((experimentTerminationCondition == null) ? 0 : experimentTerminationCondition.hashCode());
 		result = prime * result + ((explorationStrategy == null) ? 0 : explorationStrategy.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((preperationAssignments == null) ? 0 : preperationAssignments.hashCode());
+		result = prime * result + ((preperationAssignments == null|| preperationAssignments.isEmpty()) ? 0 : preperationAssignments.hashCode());
 		return result;
 	}
 
@@ -92,15 +92,16 @@ public class ExperimentSeriesDefinition implements Serializable {
 			return true;
 		if (obj == null)
 			return false;
-
+		if (getClass() != obj.getClass())
+			return false;
 		ExperimentSeriesDefinition other = (ExperimentSeriesDefinition) obj;
 		if (name == null) {
 			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (experimentAssignments == null) {
-			if (other.experimentAssignments != null)
+		if (experimentAssignments == null || experimentAssignments.isEmpty()) {
+			if (other.experimentAssignments != null && !other.experimentAssignments.isEmpty())
 				return false;
 		} else if (!experimentAssignments.equals(other.experimentAssignments))
 			return false;
@@ -115,17 +116,23 @@ public class ExperimentSeriesDefinition implements Serializable {
 		} else if (!explorationStrategy.equals(other.explorationStrategy))
 			return false;
 		
-		if (preperationAssignments == null) {
-			if (other.preperationAssignments != null)
+		if (preperationAssignments == null || preperationAssignments.isEmpty()) {
+			if (other.preperationAssignments != null && !other.preperationAssignments.isEmpty())
 				return false;
 		} else if (!preperationAssignments.equals(other.preperationAssignments))
 			return false;
 		return true;
 	}
+	
+	
 
 	public long getVersion() {
 		return version;
 	}
+
+
+
+
 
 	public void setVersion(long version) {
 		this.version = version;

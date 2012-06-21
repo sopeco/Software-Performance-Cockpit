@@ -55,7 +55,7 @@ public class MeasurementSpecification implements Serializable {
 	 *            - measurement specification instance to check against
 	 * @return returns true if this instance contains the other
 	 */
-	public boolean comprises(MeasurementSpecification other) {
+	public boolean containsAllElementsOf(MeasurementSpecification other) {
 		for (ExperimentSeriesDefinition esdOther : other.getExperimentSeriesDefinitions()) {
 			if (!this.getExperimentSeriesDefinitions().contains(esdOther)) {
 				return false;
@@ -123,6 +123,8 @@ public class MeasurementSpecification implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((experimentSeriesDefinitions == null || experimentSeriesDefinitions.isEmpty()) ? 0 : experimentSeriesDefinitions.hashCode());
+		result = prime * result + ((initializationAssignemts == null || initializationAssignemts.isEmpty()) ? 0 : initializationAssignemts.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
@@ -136,6 +138,16 @@ public class MeasurementSpecification implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		MeasurementSpecification other = (MeasurementSpecification) obj;
+		if (experimentSeriesDefinitions == null || experimentSeriesDefinitions.isEmpty()) {
+			if (other.experimentSeriesDefinitions != null && !other.experimentSeriesDefinitions.isEmpty())
+				return false;
+		} else if (!experimentSeriesDefinitions.equals(other.experimentSeriesDefinitions))
+			return false;
+		if (initializationAssignemts == null || initializationAssignemts.isEmpty()) {
+			if (other.initializationAssignemts != null && !other.initializationAssignemts.isEmpty())
+				return false;
+		} else if (!initializationAssignemts.equals(other.initializationAssignemts))
+			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;

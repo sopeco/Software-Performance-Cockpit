@@ -53,7 +53,8 @@ public class MeasurementEnvironmentDefinition implements Serializable {
 			return true;
 		if (obj == null) 
 			return false;
-		
+		if (getClass() != obj.getClass())
+			return false;
 		MeasurementEnvironmentDefinition other = (MeasurementEnvironmentDefinition) obj;
 		return this.getRoot().equals(other.getRoot());
 	}

@@ -52,6 +52,7 @@ public class ConstantValueAssignment extends ParameterValueAssignment {
 			return true;
 		if (!super.equals(obj))
 			return false;
+		
 		ConstantValueAssignment other = (ConstantValueAssignment) obj;
 		if (value == null) {
 			if (other.value != null)

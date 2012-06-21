@@ -167,6 +167,8 @@ public class ScenarioDefinition implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((measurementEnvironmentDefinition == null) ? 0 : measurementEnvironmentDefinition.hashCode());
+		result = prime * result + ((measurementSpecifications == null || measurementSpecifications.isEmpty()) ? 0 : measurementSpecifications.hashCode());
 		result = prime * result + ((scenarioName == null) ? 0 : scenarioName.hashCode());
 		return result;
 	}
@@ -180,6 +182,16 @@ public class ScenarioDefinition implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		ScenarioDefinition other = (ScenarioDefinition) obj;
+		if (measurementEnvironmentDefinition == null) {
+			if (other.measurementEnvironmentDefinition != null)
+				return false;
+		} else if (!measurementEnvironmentDefinition.equals(other.measurementEnvironmentDefinition))
+			return false;
+		if (measurementSpecifications == null || measurementSpecifications.isEmpty()) {
+			if (other.measurementSpecifications != null && !other.measurementSpecifications.isEmpty())
+				return false;
+		} else if (!measurementSpecifications.equals(other.measurementSpecifications))
+			return false;
 		if (scenarioName == null) {
 			if (other.scenarioName != null)
 				return false;
@@ -188,13 +200,20 @@ public class ScenarioDefinition implements Serializable {
 		return true;
 	}
 
-	public boolean comprises(ScenarioDefinition other) {
+	/**
+	 * Checks whether this instnace of scenarioDefinition contains all elements
+	 * the passed scenarioDefinition comprises
+	 * 
+	 * @param other
+	 * @return
+	 */
+	public boolean containsAllElementsOf(ScenarioDefinition other) {
 		for (MeasurementSpecification measSpecOther : other.getMeasurementSpecifications()) {
 			boolean found = false;
 			for (MeasurementSpecification measSpecThis : this.getMeasurementSpecifications()) {
-				if (measSpecOther.equals(measSpecThis)) {
+				if (measSpecThis.getName().equals(measSpecOther.getName())) {
 					found = true;
-					if (!measSpecThis.comprises(measSpecOther)) {
+					if (!measSpecThis.containsAllElementsOf(measSpecOther)) {
 						return false;
 					}
 					break;
@@ -208,8 +227,8 @@ public class ScenarioDefinition implements Serializable {
 	}
 
 	/**
-	 * Extends this scenario definition by all additional experiment
-	 * series in the given scenario definition
+	 * Extends this scenario definition by all additional experiment series in
+	 * the given scenario definition
 	 * 
 	 * @param other
 	 * @return
@@ -219,7 +238,7 @@ public class ScenarioDefinition implements Serializable {
 		for (MeasurementSpecification measSpecOther : other.getMeasurementSpecifications()) {
 			boolean found = false;
 			for (MeasurementSpecification measSpecThis : this.getMeasurementSpecifications()) {
-				if (measSpecThis.equals(measSpecOther)) {
+				if (measSpecThis.getName().equals(measSpecOther.getName())) {
 					found = true;
 					addedESDList.addAll(measSpecThis.extendBy(measSpecOther));
 					break;
