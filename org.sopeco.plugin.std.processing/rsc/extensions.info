@@ -1,1 +1,2 @@
 org.sopeco.plugin.std.processing.basic.BasicStatisticalProcessingExtension
+org.sopeco.plugin.std.processing.basic.FilterDataProcessingExtension

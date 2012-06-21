@@ -14,6 +14,7 @@ import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetRow;
 import org.sopeco.persistence.dataset.DataSetRowBuilder;
+import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterRole;
@@ -173,4 +174,15 @@ public class BasicStatisticalProcessingStrategy extends AbstractSoPeCoExtensionA
 		this.sourceDataSet = source;
 		updateAvailableParameters();
 	}
+
+	@Override
+	public ParameterCollection<ParameterDefinition> getConfigurationParameters() {
+		return ParameterCollectionFactory.createParameterDefinitionCollection();
+	}
+
+	@Override
+	public void configure(Map<ParameterDefinition, Object> values) {
+		// do nothing
+	}
+
 }

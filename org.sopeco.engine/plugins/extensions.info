@@ -19,3 +19,4 @@ org.sopeco.plugin.std.analysis.MarsStrategyExtension
 org.sopeco.plugin.std.analysis.CorrelationAnalysisStrategyExtension
 org.sopeco.plugin.std.analysis.AnovaStrategyExtension
 org.sopeco.plugin.std.processing.basic.BasicStatisticalProcessingExtension
+org.sopeco.plugin.std.processing.basic.FilterDataProcessingExtension

@@ -4,9 +4,12 @@
 package org.sopeco.engine.processing;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.sopeco.engine.registry.ISoPeCoExtensionArtifact;
 import org.sopeco.persistence.dataset.DataSetAggregated;
+import org.sopeco.persistence.dataset.ParameterValue;
+import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.util.ParameterCollection;
 
@@ -57,4 +60,20 @@ public interface IProcessingStrategy extends ISoPeCoExtensionArtifact {
 	 */
 	public void setOutputParameters(ParameterCollection<ParameterDefinition> outputParams);
 	
+	/**
+	 * Provides the collection of parameter definitions needed for the configuration of this strategy.
+	 * The definitions are used to pass configuration values to the strategy using the {@link #configure(ParameterCollection)}.
+	 * 
+	 * @return a collection of parameter definitions
+	 */
+	public ParameterCollection<ParameterDefinition> getConfigurationParameters();
+	
+	/**
+	 * Configures the strategy with the given configuration values.
+	 * 
+	 * @param values a collection of parameter values
+	 * 
+	 * @see #getConfigurationParameters()
+	 */
+	public void configure(Map<ParameterDefinition, Object> values);
 }

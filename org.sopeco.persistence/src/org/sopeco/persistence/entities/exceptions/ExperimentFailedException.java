@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.Transient;
+
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.util.ParameterCollection;
@@ -32,7 +34,7 @@ public class ExperimentFailedException extends Exception {
 	public static final String DEFAULT_META_DATA_KEY = "default";
 
 	/** Holds the meta data attached to this exception. */
-	protected Map<String, Object> metaData = new HashMap<String, Object>();
+	protected Map<String, String> metaData = new HashMap<String, String>();
 	
 	/** Holds the set of input parameter values attached to this exception. */
 	protected ParameterCollection<ParameterValue<?>> inputParameterValues = ParameterCollectionFactory.createParameterValueCollection();
@@ -41,16 +43,9 @@ public class ExperimentFailedException extends Exception {
 		super();
 	}
 
-	public ExperimentFailedException(String msg, Throwable cause) {
-		super(msg, cause);
-	}
 
 	public ExperimentFailedException(String msg) {
 		super(msg);
-	}
-
-	public ExperimentFailedException(Throwable cause) {
-		super(cause);
 	}
 
 	/**
@@ -75,9 +70,9 @@ public class ExperimentFailedException extends Exception {
 	 * Adds a meta data to this exception with the default key. Calling this method
 	 * more than once will replace the default meta data.
 	 * 
-	 * @param data the arbitrary data object
+	 * @param data a String value
 	 */
-	public void addMetaData(Object data) {
+	public void addMetaData(String data) {
 		metaData.put(DEFAULT_META_DATA_KEY, data);
 	}
 	
@@ -85,9 +80,9 @@ public class ExperimentFailedException extends Exception {
 	 * Adds a meta data to this exception with the given key. 
 	 * 
 	 * @param key a key identifying this data
-	 * @param data the arbitrary data object
+	 * @param data a String value
 	 */
-	public void addMetaData(String key, Object data) {
+	public void addMetaData(String key, String data) {
 		metaData.put(key, data);
 	}
 	
@@ -98,7 +93,7 @@ public class ExperimentFailedException extends Exception {
 	 * 
 	 * @return the default meta data. The result can be null.
 	 */
-	public Object getMetaData() {
+	public String getMetaData() {
 		return metaData.get(DEFAULT_META_DATA_KEY);
 	}
 	
@@ -107,7 +102,7 @@ public class ExperimentFailedException extends Exception {
 	 * 
 	 * @return an unmodifiable key-value map
 	 */
-	public Map<String, Object> getMetaDataMap() {
+	public Map<String, String> getMetaDataMap() {
 		return Collections.unmodifiableMap(metaData);
 	}
 	

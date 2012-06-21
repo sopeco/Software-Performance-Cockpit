@@ -17,7 +17,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
-import java.text.spi.DateFormatProvider;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -285,6 +284,26 @@ public class Tools {
 	}
 
 	/**
+	 * Returns a list of directories that their names match the given pattern.
+	 * 
+	 * @param pattern filename pattern
+	 * @return array of file names
+	 */
+	public static String[] getDirNames(String baseDir, String pattern) {
+		DirectoryScanner scanner = new DirectoryScanner();
+		scanner.setIncludes(new String[]{pattern});
+		scanner.setBasedir(baseDir);
+		scanner.setCaseSensitive(false);
+		scanner.scan();
+		final String[] result = scanner.getIncludedDirectories();
+		if (result == null)
+			return new String[] {};
+		else
+			return result;
+	}
+
+
+	/**
 	 * Returns the index of the given object in the given array if it exsists.
 	 * It uses the {@link Object#equals(Object)} method.
 	 * 
@@ -474,4 +493,40 @@ public class Tools {
 		return getTimeStamp(new Date());
 	}
 
+
+	/** 
+	 * Adds a sequence of the given character to the beginning of the given string
+	 * until it reaches the given length.
+	 *  
+	 * @param src source string
+	 * @param filler filler character
+	 * @param fixedLen desired length of the resulting string
+	 * @return
+	 */
+	public static String extendStr(String src, char filler, int fixedLen) {
+		String result = src;
+		while (result.length() < fixedLen)
+			result = filler + result;
+		return result;
+	}
+
+	/**
+	 * Performs a simple tokenization (!) on the given source string.
+	 * 
+	 * @param src
+	 * @param separator
+	 * @return
+	 */
+	public static String[] tokenize(String src, String separator) {
+		StringTokenizer tokenizer = new StringTokenizer(src, separator);
+		
+		String[] result = new String[tokenizer.countTokens()];
+		int i=0;
+		while (tokenizer.hasMoreTokens()) {
+			result[i] = tokenizer.nextToken();
+			i++;
+		}
+		
+		return result;
+	}
 }

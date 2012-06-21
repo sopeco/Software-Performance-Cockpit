@@ -14,6 +14,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
@@ -32,6 +34,8 @@ import org.sopeco.persistence.util.ParameterCollection;
 @Entity
 public class DataSetAggregated implements
 		Iterable<DataSetRow>, Serializable {
+
+ 	private final static Logger logger = LoggerFactory.getLogger(DataSetAggregated.class);
 
 	private static final long serialVersionUID = 1L;
 
@@ -517,6 +521,7 @@ public class DataSetAggregated implements
 			} else {
 				final int size = sameSizeOfAllVPLs(row.getObservableRowValues()); 
 				if (size == -1) {
+ 					logger.error("Observed value lists are not of the same size.");
 					throw new IllegalStateException(
 							"Cannot convert  DataSetAggregated to SimpleDataSet"
 									+ " as observationColumns do not have the same size! ");
@@ -528,6 +533,13 @@ public class DataSetAggregated implements
 		return builder.createDataSet();
 	}
 
+	/**
+	 * Rolls out the row into many rows by expanding the cells with many values.
+	 * 
+	 * @param builder
+	 * @param row
+	 * @param pvlSize
+	 */
 	private void RollOutRows(SimpleDataSetRowBuilder builder, DataSetRow row,
 			int pvlSize) {
 		for (int i = 0; i < pvlSize; i++) {
@@ -556,21 +568,23 @@ public class DataSetAggregated implements
 		if (collection.size() == 1) {
 			return collection.get(0).getValues().size();
 		}
-		boolean first = true;
-		int relSize = 0;
-		for (ParameterValueList pvl : collection) {
-			if (first) {
-				first = false;
-				relSize = pvl.getValues().size();
-			} else {
-				if (pvl.getValues().size() != 1 && pvl.getValues().size() != relSize) {
-					return -1;
-				}
-			}
+		
+		// get Max value size
+		int maxSize = -1;
+		for (ParameterValueList pvl: collection) {
+			if (pvl.getValues().size() > maxSize)
+				maxSize = pvl.getValues().size();
 		}
-		return relSize;
+		
+		// check if all sizes larger than 1 are equal
+		for (ParameterValueList pvl: collection) {
+			final int size = pvl.getValues().size();
+			if (size > 1 && size != maxSize)
+				return -1;
+		}
+		
+		return maxSize;
 	}
-	
 	
 	public boolean containsRowWithInputValues(ParameterCollection<ParameterValue<?>> inputParameterValues){
 	 for (DataSetRow dataSetRow : this) {
