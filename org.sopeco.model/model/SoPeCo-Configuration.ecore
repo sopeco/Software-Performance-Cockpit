@@ -21,7 +21,8 @@
     <eClassifiers xsi:type="ecore:EClass" name="ParameterNamespace" eSuperTypes="#//common/Serializable">
       <eStructuralFeatures xsi:type="ecore:EReference" name="children" upperBound="-1"
           eType="#//environment/ParameterNamespace" containment="true"/>
-      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+          defaultValueLiteral=""/>
       <eStructuralFeatures xsi:type="ecore:EReference" name="parameters" upperBound="-1"
           eType="#//environment/ParameterDefinition" containment="true">
         <eAnnotations source="http:///org/eclipse/emf/ecore/util/ExtendedMetaData">
@@ -61,7 +62,8 @@
       <eStructuralFeatures xsi:type="ecore:EReference" name="initializationAssignemts"
           upperBound="-1" eType="#//measurements/ConstantValueAssignment" containment="true"/>
       <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" lowerBound="1"
-          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+          eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"
+          defaultValueLiteral=""/>
     </eClassifiers>
     <eClassifiers xsi:type="ecore:EClass" name="ExperimentSeriesDefinition" eSuperTypes="#//common/Serializable">
       <eStructuralFeatures xsi:type="ecore:EReference" name="explorationStrategy"

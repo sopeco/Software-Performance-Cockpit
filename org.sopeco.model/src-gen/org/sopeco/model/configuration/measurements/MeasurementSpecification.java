@@ -64,6 +64,7 @@ public interface MeasurementSpecification extends ISerializableEObject {
 
 	/**
 	 * Returns the value of the '<em><b>Name</b></em>' attribute.
+	 * The default value is <code>""</code>.
 	 * <!-- begin-user-doc -->
 	 * <p>
 	 * If the meaning of the '<em>Name</em>' attribute isn't clear,
@@ -73,7 +74,7 @@ public interface MeasurementSpecification extends ISerializableEObject {
 	 * @return the value of the '<em>Name</em>' attribute.
 	 * @see #setName(String)
 	 * @see org.sopeco.model.configuration.measurements.MeasurementsPackage#getMeasurementSpecification_Name()
-	 * @model required="true"
+	 * @model default="" required="true"
 	 * @generated
 	 */
 	String getName();
