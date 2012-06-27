@@ -30,8 +30,7 @@ import org.sopeco.persistence.entities.keys.ExperimentSeriesPK;
  */
 @Entity
 @NamedQueries({ @NamedQuery(name = "findExperimentSeriesByName", query = "SELECT o FROM ExperimentSeries o WHERE o.primaryKey.name = :name "
-		+ "AND o.primaryKey.scenarioInstanceName = :scenarioInstanceName "
-		+ "AND o.primaryKey.measurementEnvironmentUrl = :measurementEnvironmentUrl") })
+		+ "AND o.primaryKey.scenarioInstanceName = :scenarioInstanceName " + "AND o.primaryKey.measurementEnvironmentUrl = :measurementEnvironmentUrl") })
 public class ExperimentSeries implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -53,7 +52,7 @@ public class ExperimentSeries implements Serializable {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "experimentSeries", orphanRemoval = true, fetch = FetchType.EAGER)
 	private List<ProcessedDataSet> processedDataSets = new ArrayList<ProcessedDataSet>();
-	
+
 	@EmbeddedId
 	private ExperimentSeriesPK primaryKey = new ExperimentSeriesPK();
 
@@ -103,15 +102,13 @@ public class ExperimentSeries implements Serializable {
 	public List<ProcessedDataSet> getProcessedDataSets() {
 		return processedDataSets;
 	}
-	
+
 	public void addProcessedDataSet(ProcessedDataSet pds) {
 		processedDataSets.add(pds);
+		pds.setExperimentSeries(this);
 	}
-	
-	public void removeProcessedDataSet(ProcessedDataSet pds) {
-		processedDataSets.remove(pds);
-	}
-	
+
+
 	public ExperimentSeriesPK getPrimaryKey() {
 		return primaryKey;
 	}
@@ -143,7 +140,7 @@ public class ExperimentSeries implements Serializable {
 	 */
 	public List<ExperimentFailedException> getAllExperimentFailedExceptions() {
 		List<ExperimentFailedException> result = new ArrayList<ExperimentFailedException>();
-		
+
 		for (ExperimentSeriesRun seriesRun : getExperimentSeriesRuns()) {
 			final List<ExperimentFailedException> seriesExceptions = seriesRun.getExperimentFailedExceptions();
 			if (seriesExceptions != null) {
@@ -161,14 +158,20 @@ public class ExperimentSeries implements Serializable {
 		for (ExperimentSeriesRun run : this.experimentSeriesRuns) {
 			run.storeDataSets();
 		}
+		for (ProcessedDataSet pds : this.processedDataSets) {
+			pds.storeDataSets();
+		}
 	}
-	
+
 	/**
 	 * Removes the data sets of all experiment series runs in the database.
 	 */
 	public void removeDataSets() {
 		for (ExperimentSeriesRun run : this.experimentSeriesRuns) {
 			run.removeDataSets();
+		}
+		for (ProcessedDataSet pds : this.processedDataSets) {
+			pds.removeDataSets();
 		}
 	}
 
@@ -215,8 +218,7 @@ public class ExperimentSeries implements Serializable {
 	@Override
 	public String toString() {
 
-		return "ExperimentSeries{" + "name='" + this.primaryKey.getName() + "\' " + "scenarioInstance='"
-				+ scenarioInstance.toString() + '\'' + '}';
+		return "ExperimentSeries{" + "name='" + this.primaryKey.getName() + "\' " + "scenarioInstance='" + scenarioInstance.toString() + '\'' + '}';
 	}
 
 }

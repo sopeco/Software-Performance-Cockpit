@@ -18,7 +18,11 @@ import javax.persistence.JoinColumns;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.Transient;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.sopeco.persistence.PersistenceProviderFactory;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterRole;
@@ -36,7 +40,7 @@ import org.sopeco.persistence.util.ParameterCollection;
 @NamedQuery(name = "findAllProcessedDataSets", query = "SELECT o FROM ProcessedDataSet o")
 @Entity
 public class ProcessedDataSet implements Serializable {
-
+	private static Logger logger = LoggerFactory.getLogger(ProcessedDataSet.class);
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -49,9 +53,11 @@ public class ProcessedDataSet implements Serializable {
 	@Column(name= "label")
 	private String label;
 	
-	@Lob
-	@Column(name = "dataSet")
+	@Transient
 	private DataSetAggregated dataSet;
+	
+	@Column(name = "successfulResultDataSetId")
+	private String dataSetId;
 
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
 	@JoinColumns({ @JoinColumn(name = "scenarioInstanceName", referencedColumnName = "scenarioInstanceName"),
@@ -85,11 +91,22 @@ public class ProcessedDataSet implements Serializable {
 	}
 
 	public DataSetAggregated getDataSet() {
+
+		if (dataSet == null && dataSetId != null) {
+			try {
+				dataSet = PersistenceProviderFactory.getPersistenceProvider().loadDataSet(
+						dataSetId);
+			} catch (DataNotFoundException e) {
+				logger.warn(e.getMessage());
+			}
+		}
+		
 		return dataSet;
 	}
 
 	public void setDataSet(DataSetAggregated dataSet) {
 		this.dataSet = dataSet;
+		this.dataSetId = dataSet.getID();
 	}
 
 	public ExperimentSeries getExperimentSeries() {
@@ -98,6 +115,23 @@ public class ProcessedDataSet implements Serializable {
 
 	public void setExperimentSeries(ExperimentSeries experimentSeries) {
 		this.experimentSeries = experimentSeries;
+	}
+
+	public void storeDataSets() {
+		if(this.getDataSet()!=null) {
+			PersistenceProviderFactory.getPersistenceProvider().store(this.getDataSet());
+		}
+		
+	}
+
+	public void removeDataSets() {
+		if(this.dataSetId!=null) {
+			try {
+				PersistenceProviderFactory.getPersistenceProvider().remove(this.getDataSet());
+			} catch (DataNotFoundException e) {
+				logger.warn(e.getMessage());
+			}
+		}	
 	}
 
 

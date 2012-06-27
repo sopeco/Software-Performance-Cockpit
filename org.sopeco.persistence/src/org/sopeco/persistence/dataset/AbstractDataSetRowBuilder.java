@@ -82,6 +82,7 @@ public abstract class AbstractDataSetRowBuilder {
 
 	/**
 	 * Generates a new DataSet based on the data provided to the builder.
+	 * Sets the Id of the dataset to the current nano timestamp.
 	 * 
 	 * @return New DataSet.
 	 */

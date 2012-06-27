@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
+import org.sopeco.persistence.entities.ProcessedDataSet;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.entities.analysis.AnalysisResultStorageContainer;
 import org.sopeco.persistence.entities.analysis.IStorableAnalysisResult;
@@ -134,8 +135,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 	@Override
 	public void store(String resultId, IStorableAnalysisResult analysisResult) {
 		analysisResult.setId(resultId);
-		AnalysisResultStorageContainer containerEntity = EntityFactory.createAnalysisResultStorageContainer(resultId,
-				analysisResult);
+		AnalysisResultStorageContainer containerEntity = EntityFactory.createAnalysisResultStorageContainer(resultId, analysisResult);
 
 		EntityManager em = emf.createEntityManager();
 		try {
@@ -185,19 +185,18 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 	}
 
 	@Override
-	public ExperimentSeries loadExperimentSeries(String experimentSeriesName, Long version,
-			String scenarioInstanceName, String measurementEnvironmentUrl) throws DataNotFoundException {
+	public ExperimentSeries loadExperimentSeries(String experimentSeriesName, Long version, String scenarioInstanceName, String measurementEnvironmentUrl)
+			throws DataNotFoundException {
 		ExperimentSeries experimentSeries = null;
-		String errorMsg = "Could not find experiment series for scenario instance { " + scenarioInstanceName + ", "
-				+ measurementEnvironmentUrl + " series name " + experimentSeriesName + " and series version " + version
-				+ ".";
+		String errorMsg = "Could not find experiment series for scenario instance { " + scenarioInstanceName + ", " + measurementEnvironmentUrl
+				+ " series name " + experimentSeriesName + " and series version " + version + ".";
 
 		EntityManager em = emf.createEntityManager();
 		try {
 			// em.getTransaction().begin();
 
-			experimentSeries = em.find(ExperimentSeries.class, new ExperimentSeriesPK(experimentSeriesName, version,
-					scenarioInstanceName, measurementEnvironmentUrl));
+			experimentSeries = em.find(ExperimentSeries.class, new ExperimentSeriesPK(experimentSeriesName, version, scenarioInstanceName,
+					measurementEnvironmentUrl));
 			// em.getTransaction().commit();
 		} catch (Exception e) {
 
@@ -221,13 +220,12 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 	}
 
 	@Override
-	public ExperimentSeries loadExperimentSeries(String experimentSeriesName, String scenarioInstanceName,
-			String measurementEnvironmentUrl) throws DataNotFoundException {
-		List<ExperimentSeries> experimentSeriesWithEqualName = this.loadAllExperimentSeries(experimentSeriesName,
-				scenarioInstanceName, measurementEnvironmentUrl);
+	public ExperimentSeries loadExperimentSeries(String experimentSeriesName, String scenarioInstanceName, String measurementEnvironmentUrl)
+			throws DataNotFoundException {
+		List<ExperimentSeries> experimentSeriesWithEqualName = this.loadAllExperimentSeries(experimentSeriesName, scenarioInstanceName,
+				measurementEnvironmentUrl);
 
-		String errorMsg = "Could not find an experiment series with name " + experimentSeriesName
-				+ " in scenario instance " + scenarioInstanceName + ".";
+		String errorMsg = "Could not find an experiment series with name " + experimentSeriesName + " in scenario instance " + scenarioInstanceName + ".";
 
 		ExperimentSeries resultSeries = null;
 		if (experimentSeriesWithEqualName != null) {
@@ -247,12 +245,11 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<ExperimentSeries> loadAllExperimentSeries(String experimentSeriesName, String scenarioInstanceName,
-			String measurementEnvironmentUrl) throws DataNotFoundException {
+	public List<ExperimentSeries> loadAllExperimentSeries(String experimentSeriesName, String scenarioInstanceName, String measurementEnvironmentUrl)
+			throws DataNotFoundException {
 
 		List<ExperimentSeries> experimentSeriesWithEqualName;
-		String errorMsg = "Could not find an experiment series with name " + experimentSeriesName
-				+ " in scenario instance " + scenarioInstanceName + ".";
+		String errorMsg = "Could not find an experiment series with name " + experimentSeriesName + " in scenario instance " + scenarioInstanceName + ".";
 
 		EntityManager em = emf.createEntityManager();
 
@@ -283,8 +280,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 
 	@Override
 	public ExperimentSeries loadExperimentSeries(ExperimentSeriesPK primaryKey) throws DataNotFoundException {
-		return loadExperimentSeries(primaryKey.getName(), primaryKey.getScenarioInstanceName(),
-				primaryKey.getMeasurementEnvironmentUrl());
+		return loadExperimentSeries(primaryKey.getName(), primaryKey.getScenarioInstanceName(), primaryKey.getMeasurementEnvironmentUrl());
 	}
 
 	@Override
@@ -414,19 +410,17 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 	}
 
 	@Override
-	public ScenarioInstance loadScenarioInstance(String scenarioName, String measurementEnvironmentUrl)
-			throws DataNotFoundException {
+	public ScenarioInstance loadScenarioInstance(String scenarioName, String measurementEnvironmentUrl) throws DataNotFoundException {
 
 		ScenarioInstance scenarioInstance;
-		String errorMsg = "Could not find scenario instance for scenario " + scenarioName
-				+ " and measurement environment URL" + measurementEnvironmentUrl + " .";
+		String errorMsg = "Could not find scenario instance for scenario " + scenarioName + " and measurement environment URL" + measurementEnvironmentUrl
+				+ " .";
 
 		EntityManager em = emf.createEntityManager();
 		try {
 			// em.getTransaction().begin();
 
-			scenarioInstance = em.find(ScenarioInstance.class, new ScenarioInstancePK(scenarioName,
-					measurementEnvironmentUrl));
+			scenarioInstance = em.find(ScenarioInstance.class, new ScenarioInstancePK(scenarioName, measurementEnvironmentUrl));
 
 			// em.getTransaction().commit();
 
@@ -630,6 +624,62 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 			em.close();
 		}
 
+	}
+
+	@Override
+	public void store(ProcessedDataSet processedDataSet) {
+		processedDataSet.storeDataSets(); // required due to decoupling of
+		// data
+		// sets from entity structure
+
+		EntityManager em = emf.createEntityManager();
+		try {
+			// experimentSeriesRun.increaseVersion();
+			em.getTransaction().begin();
+			processedDataSet = em.merge(processedDataSet);
+			em.getTransaction().commit();
+
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
+
+	}
+
+	@Override
+	public void remove(ProcessedDataSet processedDataSet) throws DataNotFoundException {
+		String errorMsg = "Could not remove experiment series run " + processedDataSet.toString();
+
+		processedDataSet.removeDataSets(); // required due to decoupling of
+												// data
+												// sets from entity structure
+
+		EntityManager em = emf.createEntityManager();
+		try {
+
+			em.getTransaction().begin();
+
+			// load entity to make it "managed"
+			processedDataSet = em.find(ProcessedDataSet.class, processedDataSet.getId());
+
+			em.remove(processedDataSet);
+
+			em.getTransaction().commit();
+
+		} catch (Exception e) {
+
+			logger.error(errorMsg);
+			throw new DataNotFoundException(errorMsg, e);
+
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
+		
 	}
 
 }

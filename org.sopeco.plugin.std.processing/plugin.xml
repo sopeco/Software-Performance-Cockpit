@@ -13,5 +13,11 @@
             class="org.sopeco.plugin.std.processing.basic.FilterDataProcessingExtension">
       </strategy>
    </extension>
+   <extension
+         point="org.sopeco.engine.processing">
+      <strategy
+            class="org.sopeco.plugin.std.processing.basic.ObservationOutlierRemovalExtension">
+      </strategy>
+   </extension>
 
 </plugin>
