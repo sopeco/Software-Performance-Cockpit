@@ -438,58 +438,52 @@ public class DataSetAggregated implements
 
 	@Override
 	public String toString() {
-		return "";
-//		if (size <= 0) {
-//			return "EMPTY_DATASET" + super.toString();
-//		}
-//		boolean firstIteration = true;
-//		String result = "";
-//		String space = "\t";
-//		String newLine = "\n";
-//		for (DataSetRow row : this.getRowList()) {
-//			if (firstIteration) {
-//				for (ParameterValue<?> val : row.getInputRowValues()) {
-//					result += val.getParameter().getName() + space;
-//				}
-//				for (ParameterValueList<?> pvl : row.getObservableRowValues()) {
-//					result += pvl.getParameter().getName() + space;
-//				}
-//				result += newLine;
-//				firstIteration = false;
-//			}
-//
-//			for (ParameterValue<?> val : row.getInputRowValues()) {
-//				result += val.getValue() + space;
-//			}
-//
-//			for (ParameterValueList<?> pvl : row.getObservableRowValues()) {
-//				String s = "{";
-//				boolean first = true;
-//				
-//				for (int i = 0; i < pvl.getSize(); i++){
-//					Object value = pvl.getValues().get(i);
-//					String valueString = "";
-//					if(pvl instanceof TimeSeries){
-//						Double timestamp = (Double)((TimeSeries)pvl).getTimeStamps().get(i);
-//						valueString = "("+timestamp+" | "+value.toString()+")";
-//					}else{
-//						valueString = value.toString();
-//					}
-//					if (first) {
-//						s += valueString;
-//						first = false;
-//					} else {
-//						s += ";" + valueString;
-//					}
-//				}
-//
-//				s += "}";
-//				result += s + space;
-//			}
-//			result += newLine;
-//
-//		}
-//		return result;
+		if (size <= 0) {
+			return "EMPTY_DATASET" + super.toString();
+		}
+		boolean firstIteration = true;
+		String result = "";
+		String space = "\t";
+		String newLine = "\n";
+		for (DataSetRow row : this.getRowList()) {
+			if (firstIteration) {
+				for (ParameterValue<?> val : row.getInputRowValues()) {
+					result += val.getParameter().getName() + space;
+				}
+				for (ParameterValueList<?> pvl : row.getObservableRowValues()) {
+					result += pvl.getParameter().getName() + space;
+				}
+				result += newLine;
+				firstIteration = false;
+			}
+
+			for (ParameterValue<?> val : row.getInputRowValues()) {
+				result += val.getValue() + space;
+			}
+
+			for (ParameterValueList<?> pvl : row.getObservableRowValues()) {
+				String s = "{";
+				boolean first = true;
+				
+				for (int i = 0; i < pvl.getSize(); i++){
+					Object value = pvl.getValues().get(i);
+					String valueString = "";
+					valueString = value.toString();
+					if (first) {
+						s += valueString;
+						first = false;
+					} else {
+						s += ";" + valueString;
+					}
+				}
+
+				s += "}";
+				result += s + space;
+			}
+			result += newLine;
+
+		}
+		return result;
 	}
 
 	protected void addColumn(AbstractDataSetColumn<?> col) {

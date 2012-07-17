@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterRole;
+import org.sopeco.persistence.util.ParameterCollection;
 
 /**
  * Builder for DataSets using rows.
@@ -13,7 +14,7 @@ import org.sopeco.persistence.entities.definition.ParameterRole;
  * @author Jens Happe
  * 
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class DataSetRowBuilder extends AbstractDataSetRowBuilder {
 
 	/**
@@ -51,11 +52,9 @@ public class DataSetRowBuilder extends AbstractDataSetRowBuilder {
 			throw new IllegalStateException("The row must be started first.");
 		}
 		if (!parameter.getRole().equals(ParameterRole.INPUT)) {
-			throw new IllegalArgumentException(
-					"Parameter must be an input parameter!");
+			throw new IllegalArgumentException("Parameter must be an input parameter!");
 		}
-		ParameterValue parameterValue = ParameterValueFactory
-				.createParameterValue(parameter, value);
+		ParameterValue parameterValue = ParameterValueFactory.createParameterValue(parameter, value);
 
 		nextRowInput.add(parameterValue);
 	}
@@ -72,14 +71,12 @@ public class DataSetRowBuilder extends AbstractDataSetRowBuilder {
 	 * @param value
 	 *            Value for the parameter in the new row.
 	 */
-	public void addObservationParameterValues(ParameterDefinition parameter,
-			List values) {
+	public void addObservationParameterValues(ParameterDefinition parameter, List values) {
 		if (nextRowObservation == null) {
 			throw new IllegalStateException("The row must be started first.");
 		}
 		if (!parameter.getRole().equals(ParameterRole.OBSERVATION)) {
-			throw new IllegalArgumentException(
-					"Parameter must be an observation parameter!");
+			throw new IllegalArgumentException("Parameter must be an observation parameter!");
 		}
 		ParameterValueList pvl = getPVL(parameter);
 		if (pvl == null) {
@@ -96,8 +93,7 @@ public class DataSetRowBuilder extends AbstractDataSetRowBuilder {
 			throw new IllegalStateException("The row must be started first.");
 		}
 		if (!values.getParameter().getRole().equals(ParameterRole.OBSERVATION)) {
-			throw new IllegalArgumentException(
-					"Parameter must be an observation parameter!");
+			throw new IllegalArgumentException("Parameter must be an observation parameter!");
 		}
 		ParameterValueList pvl = getPVL(values.getParameter());
 		if (pvl == null) {
@@ -125,14 +121,12 @@ public class DataSetRowBuilder extends AbstractDataSetRowBuilder {
 	 * @param value
 	 *            Value for the parameter in the new row.
 	 */
-	public void addObservationParameterValue(ParameterDefinition parameter,
-			Object value) {
+	public void addObservationParameterValue(ParameterDefinition parameter, Object value) {
 		if (nextRowObservation == null) {
 			throw new IllegalStateException("The row must be started first.");
 		}
 		if (!parameter.getRole().equals(ParameterRole.OBSERVATION)) {
-			throw new IllegalArgumentException(
-					"Parameter must be an observation parameter!");
+			throw new IllegalArgumentException("Parameter must be an observation parameter!");
 		}
 		ParameterValueList pvl = getPVL(parameter);
 		if (pvl == null) {
@@ -163,36 +157,31 @@ public class DataSetRowBuilder extends AbstractDataSetRowBuilder {
 	 * @param row
 	 *            Row to be added.
 	 */
-	public void appendRow(Collection<ParameterValue<?>> inputValues,
-			List<ParameterValueList<?>> observationValues) {
+	public void appendRow(Collection<ParameterValue<?>> inputValues, List<ParameterValueList<?>> observationValues) {
 
 		if (inputColumnMap.isEmpty()) {
 			for (ParameterValue value : inputValues) {
-				DataSetInputColumn colum = new DataSetInputColumn(
-						value.getParameter(), new ArrayList());
+				DataSetInputColumn colum = new DataSetInputColumn(value.getParameter(), new ArrayList());
 				inputColumnMap.put(value.getParameter(), colum);
 			}
 		}
 
 		checkInputParameters(inputValues);
 		for (ParameterValue value : inputValues) {
-			DataSetInputColumn column = inputColumnMap
-					.get(value.getParameter());
+			DataSetInputColumn column = inputColumnMap.get(value.getParameter());
 			column.getValueList().add(value.getValue());
 		}
 
 		if (observationColumnMap.isEmpty()) {
 			for (ParameterValueList pvl : observationValues) {
-				DataSetObservationColumn colum = new DataSetObservationColumn(
-						pvl.getParameter(), new ArrayList());
+				DataSetObservationColumn colum = new DataSetObservationColumn(pvl.getParameter(), new ArrayList());
 				observationColumnMap.put(pvl.getParameter(), colum);
 			}
 		}
 
 		checkOutputParameters(observationValues);
 		for (ParameterValueList pvl : observationValues) {
-			DataSetObservationColumn column = observationColumnMap.get(pvl
-					.getParameter());
+			DataSetObservationColumn column = observationColumnMap.get(pvl.getParameter());
 			column.getValueLists().add(pvl);
 		}
 
@@ -231,8 +220,7 @@ public class DataSetRowBuilder extends AbstractDataSetRowBuilder {
 		return null;
 	}
 
-	public ParameterValueList getCurrentObservationValues(
-			ParameterDefinition ParameterDefinition) {
+	public ParameterValueList getCurrentObservationValues(ParameterDefinition ParameterDefinition) {
 		for (ParameterValueList pvl : nextRowObservation) {
 			if (pvl.getParameter().equals(ParameterDefinition)) {
 				return pvl;
@@ -241,75 +229,17 @@ public class DataSetRowBuilder extends AbstractDataSetRowBuilder {
 		return null;
 	}
 
-//	/**
-//	 * Adds a new parameterValue to the row under construction.
-//	 * 
-//	 * @param parameter
-//	 *            Parameter for which a value is added.
-//	 * @param value
-//	 *            Value for the parameter in the new row.
-//	 */
-//	public void addTimeSeriesValues(ParameterDefinition parameter, List values,
-//			List<Double> timestamps) {
-//		if (nextRowObservation == null) {
-//			throw new IllegalStateException("The row must be started first.");
-//		}
-//		if (!parameter.getRole().equals(ParameterRole.OBSERVABLE_TIME_SERIES)) {
-//			throw new IllegalArgumentException(
-//					"Parameter must be an observable time series parameter!");
-//		}
-//		ParameterValueList pvl = getPVL(parameter);
-//		if (pvl == null) {
-//			pvl = new TimeSeries(parameter, values, timestamps);
-//			nextRowObservation.add(pvl);
-//		} else {
-//			((TimeSeries) pvl).addTimeValuePairs(timestamps, values);
-//		}
-//
-//	}
+	public void addAllInputParameterValues(ParameterCollection<ParameterValue<?>> inputPVs) {
+		for (ParameterValue<?> parameterValue : inputPVs) {
+			addInputParameterValue(parameterValue.getParameter(), parameterValue.getValue());
+		}
+	}
 
-//	public void addTimeSeriesValues(TimeSeries values) {
-//		if (nextRowObservation == null) {
-//			throw new IllegalStateException("The row must be started first.");
-//		}
-//		if (!values.getParameter().getRole()
-//				.equals(ParameterRole.OBSERVABLE_TIME_SERIES)) {
-//			throw new IllegalArgumentException(
-//					"Parameter must be an observable time series parameter!");
-//		}
-//		ParameterValueList pvl = getPVL(values.getParameter());
-//		if (pvl == null) {
-//			nextRowObservation.add(values);
-//		} else {
-//			throw new IllegalStateException("Values already set for this row!");
-//		}
-//
-//	}
+	public void addAllObservationParameterValues(Collection<ParameterValueList<?>> observations) {
+		for (ParameterValueList<?> pvl : observations) {
+			addObservationParameterValues(pvl);
+		}
 
-//	/**
-//	 * Adds a new parameterValue to the row under construction.
-//	 * 
-//	 * @param parameter
-//	 *            Parameter for which a value is added.
-//	 * @param value
-//	 *            Value for the parameter in the new row.
-//	 */
-//	public void addTimeSeriesValue(ParameterDefinition parameter, Object value,
-//			Double timestamp) {
-//		if (nextRowObservation == null) {
-//			throw new IllegalStateException("The row must be started first.");
-//		}
-//		if (!parameter.getRole().equals(ParameterRole.OBSERVABLE_TIME_SERIES)) {
-//			throw new IllegalArgumentException(
-//					"Parameter must be an observable time series parameter!");
-//		}
-//		ParameterValueList pvl = getPVL(parameter);
-//		if (pvl == null) {
-//			pvl = new TimeSeries(parameter, new ArrayList(), new ArrayList());
-//			((TimeSeries) pvl).addTimeValuePair(timestamp, value);
-//			nextRowObservation.add(pvl);
-//		} else {
-//			pvl.addValue(value);
-//		}
-//	}
+	}
+
 }
