@@ -13,7 +13,7 @@
 
 	<modules>
 		<module>../org.sopeco.util</module>
-		<!-- <module>../org.sopeco.config</module> -->
+		<module>../org.sopeco.config</module>
 		<!-- <module>../org.sopeco.persistence</module> -->
 		<!-- <module>../org.sopeco.engine</module> -->
 		<!-- <module>../org.sopeco.core</module> -->
