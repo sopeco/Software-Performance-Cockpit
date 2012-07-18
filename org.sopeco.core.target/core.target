@@ -45,7 +45,7 @@
 <repository location="http://download.eclipse.org/rt/eclipselink/updates/"/>
 </location>
 <location includeAllPlatforms="false" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.sopeco.orbit.feature.feature.group" version="0.1.0.201206161315"/>
+<unit id="org.sopeco.orbit.feature.feature.group" version="0.0.0"/>
 <repository location="http://deqkal276.qkal.sap.corp:8080/jenkins/job/sopeco.orbit-master/ws/org.sopeco.orbit.updatesite/target/site/"/>
 </location>
 </locations>
