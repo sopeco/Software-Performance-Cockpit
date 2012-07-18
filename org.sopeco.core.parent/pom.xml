@@ -15,7 +15,7 @@
 		<module>../org.sopeco.util</module>
 		<module>../org.sopeco.config</module>
 		<module>../org.sopeco.persistence</module>
-		<!-- <module>../org.sopeco.engine</module> -->
+		<module>../org.sopeco.engine</module>
 		<!-- <module>../org.sopeco.core</module> -->
 		<!-- <module>../org.sopeco.core.test</module> -->
 		<!-- <module>../org.sopeco.plugin.std.exploration</module> -->

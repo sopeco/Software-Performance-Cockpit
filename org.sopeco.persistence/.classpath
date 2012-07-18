@@ -35,5 +35,6 @@
   <classpathentry kind="var" path="M2_REPO/com/sap/dasl/unauthorized/org.eclipse.emf.ecore/2.7.0.v20110605-0747/org.eclipse.emf.ecore-2.7.0.v20110605-0747.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/sap/dasl/unauthorized/org.eclipse.emf.ecore.xmi/2.7.0.v20110520-1406/org.eclipse.emf.ecore.xmi-2.7.0.v20110520-1406.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/sap/dasl/unauthorized/org.eclipse.emf.common/2.7.0.v20110605-0747/org.eclipse.emf.common-2.7.0.v20110605-0747.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/derby/derbyclient/10.8.2.2/derbyclient-10.8.2.2.jar"/>
   <classpathentry kind="src" path="/org.sopeco.config"/>
 </classpath>
