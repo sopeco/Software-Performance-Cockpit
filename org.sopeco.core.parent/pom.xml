@@ -17,15 +17,32 @@
 		<module>../org.sopeco.persistence</module>
 		<module>../org.sopeco.engine</module>
 		<module>../org.sopeco.core</module>
+		<module>../org.sopeco.model</module>
 		<!-- <module>../org.sopeco.core.test</module> -->
 		<module>../org.sopeco.plugin.std.parametervariation</module>
-<!-- 		<module>../org.sopeco.sdq.rwrapper</module> -->
-<!-- 		<module>../org.sopeco.plugin.std.exploration</module> -->
+		<!-- <module>../org.sopeco.sdq.rwrapper</module> -->
+		<!-- <module>../org.sopeco.plugin.std.exploration</module> -->
 		<!-- <module>../org.sopeco.plugin.std.analysis</module> -->
 		<module>../org.sopeco.plugin.std.constantassignment</module>
 		<!-- <module>../org.sopeco.plugin.std.processing</module> -->
 		<!-- <module>../org.sopeco.runner</module> -->
 	</modules>
+
+
+	<repositories>
+		<repository>
+			<id>LPE Repository</id>
+			<name>LPE Repository-releases</name>
+			<url>http://deqkal276.qkal.sap.corp:8080/artifactory/ext-release-local</url>
+		</repository>
+
+		<repository>
+			<id>remote-repos</id>
+			<name>Remote Repositories</name>
+			<url>http://deqkal276.qkal.sap.corp:8080/artifactory/remote-repos</url>
+		</repository>
+	</repositories>
+
 
 	<dependencies>
 		<dependency>

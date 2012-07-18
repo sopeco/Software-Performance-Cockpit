@@ -6,7 +6,7 @@
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
   <classpathentry kind="src" path="/org.sopeco.core"/>
   <classpathentry kind="src" path="/org.sopeco.engine"/>
-  <classpathentry kind="lib" path="C:/data/git/sopeco.core/org.sopeco.engine/lib/commons-math3-3.0.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/commons/commons-math3/3.0/commons-math3-3.0.jar"/>
   <classpathentry kind="src" path="/org.sopeco.util"/>
   <classpathentry kind="var" path="M2_REPO/junit/junit/4.10/junit-4.10.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar"/>
