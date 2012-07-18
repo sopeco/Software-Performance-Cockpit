@@ -14,5 +14,12 @@
 		<relativePath>../org.sopeco.core.parent</relativePath>
 	</parent>
 
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>org.apache.commons.io</artifactId>
+			<version>2.4</version>
+		</dependency>
+	</dependencies>
 
 </project>  
