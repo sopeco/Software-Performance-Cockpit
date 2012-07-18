@@ -4,14 +4,15 @@
 
 
 	<artifactId>org.sopeco.util</artifactId>
-	<packaging>eclipse-plugin</packaging>
+	<packaging>jar</packaging>
 	<name>SoPeCo Utilities</name>
 
 	<parent>
 		<artifactId>org.sopeco.core.parent</artifactId>
 		<groupId>org.sopeco.core</groupId>
-		<version>0.2.0-SNAPSHOT</version>
+		<version>0.3.0-SNAPSHOT</version>
 		<relativePath>../org.sopeco.core.parent</relativePath>
 	</parent>
-	
+
+
 </project>  
