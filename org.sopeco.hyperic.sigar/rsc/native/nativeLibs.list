@@ -1,0 +1,6 @@
+libsigar-amd64-linux.so
+libsigar-universal-macosx.dylib
+libsigar-universal64-macosx.dylib
+libsigar-x86-linux.so
+sigar-amd64-winnt.dll
+sigar-x86-winnt.dll

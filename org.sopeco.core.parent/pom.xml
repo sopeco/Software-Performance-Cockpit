@@ -20,6 +20,7 @@
 		<module>../org.sopeco.model</module>
 		<!-- <module>../org.sopeco.core.test</module> -->
 		<module>../org.sopeco.plugin.std.parametervariation</module>
+		<module>../org.sopeco.hyperic.sigar</module>
 		<module>../org.sopeco.sdq.rwrapper</module>
 		<module>../org.sopeco.plugin.std.exploration</module>
 		<!-- <module>../org.sopeco.plugin.std.analysis</module> -->
