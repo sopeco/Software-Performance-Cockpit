@@ -13,6 +13,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.sopeco.config.Configuration;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetInputColumn;
 import org.sopeco.persistence.dataset.DataSetRowBuilder;
@@ -41,6 +42,7 @@ public class PersistenceProviderTest {
 	@BeforeClass
 	public static void init() throws Exception {
 
+		Configuration.getSingleton().setProperty("sopeco.config.persistence.dbtype", "InMemory");
 		provider = (JPAPersistenceProvider) PersistenceProviderFactory.getPersistenceProvider();
 		dummyScenarioInstance = DummyFactory.createDummyScenarioInstance();
 	}

@@ -14,7 +14,7 @@
 	<modules>
 		<module>../org.sopeco.util</module>
 		<module>../org.sopeco.config</module>
-		<!-- <module>../org.sopeco.persistence</module> -->
+		<module>../org.sopeco.persistence</module>
 		<!-- <module>../org.sopeco.engine</module> -->
 		<!-- <module>../org.sopeco.core</module> -->
 		<!-- <module>../org.sopeco.core.test</module> -->
@@ -106,8 +106,15 @@
 			<artifactId>org.eclipse.emf.common</artifactId>
 			<version>2.7.0.v20110605-0747</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derbyclient</artifactId>
+			<version>10.8.2.2</version>
+		</dependency>
+
 	</dependencies>
-	
+
 	<build>
 		<plugins>
 			<plugin>
@@ -133,5 +140,5 @@
 			</testResource>
 		</testResources>
 	</build>
-		
+
 </project>
