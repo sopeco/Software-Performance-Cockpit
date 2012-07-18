@@ -9,7 +9,7 @@ import javax.persistence.Lob;
 
 
 /**
- * Stores any analysis result that ímplements {@link IStorableAnalysisResult}
+ * Stores any analysis result that implements {@link IStorableAnalysisResult}
  * 
  * @author Dennis Westermann
  *
