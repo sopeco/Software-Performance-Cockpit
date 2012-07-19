@@ -17,7 +17,7 @@
 		<module>../org.sopeco.persistence</module>
 		<module>../org.sopeco.engine</module>
 		<module>../org.sopeco.core</module>
-<!-- 		<module>../org.sopeco.core.bundle</module> -->
+		<module>../org.sopeco.model</module>
 
 		<module>../org.sopeco.model-mapping</module>
 		<!-- <module>../org.sopeco.core.test</module> -->

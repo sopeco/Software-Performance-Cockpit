@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+ <copyright>
+ </copyright>
+
+ $Id$
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="http://sopeco.org/configuration"
+            class="org.sopeco.model.configuration.ConfigurationPackage"
+            genModel="model/SoPeCo-Configuration.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="http://sopeco.org/configuration/environment"
+            class="org.sopeco.model.configuration.environment.EnvironmentPackage"
+            genModel="model/SoPeCo-Configuration.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="http://sopeco.org/configuration/measurements"
+            class="org.sopeco.model.configuration.measurements.MeasurementsPackage"
+            genModel="model/SoPeCo-Configuration.genmodel"/>
+   </extension>
+
+   <extension point="org.eclipse.emf.ecore.generated_package">
+      <package
+            uri="http://sopeco.org/configuration/analysis"
+            class="org.sopeco.model.configuration.analysis.AnalysisPackage"
+            genModel="model/SoPeCo-Configuration.genmodel"/>
+   </extension>
+
+</plugin>
