@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,10 +23,6 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtensionRegistry;
-import org.eclipse.core.runtime.Platform;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.config.exception.ConfigurationException;
@@ -200,12 +194,6 @@ public class Configuration implements IConfiguration {
 		options.addOption(modelChangeHandling);
 //		options.addOption(logVerbosity);
 
-		/* Adding all extension options */
-		// the following does not check for option conflicts 
-		for (ICommandLineArgumentsExtension iclae: getCLAExtensions()) 
-			for (Option opt: iclae.getCommandLineOptions())
-				options.addOption(opt);
-		
 	    CommandLineParser parser = new GnuParser();
 	    CommandLine line = null;
 	    try {
@@ -266,10 +254,6 @@ public class Configuration implements IConfiguration {
 	    	// TODO it may not be possible
 	    }
 
-	    /* processing all extension options */
-	    for (ICommandLineArgumentsExtension iclae: getCLAExtensions())
-	    	iclae.processOptions(line);
-	    
 	} 
 
 	/**
@@ -382,38 +366,6 @@ public class Configuration implements IConfiguration {
 		}
 	}
 	
-	/**
-	 * Loads all the command line argument provider extensions. 
-	 */
-	private List<ICommandLineArgumentsExtension> getCLAExtensions() {
-		if (extensions == null) {
-			extensions = new ArrayList<ICommandLineArgumentsExtension>();
-			
-			final IExtensionRegistry registry = Platform.getExtensionRegistry();
-			
-			// TODO need to use the Engine registry
-			if (registry == null) {
-				logger.warn("Cannot load command line argument extensions. Cannot access platform extensions registry.");
-				return Collections.emptyList();
-			}
-			
-			IConfigurationElement[] configs = registry.getConfigurationElementsFor(CLA_EXTENSION_ID);
-			for (IConfigurationElement ext : configs) {
-				Object o = null;
-				try {
-					o = ext.createExecutableExtension("class");
-					if (o instanceof ICommandLineArgumentsExtension) {
-						final ICommandLineArgumentsExtension es = (ICommandLineArgumentsExtension)o;
-						extensions.add(es);
-					}
-				} catch (CoreException e) {
-					logger.warn("Could not load the {} extension. Error: {}", ext.getName(), e.getMessage());
-				}
-			}
-		}
-		return extensions;
-	}
-
 	@Override
 	public void setScenarioDescriptionFileName(String fileName) {
 		setProperty(CONF_SCENARIO_DESCRIPTION_FILE_NAME, fileName);

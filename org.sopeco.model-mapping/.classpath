@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+  <classpathentry kind="src" path="test" output="target/test-classes" including="**/*.java"/>
   <classpathentry kind="src" path="src" including="**/*.java"/>
   <classpathentry kind="output" path="target/classes"/>
   <classpathentry kind="var" path="M2_REPO/javax/persistence/com.springsource.javax.persistence/2.0.0/com.springsource.javax.persistence-2.0.0.jar"/>
@@ -27,15 +28,6 @@
   <classpathentry kind="var" path="M2_REPO/org/apache/derby/derbyclient/10.8.2.2/derbyclient-10.8.2.2.jar"/>
   <classpathentry kind="src" path="/org.sopeco.config"/>
   <classpathentry kind="src" path="/org.sopeco.persistence"/>
-  <classpathentry kind="var" path="M2_REPO/org/sopeco/model/org.sopeco.model/0.3.0-SNAPSHOT/org.sopeco.model-0.3.0-SNAPSHOT.jar" sourcepath="M2_REPO/org/sopeco/model/org.sopeco.model/0.3.0-SNAPSHOT/org.sopeco.model-0.3.0-SNAPSHOT-sources.jar"/>
-  <classpathentry kind="src" path="/org.sopeco.plugin.std.parametervariation"/>
-  <classpathentry kind="src" path="/org.sopeco.plugin.std.exploration"/>
-  <classpathentry kind="src" path="/org.sopeco.sdq.rwrapper"/>
-  <classpathentry kind="lib" path="C:/data/git/sopeco.core/org.sopeco.sdq.rwrapper/lib/JRI.jar"/>
-  <classpathentry kind="src" path="/org.sopeco.plugin.std.analysis"/>
-  <classpathentry kind="src" path="/org.sopeco.plugin.std.constantassignment"/>
-  <classpathentry kind="src" path="/org.sopeco.plugin.std.processing"/>
-  <classpathentry kind="src" path="/org.sopeco.model-mapping"/>
   <classpathentry kind="var" path="M2_REPO/org/sopeco/core/org.sopeco.model/0.3.0-SNAPSHOT/org.sopeco.model-0.3.0-SNAPSHOT.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/eclipse/emf/org.eclipse.emf.compare/1.1.2/org.eclipse.emf.compare-1.1.2.jar"/>
   <classpathentry kind="var" path="M2_REPO/com/sap/dasl/unauthorized/org.eclipse.emf.ecore/2.7.0.v20110605-0747/org.eclipse.emf.ecore-2.7.0.v20110605-0747.jar"/>

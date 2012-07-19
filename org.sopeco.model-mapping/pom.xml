@@ -33,35 +33,22 @@
 			<artifactId>org.eclipse.emf.compare</artifactId>
 			<version>1.1.2</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.sap.dasl.unauthorized</groupId>
+			<artifactId>org.eclipse.emf.ecore</artifactId>
+			<version>2.7.0.v20110605-0747</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sap.dasl.unauthorized</groupId>
+			<artifactId>org.eclipse.emf.ecore.xmi</artifactId>
+			<version>2.7.0.v20110520-1406</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sap.dasl.unauthorized</groupId>
+			<artifactId>org.eclipse.emf.common</artifactId>
+			<version>2.7.0.v20110605-0747</version>
+		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
-				<configuration>
-					<archive>
-						<manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<version>2.3.7</version>
-				<extensions>true</extensions>
-				<executions>
-					<execution>
-						<id>bundle-manifest</id>
-						<phase>process-classes</phase>
-						<goals>
-							<goal>manifest</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 
 </project>
