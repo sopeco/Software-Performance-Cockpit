@@ -1,4 +1,4 @@
-package org.sopeco.engine.measurementenvironment;
+package org.sopeco.engine.util.test;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -11,6 +11,7 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.sopeco.engine.analysis.PredictionFunctionResult;
+import org.sopeco.engine.util.test.DummyFactory;
 import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.entities.definition.ParameterRole;
