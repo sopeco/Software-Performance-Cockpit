@@ -22,7 +22,7 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.sopeco.model</groupId>
+			<groupId>org.sopeco.core</groupId>
 			<artifactId>org.sopeco.model</artifactId>
 			<version>0.3.0-SNAPSHOT</version>
 		</dependency>
