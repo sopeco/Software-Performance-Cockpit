@@ -2,9 +2,11 @@
 <classpath>
   <classpathentry kind="src" path="test" output="target/test-classes" including="**/*.java"/>
   <classpathentry kind="src" path="src" including="**/*.java"/>
+  <classpathentry kind="src" path="rsc" excluding="**/*.java"/>
   <classpathentry kind="output" path="target/classes"/>
   <classpathentry kind="var" path="M2_REPO/javax/persistence/com.springsource.javax.persistence/2.0.0/com.springsource.javax.persistence-2.0.0.jar"/>
   <classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+  <classpathentry kind="var" path="M2_REPO/org/apache/commons/org.apache.commons.io/2.4/org.apache.commons.io-2.4.jar"/>
   <classpathentry kind="var" path="M2_REPO/junit/junit/4.10/junit-4.10.jar"/>
   <classpathentry kind="var" path="M2_REPO/org/hamcrest/hamcrest-core/1.1/hamcrest-core-1.1.jar"/>
   <classpathentry kind="var" path="M2_REPO/ch/qos/logback/com.springsource.ch.qos.logback.core/0.9.28/com.springsource.ch.qos.logback.core-0.9.28.jar"/>

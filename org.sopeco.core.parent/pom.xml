@@ -17,7 +17,8 @@
 		<module>../org.sopeco.persistence</module>
 		<module>../org.sopeco.engine</module>
 		<module>../org.sopeco.core</module>
-		
+		<!-- <module>../org.sopeco.core.bundle</module> -->
+
 		<module>../org.sopeco.model-mapping</module>
 		<!-- <module>../org.sopeco.core.test</module> -->
 		<module>../org.sopeco.plugin.std.parametervariation</module>
@@ -35,6 +36,12 @@
 			<id>LPE Repository</id>
 			<name>LPE Repository-releases</name>
 			<url>http://deqkal276.qkal.sap.corp:8080/artifactory/ext-release-local</url>
+		</repository>
+
+		<repository>
+			<id>LPE</id>
+			<name>LPE-releases</name>
+			<url>http://deqkal276.qkal.sap.corp:8080/artifactory/sopeco-snapshot-local</url>
 		</repository>
 
 		<repository>
@@ -146,7 +153,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
-
+		
 		<sourceDirectory>src</sourceDirectory>
 		<testSourceDirectory>test</testSourceDirectory>
 		<resources>

@@ -13,7 +13,7 @@
 		<version>0.3.0-SNAPSHOT</version>
 		<relativePath>../org.sopeco.core.parent</relativePath>
 	</parent>
-	
+
 	<dependencies>
 
 		<dependency>
@@ -36,6 +36,6 @@
 			<artifactId>org.sopeco.persistence</artifactId>
 			<version>0.3.0-SNAPSHOT</version>
 		</dependency>
-	</dependencies>		
-	
+	</dependencies>
+
 </project>
