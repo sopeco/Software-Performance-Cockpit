@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+
+	<parent>
+		<groupId>com.sap.ldi</groupId>
+		<artifactId>ldi-tycho-parent</artifactId>
+		<version>5.2.0</version>
+	</parent>
+
+	<groupId>org.sopeco.model</groupId>
+	<artifactId>org.sopeco.model.parent</artifactId>
+	<version>0.3.0-SNAPSHOT</version>
+	<packaging>pom</packaging>
+
+	<name>SoPeCo Model - Parent</name>
+
+	<modules>
+		<module>../org.sopeco.model</module>
+		<module>../org.sopeco.model.target</module>
+		<module>../org.sopeco.model.edit</module>
+		<module>../org.sopeco.model.editor</module>
+		<!-- <module>../org.sopeco.model.updatesite</module> -->
+		<!-- <module>../org.sopeco.model.feature</module> -->
+	</modules>
+
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<configuration>
+					<target>
+						<artifact>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>org.sopeco.model.target</artifactId>
+							<version>${project.version}</version>
+							<classifier>model</classifier>
+						</artifact>
+					</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<outputFileFormat>xml</outputFileFormat>
+					<consoleOutput>false</consoleOutput>
+					<enableRSS>false</enableRSS>
+					<linkXRef>false</linkXRef>
+					<configLocation>checkstyle-sopeco.config.xml</configLocation>
+					<sourceDirectory>${basedir}/src</sourceDirectory>
+					<encoding>${project.build.sourceEncoding}</encoding>
+					<failOnViolation>false</failOnViolation>
+					<violationSeverity>error</violationSeverity>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>plugin-source</id>
+						<goals>
+							<goal>plugin-source</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
