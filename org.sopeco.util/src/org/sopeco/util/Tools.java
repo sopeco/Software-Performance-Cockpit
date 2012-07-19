@@ -24,6 +24,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.tools.ant.DirectoryScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -529,4 +530,48 @@ public class Tools {
 		
 		return result;
 	}
+
+
+	/**
+	 * Given a base directory and a path to a file, it concatinates the two parts and
+	 * takes care of missing file separators.
+	 * 
+	 * @param baseDir base directory
+	 * @param fileName file name
+	 * @return the absolute path to the file
+	 */
+	public static String concatFileName(String baseDir, String fileName) {
+		// cleanup
+		baseDir = baseDir.trim();
+		fileName = fileName.trim();
+		
+		if (baseDir.lastIndexOf(File.separator) != baseDir.length() - 1)
+			baseDir = baseDir + File.separator;
+		
+		String concat = baseDir + fileName;
+		
+		return concat;
+	}	
+
+	/**
+	 * Given a base directory and a path to a file, it creates a full path to the file.
+	 * If the base directory is not absolute, it adds the application root directory
+	 * It also takes care of missing file separators.
+	 * 
+	 * @param baseDir base directory
+	 * @param fileName file name
+	 * @param rootFolder root folder of the application
+	 * @return the absolute path to the file
+	 */
+	public static String toFullPath(String baseDir, String fileName, String rootFolder) {
+		String result = concatFileName(baseDir, fileName);
+		
+		File file = new File(result);
+		if (!file.isAbsolute()) {
+			result = concatFileName(rootFolder, result);
+		}
+			
+		return result;
+	}	
+
 }
