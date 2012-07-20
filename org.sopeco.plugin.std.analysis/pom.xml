@@ -22,7 +22,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.sopeco.core</groupId>
-			<artifactId>org.sopeco.sdq.rwrapper</artifactId>
+			<artifactId>org.sopeco.analysis.wrapper</artifactId>
 			<version>0.3.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>

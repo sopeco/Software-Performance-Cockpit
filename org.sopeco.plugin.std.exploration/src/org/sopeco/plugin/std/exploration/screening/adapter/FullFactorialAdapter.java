@@ -44,7 +44,8 @@ public class FullFactorialAdapter extends AbstractScreeningAdapter {
 			StringBuilder cmdBuilder = new StringBuilder();
 			cmdBuilder.append("desnum(curDesign)[," + (i + 1) + "]");
 
-			double[] factorLevelsOfParam = RAdapter.getWrapper().executeRCommandDoubleArray(cmdBuilder.toString());
+			double[] factorLevelsOfParam = RAdapter.getWrapper().executeCommandDoubleArray(cmdBuilder.toString());
+			RAdapter.shutDown();
 			ParameterRunLevels runLevels = new ParameterRunLevels(param);
 						 
 			for (double value : factorLevelsOfParam) {
@@ -109,7 +110,8 @@ public class FullFactorialAdapter extends AbstractScreeningAdapter {
 
 	@Override
 	protected void loadRLibraries() {
-		RAdapter.getWrapper().executeRCommandString("library(FrF2);");		
+		RAdapter.getWrapper().executeCommandString("library(FrF2);");	
+		RAdapter.shutDown();
 	}
 
 	@Override

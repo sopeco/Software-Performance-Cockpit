@@ -23,7 +23,8 @@ public class PlackettBurmanAdapter extends AbstractScreeningAdapter {
 	
 	@Override
 	protected void loadRLibraries() {
-		RAdapter.getWrapper().executeRCommandString("library(FrF2);");
+		RAdapter.getWrapper().executeCommandString("library(FrF2);");
+		RAdapter.shutDown();
 	}
 	
 	/**
@@ -54,7 +55,8 @@ public class PlackettBurmanAdapter extends AbstractScreeningAdapter {
 			cmdBuilder.append("desnum(curDesign)[," + i + "]");
 			i++;
 			
-			double[] factorLevelsOfParam = RAdapter.getWrapper().executeRCommandDoubleArray(cmdBuilder.toString());
+			double[] factorLevelsOfParam = RAdapter.getWrapper().executeCommandDoubleArray(cmdBuilder.toString());
+			RAdapter.shutDown();
 			ParameterRunLevels runLevels = new ParameterRunLevels(param);
 			for (double value : factorLevelsOfParam) {
 				runLevels.addRunLevel(((Double) value).intValue());

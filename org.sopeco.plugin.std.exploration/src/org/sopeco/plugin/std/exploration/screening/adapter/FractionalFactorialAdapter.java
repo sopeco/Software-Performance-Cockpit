@@ -74,7 +74,8 @@ public class FractionalFactorialAdapter extends AbstractScreeningAdapter {
 
 	@Override
 	protected void loadRLibraries() {
-		RAdapter.getWrapper().executeRCommandString("library(FrF2);");	
+		RAdapter.getWrapper().executeCommandString("library(FrF2);");	
+		RAdapter.shutDown();
 	}
 
 	@Override
@@ -85,7 +86,8 @@ public class FractionalFactorialAdapter extends AbstractScreeningAdapter {
 			StringBuilder cmdBuilder = new StringBuilder();
 			cmdBuilder.append("desnum(curDesign)[," + (i + 1) + "]");
 
-			double[] factorLevelsOfParam = RAdapter.getWrapper().executeRCommandDoubleArray(cmdBuilder.toString());
+			double[] factorLevelsOfParam = RAdapter.getWrapper().executeCommandDoubleArray(cmdBuilder.toString());
+			RAdapter.shutDown();
 			ParameterRunLevels runLevels = new ParameterRunLevels(param);
 			for (double value : factorLevelsOfParam) {
 				runLevels.addRunLevel(((Double) value).intValue());
@@ -145,7 +147,8 @@ public class FractionalFactorialAdapter extends AbstractScreeningAdapter {
 	protected int getDesignResolutionFromR() {
 		StringBuilder cmdBuilder = new StringBuilder();
 		cmdBuilder.append("print(as.character(design.info(curDesign)$catlg.entry))");
-		String result = RAdapter.getWrapper().executeRCommandString(cmdBuilder.toString());
+		String result = RAdapter.getWrapper().executeCommandString(cmdBuilder.toString());
+		RAdapter.shutDown();
 		if (result.contains("STRING \"list(res = ")) {
 			result = result.substring(result.indexOf("STRING \"list(res = ") + 19);
 			result = result.substring(0, result.indexOf(","));

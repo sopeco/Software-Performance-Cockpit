@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.sopeco.analysis.wrapper.AnalysisWrapper;
 import org.sopeco.engine.registry.AbstractSoPeCoExtensionArtifact;
 import org.sopeco.engine.registry.ISoPeCoExtension;
 import org.sopeco.persistence.dataset.AbstractDataSetColumn;
@@ -52,8 +53,9 @@ public abstract class AbstractRStrategy extends AbstractSoPeCoExtensionArtifact 
 	public void loadLibraries() {
 		    
 			for (String library : requiredLibraries) {
-				RAdapter.getWrapper().executeRCommandString("library(" + library + ");");
+				RAdapter.getWrapper().executeCommandString("library(" + library + ");");
 			}
+			RAdapter.shutDown();
 			requiredLibraries.clear();
 		
 	

@@ -111,7 +111,8 @@ public abstract class AbstractScreeningAdapter implements IScreeningAdapter {
 	protected final void executeRCommandAndGetDesign() {
 
 		String rCommand = buildRCommand();
-		RAdapter.getWrapper().executeRCommandString(rCommand);
+		RAdapter.getWrapper().executeCommandString(rCommand);
+		RAdapter.shutDown();
 		getAllRunLevelsFromR();
 		expDesign.setType(getDesignTypeFromR());
 		expDesign.updateNumberOfRuns();
@@ -131,7 +132,8 @@ public abstract class AbstractScreeningAdapter implements IScreeningAdapter {
 	 */
 	private ExpDesignType getDesignTypeFromR() {
 		String rCommand = "design.info(curDesign)$type";
-		String type = RAdapter.getWrapper().executeRCommandString(rCommand);
+		String type = RAdapter.getWrapper().executeCommandString(rCommand);
+		RAdapter.shutDown();
 		if (type.contains("FrF2")) {
 			return ExpDesignType.FRACTIONAL;
 		} else if (type.contains("full factorial")) {

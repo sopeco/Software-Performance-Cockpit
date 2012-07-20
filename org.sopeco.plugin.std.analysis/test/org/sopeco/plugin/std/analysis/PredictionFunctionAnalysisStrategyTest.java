@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +29,7 @@ import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.plugin.std.analysis.util.DummyScenarioDefinitionFactory;
+import org.sopeco.plugin.std.analysis.util.RAdapter;
 
 /**
  * Test class for implementations of the {@link IPredictionFunctionStrategy}
@@ -74,6 +76,7 @@ public class PredictionFunctionAnalysisStrategyTest {
 	public void setUp() throws Exception {
 		scenarioDefinition = loadScenarioDefinition();
 	}
+
 
 	@Test
 	public void testAnalysis() {

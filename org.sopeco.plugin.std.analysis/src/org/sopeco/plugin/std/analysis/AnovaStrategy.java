@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.analysis.wrapper.AnalysisWrapper;
 import org.sopeco.engine.analysis.AnovaCalculatedEffect;
 import org.sopeco.engine.analysis.AnovaResult;
 import org.sopeco.engine.analysis.IAnovaResult;
@@ -79,8 +80,8 @@ public class AnovaStrategy extends AbstractAnalysisStrategy implements IAnovaStr
 		cmdBuilder.append(data.getId());
 		cmdBuilder.append("))");
 		logger.debug("Running R Command: {}", cmdBuilder.toString());
-		RAdapter.getWrapper().executeRCommandString(cmdBuilder.toString());
-
+		RAdapter.getWrapper().executeCommandString(cmdBuilder.toString());
+		RAdapter.shutDown();
 		extractResult();
 	}
 
@@ -95,7 +96,8 @@ public class AnovaStrategy extends AbstractAnalysisStrategy implements IAnovaStr
 		}
 
 		// interaction effects
-		String[] effectCodes = RAdapter.getWrapper().executeRCommandStringArray("rownames(" + getId() + ")");
+		String[] effectCodes = RAdapter.getWrapper().executeCommandStringArray("rownames(" + getId() + ")");
+		RAdapter.shutDown();
 		for (int i = 0; i < effectCodes.length; i++) {
 			List<ParameterDefinition> paramList = new ArrayList<ParameterDefinition>();
 			String[] paramNames = effectCodes[i].split(":");
@@ -173,7 +175,9 @@ public class AnovaStrategy extends AbstractAnalysisStrategy implements IAnovaStr
 		cmdBuilder.append("\",]$\"");
 		cmdBuilder.append(colName);
 		cmdBuilder.append("\")");
-		return RAdapter.getWrapper().executeRCommandDouble(cmdBuilder.toString());
+		double result = RAdapter.getWrapper().executeCommandDouble(cmdBuilder.toString());
+		RAdapter.shutDown();
+		return result;
 	}
 
 	@Override

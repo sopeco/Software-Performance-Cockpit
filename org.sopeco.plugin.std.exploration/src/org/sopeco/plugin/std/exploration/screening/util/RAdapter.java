@@ -1,6 +1,6 @@
 package org.sopeco.plugin.std.exploration.screening.util;
 
-import de.ipd.sdq.rwrapper.RWrapper;
+import org.sopeco.analysis.wrapper.AnalysisWrapper;
 
 /**
  * This class provides helper methods to access the R environment.
@@ -9,17 +9,17 @@ import de.ipd.sdq.rwrapper.RWrapper;
  *
  */
 public abstract class RAdapter {
-	private static RWrapper rWrapper = null;
+	private static AnalysisWrapper rWrapper = null;
 
 	/**
 	 * RWrapper is a singleton.
 	 * 
 	 * @return Instance of the RWrapper
 	 */
-	public static synchronized RWrapper getWrapper() {
+	public static synchronized AnalysisWrapper getWrapper() {
 		if (rWrapper == null) {
-			rWrapper = new RWrapper();
-			rWrapper.executeRCommandString(".Library <- file.path(R.home(), 'library')");
+			rWrapper = AnalysisWrapper.getDefaultWrapper();
+			rWrapper.executeCommandString(".Library <- file.path(R.home(), 'library')");
 		}
 		return rWrapper;
 	}

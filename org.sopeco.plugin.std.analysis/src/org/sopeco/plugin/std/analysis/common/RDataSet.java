@@ -1,5 +1,6 @@
 package org.sopeco.plugin.std.analysis.common;
 
+import org.sopeco.analysis.wrapper.AnalysisWrapper;
 import org.sopeco.persistence.dataset.SimpleDataSet;
 import org.sopeco.persistence.dataset.SimpleDataSetColumn;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
@@ -48,7 +49,7 @@ public class RDataSet extends RIdentifiableObject {
 		int i = 0;
 		for (SimpleDataSetColumn<?> column : dataset.getColumns()) {
 			String columnId = column.getParameter().getFullName("_");
-			RAdapter.getWrapper().executeRCommandString(columnId + " <- c(" + new CSVStringGenerator().generateValueString(column.getParameterValues()) + ")");
+			RAdapter.getWrapper().executeCommandString(columnId + " <- c(" + new CSVStringGenerator().generateValueString(column.getParameterValues()) + ")");
 			if (i == 0) {
 				parameterIdString = columnId;
 				parameterIdStringInQuotes = "\"" + columnId + "\"";
@@ -59,8 +60,10 @@ public class RDataSet extends RIdentifiableObject {
 			i++;
 		}
 
-		RAdapter.getWrapper().executeRCommandString(getId() + " <- data.frame(" + parameterIdString + ");");
-		RAdapter.getWrapper().executeRCommandString("colnames(" + getId() + ") <- c(" + parameterIdStringInQuotes + ")");
+		RAdapter.getWrapper().executeCommandString(getId() + " <- data.frame(" + parameterIdString + ");");
+		RAdapter.getWrapper().executeCommandString("colnames(" + getId() + ") <- c(" + parameterIdStringInQuotes + ")");
+		
+		RAdapter.shutDown();
 		dataLoaded = true;
 
 	}
@@ -86,7 +89,7 @@ public class RDataSet extends RIdentifiableObject {
 		cmdBuilder.append("$");
 		cmdBuilder.append(parameter.getFullName("_")); 
 		cmdBuilder.append(", 0.0000001)");
-		RAdapter.getWrapper().executeRCommandString(cmdBuilder.toString());
+		RAdapter.getWrapper().executeCommandString(cmdBuilder.toString());
 	}
 
 	/**
@@ -97,10 +100,10 @@ public class RDataSet extends RIdentifiableObject {
 			// Delete all columns
 			for (SimpleDataSetColumn<?> column : dataset.getColumns()) {
 				String columnId = column.getParameter().getFullName("_");
-				RAdapter.getWrapper().executeRCommandString("rm(" + columnId + ");");
+				RAdapter.getWrapper().executeCommandString("rm(" + columnId + ");");
 			}
 			// Delete data table
-			RAdapter.getWrapper().executeRCommandString("rm(" + getId() + ");");
+			RAdapter.getWrapper().executeCommandString("rm(" + getId() + ");");
 			dataLoaded = false;
 		}
 	}

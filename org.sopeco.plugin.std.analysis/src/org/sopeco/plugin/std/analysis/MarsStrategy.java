@@ -4,6 +4,7 @@ import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.analysis.wrapper.AnalysisWrapper;
 import org.sopeco.engine.analysis.IPredictionFunctionResult;
 import org.sopeco.engine.analysis.IPredictionFunctionStrategy;
 import org.sopeco.engine.analysis.PredictionFunctionResult;
@@ -62,7 +63,8 @@ public class MarsStrategy extends AbstractAnalysisStrategy implements
 		cmdBuilder.append(data.getId());
 		cmdBuilder.append(", penalty=-1,  fast.k=0, degree=2)");
 		logger.debug("Running R Command: {}", cmdBuilder.toString());
-		RAdapter.getWrapper().executeRCommandString(cmdBuilder.toString());
+		RAdapter.getWrapper().executeCommandString(cmdBuilder.toString());
+		RAdapter.shutDown();
 
 	}
 
@@ -78,8 +80,9 @@ public class MarsStrategy extends AbstractAnalysisStrategy implements
 	 *         JavaScript syntax
 	 */
 	private String getFunctionAsString() {
-		String fs = RAdapter.getWrapper().executeRCommandString(
-				"cat(format(" + getId() + ", style=\"max\"))");
+		String fs = RAdapter.getWrapper().executeCommandString(
+				"format(" + getId() + ", style=\"max\")");
+		RAdapter.shutDown();
 		fs = fs.replace("\n ", "");
 		fs = fs.replace("+  ", "+ ");
 		fs = fs.replace("-  ", "- ");

@@ -22,12 +22,13 @@
 		<module>../org.sopeco.model-mapping</module>
 		<!-- <module>../org.sopeco.core.test</module> -->
 		<module>../org.sopeco.plugin.std.parametervariation</module>
-		<module>../org.sopeco.sdq.rwrapper</module>
+		<!--  <module>../org.sopeco.sdq.rwrapper</module>-->
 		<module>../org.sopeco.plugin.std.exploration</module>
 		<module>../org.sopeco.plugin.std.analysis</module>
 		<module>../org.sopeco.plugin.std.constantassignment</module>
 		<module>../org.sopeco.plugin.std.processing</module>
 		<module>../org.sopeco.runner</module>
+		<module>../org.sopeco.analysis.wrapper</module>
 	</modules>
 
 
@@ -117,6 +118,11 @@
 			<artifactId>derbyclient</artifactId>
 			<version>10.8.2.2</version>
 		</dependency>
+		<dependency>
+      		<groupId>com.google.code.gson</groupId>
+      		<artifactId>gson</artifactId>
+      		<version>2.2.2</version>
+    	</dependency>
 
 	</dependencies>
 
