@@ -23,6 +23,7 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.config.exception.ConfigurationException;
@@ -329,7 +330,9 @@ public class Configuration implements IConfiguration {
 	 */
 	private void loadConfiguration(Map<String, Object> dest, String container, String fileName) throws ConfigurationException {
 		// TODO Here I intentionally used '/' instead of File.separator. Check if it works in Windows.
-		final String pathToFile = (container==null || container.length() == 0)?fileName:(container + "/" + fileName);
+		String pathToFile = fileName;
+		if (!Tools.isAbsolutePath(fileName))
+			pathToFile = Tools.concatFileName(getAppRootDirectory(), ((container==null || container.length() == 0)?fileName:(Tools.concatFileName(container, fileName))));
 
 		logger.debug("Loading configuration from '{}'...", pathToFile);
 		
@@ -350,7 +353,9 @@ public class Configuration implements IConfiguration {
 	 */
 	private void loadConfiguration(Map<String, Object> dest, ClassLoader classLoader, String container, String fileName) throws ConfigurationException {
 		// TODO Here I intentionally used '/' instead of File.separator. Check if it works in Windows.
-		final String pathToFile = (container==null || container.length() == 0)?fileName:(container + "/" + fileName);
+		String pathToFile = fileName;
+		if (!Tools.isAbsolutePath(fileName))
+			pathToFile = (container==null || container.length() == 0)?fileName:(container + "/" + fileName);
 		
 		logger.debug("Loading configuration from '{}' in classpath...", pathToFile);
 		

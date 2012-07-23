@@ -573,4 +573,13 @@ public class Tools {
 		return result;
 	}	
 
+	/**
+	 * Returns true if the given filename has is an absolute path.
+	 * 
+	 * @param fileName a file name 
+	 */
+	public static boolean isAbsolutePath(String fileName) {
+		final File file = new File(fileName);
+		return file.isAbsolute();
+	}
 }
