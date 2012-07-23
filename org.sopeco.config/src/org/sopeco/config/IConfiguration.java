@@ -53,6 +53,8 @@ public interface IConfiguration {
 
 	public static final String DEFAULT_CONFIG_FILE_NAME = "sopeco-defaults.conf";
 
+	public static final String DEFAULT_PLUGINS_FOLDER_IN_CLASSPATH = "plugins";
+	
 	/**
 	 * Returns the configured value of the given property in SoPeCo.
 	 * 

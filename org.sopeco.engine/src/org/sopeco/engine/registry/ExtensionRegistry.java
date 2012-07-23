@@ -127,21 +127,22 @@ public class ExtensionRegistry implements IExtensionRegistry {
 	@SuppressWarnings("rawtypes")
 	private void loadExtensions() {
 		final IConfiguration config = Configuration.getSingleton();
-		final String pluginsDirName = config.getAppRootDirectory() + File.separator + config.getPropertyAsStr(IConfiguration.CONF_PLUGINS_FOLDER);
+		final String pluginsDirName = Tools.concatFileName(config.getAppRootDirectory(), config.getPropertyAsStr(IConfiguration.CONF_PLUGINS_FOLDER));
 		final File pluginsDir = new File(pluginsDirName);
 		final String defExtensionsFileName = pluginsDirName + File.separatorChar + EXTENSIONS_FILE_NAME;
 		final File defExtensionsFile = new File(defExtensionsFileName);
 
 		// 1. Look for all 'extensions.info' files in the classpath
 		// and the default location
+		final String EXTENSION_FILE_PATH = config.DEFAULT_PLUGINS_FOLDER_IN_CLASSPATH + '/' + EXTENSIONS_FILE_NAME;
 		Set<URL> extensioInfoURLs = new HashSet<URL>();
 		Enumeration<URL> eURLs;
 		try {
-			eURLs = ClassLoader.getSystemResources(EXTENSIONS_FILE_NAME);
+			eURLs = ClassLoader.getSystemResources(EXTENSION_FILE_PATH);
 			while (eURLs.hasMoreElements()) {
 				extensioInfoURLs.add(eURLs.nextElement());
 			}
-			URL enginePathURL = this.getClass().getClassLoader().getResource(EXTENSIONS_FILE_NAME);
+			URL enginePathURL = this.getClass().getClassLoader().getResource(EXTENSION_FILE_PATH);
 			if (enginePathURL != null) {
 				extensioInfoURLs.add(enginePathURL);
 			}
@@ -181,7 +182,7 @@ public class ExtensionRegistry implements IExtensionRegistry {
 			ArrayList<URL> urls = new ArrayList<URL>();
 			if (names.length > 0) {
 				for (String str : names) {
-					final String jarName = pluginsDirName + File.separatorChar + str;
+					final String jarName = Tools.concatFileName(pluginsDirName, str);
 					try {
 						urls.add(new URL("file://" + jarName));
 					} catch (MalformedURLException e) {
@@ -195,7 +196,7 @@ public class ExtensionRegistry implements IExtensionRegistry {
 			cl = new URLClassLoader(urls.toArray(new URL[] {}), this.getClass().getClassLoader());
 
 		} else {
-			logger.debug("Could not locate the plugins folder ({}).", pluginsDirName);
+			logger.debug("Could not locate the plugins folder ({}), but it is OK.", pluginsDirName);
 		}
 
 		for (String extClassName : extensionClasses) {
