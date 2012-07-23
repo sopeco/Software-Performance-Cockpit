@@ -1,26 +1,18 @@
 /**
  * 
  */
-package org.sopeco.runner.test.dummyextension;
+package org.sopeco.plugin.test.dummydataprocessing;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.sopeco.engine.processing.IProcessingStrategy;
 import org.sopeco.engine.registry.AbstractSoPeCoExtensionArtifact;
 import org.sopeco.engine.registry.ISoPeCoExtension;
-import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.dataset.DataSetAggregated;
-import org.sopeco.persistence.dataset.DataSetRow;
-import org.sopeco.persistence.dataset.DataSetRowBuilder;
-import org.sopeco.persistence.dataset.ParameterValue;
-import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
-import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.persistence.util.ParameterCollection;
 import org.sopeco.persistence.util.ParameterCollectionFactory;
-import org.sopeco.util.Tools;
 
 /**
  * A test strategy (empty) to test extension loading mechanism in the runner project.

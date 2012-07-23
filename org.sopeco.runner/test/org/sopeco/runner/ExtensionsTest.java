@@ -4,13 +4,13 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.sopeco.config.Configuration;
 import org.sopeco.engine.experimentseries.IExplorationStrategyExtension;
 import org.sopeco.engine.processing.IProcessingStrategyExtension;
 import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.engine.registry.IExtensionRegistry;
 import org.sopeco.engine.registry.ISoPeCoExtensionArtifact;
 import org.sopeco.plugin.std.exploration.full.FullExplorationStrategyExtension;
-import org.sopeco.runner.test.dummyextension.DummyRunnerExtension;
 
 public class ExtensionsTest {
 
@@ -18,6 +18,7 @@ public class ExtensionsTest {
 	
 	@Before
 	public void setUp() throws Exception {
+		Configuration.getSingleton(this.getClass());
 		registry = ExtensionRegistry.getSingleton();
 	}
 
@@ -31,7 +32,7 @@ public class ExtensionsTest {
 
 	@Test
 	public void testCustomPlugin() {
-		ISoPeCoExtensionArtifact dummyStrategy = registry.getExtensionArtifact(IProcessingStrategyExtension.class, DummyRunnerExtension.NAME);
+		ISoPeCoExtensionArtifact dummyStrategy = registry.getExtensionArtifact(IProcessingStrategyExtension.class, "Dummy Runner Extension");
 		
 		assertNotNull(dummyStrategy);
 		System.out.println(dummyStrategy.getProvider().getName() + " is loaded successfully.");

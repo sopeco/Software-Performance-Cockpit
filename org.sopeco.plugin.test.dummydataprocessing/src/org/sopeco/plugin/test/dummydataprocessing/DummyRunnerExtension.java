@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.sopeco.runner.test.dummyextension;
+package org.sopeco.plugin.test.dummydataprocessing;
 
 import java.util.Collections;
 import java.util.Map;

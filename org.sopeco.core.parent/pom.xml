@@ -23,6 +23,7 @@
 		<!-- <module>../org.sopeco.core.test</module> -->
 		<module>../org.sopeco.plugin.std.parametervariation</module>
 		<!--  <module>../org.sopeco.sdq.rwrapper</module>-->
+		<module>../org.sopeco.plugin.test.dummydataprocessing</module>
 		<module>../org.sopeco.plugin.std.exploration</module>
 		<module>../org.sopeco.plugin.std.analysis</module>
 		<module>../org.sopeco.plugin.std.constantassignment</module>
