@@ -1,7 +1,5 @@
 package org.sopeco.persistence.config;
 
-import java.io.File;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.config.Configuration;
@@ -34,7 +32,7 @@ public class PersistenceConfiguration {
 		sopecoConfig = Configuration.getSingleton();
 		
 		try {
-			sopecoConfig.loadDefaultConfiguration(this.getClass().getClassLoader(), "config" + File.separator + DEFAULT_PERSISTENCE_CONFIG_FILE_NAME);
+			sopecoConfig.loadDefaultConfigurationFromClasspath(this.getClass().getClassLoader(), DEFAULT_PERSISTENCE_CONFIG_FILE_NAME);
 		} catch (ConfigurationException e) {
 			logger.error("Unable to read default config.");
 			throw new RuntimeException(e);

@@ -78,7 +78,7 @@ public class Configuration implements IConfiguration {
 	}
 
 	/**
-	 * Returns a singleton instance of the kernel with 
+	 * Returns a singleton instance of the configuration with 
 	 * the given main class.
 	 * 
 	 * @see #setMainClass(Class)
@@ -267,7 +267,7 @@ public class Configuration implements IConfiguration {
 		if (getAppRootDirectory() == null)
 		defaultValues.put(CONF_APP_ROOT_FOLDER, Tools.getRootFolder());
 
-		loadDefaultConfiguration(this.getClass().getClassLoader(), DEFAULT_CONFIG_FILE_NAME);
+		loadDefaultConfigurationFromClasspath(this.getClass().getClassLoader(), DEFAULT_CONFIG_FILE_NAME);
 	}
 
 	/**
@@ -284,13 +284,23 @@ public class Configuration implements IConfiguration {
 
 	@Override
 	public void loadDefaultConfiguration(String fileName) throws ConfigurationException {
-		loadConfiguration(defaultValues, fileName);
+		loadConfiguration(DEFAULT_CONFIG_FOLDER_NAME, fileName);
 	}
 
 	@Override
-	public void loadDefaultConfiguration(ClassLoader classLoader, String fileName) throws ConfigurationException {
+	public void loadDefaultConfiguration(String container, String fileName) throws ConfigurationException {
+		loadConfiguration(defaultValues, container, fileName);
+	}
+
+	@Override
+	public void loadDefaultConfigurationFromClasspath(ClassLoader classLoader, String fileName) throws ConfigurationException {
+		loadDefaultConfigurationFromClasspath(classLoader, DEFAULT_CONFIG_FOLDER_NAME, fileName);
+	}
+
+	@Override
+	public void loadDefaultConfigurationFromClasspath(ClassLoader classLoader, String container, String fileName) throws ConfigurationException {
 		try {
-			loadConfiguration(defaultValues, classLoader, fileName);
+			loadConfiguration(defaultValues, classLoader, container, fileName);
 		} catch (ConfigurationException ce) {
 			logger.warn("Could not find the default configuration file from classpath. Trying the root folder...");
 			loadDefaultConfiguration(getAppRootDirectory() + File.separator + fileName);
@@ -299,7 +309,12 @@ public class Configuration implements IConfiguration {
 
 	@Override
 	public void loadConfiguration(String fileName) throws ConfigurationException {
-		loadConfiguration(properties, fileName);
+		loadConfiguration(DEFAULT_CONFIG_FOLDER_NAME, fileName);
+	}
+
+	@Override
+	public void loadConfiguration(String container, String fileName) throws ConfigurationException {
+		loadConfiguration(properties, container, fileName);
 		applyConfiguration();
 	}
 
@@ -312,13 +327,16 @@ public class Configuration implements IConfiguration {
 	 * Loads configurations from a file into
 	 * the destination properties holder. 
 	 */
-	private void loadConfiguration(Map<String, Object> dest, String fileName) throws ConfigurationException {
-		logger.debug("Loading configuration from '{}'...", fileName);
+	private void loadConfiguration(Map<String, Object> dest, String container, String fileName) throws ConfigurationException {
+		// TODO Here I intentionally used '/' instead of File.separator. Check if it works in Windows.
+		final String pathToFile = (container==null || container.length() == 0)?fileName:(container + "/" + fileName);
+
+		logger.debug("Loading configuration from '{}'...", pathToFile);
 		
 		try {
-			loadConfigFromStream(dest, new FileInputStream(fileName));
+			loadConfigFromStream(dest, new FileInputStream(pathToFile));
 		} catch (FileNotFoundException e) {
-			final String msg = "Could not load configuration from file. File '" + fileName + "' was not found.";
+			final String msg = "Could not load configuration from file. File '" + pathToFile + "' was not found.";
 			throw new ConfigurationException(msg);
 			// logger.error("Could not load configuration from file. File not found.");
 		}
@@ -330,13 +348,16 @@ public class Configuration implements IConfiguration {
 	 * Loads configurations from a file available through the given class loader into
 	 * the destination properties holder. 
 	 */
-	private void loadConfiguration(Map<String, Object> dest, ClassLoader classLoader, String fileName) throws ConfigurationException {
-		logger.debug("Loading configuration from '{}' in classpath...", fileName);
+	private void loadConfiguration(Map<String, Object> dest, ClassLoader classLoader, String container, String fileName) throws ConfigurationException {
+		// TODO Here I intentionally used '/' instead of File.separator. Check if it works in Windows.
+		final String pathToFile = (container==null || container.length() == 0)?fileName:(container + "/" + fileName);
 		
-		InputStream in = classLoader.getResourceAsStream(fileName);
+		logger.debug("Loading configuration from '{}' in classpath...", pathToFile);
+		
+		InputStream in = classLoader.getResourceAsStream(pathToFile);
 			
 		if (in == null) {
-			final String msg = "Could not load configuration from file. File '" + fileName + "' was not found in the classpath.";
+			final String msg = "Could not load configuration from file. File '" + pathToFile + "' was not found in the classpath.";
 			throw new ConfigurationException(msg);
 		}
 		
@@ -442,7 +463,7 @@ public class Configuration implements IConfiguration {
 
 	@Override
 	public String getAppConfDirectory() {
-		return getAppRootDirectory() + File.separator + CONFIGURATION_FOLDER;
+		return getAppRootDirectory() + File.separator + DEFAULT_CONFIG_FOLDER_NAME;
 	}
 	
 	public void setMainClass(Class<?> mainClass) {
