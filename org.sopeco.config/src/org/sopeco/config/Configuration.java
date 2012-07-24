@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +23,6 @@ import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.config.exception.ConfigurationException;
@@ -48,8 +46,6 @@ public class Configuration implements IConfiguration {
 	/** Holds the singleton reference to this class. */
 	private static IConfiguration SINGLETON = null;
 
-	private List<ICommandLineArgumentsExtension> extensions = null;
-	
 	/** Holds the default property values. */
 	private Map<String, Object> defaultValues = new HashMap<String, Object>();
 	
@@ -269,7 +265,7 @@ public class Configuration implements IConfiguration {
 		if (getAppRootDirectory() == null)
 		defaultValues.put(CONF_APP_ROOT_FOLDER, Tools.getRootFolder());
 
-		loadDefaultConfigurationFromClasspath(this.getClass().getClassLoader(), DEFAULT_CONFIG_FILE_NAME);
+		loadDefaultConfiguration(DEFAULT_CONFIG_FILE_NAME);
 	}
 
 	/**
@@ -285,114 +281,10 @@ public class Configuration implements IConfiguration {
 	}
 
 	@Override
-	public void loadDefaultConfiguration(String fileName) throws ConfigurationException {
-		loadConfiguration(DEFAULT_CONFIG_FOLDER_NAME, fileName);
-	}
-
-	@Override
-	public void loadDefaultConfiguration(String container, String fileName) throws ConfigurationException {
-		loadConfiguration(defaultValues, container, fileName);
-	}
-
-	@Override
-	public void loadDefaultConfigurationFromClasspath(ClassLoader classLoader, String fileName) throws ConfigurationException {
-		loadDefaultConfigurationFromClasspath(classLoader, DEFAULT_CONFIG_FOLDER_NAME, fileName);
-	}
-
-	@Override
-	public void loadDefaultConfigurationFromClasspath(ClassLoader classLoader, String container, String fileName) throws ConfigurationException {
-		try {
-			loadConfiguration(defaultValues, classLoader, container, fileName);
-		} catch (ConfigurationException ce) {
-			logger.warn("Could not find the default configuration file from classpath. Trying the root folder...");
-			loadDefaultConfiguration(getAppRootDirectory() + File.separator + fileName);
-		}
-	}
-
-	@Override
-	public void loadConfiguration(String fileName) throws ConfigurationException {
-		loadConfiguration(DEFAULT_CONFIG_FOLDER_NAME, fileName);
-	}
-
-	@Override
-	public void loadConfiguration(String container, String fileName) throws ConfigurationException {
-		loadConfiguration(properties, container, fileName);
-		applyConfiguration();
-	}
-
-	@Override
 	public void applyConfiguration() {
 		configureLogger();
 	}
 
-	/**
-	 * Loads configurations from a file into
-	 * the destination properties holder. 
-	 */
-	private void loadConfiguration(Map<String, Object> dest, String container, String fileName) throws ConfigurationException {
-		// TODO Here I intentionally used '/' instead of File.separator. Check if it works in Windows.
-		String pathToFile = fileName;
-		if (!Tools.isAbsolutePath(fileName))
-			pathToFile = Tools.concatFileName(getAppRootDirectory(), ((container==null || container.length() == 0)?fileName:(Tools.concatFileName(container, fileName))));
-
-		logger.debug("Loading configuration from '{}'...", pathToFile);
-		
-		try {
-			loadConfigFromStream(dest, new FileInputStream(pathToFile));
-		} catch (FileNotFoundException e) {
-			final String msg = "Could not load configuration from file. File '" + pathToFile + "' was not found.";
-			throw new ConfigurationException(msg);
-			// logger.error("Could not load configuration from file. File not found.");
-		}
-		
-		logger.debug("Configuration file loaded.");
-	}
-
-	/**
-	 * Loads configurations from a file available through the given class loader into
-	 * the destination properties holder. 
-	 */
-	private void loadConfiguration(Map<String, Object> dest, ClassLoader classLoader, String container, String fileName) throws ConfigurationException {
-		// TODO Here I intentionally used '/' instead of File.separator. Check if it works in Windows.
-		String pathToFile = fileName;
-		if (!Tools.isAbsolutePath(fileName))
-			pathToFile = (container==null || container.length() == 0)?fileName:(container + "/" + fileName);
-		
-		logger.debug("Loading configuration from '{}' in classpath...", pathToFile);
-		
-		InputStream in = classLoader.getResourceAsStream(pathToFile);
-			
-		if (in == null) {
-			final String msg = "Could not load configuration from file. File '" + pathToFile + "' was not found in the classpath.";
-			throw new ConfigurationException(msg);
-		}
-		
-		loadConfigFromStream(dest, in);
-
-		logger.debug("Configuration file loaded.");
-	}
-
-	/**
-	 * Loads configuration from a config stream into the destination
-	 * configuration holder.
-	 * 
-	 * @param stream the input stream
-	 */
-	private void loadConfigFromStream(Map<String, Object> dest, InputStream stream) throws ConfigurationException {
-		Properties prop = new Properties();
-		try {
-			prop.load(stream);
-		} catch (IOException e) {
-			throw new ConfigurationException("Could not load configuration. (Reason: " + e.getMessage() + ")", e);
-		}
-		for (Entry<Object, Object> entry : prop.entrySet()) {
-			if (dest == properties) {
-				setProperty((String)entry.getKey(), entry.getValue());
-			} else
-				dest.put((String)entry.getKey(), entry.getValue());
-		}
-	}
-	
 	@Override
 	public void setScenarioDescriptionFileName(String fileName) {
 		setProperty(CONF_SCENARIO_DESCRIPTION_FILE_NAME, fileName);
@@ -510,7 +402,7 @@ public class Configuration implements IConfiguration {
 				// rules
 				lc.reset();
 
-				configurator.doConfigure(findConfigFileAsInputStream(null, fileName));
+				configurator.doConfigure(findConfigFileAsInputStream(ClassLoader.getSystemClassLoader(), null, fileName));
 			} catch (JoranException je) {
 				logger.warn("Failed loading the logback configuration file. Using default configuration. Error message: {}", je.getMessage());
 			} catch (FileNotFoundException e) {
@@ -521,35 +413,6 @@ public class Configuration implements IConfiguration {
 		}
 	}
 	
-	
-	private InputStream findConfigFileAsInputStream(String container, String fileName) throws FileNotFoundException {
-		
-		// 1. try classpath
-		
-		// TODO Here I intentionally used '/' instead of File.separator. Check if it works in Windows.
-		String pathToFile = fileName;
-		if (!Tools.isAbsolutePath(fileName))
-			pathToFile = (container==null || container.length() == 0)?fileName:(container + "/" + fileName);
-		
-		InputStream in = ClassLoader.getSystemResourceAsStream(fileName);
-		if (in != null) {
-			return in;
-		} else {
-
-			// 2. try root folder
-			pathToFile = fileName;
-			if (!Tools.isAbsolutePath(fileName))
-				pathToFile = Tools.concatFileName(getAppRootDirectory(), ((container==null || container.length() == 0)?fileName:(Tools.concatFileName(container, fileName))));
-			
-			File file = new File(fileName);
-			if (file.exists()) {
-				return new FileInputStream(file);
-			} else
-				throw new FileNotFoundException();
-
-		}
-	}
-
 	@Override
 	public void writeConfiguration(String fileName) throws IOException {
 		Properties props = new Properties();
@@ -574,6 +437,192 @@ public class Configuration implements IConfiguration {
 			destination.setProperty(e.getKey(), e.getValue().toString());
 		} else
 			logger.debug("Skipping configuration item '{}'.", e.getKey());
+	}
+
+	/*
+	@Override
+	public void loadDefaultConfiguration(String fileName) throws ConfigurationException {
+		loadConfiguration(DEFAULT_CONFIG_FOLDER_NAME, fileName);
+	}
+
+	@Override
+	public void loadDefaultConfiguration(String container, String fileName) throws ConfigurationException {
+		loadConfiguration(defaultValues, container, fileName);
+	}
+
+	@Override
+	public void loadDefaultConfigurationFromClasspath(ClassLoader classLoader, String fileName) throws ConfigurationException {
+		loadDefaultConfigurationFromClasspath(classLoader, DEFAULT_CONFIG_FOLDER_NAME, fileName);
+	}
+
+	@Override
+	public void loadDefaultConfigurationFromClasspath(ClassLoader classLoader, String container, String fileName) throws ConfigurationException {
+		try {
+			loadConfiguration(defaultValues, classLoader, container, fileName);
+		} catch (ConfigurationException ce) {
+			logger.warn("Could not find the default configuration file from classpath. Trying the root folder...");
+			loadDefaultConfiguration(getAppRootDirectory() + File.separator + fileName);
+		}
+	}
+
+	@Override
+	public void loadConfiguration(String fileName) throws ConfigurationException {
+		loadConfiguration(DEFAULT_CONFIG_FOLDER_NAME, fileName);
+	}
+
+	@Override
+	public void loadConfiguration(String container, String fileName) throws ConfigurationException {
+		loadConfiguration(properties, container, fileName);
+		applyConfiguration();
+	}
+
+	private void loadConfiguration(Map<String, Object> dest, InputStream configStream) throws ConfigurationException {
+		logger.debug("Loading configuration from '{}'...", pathToFile);
+		
+		try {
+			loadConfigFromStream(dest, new FileInputStream(pathToFile));
+		} catch (FileNotFoundException e) {
+			final String msg = "Could not load configuration from file. File '" + pathToFile + "' was not found.";
+			throw new ConfigurationException(msg);
+			// logger.error("Could not load configuration from file. File not found.");
+		}
+		
+		logger.debug("Configuration file loaded.");
+	}
+
+	private void loadConfiguration(Map<String, Object> dest, ClassLoader classLoader, String container, String fileName) throws ConfigurationException {
+		// TODO Here I intentionally used '/' instead of File.separator. Check if it works in Windows.
+		String pathToFile = fileName;
+		if (!Tools.isAbsolutePath(fileName))
+			pathToFile = (container==null || container.length() == 0)?fileName:(container + "/" + fileName);
+		
+		logger.debug("Loading configuration from '{}' in classpath...", pathToFile);
+		
+		InputStream in = classLoader.getResourceAsStream(pathToFile);
+			
+		if (in == null) {
+			final String msg = "Could not load configuration from file. File '" + pathToFile + "' was not found in the classpath.";
+			throw new ConfigurationException(msg);
+		}
+		
+		loadConfigFromStream(dest, in);
+
+		logger.debug("Configuration file loaded.");
+	}
+
+	*/
+	
+	@Override
+	public void loadDefaultConfiguration(String fileName) throws ConfigurationException {
+		loadConfiguration(defaultValues, ClassLoader.getSystemClassLoader(), fileName);
+	}
+
+	@Override
+	public void loadDefaultConfiguration(ClassLoader classLoader, String fileName) throws ConfigurationException {
+		loadConfiguration(defaultValues, classLoader, fileName);
+	}
+
+	@Override
+	public void loadConfiguration(String fileName) throws ConfigurationException {
+		loadConfiguration(properties, ClassLoader.getSystemClassLoader(), fileName);
+	}
+
+	@Override
+	public void loadConfiguration(ClassLoader classLoader, String fileName) throws ConfigurationException {
+		loadConfiguration(properties, classLoader, fileName);
+	}
+
+	/**
+	 * Loads configuration into a configuration map.
+	 */
+	private void loadConfiguration(Map<String, Object> dest, ClassLoader classLoader, String fileName) throws ConfigurationException {
+		InputStream in = null;
+		try {
+			in = findConfigFileAsInputStream(classLoader, DEFAULT_CONFIG_FOLDER_NAME, fileName);
+		} catch (FileNotFoundException e) {}
+		
+		if (in == null)
+			logger.warn("Cannot load default configuration file '{}'.", fileName);
+		
+		loadConfigFromStream(dest, in);
+		applyConfiguration();
+	}
+
+	/**
+	 * Loads configuration from a config stream into the destination
+	 * configuration holder.
+	 * 
+	 * @param stream the input stream
+	 */
+	private void loadConfigFromStream(Map<String, Object> dest, InputStream stream) throws ConfigurationException {
+		Properties prop = new Properties();
+		try {
+			prop.load(stream);
+		} catch (IOException e) {
+			throw new ConfigurationException("Could not load configuration. (Reason: " + e.getMessage() + ")", e);
+		}
+		for (Entry<Object, Object> entry : prop.entrySet()) {
+			if (dest == properties) {
+				setProperty((String)entry.getKey(), entry.getValue());
+			} else
+				dest.put((String)entry.getKey(), entry.getValue());
+		}
+	}
+	
+
+	/**
+	 * Looks for the given file and returns an input stream view of the file if it is found.
+	 * If the file name is not an absolute path, it looks for the file in the following order:
+	 * <ol>
+	 * <li>the container directory,</li>
+	 * <li>current folder,</li>
+	 * <li>the container directory in classpath,</li> 
+	 * <li>and finally the classpath.</li>
+	 * </ol>
+	 * where classpath is determined by the given class loader.  
+	 * 
+	 * @throws FileNotFoundException
+	 */
+	private InputStream findConfigFileAsInputStream(ClassLoader classLoader, String container, String fileName) throws FileNotFoundException {
+
+		String pathToFile = fileName;
+		
+		// 0. Is the file name an absolute path?
+
+		if (Tools.isAbsolutePath(pathToFile)) {
+			return new FileInputStream(pathToFile);
+		}
+		
+		// 1. Try the container directory, if it exists
+		pathToFile = Tools.concatFileName(getAppRootDirectory(), ((container==null || container.length() == 0)?fileName:(Tools.concatFileName(container, fileName))));
+		if (Tools.fileExists(pathToFile)) {
+			return new FileInputStream(pathToFile);
+		}
+		
+		// 2. Try the root directory
+		pathToFile = Tools.concatFileName(getAppRootDirectory(), fileName);
+		if (Tools.fileExists(pathToFile)) {
+			return new FileInputStream(pathToFile);
+		}
+		
+		// 3. Try the container directory in the classpath
+		pathToFile = (container==null || container.length() == 0)?fileName:(container + "/" + fileName);
+		
+		InputStream inStream = classLoader.getResourceAsStream(pathToFile);
+		if (inStream == null) {
+			if (container != null && container.length() > 0) {
+
+				// 4. Try the root directory in the classpath
+				pathToFile = fileName;
+				inStream = classLoader.getResourceAsStream(pathToFile);
+
+			}
+		}
+		
+		if (inStream != null)
+			return inStream;
+		else
+			throw new FileNotFoundException();
 	}
 
 }

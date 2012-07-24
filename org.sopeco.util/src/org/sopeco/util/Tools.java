@@ -582,4 +582,14 @@ public class Tools {
 		final File file = new File(fileName);
 		return file.isAbsolute();
 	}
+
+	/**
+	 * Returns <code>true</code> if the given file exists.
+	 * 
+	 * @param fileName a file name 
+	 */
+	public static boolean fileExists(String fileName) {
+		final File file = new File(fileName);
+		return file.exists();
+	}
 }

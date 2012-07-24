@@ -132,112 +132,103 @@ public interface IConfiguration {
 	public void processCommandLineArguments(String[] args) throws ConfigurationException;
 
 	/**
-	 * Loads default configurations from a file name in the {@value #DEFAULT_CONFIG_FOLDER_NAME} folder, in an incremental fashion;
-	 * i.e., the loaded configuration will be added to (and overriding) the
-	 * existing default configuration.
-	 * <p>
+	 * Loads default configurations from a file name. If the file name is not an absolute path, 
+	 * the file is searched in the following places:
+	 * <ol>
+	 * <li>{@link #DEFAULT_CONFIG_FOLDER_NAME},</li>
+	 * <li>current folder,</li>
+	 * <li>the {@link #DEFAULT_CONFIG_FOLDER_NAME} in classpath,</li> 
+	 * <li>and finally the classpath.</li>
+	 * </ol>
+	 * where classpath is determined by the system class loader. See {@link #loadDefaultConfiguration(ClassLoader, String)} 
+	 * for loading default configuration providing a class loader. 
 	 * 
-	 * @param fileName
-	 *            the full path to a properties file
-	 * @throws ConfigurationException
-	 * 
-	 * @see {@link #DEFAULT_CONFIG_FOLDER_NAME}
-	 * @see #getDefaultValue(String)
-	 * @see #loadDefaultConfiguration(String, String)
-	 */
-	public void loadDefaultConfiguration(String fileName) throws ConfigurationException;
-
-	/**
-	 * Loads default configurations from a file name in the container folder, in an incremental fashion;
-	 * i.e., the loaded configuration will be added to (and overriding) the
-	 * existing default configuration.
-	 * 
-	 * @param container
-	 * 			  the relative path to the folder containing the configuration file
-	 * @param fileName
-	 *            the full path to a properties file
-	 * @throws ConfigurationException
-	 * @see #getDefaultValue(String)
-	 */
-	public void loadDefaultConfiguration(String container, String fileName) throws ConfigurationException;
-
-	/**
-	 * Loads default configurations from a file name in the {@value #DEFAULT_CONFIG_FOLDER_NAME}  folder of the classpath of the
-	 * given class loader. The configuration is loaded in an incremental
+	 * The configuration is loaded in an incremental
 	 * fashion; i.e., the loaded configuration will be added to (and overriding)
 	 * the existing default configuration.
 	 * <p>
-	 * If the configuration file cannot be found in the classpath, this
-	 * implementation should try loading the file from the {@value #DEFAULT_CONFIG_FOLDER_NAME}  folder in the application root
-	 * folder.
-	 * <p>
-	 * @param classLoader
-	 *            an instance of a class loader
+	 * See {@link #getAppRootDirectory()} and {@link #getDefaultValue(String)}.
+	 * 
 	 * @param fileName
 	 *            the name of a properties file
-	 *            
-	 * @see #loadDefaultConfigurationFromClasspath(ClassLoader, String, String)
-	 * @see #getAppRootDirectory()
-	 * @see #getDefaultValue(String)
-	 * @see #DEFAULT_CONFIG_FOLDER_NAME
+	 * @throws ConfigurationException 
 	 */
-	public void loadDefaultConfigurationFromClasspath(ClassLoader classLoader, String fileName) throws ConfigurationException;
-
+	public void loadDefaultConfiguration(String fileName) throws ConfigurationException;
+	
 	/**
-	 * Loads default configurations from a file name located in the container folder, in the classpath of the
-	 * given class loader. The configuration is loaded in an incremental
+	 * Loads default configurations from a file name. If the file name is not an absolute path, 
+	 * the file is searched in the following places:
+	 * <ol>
+	 * <li>{@link #DEFAULT_CONFIG_FOLDER_NAME},</li>
+	 * <li>current folder,</li>
+	 * <li>the {@link #DEFAULT_CONFIG_FOLDER_NAME} in classpath,</li> 
+	 * <li>and finally the classpath.</li>
+	 * </ol>
+	 * where classpath is determined by the given class loader.  
+	 * 
+	 * The configuration is loaded in an incremental
 	 * fashion; i.e., the loaded configuration will be added to (and overriding)
 	 * the existing default configuration.
-	 * <p>
-	 * If the configuration file cannot be found in the specified folder in the classpath, this
-	 * implementation should try loading the file from the container folder in the application root
-	 * folder.
 	 * <p>
 	 * See {@link #getAppRootDirectory()} and {@link #getDefaultValue(String)}.
 	 * 
 	 * @param classLoader
 	 *            an instance of a class loader
-	 * @param container 
-	 * 			  the container folder
 	 * @param fileName
 	 *            the name of a properties file
+	 * @throws ConfigurationException 
 	 */
-	public void loadDefaultConfigurationFromClasspath(ClassLoader classLoader, String container, String fileName) throws ConfigurationException;
-
+	public void loadDefaultConfiguration(ClassLoader classLoader, String fileName) throws ConfigurationException;
+	
 	/**
-	 * Loads configuration from the given properties file in the {@value #DEFAULT_CONFIG_FOLDER_NAME} folder.
+	 * Loads user-level configurations from a file name. If the file name is not an absolute path, 
+	 * the file is searched in the following places:
+	 * <ol>
+	 * <li>{@link #DEFAULT_CONFIG_FOLDER_NAME},</li>
+	 * <li>current folder,</li>
+	 * <li>the {@link #DEFAULT_CONFIG_FOLDER_NAME} in classpath,</li> 
+	 * <li>and finally the classpath.</li>
+	 * </ol>
+	 * where classpath is determined by the system class loader. See {@link #loadConfiguration(ClassLoader, String)} 
+	 * for loading default configuration providing a class loader. 
 	 * 
-	 * Any implementation of this method should call
-	 * {@link #applyConfiguration()} after loading the configuration from file.
+	 * The configuration is loaded in an incremental
+	 * fashion; i.e., the loaded configuration will be added to (and overriding)
+	 * the existing default configuration.
+	 * <p>
+	 * See {@link #getAppRootDirectory()} and {@link #getDefaultValue(String)}.
 	 * 
 	 * @param fileName
-	 *            the full path to the file.
-	 * 
-	 * @throws ConfigurationException
-	 *             if there is any error
-	 * 
-	 * @see #loadConfiguration(String, String)
-	 * @see #DEFAULT_CONFIG_FOLDER_NAME
+	 *            the name of a properties file
+	 * @throws ConfigurationException 
 	 */
 	public void loadConfiguration(String fileName) throws ConfigurationException;
-
+	
 	/**
-	 * Loads configuration from the given properties file in the given container folder.
+	 * Loads user-level configurations from a file name. If the file name is not an absolute path, 
+	 * the file is searched in the following places:
+	 * <ol>
+	 * <li>{@link #DEFAULT_CONFIG_FOLDER_NAME},</li>
+	 * <li>current folder,</li>
+	 * <li>the {@link #DEFAULT_CONFIG_FOLDER_NAME} in classpath,</li> 
+	 * <li>and finally the classpath.</li>
+	 * </ol>
+	 * where classpath is determined by the given class loader.  
 	 * 
-	 * Any implementation of this method should call
-	 * {@link #applyConfiguration()} after loading the configuration from file.
+	 * The configuration is loaded in an incremental
+	 * fashion; i.e., the loaded configuration will be added to (and overriding)
+	 * the existing default configuration.
+	 * <p>
+	 * See {@link #getAppRootDirectory()} and {@link #getDefaultValue(String)}.
 	 * 
-	 * @param container
-	 * 			the relative path to the folder containing the confitguration file
+	 * @param classLoader
+	 *            an instance of a class loader
 	 * @param fileName
-	 *            the full path to the file.
-	 * 
-	 * @throws ConfigurationException
-	 *             if there is any error
-	 *             
+	 *            the name of a properties file
+	 * @throws ConfigurationException 
 	 */
-	public void loadConfiguration(String container, String fileName) throws ConfigurationException;
-
+	public void loadConfiguration(ClassLoader classLoader, String fileName) throws ConfigurationException;
+	
 	/**
 	 * Performs any post processing of configuration settings that may be
 	 * required.

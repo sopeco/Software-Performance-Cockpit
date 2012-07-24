@@ -92,7 +92,7 @@ public class EngineFactory {
 	private void loadDefaultConfigValues() {
 		try {
 			Configuration.getSingleton()
-					.loadDefaultConfigurationFromClasspath(this.getClass().getClassLoader(), DEFAULT_ENGINE_CONFIG_FILE_NAME);
+					.loadDefaultConfiguration(this.getClass().getClassLoader(), DEFAULT_ENGINE_CONFIG_FILE_NAME);
 		} catch (ConfigurationException e) {
 			logger.error("Unable to read default config.");
 			throw new RuntimeException(e);

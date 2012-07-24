@@ -32,7 +32,7 @@ public class PersistenceConfiguration {
 		sopecoConfig = Configuration.getSingleton();
 		
 		try {
-			sopecoConfig.loadDefaultConfigurationFromClasspath(this.getClass().getClassLoader(), DEFAULT_PERSISTENCE_CONFIG_FILE_NAME);
+			sopecoConfig.loadDefaultConfiguration(this.getClass().getClassLoader(), DEFAULT_PERSISTENCE_CONFIG_FILE_NAME);
 		} catch (ConfigurationException e) {
 			logger.error("Unable to read default config.");
 			throw new RuntimeException(e);
