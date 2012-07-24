@@ -135,9 +135,9 @@ public interface IConfiguration {
 	 * Loads default configurations from a file name. If the file name is not an absolute path, 
 	 * the file is searched in the following places:
 	 * <ol>
-	 * <li>{@link #DEFAULT_CONFIG_FOLDER_NAME},</li>
+	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory,</li>
 	 * <li>current folder,</li>
-	 * <li>the {@link #DEFAULT_CONFIG_FOLDER_NAME} in classpath,</li> 
+	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory in classpath,</li> 
 	 * <li>and finally the classpath.</li>
 	 * </ol>
 	 * where classpath is determined by the system class loader. See {@link #loadDefaultConfiguration(ClassLoader, String)} 
@@ -159,9 +159,9 @@ public interface IConfiguration {
 	 * Loads default configurations from a file name. If the file name is not an absolute path, 
 	 * the file is searched in the following places:
 	 * <ol>
-	 * <li>{@link #DEFAULT_CONFIG_FOLDER_NAME},</li>
+	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory,</li>
 	 * <li>current folder,</li>
-	 * <li>the {@link #DEFAULT_CONFIG_FOLDER_NAME} in classpath,</li> 
+	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory in classpath,</li> 
 	 * <li>and finally the classpath.</li>
 	 * </ol>
 	 * where classpath is determined by the given class loader.  
@@ -184,9 +184,9 @@ public interface IConfiguration {
 	 * Loads user-level configurations from a file name. If the file name is not an absolute path, 
 	 * the file is searched in the following places:
 	 * <ol>
-	 * <li>{@link #DEFAULT_CONFIG_FOLDER_NAME},</li>
+	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory,</li>
 	 * <li>current folder,</li>
-	 * <li>the {@link #DEFAULT_CONFIG_FOLDER_NAME} in classpath,</li> 
+	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory in classpath,</li> 
 	 * <li>and finally the classpath.</li>
 	 * </ol>
 	 * where classpath is determined by the system class loader. See {@link #loadConfiguration(ClassLoader, String)} 
@@ -208,9 +208,9 @@ public interface IConfiguration {
 	 * Loads user-level configurations from a file name. If the file name is not an absolute path, 
 	 * the file is searched in the following places:
 	 * <ol>
-	 * <li>{@link #DEFAULT_CONFIG_FOLDER_NAME},</li>
+	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory,</li>
 	 * <li>current folder,</li>
-	 * <li>the {@link #DEFAULT_CONFIG_FOLDER_NAME} in classpath,</li> 
+	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory in classpath,</li> 
 	 * <li>and finally the classpath.</li>
 	 * </ol>
 	 * where classpath is determined by the given class loader.  
