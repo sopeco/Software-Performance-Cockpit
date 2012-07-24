@@ -23,13 +23,13 @@
 		<!-- <module>../org.sopeco.core.test</module> -->
 		<module>../org.sopeco.plugin.std.parametervariation</module>
 		<!--  <module>../org.sopeco.sdq.rwrapper</module>-->
-		<module>../org.sopeco.plugin.test.dummydataprocessing</module>
 		<module>../org.sopeco.plugin.std.exploration</module>
 		<module>../org.sopeco.plugin.std.analysis</module>
 		<module>../org.sopeco.plugin.std.constantassignment</module>
 		<module>../org.sopeco.plugin.std.processing</module>
 		<module>../org.sopeco.runner</module>
 		<module>../org.sopeco.analysis.wrapper</module>
+		<module>../org.sopeco.hyperic.sigar</module>
 	</modules>
 
 
@@ -87,11 +87,12 @@
 			<artifactId>ant</artifactId>
 			<version>1.7.0</version>
 		</dependency>
-		<dependency>
-			<groupId>org.hyperic</groupId>
-			<artifactId>sigar</artifactId>
-			<version>1.6.4</version>
-		</dependency>
+<!-- 		<dependency> -->
+<!-- 			<groupId>org.hyperic</groupId> -->
+<!-- 			<artifactId>sigar</artifactId> -->
+<!-- 			<version>1.6.4</version> -->
+			
+<!-- 		</dependency> -->
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>org.eclipse.persistence.jpa</artifactId>
