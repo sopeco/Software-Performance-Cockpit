@@ -489,10 +489,11 @@ public class Configuration implements IConfiguration {
 		} catch (FileNotFoundException e) {}
 		
 		if (in == null)
-			logger.warn("Cannot load default configuration file '{}'.", fileName);
-		
-		loadConfigFromStream(dest, in);
-		applyConfiguration();
+			logger.warn("Cannot load configuration file '{}'.", fileName);
+		else {
+			loadConfigFromStream(dest, in);
+			applyConfiguration();
+		}
 	}
 
 	/**
