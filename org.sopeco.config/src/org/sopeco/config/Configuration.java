@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -497,24 +498,58 @@ public class Configuration implements IConfiguration {
     	// $ java -Dlogback.configurationFile=/path/to/config.xml ...
         LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
-        final String fileName = getPropertyAsStr(CONF_LOGGER_CONFIG_FILE_NAME);
-        if (fileName != null) {
-	        try {
-	          JoranConfigurator configurator = new JoranConfigurator();
-	          configurator.setContext(lc);
-	          // the context was probably already configured by default configuration 
-	          // rules
-	          lc.reset(); 
-	          configurator.doConfigure(fileName);
-	        } catch (JoranException je) {
-	           logger.warn("Failed loading the logback configuration file. Using default configuration. Error message: {}", je.getMessage());
-	        }
-	        
-	    	logger.debug("Configured logback using '{}'.", fileName);
-        }
+		String fileName = getPropertyAsStr(CONF_LOGGER_CONFIG_FILE_NAME);
+		if (fileName != null) {
+			try {
+				logger.debug("Configuring logback using '{}'...", fileName);
+
+				JoranConfigurator configurator = new JoranConfigurator();
+				configurator.setContext(lc);
+				// the context was probably already configured by default
+				// configuration
+				// rules
+				lc.reset();
+
+				configurator.doConfigure(findConfigFileAsInputStream(null, fileName));
+			} catch (JoranException je) {
+				logger.warn("Failed loading the logback configuration file. Using default configuration. Error message: {}", je.getMessage());
+			} catch (FileNotFoundException e) {
+				logger.warn("Failed loading the logback configuration file. Configuration file cannot be opened. ('{}')", fileName);
+			}
+
+			logger.debug("Logback configured.");
+		}
 	}
 	
 	
+	private InputStream findConfigFileAsInputStream(String container, String fileName) throws FileNotFoundException {
+		
+		// 1. try classpath
+		
+		// TODO Here I intentionally used '/' instead of File.separator. Check if it works in Windows.
+		String pathToFile = fileName;
+		if (!Tools.isAbsolutePath(fileName))
+			pathToFile = (container==null || container.length() == 0)?fileName:(container + "/" + fileName);
+		
+		InputStream in = ClassLoader.getSystemResourceAsStream(fileName);
+		if (in != null) {
+			return in;
+		} else {
+
+			// 2. try root folder
+			pathToFile = fileName;
+			if (!Tools.isAbsolutePath(fileName))
+				pathToFile = Tools.concatFileName(getAppRootDirectory(), ((container==null || container.length() == 0)?fileName:(Tools.concatFileName(container, fileName))));
+			
+			File file = new File(fileName);
+			if (file.exists()) {
+				return new FileInputStream(file);
+			} else
+				throw new FileNotFoundException();
+
+		}
+	}
+
 	@Override
 	public void writeConfiguration(String fileName) throws IOException {
 		Properties props = new Properties();
