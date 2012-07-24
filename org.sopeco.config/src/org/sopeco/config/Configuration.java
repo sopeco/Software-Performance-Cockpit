@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -117,6 +116,27 @@ public class Configuration implements IConfiguration {
 			return Tools.strEqualName("true", value) || Tools.strEqualName("yes", value);
 	}
 
+	@Override 
+	public long getPropertyAsLong(String key, long defaultValue){
+		final String value = getPropertyAsStr(key);
+		if (value == null) {
+			return defaultValue;
+		} else {
+			return Long.parseLong(value);
+		}
+	}
+
+	@Override
+	public int getPropertyAsInteger(String key, int defaultValue){
+		final String value = getPropertyAsStr(key);
+		if (value == null) {
+			return defaultValue;
+		} else {
+			return Integer.parseInt(value);
+		}
+	}
+
+	
 	@Override
 	public void setProperty(String key, Object value) {
 		properties.put(key, value);

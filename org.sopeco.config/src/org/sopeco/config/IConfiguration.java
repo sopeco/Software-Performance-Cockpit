@@ -54,7 +54,7 @@ public interface IConfiguration {
 	public static final String DEFAULT_CONFIG_FILE_NAME = "sopeco-defaults.conf";
 
 	public static final String DEFAULT_PLUGINS_FOLDER_IN_CLASSPATH = "plugins";
-	
+
 	/**
 	 * Returns the configured value of the given property in SoPeCo.
 	 * 
@@ -102,6 +102,42 @@ public interface IConfiguration {
 	public boolean getPropertyAsBoolean(String key, boolean defaultValue);
 
 	/**
+	 * Returns the configured value of the given property as a Long value.
+	 * 
+	 * This method uses the {@link Long.#parseLong(String)} to interpret the
+	 * values. If the value of the given property is <code>null</code> it
+	 * returns the passed default value.
+	 * 
+	 * @param key
+	 *            property key
+	 * @param defaultValue
+	 *            the default value returned in case of a null property value
+	 * 
+	 * @return the value of the given property as a long
+	 * 
+	 * @see #getProperty(String)
+	 */
+	public long getPropertyAsLong(String key, long defaultValue);
+
+	/**
+	 * Returns the configured value of the given property as an Integer value.
+	 * 
+	 * This method uses the {@link Integer.#parseInt(String)} to interpret the
+	 * values. If the value of the given property is <code>null</code> it
+	 * returns the passed default value.
+	 * 
+	 * @param key
+	 *            property key
+	 * @param defaultValue
+	 *            the default value returned in case of a null property value
+	 * 
+	 * @return the value of the given property as an int
+	 * 
+	 * @see #getProperty(String)
+	 */
+	public int getPropertyAsInteger(String key, int defaultValue);
+
+	/**
 	 * Sets the value of a property for the current run.
 	 * 
 	 * @param key
@@ -132,43 +168,44 @@ public interface IConfiguration {
 	public void processCommandLineArguments(String[] args) throws ConfigurationException;
 
 	/**
-	 * Loads default configurations from a file name. If the file name is not an absolute path, 
-	 * the file is searched in the following places:
+	 * Loads default configurations from a file name. If the file name is not an
+	 * absolute path, the file is searched in the following places:
 	 * <ol>
 	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory,</li>
 	 * <li>current folder,</li>
-	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory in classpath,</li> 
+	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory in classpath,</li>
 	 * <li>and finally the classpath.</li>
 	 * </ol>
-	 * where classpath is determined by the system class loader. See {@link #loadDefaultConfiguration(ClassLoader, String)} 
-	 * for loading default configuration providing a class loader. 
+	 * where classpath is determined by the system class loader. See
+	 * {@link #loadDefaultConfiguration(ClassLoader, String)} for loading
+	 * default configuration providing a class loader.
 	 * 
-	 * The configuration is loaded in an incremental
-	 * fashion; i.e., the loaded configuration will be added to (and overriding)
-	 * the existing default configuration.
+	 * The configuration is loaded in an incremental fashion; i.e., the loaded
+	 * configuration will be added to (and overriding) the existing default
+	 * configuration.
 	 * <p>
 	 * See {@link #getAppRootDirectory()} and {@link #getDefaultValue(String)}.
 	 * 
 	 * @param fileName
 	 *            the name of a properties file
-	 * @throws ConfigurationException 
+	 * @throws ConfigurationException
 	 */
 	public void loadDefaultConfiguration(String fileName) throws ConfigurationException;
-	
+
 	/**
-	 * Loads default configurations from a file name. If the file name is not an absolute path, 
-	 * the file is searched in the following places:
+	 * Loads default configurations from a file name. If the file name is not an
+	 * absolute path, the file is searched in the following places:
 	 * <ol>
 	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory,</li>
 	 * <li>current folder,</li>
-	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory in classpath,</li> 
+	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory in classpath,</li>
 	 * <li>and finally the classpath.</li>
 	 * </ol>
-	 * where classpath is determined by the given class loader.  
+	 * where classpath is determined by the given class loader.
 	 * 
-	 * The configuration is loaded in an incremental
-	 * fashion; i.e., the loaded configuration will be added to (and overriding)
-	 * the existing default configuration.
+	 * The configuration is loaded in an incremental fashion; i.e., the loaded
+	 * configuration will be added to (and overriding) the existing default
+	 * configuration.
 	 * <p>
 	 * See {@link #getAppRootDirectory()} and {@link #getDefaultValue(String)}.
 	 * 
@@ -176,48 +213,49 @@ public interface IConfiguration {
 	 *            an instance of a class loader
 	 * @param fileName
 	 *            the name of a properties file
-	 * @throws ConfigurationException 
+	 * @throws ConfigurationException
 	 */
 	public void loadDefaultConfiguration(ClassLoader classLoader, String fileName) throws ConfigurationException;
-	
+
 	/**
-	 * Loads user-level configurations from a file name. If the file name is not an absolute path, 
-	 * the file is searched in the following places:
+	 * Loads user-level configurations from a file name. If the file name is not
+	 * an absolute path, the file is searched in the following places:
 	 * <ol>
 	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory,</li>
 	 * <li>current folder,</li>
-	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory in classpath,</li> 
+	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory in classpath,</li>
 	 * <li>and finally the classpath.</li>
 	 * </ol>
-	 * where classpath is determined by the system class loader. See {@link #loadConfiguration(ClassLoader, String)} 
-	 * for loading default configuration providing a class loader. 
+	 * where classpath is determined by the system class loader. See
+	 * {@link #loadConfiguration(ClassLoader, String)} for loading default
+	 * configuration providing a class loader.
 	 * 
-	 * The configuration is loaded in an incremental
-	 * fashion; i.e., the loaded configuration will be added to (and overriding)
-	 * the existing default configuration.
+	 * The configuration is loaded in an incremental fashion; i.e., the loaded
+	 * configuration will be added to (and overriding) the existing default
+	 * configuration.
 	 * <p>
 	 * See {@link #getAppRootDirectory()} and {@link #getDefaultValue(String)}.
 	 * 
 	 * @param fileName
 	 *            the name of a properties file
-	 * @throws ConfigurationException 
+	 * @throws ConfigurationException
 	 */
 	public void loadConfiguration(String fileName) throws ConfigurationException;
-	
+
 	/**
-	 * Loads user-level configurations from a file name. If the file name is not an absolute path, 
-	 * the file is searched in the following places:
+	 * Loads user-level configurations from a file name. If the file name is not
+	 * an absolute path, the file is searched in the following places:
 	 * <ol>
 	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory,</li>
 	 * <li>current folder,</li>
-	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory in classpath,</li> 
+	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory in classpath,</li>
 	 * <li>and finally the classpath.</li>
 	 * </ol>
-	 * where classpath is determined by the given class loader.  
+	 * where classpath is determined by the given class loader.
 	 * 
-	 * The configuration is loaded in an incremental
-	 * fashion; i.e., the loaded configuration will be added to (and overriding)
-	 * the existing default configuration.
+	 * The configuration is loaded in an incremental fashion; i.e., the loaded
+	 * configuration will be added to (and overriding) the existing default
+	 * configuration.
 	 * <p>
 	 * See {@link #getAppRootDirectory()} and {@link #getDefaultValue(String)}.
 	 * 
@@ -225,10 +263,10 @@ public interface IConfiguration {
 	 *            an instance of a class loader
 	 * @param fileName
 	 *            the name of a properties file
-	 * @throws ConfigurationException 
+	 * @throws ConfigurationException
 	 */
 	public void loadConfiguration(ClassLoader classLoader, String fileName) throws ConfigurationException;
-	
+
 	/**
 	 * Performs any post processing of configuration settings that may be
 	 * required.
