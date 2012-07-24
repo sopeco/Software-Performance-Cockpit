@@ -29,12 +29,6 @@
 			<systemPath>${project.basedir}/lib/sigar.jar</systemPath>
 		</dependency -->
 
-		<dependency>
-			<groupId>org.sopeco.core</groupId>
-			<artifactId>org.sopeco.util</artifactId>
-			<version>0.3.0-SNAPSHOT</version>
-		</dependency>
-
 	</dependencies>
 
 </project>
