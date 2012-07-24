@@ -6,6 +6,7 @@ package org.sopeco.engine.registry;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -184,7 +185,7 @@ public class ExtensionRegistry implements IExtensionRegistry {
 				for (String str : names) {
 					final String jarName = Tools.concatFileName(pluginsDirName, str);
 					try {
-						urls.add(new URL("file://" + jarName));
+						urls.add(new URL("file", "", jarName));
 					} catch (MalformedURLException e) {
 						logger.warn("Ignoring JAR file {}", jarName);
 					}
