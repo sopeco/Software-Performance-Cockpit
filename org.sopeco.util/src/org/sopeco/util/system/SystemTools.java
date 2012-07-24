@@ -9,9 +9,12 @@ package org.sopeco.util.system;
 
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -246,8 +249,8 @@ public class SystemTools {
 		        f.mkdir();
 		        continue;
 		    }
-		    java.io.InputStream is = jar.getInputStream(file);
-		    java.io.FileOutputStream fos = new java.io.FileOutputStream(f);
+		    InputStream is = new BufferedInputStream(jar.getInputStream(file));
+		    OutputStream fos = new BufferedOutputStream(new FileOutputStream(f));
 		    while (is.available() > 0) {  
 		        fos.write(is.read());
 		    }
@@ -305,51 +308,3 @@ public class SystemTools {
 
 }
 
-
-//public static void loadNativeLibraries() {
-//	if (nativeLibrariesLoaded) {
-//		logger.warn("Native libraries are already loaded. Nothing done.");
-//		return;
-//	}
-//
-//	final String tempDir = FileUtils.getTempDirectoryPath();
-//
-//	logger.debug("Temp direcotry is located at {}.", tempDir);
-//	
-//	final String tempLibDir = Tools.concatFileName(tempDir, "sopecoLibs");
-//	
-//	// create a temp lib directory
-//	File tempLibDirFile = new File(tempLibDir);
-//	if (!tempLibDirFile.exists())
-//		tempLibDirFile.mkdir();
-//
-//	logger.debug("Copying native libraries to {}.", tempLibDir);
-//	
-//	try {
-//		Set<String> nativeFiles = new HashSet<String>();
-//		Enumeration<URL> urls = ClassLoader.getSystemResources(NATIVE_LIBS_LIST_FILENAME);
-//		while (urls.hasMoreElements()) {
-//			final URL url = urls.nextElement();
-//			logger.debug("Loading native library file names from {}...", url);
-//			nativeFiles.addAll(Tools.readLines(url));
-//		}
-//		
-//		for (String fileName: nativeFiles) {
-//			final String fileNameTrimmed = fileName.trim();
-//			logger.debug("Copying native library {}...", fileNameTrimmed);
-//			if (fileNameTrimmed.length() > 0) 
-//				copyLibToTemp(fileName, tempLibDir);
-//			
-//		}
-//
-//		setLibraryPath(tempLibDir);
-//	
-//		nativeLibrariesLoaded = true;
-//		
-//		logger.debug("The value of '{}' is {}.", JAVA_LIBRARY_PATH, System.getProperty(JAVA_LIBRARY_PATH));
-//		
-//	} catch (Exception e) {
-//		e.printStackTrace();
-//	}  
-//
-//}
