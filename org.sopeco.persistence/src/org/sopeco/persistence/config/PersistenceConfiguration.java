@@ -25,8 +25,9 @@ public class PersistenceConfiguration {
 	
 	private final static String SERVER_HOST = "sopeco.config.persistence.server.host";
 	private final static String SERVER_PORT = "sopeco.config.persistence.server.port";
+	private final static String DATABASE_NAME = "sopeco.config.persistence.server.dbname";
 	private final static String SERVER_URL_PREFIX = "jdbc:derby://";
-	private final static String SERVER_URL_SUFFIX = "/sopeco-jpa;create=true";
+	private final static String SERVER_URL_SUFFIX = ";create=true";
 	
 	public PersistenceConfiguration(){	
 		sopecoConfig = Configuration.getSingleton();
@@ -75,6 +76,6 @@ public class PersistenceConfiguration {
 	 */
 	public String getServerUrl() {
 		return SERVER_URL_PREFIX + sopecoConfig.getPropertyAsStr(SERVER_HOST) 
-				+ ":" + sopecoConfig.getPropertyAsStr(SERVER_PORT) + SERVER_URL_SUFFIX;
+				+ ":" + sopecoConfig.getPropertyAsStr(SERVER_PORT) + "/" + sopecoConfig.getPropertyAsStr(DATABASE_NAME) + SERVER_URL_SUFFIX;
 	}
 }
