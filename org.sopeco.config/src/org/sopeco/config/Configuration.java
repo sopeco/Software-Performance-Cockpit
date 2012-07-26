@@ -259,9 +259,8 @@ public class Configuration implements IConfiguration {
 	private void setDefaultValues(Class<?> mainClass) throws ConfigurationException {
 		if (mainClass != null)
 			defaultValues.put(CONF_MAIN_CLASS, mainClass);
-
-		if (getAppRootDirectory() == null)
-			defaultValues.put(CONF_APP_ROOT_FOLDER, Tools.getRootFolder());
+		
+		getAppRootDirectory();
 
 		loadDefaultConfiguration(DEFAULT_CONFIG_FILE_NAME);
 	}
@@ -360,7 +359,7 @@ public class Configuration implements IConfiguration {
 
 	@Override
 	public String getAppConfDirectory() {
-		return getAppRootDirectory() + File.separator + DEFAULT_CONFIG_FOLDER_NAME;
+		return Tools.concatFileName(getAppRootDirectory(), DEFAULT_CONFIG_FOLDER_NAME);
 	}
 
 	public void setMainClass(Class<?> mainClass) {
