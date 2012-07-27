@@ -91,7 +91,13 @@
 				<version>2.4</version>
 			</plugin>
 		</plugins>
-	</build>
 
+		<testResources>
+			<testResource>
+				<directory>rsc-test</directory>
+			</testResource>
+		</testResources>
+
+	</build>
 
 </project>

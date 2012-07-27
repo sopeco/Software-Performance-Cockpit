@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -33,6 +32,8 @@ import org.sopeco.util.Tools;
 public class ExtensionRegistry implements IExtensionRegistry {
 
 	private static Logger logger = LoggerFactory.getLogger(ExtensionRegistry.class);
+
+	public static final String DEFAULT_PLUGINS_FOLDER_IN_CLASSPATH = "plugins";
 
 	/**
 	 * Holds the list of extension point identifiers supported by the engine.
@@ -127,77 +128,51 @@ public class ExtensionRegistry implements IExtensionRegistry {
 	@SuppressWarnings("rawtypes")
 	private void loadExtensions() {
 		final IConfiguration config = Configuration.getSingleton();
-		final String pluginsDirName = Tools.concatFileName(config.getAppRootDirectory(), config.getPropertyAsStr(IConfiguration.CONF_PLUGINS_FOLDER));
-		final File pluginsDir = new File(pluginsDirName);
-		final String defExtensionsFileName = pluginsDirName + File.separatorChar + EXTENSIONS_FILE_NAME;
-		final File defExtensionsFile = new File(defExtensionsFileName);
-
-		// 1. Load JAR files from the plugins folder
-
-		ClassLoader cl = this.getClass().getClassLoader();
+		String pluginsDirNames = config.getPropertyAsStr(IConfiguration.CONF_PLUGINS_DIRECTORIES);
 		
-		if (pluginsDir.exists()) {
-			String[] names = Tools.getFileNames(pluginsDirName, "*.jar");
-
-			ArrayList<URL> urls = new ArrayList<URL>();
-			if (names.length > 0) {
-				for (String str : names) {
-					final String jarName = Tools.concatFileName(pluginsDirName, str);
-					try {
-						urls.add(new URL("file", "", jarName));
-					} catch (MalformedURLException e) {
-						logger.warn("Ignoring JAR file {}", jarName);
-					}
-				}
-			}
-			for (URL url : urls)
-				logger.debug("Found extension JAR file {}", url);
-
-			cl = new URLClassLoader(urls.toArray(new URL[] {}), this.getClass().getClassLoader());
-
-		} else {
-			logger.debug("Could not locate the plugins folder ({}), but it is OK.", pluginsDirName);
+		Set<String> pluginsDirsSet = new HashSet<String>();
+		pluginsDirsSet.add(DEFAULT_PLUGINS_FOLDER_IN_CLASSPATH);
+		if (pluginsDirNames != null) {
+			String[] pluginsDirs = Tools.tokenize(pluginsDirNames, IConfiguration.DIR_SEPARATOR);
+		
+			for (String dir: pluginsDirs)
+				pluginsDirsSet.add(dir);
 		}
+		
+		Set<URL> jarURLs = new HashSet<URL>();
+		Set<URL> extensionsInfoURLs = new HashSet<URL>();
+
+		// 1. Load all plugins information from all sources
+		
+		for (String dir: pluginsDirsSet) {
+			loadExtensionsInfoAndJARs(dir, extensionsInfoURLs, jarURLs);
+		}
+		
+		ClassLoader classLoader = new URLClassLoader(jarURLs.toArray(new URL[] {}), this.getClass().getClassLoader());
 
 		// 2. Look for all 'extensions.info' files in the classpath
 		//    and the default location
 		
-		final String EXTENSION_FILE_PATH = IConfiguration.DEFAULT_PLUGINS_FOLDER_IN_CLASSPATH + '/' + EXTENSIONS_FILE_NAME;
-		Set<URL> extensioInfoURLs = new HashSet<URL>();
+		final String EXTENSION_FILE_PATH = DEFAULT_PLUGINS_FOLDER_IN_CLASSPATH + '/' + EXTENSIONS_FILE_NAME;
 		Enumeration<URL> eURLs;
 		try {
-			eURLs = cl.getResources(EXTENSION_FILE_PATH);
+			eURLs = classLoader.getResources(EXTENSION_FILE_PATH);
 			while (eURLs.hasMoreElements()) {
-				extensioInfoURLs.add(eURLs.nextElement());
+				extensionsInfoURLs.add(eURLs.nextElement());
 			}
 			
-			// we should not need the following three lines
-			// URL enginePathURL = cl.getResource(EXTENSION_FILE_PATH);
-			// if (enginePathURL != null) {
-			//     extensioInfoURLs.add(enginePathURL);
-			// }
 		} catch (IOException e1) {
 		}
 
-		// 3. add 'plugins/extensions.info' if it exists
-		
-		if (defExtensionsFile.exists()) {
-			try {
-				extensioInfoURLs.add(new URL("file", "", defExtensionsFileName));
-			} catch (MalformedURLException e1) {
-				logger.warn("Could not read '{}'. Reason: (MalformedURLException) {}", defExtensionsFile, e1.getMessage());
-			}
-		}
-
-		for (URL url : extensioInfoURLs)
+		for (URL url : extensionsInfoURLs)
 			logger.debug("Found extensions info at: {}", url);
-		if (extensioInfoURLs.size() == 0)
+		if (extensionsInfoURLs.size() == 0)
 			logger.warn("Found no extensions information.");
 
 		// 4. gather the list of all extension class files
 		
 		Set<String> extensionClasses = new HashSet<String>();
-		for (URL url : extensioInfoURLs) {
+		for (URL url : extensionsInfoURLs) {
 			try {
 				extensionClasses.addAll(Tools.readLines(url));
 			} catch (IOException e) {
@@ -208,9 +183,12 @@ public class ExtensionRegistry implements IExtensionRegistry {
 		// 5. Load extensions
 		
 		for (String extClassName : extensionClasses) {
+			if (extClassName.trim().isEmpty())
+				continue;
+			
 			Class<?> c;
 			try {
-				c = cl.loadClass(extClassName);
+				c = classLoader.loadClass(extClassName);
 				Object o = c.newInstance();
 				if (o instanceof ISoPeCoExtension) {
 					ISoPeCoExtension ext = (ISoPeCoExtension) o;
@@ -223,6 +201,59 @@ public class ExtensionRegistry implements IExtensionRegistry {
 		}
 	}
 
+	/**
+	 * Loads JAR files and plugin extension information from the given relative plugins directory. 
+	 * 
+	 * @param pluginsDirName relative path to the plugins folder
+	 * @param extensionsInfoURLs the resulting set of URLs to extension infos
+	 * @param jarURLs the resulting aggregated JAR URLs 
+	 */
+	private void loadExtensionsInfoAndJARs(String pluginsDirName, Set<URL> extensionsInfoURLs, Set<URL> jarURLs) {
+		IConfiguration config = Configuration.getSingleton();
+
+		if (!Tools.isAbsolutePath(pluginsDirName)) {
+			pluginsDirName = Tools.concatFileName(config.getAppRootDirectory(), pluginsDirName);
+		}
+			
+		final File pluginsDir = new File(pluginsDirName);
+		final String defExtensionsFileName = pluginsDirName + File.separatorChar + EXTENSIONS_FILE_NAME;
+		final File defExtensionsFile = new File(defExtensionsFileName);
+
+		// 1. Locate JAR files from the plugins folder
+
+		if (pluginsDir.exists()) {
+			String[] names = Tools.getFileNames(pluginsDirName, "*.jar");
+
+			if (names.length > 0) {
+				for (String str : names) {
+					final String jarName = Tools.concatFileName(pluginsDirName, str);
+					try {
+						jarURLs.add(new URL("file", "", jarName));
+					} catch (MalformedURLException e) {
+						logger.warn("Ignoring JAR file {}", jarName);
+					}
+				}
+			}
+			for (URL url : jarURLs)
+				logger.debug("Found extension JAR file {}", url);
+
+		} else {
+			logger.debug("Could not locate the plugins folder ({}), but it is OK.", pluginsDirName);
+		}
+
+		// 2. add the 'extensions.info' of the plugins directory if it exists
+		
+		if (defExtensionsFile.exists()) {
+			try {
+				extensionsInfoURLs.add(new URL("file", "", defExtensionsFileName));
+			} catch (MalformedURLException e1) {
+				logger.warn("Could not read '{}'. Reason: (MalformedURLException) {}", defExtensionsFile, e1.getMessage());
+			}
+		}
+
+	}
+	
+	
 	@Override
 	public <EA extends ISoPeCoExtensionArtifact> EA getExtensionArtifact(Class<? extends ISoPeCoExtension<EA>> c, String name) {
 		Extensions<? extends ISoPeCoExtension<EA>> extensions = getExtensions(c);

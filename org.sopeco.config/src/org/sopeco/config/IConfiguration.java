@@ -44,7 +44,7 @@ public interface IConfiguration {
 	 * Holds the path to the plugins folder, relative to the root folder of
 	 * SoPeCo.
 	 */
-	public static final String CONF_PLUGINS_FOLDER = "sopeco.config.pluginsFolder";
+	public static final String CONF_PLUGINS_DIRECTORIES = "sopeco.config.pluginsDirs";
 
 	public static final String CLA_EXTENSION_ID = "org.sopeco.config.commandlinearguments";
 
@@ -53,7 +53,7 @@ public interface IConfiguration {
 
 	public static final String DEFAULT_CONFIG_FILE_NAME = "sopeco-defaults.conf";
 
-	public static final String DEFAULT_PLUGINS_FOLDER_IN_CLASSPATH = "plugins";
+	public static final String DIR_SEPARATOR = ":";
 
 	/**
 	 * Returns the configured value of the given property in SoPeCo.

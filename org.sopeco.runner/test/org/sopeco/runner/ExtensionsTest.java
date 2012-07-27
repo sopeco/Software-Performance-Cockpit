@@ -6,6 +6,8 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.sopeco.config.Configuration;
+import org.sopeco.config.IConfiguration;
+import org.sopeco.engine.experimentseries.IConstantAssignmentExtension;
 import org.sopeco.engine.experimentseries.IExplorationStrategyExtension;
 import org.sopeco.engine.processing.IProcessingStrategyExtension;
 import org.sopeco.engine.registry.ExtensionRegistry;
@@ -19,7 +21,9 @@ public class ExtensionsTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		Configuration.getSingleton(this.getClass());
+		IConfiguration config = Configuration.getSingleton(this.getClass());
+		config.setProperty(IConfiguration.CONF_PLUGINS_DIRECTORIES, "secondPluginDir");
+		
 		registry = ExtensionRegistry.getSingleton();
 	}
 
@@ -33,7 +37,16 @@ public class ExtensionsTest {
 
 	@Test
 	public void testCustomPlugin() {
-		ISoPeCoExtensionArtifact dummyStrategy = registry.getExtensionArtifact(IProcessingStrategyExtension.class, "Dummy Runner Extension");
+		ISoPeCoExtensionArtifact dummyStrategy = registry.getExtensionArtifact(IProcessingStrategyExtension.class, "Dummy Processing Extension");
+		
+		assertNotNull(dummyStrategy);
+		System.out.println(dummyStrategy.getProvider().getName() + " is loaded successfully.");
+	}
+
+
+	@Test
+	public void testCustomPluginDirectory() {
+		ISoPeCoExtensionArtifact dummyStrategy = registry.getExtensionArtifact(IConstantAssignmentExtension.class, 	"Dummy Constant Value Assignment");		
 		
 		assertNotNull(dummyStrategy);
 		System.out.println(dummyStrategy.getProvider().getName() + " is loaded successfully.");

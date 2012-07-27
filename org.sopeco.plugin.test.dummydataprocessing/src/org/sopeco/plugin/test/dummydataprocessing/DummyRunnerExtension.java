@@ -17,7 +17,7 @@ import org.sopeco.engine.processing.IProcessingStrategyExtension;
  */
 public class DummyRunnerExtension implements IProcessingStrategyExtension {
 
-	public static final String NAME = "Dummy Runner Extension";
+	public static final String NAME = "Dummy Processing Extension";
 	
 	public DummyRunnerExtension() {	}
 
