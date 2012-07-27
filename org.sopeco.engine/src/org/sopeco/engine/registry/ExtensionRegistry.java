@@ -6,7 +6,6 @@ package org.sopeco.engine.registry;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -133,53 +132,13 @@ public class ExtensionRegistry implements IExtensionRegistry {
 		final String defExtensionsFileName = pluginsDirName + File.separatorChar + EXTENSIONS_FILE_NAME;
 		final File defExtensionsFile = new File(defExtensionsFileName);
 
-		// 1. Look for all 'extensions.info' files in the classpath
-		// and the default location
-		final String EXTENSION_FILE_PATH = config.DEFAULT_PLUGINS_FOLDER_IN_CLASSPATH + '/' + EXTENSIONS_FILE_NAME;
-		Set<URL> extensioInfoURLs = new HashSet<URL>();
-		Enumeration<URL> eURLs;
-		try {
-			eURLs = ClassLoader.getSystemResources(EXTENSION_FILE_PATH);
-			while (eURLs.hasMoreElements()) {
-				extensioInfoURLs.add(eURLs.nextElement());
-			}
-			URL enginePathURL = this.getClass().getClassLoader().getResource(EXTENSION_FILE_PATH);
-			if (enginePathURL != null) {
-				extensioInfoURLs.add(enginePathURL);
-			}
-		} catch (IOException e1) {
-		}
-
-		// 2. add 'plugins/extensions.info' if it exists
-		if (defExtensionsFile.exists()) {
-			try {
-				extensioInfoURLs.add(new URL("file:" + defExtensionsFileName));
-			} catch (MalformedURLException e1) {
-				logger.warn("Could not read '{}'. Reason: (MalformedURLException) {}", defExtensionsFile, e1.getMessage());
-			}
-		}
-
-		for (URL url : extensioInfoURLs)
-			logger.debug("Found extensions info at: {}", url);
-		if (extensioInfoURLs.size() == 0)
-			logger.warn("Found no extensions information.");
-
-		// 2. gather the list of all extension class files
-		Set<String> extensionClasses = new HashSet<String>();
-		for (URL url : extensioInfoURLs) {
-			try {
-				extensionClasses.addAll(Tools.readLines(url));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		// 1. Load JAR files from the plugins folder
 
 		ClassLoader cl = this.getClass().getClassLoader();
-
+		
 		if (pluginsDir.exists()) {
 			String[] names = Tools.getFileNames(pluginsDirName, "*.jar");
 
-			// load jar files
 			ArrayList<URL> urls = new ArrayList<URL>();
 			if (names.length > 0) {
 				for (String str : names) {
@@ -200,6 +159,54 @@ public class ExtensionRegistry implements IExtensionRegistry {
 			logger.debug("Could not locate the plugins folder ({}), but it is OK.", pluginsDirName);
 		}
 
+		// 2. Look for all 'extensions.info' files in the classpath
+		//    and the default location
+		
+		final String EXTENSION_FILE_PATH = IConfiguration.DEFAULT_PLUGINS_FOLDER_IN_CLASSPATH + '/' + EXTENSIONS_FILE_NAME;
+		Set<URL> extensioInfoURLs = new HashSet<URL>();
+		Enumeration<URL> eURLs;
+		try {
+			eURLs = cl.getResources(EXTENSION_FILE_PATH);
+			while (eURLs.hasMoreElements()) {
+				extensioInfoURLs.add(eURLs.nextElement());
+			}
+			
+			// we should not need the following three lines
+			// URL enginePathURL = cl.getResource(EXTENSION_FILE_PATH);
+			// if (enginePathURL != null) {
+			//     extensioInfoURLs.add(enginePathURL);
+			// }
+		} catch (IOException e1) {
+		}
+
+		// 3. add 'plugins/extensions.info' if it exists
+		
+		if (defExtensionsFile.exists()) {
+			try {
+				extensioInfoURLs.add(new URL("file", "", defExtensionsFileName));
+			} catch (MalformedURLException e1) {
+				logger.warn("Could not read '{}'. Reason: (MalformedURLException) {}", defExtensionsFile, e1.getMessage());
+			}
+		}
+
+		for (URL url : extensioInfoURLs)
+			logger.debug("Found extensions info at: {}", url);
+		if (extensioInfoURLs.size() == 0)
+			logger.warn("Found no extensions information.");
+
+		// 4. gather the list of all extension class files
+		
+		Set<String> extensionClasses = new HashSet<String>();
+		for (URL url : extensioInfoURLs) {
+			try {
+				extensionClasses.addAll(Tools.readLines(url));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		// 5. Load extensions
+		
 		for (String extClassName : extensionClasses) {
 			Class<?> c;
 			try {
