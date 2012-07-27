@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 
-	<groupId>org.sopeco.core</groupId>
+	
 	<artifactId>org.sopeco.model-mapping</artifactId>
 	<packaging>jar</packaging>
 	<name>SoPeCo Core Model-Mapping</name>
