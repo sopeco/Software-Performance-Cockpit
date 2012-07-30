@@ -15,6 +15,7 @@ import org.sopeco.engine.IEngine;
 import org.sopeco.model.util.EMFUtil;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.util.Tools;
 
 /**
  * The main runner class of SoPeCo. 
@@ -65,17 +66,21 @@ public class SoPeCoRunner implements Runnable {
 		ScenarioDefinition scenario = null;
 
 		Object scenarioObj = config.getScenarioDescription();
-		if (scenarioObj == null) {
-			final String fileName = config.getScenarioDescriptionFileName();
-			
-			// if the scenario definition is not set as an object,
-			// then a filename should have been given
-			if (fileName == null) {
-				throw new RuntimeException(new ConfigurationException("Scenario definition is not provided."));
-			}
-			
-			try {
-				scenario = (ScenarioDefinition) EMFUtil.loadFromFilePath(fileName);
+        if (scenarioObj == null) {
+            String fileName = config.getScenarioDescriptionFileName();
+           
+            // if the scenario definition is not set as an object,
+            // then a filename should have been given
+            if (fileName == null) {
+                   throw new RuntimeException(new ConfigurationException("Scenario definition is not provided."));
+            }
+           
+            try {
+                   if (!Tools.isAbsolutePath(fileName)) {
+                          fileName = Tools.concatFileName(config.getAppRootDirectory(), fileName);
+                   }
+                   scenario = (ScenarioDefinition) EMFUtil.loadFromFilePath(fileName);
+                  
 				
 				logger.debug("Scenario definition file loaded.");
 				
