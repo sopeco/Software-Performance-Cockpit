@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
 import org.sopeco.util.Tools;
+import org.sopeco.util.system.SystemTools;
 
 /**
  * The extension registry of SoPeCo. This class acts as a wrapper around Eclipse
@@ -144,12 +145,29 @@ public class ExtensionRegistry implements IExtensionRegistry {
 
 		// 1. Load all plugins information from all sources
 		
+		// 1.1 Gather list of JAR files in plugins folders and gathers extensions.info files in those directories
 		for (String dir: pluginsDirsSet) {
 			loadExtensionsInfoAndJARs(dir, extensionsInfoURLs, jarURLs);
 		}
 		
 		ClassLoader classLoader = new URLClassLoader(jarURLs.toArray(new URL[] {}), this.getClass().getClassLoader());
 
+		// unpack all extensions.info's separately and gathers them in the list
+		try {
+			String tempPluginsDir = SystemTools.extractFilesFromClasspath("plugins", "sopecoPlugins", "plugins files");
+			
+			String[] infoFiles = Tools.getFileNames(tempPluginsDir, "*.info");
+			for (String infoFileName: infoFiles) {
+				final String fullName = Tools.concatFileName(tempPluginsDir, infoFileName);
+				URL url = new URL("file", "", fullName);
+				extensionsInfoURLs.add(url);
+			}
+			
+			
+		} catch (Exception e) {
+			logger.error("Could not unpack plugins information in the classpath. Reason:", e);
+		}
+		
 		// 2. Look for all 'extensions.info' files in the classpath
 		//    and the default location
 		
@@ -161,8 +179,7 @@ public class ExtensionRegistry implements IExtensionRegistry {
 				extensionsInfoURLs.add(eURLs.nextElement());
 			}
 			
-		} catch (IOException e1) {
-		}
+		} catch (IOException e1) {}
 
 		for (URL url : extensionsInfoURLs)
 			logger.debug("Found extensions info at: {}", url);

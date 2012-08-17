@@ -47,6 +47,8 @@ public class SystemTools {
 	private static Logger logger = LoggerFactory.getLogger(SystemTools.class);
 	
 	private static boolean nativeLibrariesLoaded = false;
+
+	private static String systemTempDir = null;
 	
 	/**
 	 * @return  the thread instance of Sigar controller
@@ -160,45 +162,8 @@ public class SystemTools {
 			return;
 		}
 
-		final String tempDir = FileUtils.getTempDirectoryPath();
-
-		logger.debug("Temp direcotry is located at {}.", tempDir);
-		
-		final String tempLibDir = Tools.concatFileName(tempDir, "sopecoLibs");
-		
-		// create a temp lib directory
-		File tempLibDirFile = new File(tempLibDir);
-		if (!tempLibDirFile.exists())
-			tempLibDirFile.mkdir();
-
-		logger.debug("Copying native libraries to {}.", tempLibDir);
-		
 		try {
-			Enumeration<URL> urls = ClassLoader.getSystemResources(NATIVE_SUBFOLDER);
-			while (urls.hasMoreElements()) {
-				final URL url = urls.nextElement();
-				logger.debug("Loading native libraries from {}...", url);
-
-				Iterator<File> libs = null;
-				try {
-					File nativeLibDir = new File(url.toURI());
-					libs = FileUtils.iterateFiles(nativeLibDir, null, false);
-				} catch (IllegalArgumentException e) {
-					// most likely because it is within a JAR file
-					final String unpackedJarDir = Tools.concatFileName(tempDir, "sopecoJar");
-					extractJARtoTemp(url, unpackedJarDir);
-					final String unpackedNativeDir = Tools.concatFileName(unpackedJarDir, NATIVE_SUBFOLDER);
-					final File unpackedNativeDirFile = new File(unpackedNativeDir);
-					libs = FileUtils.iterateFiles(unpackedNativeDirFile, null, false);
-				}
-				
-				while (libs.hasNext()) {
-					final File libFile = libs.next();
-					logger.debug("Copying library file {}...", libFile.getName());
-					FileUtils.copyFileToDirectory(libFile, tempLibDirFile);
-				}
-				
-			}
+			String tempLibDir = extractFilesFromClasspath(NATIVE_SUBFOLDER, "sopecoLibs", "native libraries");
 			
 			appendLibraryPath(tempLibDir);
 			
@@ -213,15 +178,81 @@ public class SystemTools {
 	}
 
 	/**
-	 * Extracts the JAR file identified by the URL into the destiation folder. 
+	 * Returns the system temp directory.
+	 * 
+	 * @return the system temp directory
+	 */
+	public static String getSystemTempDir() {
+		if (systemTempDir == null) {
+			systemTempDir = FileUtils.getTempDirectoryPath();
+			logger.debug("Temp direcotry is located at {}.", systemTempDir);
+		}
+		return systemTempDir;
+	}
+
+	
+	/**
+	 * Extracts files from a directory in the classpath to a temp directory and returns the File instance of the destination directory. 
+	 *
+	 * @param srcDirName a directory name in the classpath
+	 * @param destName the name of the destination folder in the temp folder
+	 * @param fileType a string describing the file types, if a log message is needed
+	 * 
+	 * @return the name of the target directory
+	 * 
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 */
+	public static String extractFilesFromClasspath(String srcDirName, String destName, String fileType) throws IOException, URISyntaxException {
+		final String targetDirName = Tools.concatFileName(getSystemTempDir(), destName);
+		
+		// create a temp lib directory
+		File targetDirFile = new File(targetDirName);
+		if (!targetDirFile.exists())
+			targetDirFile.mkdir();
+
+		logger.debug("Copying {} to {}.", fileType, targetDirName);
+
+		Enumeration<URL> urls = ClassLoader.getSystemResources(srcDirName);
+		while (urls.hasMoreElements()) {
+			final URL url = urls.nextElement();
+			if (fileType != null && fileType.trim().length() > 0)
+				logger.debug("Loading {} from {}...", fileType, url);
+
+			Iterator<File> libs = null;
+			try {
+				File nativeLibDir = new File(url.toURI());
+				libs = FileUtils.iterateFiles(nativeLibDir, null, false);
+			} catch (IllegalArgumentException e) {
+				// most likely because it is within a JAR file
+				final String unpackedJarDir = Tools.concatFileName(targetDirName, "temp");
+				extractJARtoTemp(url, srcDirName, unpackedJarDir);
+				final String unpackedNativeDir = Tools.concatFileName(unpackedJarDir, srcDirName);
+				final File unpackedNativeDirFile = new File(unpackedNativeDir);
+				libs = FileUtils.iterateFiles(unpackedNativeDirFile, null, false);
+			}
+			
+			while (libs.hasNext()) {
+				final File libFile = libs.next();
+				logger.debug("Copying resouce file {}...", libFile.getName());
+				FileUtils.copyFileToDirectory(libFile, targetDirFile);
+			}
+		}
+		
+		return targetDirName;
+	}
+
+	/**
+	 * Extracts a file/folder identified by the URL that resides in the classpath, into the destiation folder. 
 	 * 
 	 * @param url URL of the JAR file
+	 * @param dirOfInterest the name of the directory of interest
 	 * @param dest destination folder
 	 * 
 	 * @throws IOException 
 	 * @throws URISyntaxException
 	 */
-	public static void extractJARtoTemp(URL url, String dest) throws IOException, URISyntaxException {
+	public static void extractJARtoTemp(URL url, String dirOfInterest, String dest) throws IOException, URISyntaxException {
 		if (url.toString().indexOf("jar:") != 0)
 			throw new IllegalArgumentException("Cannot locate the JAR file.");
 		
@@ -248,7 +279,7 @@ public class SystemTools {
 		    java.util.jar.JarEntry file = (JarEntry) entries.nextElement();
 		    
 		    String destFileName = dest + File.separator + file.getName();
-		    if (destFileName.indexOf(NATIVE_SUBFOLDER) < 0)
+		    if (destFileName.indexOf(dirOfInterest) < 0)
 		    	continue;
 		    
 		    logger.debug("unpacking {}...", file.getName());
@@ -266,6 +297,9 @@ public class SystemTools {
 		    fos.close();
 		    is.close();
 		}	
+
+		logger.debug("Unpacking jar file done.");
+
 	}
 
 	/**
