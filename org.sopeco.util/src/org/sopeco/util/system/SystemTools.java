@@ -19,11 +19,8 @@ import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -32,8 +29,6 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.util.Tools;
-
-import ch.qos.logback.core.util.FileUtil;
 
 /**
  * OS-related functionalities. 
@@ -46,8 +41,6 @@ public class SystemTools {
 	private static final String NATIVE_SUBFOLDER = "native";
 
 	private static final String JAVA_LIBRARY_PATH = "java.library.path";
-
-	private static final String NATIVE_LIBS_LIST_FILENAME = "native/nativeLibs.list";
 
 	private static final String KILLSERVICE_CMD_WINDOWS = "net stop "; 
 
@@ -154,6 +147,13 @@ public class SystemTools {
 			// TODO Implement shutdown for other OSs
 	}
 
+	/**
+	 * Unpacks all native libraries in the JAR files into a temp folder and explicitly appends them to the Java native library path.
+	 * 
+	 * The native library files are assumed to be under {@value SystemTools#NATIVE_SUBFOLDER} directories in the classpath.
+	 * If this is done once, it will not do it again. Also, see {@link #appendLibraryPath(String)}.   
+	 *  
+	 */
 	public static void loadNativeLibraries() {
 		if (nativeLibrariesLoaded) {
 			logger.warn("Native libraries are already loaded. Nothing done.");
@@ -212,7 +212,16 @@ public class SystemTools {
 
 	}
 
-	private static void extractJARtoTemp(URL url, String dest) throws IOException, URISyntaxException {
+	/**
+	 * Extracts the JAR file identified by the URL into the destiation folder. 
+	 * 
+	 * @param url URL of the JAR file
+	 * @param dest destination folder
+	 * 
+	 * @throws IOException 
+	 * @throws URISyntaxException
+	 */
+	public static void extractJARtoTemp(URL url, String dest) throws IOException, URISyntaxException {
 		if (url.toString().indexOf("jar:") != 0)
 			throw new IllegalArgumentException("Cannot locate the JAR file.");
 		
@@ -257,24 +266,7 @@ public class SystemTools {
 		    fos.close();
 		    is.close();
 		}	
-		
 	}
-
-	/**
-	 * Copies the given native library file from the classpath to a temp library directory.
-	 * 
-	 * @param fileName library file name
-	 * @param libDir the destination folder
-	 * @return full path of the copied file
-	 * @throws IOException thrown in case of any IO Exception (obviously!)
-	 */
-	private static String copyLibToTemp(String fileName, String libDir) throws IOException {
-		InputStream in = new BufferedInputStream(ClassLoader.getSystemResourceAsStream("native/" + fileName));
-		final String targetFile = libDir + fileName;
-		FileUtils.copyInputStreamToFile(in, new File(targetFile));
-		return targetFile;
-	}
-
 
 	/**
 	 * Appends a directory to the Java library path. 
