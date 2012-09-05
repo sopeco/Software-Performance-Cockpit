@@ -76,13 +76,6 @@
 			<version>1.6.1</version>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>
-  			com.springsource.org.apache.commons.cli
-  		</artifactId>
-			<version>1.2.0</version>
-		</dependency>
-		<dependency>
 			<groupId>ant</groupId>
 			<artifactId>ant</artifactId>
 			<version>1.7.0</version>
@@ -126,6 +119,13 @@
       		<version>2.2.2</version>
     	</dependency>
 
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>
+				com.springsource.org.apache.commons.cli
+			</artifactId>
+			<version>1.2.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

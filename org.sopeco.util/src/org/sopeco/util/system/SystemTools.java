@@ -192,7 +192,7 @@ public class SystemTools {
 
 	
 	/**
-	 * Extracts files from a directory in the classpath to a temp directory and returns the File instance of the destination directory. 
+	 * Extracts files from a directory in the classpath to a temp directory (with a time stamp) and returns the File instance of the destination directory. 
 	 *
 	 * @param srcDirName a directory name in the classpath
 	 * @param destName the name of the destination folder in the temp folder
@@ -202,8 +202,30 @@ public class SystemTools {
 	 * 
 	 * @throws IOException
 	 * @throws URISyntaxException
+	 * 
+	 * @see #extractFilesFromClasspath(String, String, String, boolean)
 	 */
 	public static String extractFilesFromClasspath(String srcDirName, String destName, String fileType) throws IOException, URISyntaxException {
+		return extractFilesFromClasspath(srcDirName, destName, fileType, true);
+	}
+
+	/**
+	 * Extracts files from a directory in the classpath to a temp directory and returns the File instance of the destination directory. 
+	 *
+	 * @param srcDirName a directory name in the classpath
+	 * @param destName the name of the destination folder in the temp folder
+	 * @param fileType a string describing the file types, if a log message is needed
+	 * @param timeStamp if <code>true</code>, it will add a time stamp to the name of the target directory (recommended)
+	 * 
+	 * @return the name of the target directory
+	 * 
+	 * @throws IOException
+	 * @throws URISyntaxException
+	 */
+	public static String extractFilesFromClasspath(String srcDirName, String destName, String fileType, boolean timeStamp) throws IOException, URISyntaxException {
+		if (timeStamp) {
+			destName = destName + "-" + Tools.getTimeStamp();
+		}
 		final String targetDirName = Tools.concatFileName(getSystemTempDir(), destName);
 		
 		// create a temp lib directory

@@ -153,6 +153,7 @@ public class ExtensionRegistry implements IExtensionRegistry {
 		ClassLoader classLoader = new URLClassLoader(jarURLs.toArray(new URL[] {}), this.getClass().getClassLoader());
 
 		// unpack all extensions.info's separately and gathers them in the list
+		
 		try {
 			String tempPluginsDir = SystemTools.extractFilesFromClasspath("plugins", "sopecoPlugins", "plugins files");
 			
