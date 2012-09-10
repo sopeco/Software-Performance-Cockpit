@@ -127,7 +127,9 @@ public class EntityFactory {
 	public static ExplorationStrategy createExplorationStrategy(String name, Map<String, String> config){
 		ExplorationStrategy es = new ExplorationStrategy();
 		es.setName(name);
-		es.getConfiguration().putAll(config);
+		if (config != null){
+			es.getConfiguration().putAll(config);
+		}
 		return es;
 	}
 	
