@@ -493,7 +493,7 @@ public class Tools {
 		return getTimeStamp(new Date());
 	}
 
-
+	
 	/** 
 	 * Adds a sequence of the given character to the beginning of the given string
 	 * until it reaches the given length.

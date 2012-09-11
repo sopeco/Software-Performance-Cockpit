@@ -223,8 +223,13 @@ public class SystemTools {
 	 * @throws URISyntaxException
 	 */
 	public static String extractFilesFromClasspath(String srcDirName, String destName, String fileType, boolean timeStamp) throws IOException, URISyntaxException {
+		
 		if (timeStamp) {
-			destName = destName + "-" + Tools.getTimeStamp();
+			// remove dots and colons from timestamp as they are not allowed for windows directory names
+			String clearedTimeStamp = Tools.getTimeStamp().replace('.', '_');
+			clearedTimeStamp= clearedTimeStamp.replace(':', '_');
+
+			destName = destName + "_" + clearedTimeStamp;
 		}
 		final String targetDirName = Tools.concatFileName(getSystemTempDir(), destName);
 		

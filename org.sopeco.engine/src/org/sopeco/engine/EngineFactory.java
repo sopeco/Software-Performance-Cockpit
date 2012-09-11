@@ -108,6 +108,10 @@ public class EngineFactory {
 	public IEngine getEngine() {
 		return engine;
 	}
+	
+	public void registerEngine(IEngine newEngine){
+		engine = newEngine;
+	}
 
 	/**
 	 * Creates an experiment controller based on the given measurement

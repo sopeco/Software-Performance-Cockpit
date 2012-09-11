@@ -57,15 +57,29 @@ public class MeasurementSpecification implements Serializable {
 	 */
 	public boolean containsAllElementsOf(MeasurementSpecification other) {
 		for (ExperimentSeriesDefinition esdOther : other.getExperimentSeriesDefinitions()) {
-			if (!this.getExperimentSeriesDefinitions().contains(esdOther)) {
+			boolean found = false;
+			long matchingVersion = 0;
+			for(ExperimentSeriesDefinition esdThis : this.getExperimentSeriesDefinitions()){
+				if(esdThis.equals(esdOther)){
+					found = true;
+					matchingVersion = esdThis.getVersion();
+					break;
+				}
+			}
+			
+			if(found){
+				esdOther.setVersion(matchingVersion);
+			}else{
 				return false;
 			}
 		}
+		
 		for (ConstantValueAssignment cva : other.getInitializationAssignemts()) {
 			if (!this.getInitializationAssignemts().contains(cva)) {
 				return false;
 			}
 		}
+		
 		return true;
 	}
 
