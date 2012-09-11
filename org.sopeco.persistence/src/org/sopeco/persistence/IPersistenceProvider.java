@@ -8,6 +8,7 @@ import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ProcessedDataSet;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.entities.analysis.IStorableAnalysisResult;
+import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.persistence.entities.keys.ExperimentSeriesPK;
 import org.sopeco.persistence.entities.keys.ScenarioInstancePK;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
@@ -29,6 +30,8 @@ public interface IPersistenceProvider {
 
 	void store(ScenarioInstance scenarioInstance);
 
+	void store(ScenarioDefinition scenarioDefinition);
+	
 	void store(String resultId, IStorableAnalysisResult analysisResult);
 
 	void store(DataSetAggregated dataSet);
@@ -37,8 +40,13 @@ public interface IPersistenceProvider {
 	List<ScenarioInstance> loadScenarioInstances(String scenarioName) throws DataNotFoundException;
 
 	List<ScenarioInstance> loadAllScenarioInstances() throws DataNotFoundException;
+	
+	List<ScenarioDefinition> loadAllScenarioDefinitions() throws DataNotFoundException;
 
 	ScenarioInstance loadScenarioInstance(String scenarioName, String measurementEnvironmentUrl)
+			throws DataNotFoundException;
+	
+	ScenarioDefinition loadScenarioDefinition(String scenarioName)
 			throws DataNotFoundException;
 
 	ScenarioInstance loadScenarioInstance(ScenarioInstancePK primaryKey) throws DataNotFoundException;

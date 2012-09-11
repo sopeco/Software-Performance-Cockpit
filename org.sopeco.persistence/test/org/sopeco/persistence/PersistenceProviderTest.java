@@ -43,6 +43,10 @@ public class PersistenceProviderTest {
 	public static void init() throws Exception {
 
 		Configuration.getSingleton().setProperty("sopeco.config.persistence.dbtype", "InMemory");
+//		Configuration.getSingleton().setProperty("sopeco.config.persistence.server.host", "deqkal276.qkal.sap.corp");
+//		Configuration.getSingleton().setProperty("sopeco.config.persistence.server.port", "1527");
+//		Configuration.getSingleton().setProperty("sopeco.config.persistence.server.dbname", "dummyTest");
+//		Configuration.getSingleton().setProperty("sopeco.config.persistence.dbtype", "Server");
 		provider = (JPAPersistenceProvider) PersistenceProviderFactory.getPersistenceProvider();
 		dummyScenarioInstance = DummyFactory.createDummyScenarioInstance();
 	}
@@ -61,6 +65,37 @@ public class PersistenceProviderTest {
 	}
 
 	@Test
+	public void testStoreAndLoadScenarioDefinition(){
+		try {
+		provider.store(DummyFactory.loadDifferentScenarioDefinition());
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+		try {
+			ScenarioDefinition scenDef = provider.loadScenarioDefinition("Dummy2");
+			
+			assertNotNull(scenDef);
+			assertEquals(scenDef.getMeasurementSpecifications().get(0).getName(), "DummyMeasurementSpecification");
+			
+			boolean found = false;
+			for(ScenarioDefinition sd : provider.loadAllScenarioDefinitions()){
+				if(sd.getScenarioName().equals("Dummy2")){
+					found=true;
+					break;
+				}
+			}
+			
+			assertTrue(found);
+			
+		} catch (DataNotFoundException e) {
+			fail(e.getMessage());
+		}
+		
+		
+	}
+	
+	
+	@Test
 	public void testStoreAndLoadScenarioInstance() {
 
 		// sub tree checks
@@ -70,6 +105,10 @@ public class PersistenceProviderTest {
 
 		try {
 			provider.store(dummyScenarioInstance);
+			
+			ScenarioDefinition scenDef = provider.loadScenarioDefinition(dummyScenarioInstance.getName());
+			assertNotNull(scenDef);
+			assertEquals(scenDef.getScenarioName(), dummyScenarioInstance.getName());
 		} catch (Exception e) {
 			fail(e.getMessage());
 		}
@@ -581,6 +620,8 @@ public class PersistenceProviderTest {
 
 	}
 
+	
+	
 	private DataSetAggregated simulateExperimentRun(DataSetAggregated dataset) {
 		DataSetRowBuilder builder = new DataSetRowBuilder();
 		builder.startRow();

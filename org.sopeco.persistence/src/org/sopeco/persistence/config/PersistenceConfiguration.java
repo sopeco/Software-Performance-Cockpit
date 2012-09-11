@@ -23,6 +23,7 @@ public class PersistenceConfiguration {
 	private final static String DEFAULT_PERSISTENCE_CONFIG_FILE_NAME ="sopeco-persistence-defaults.conf";
 	private final static String DDL_GENERATION = "sopeco.config.persistence.ddlgeneration";
 	
+	public final static String META_DATA_DB = "sopeco.config.persistence.metaDBName";
 	private final static String SERVER_HOST = "sopeco.config.persistence.server.host";
 	private final static String SERVER_PORT = "sopeco.config.persistence.server.port";
 	private final static String DATABASE_NAME = "sopeco.config.persistence.server.dbname";
@@ -41,6 +42,10 @@ public class PersistenceConfiguration {
 		
 		
 		
+	}
+	
+	public String getDBName(){
+		return sopecoConfig.getPropertyAsStr(DATABASE_NAME);
 	}
 	
 	/**
@@ -77,5 +82,13 @@ public class PersistenceConfiguration {
 	public String getServerUrl() {
 		return SERVER_URL_PREFIX + sopecoConfig.getPropertyAsStr(SERVER_HOST) 
 				+ ":" + sopecoConfig.getPropertyAsStr(SERVER_PORT) + "/" + sopecoConfig.getPropertyAsStr(DATABASE_NAME) + SERVER_URL_SUFFIX;
+	}
+	
+	/**
+	 * @return the url of the meta data database
+	 */
+	public String getMetaDataConnectionUrl(){
+		return SERVER_URL_PREFIX + sopecoConfig.getPropertyAsStr(SERVER_HOST) 
+				+ ":" + sopecoConfig.getPropertyAsStr(SERVER_PORT) + "/" + sopecoConfig.getPropertyAsStr(META_DATA_DB) + SERVER_URL_SUFFIX;
 	}
 }

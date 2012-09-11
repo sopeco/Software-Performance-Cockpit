@@ -4,18 +4,33 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Lob;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+
 /**
  * @author Dennis Westermann, Jens Happe
  * 
  */
+@NamedQueries({ @NamedQuery(name = "findAllScenarioDefinitions", query = "SELECT o FROM ScenarioDefinition o")})
+@Entity
 public class ScenarioDefinition implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	@Id
+	@Column(name= "name")
 	protected String scenarioName = null;
 
+	@Lob
+	@Column(name= "measurementEnvironmentDefinition")
 	protected MeasurementEnvironmentDefinition measurementEnvironmentDefinition;
 
+	@Lob
+	@Column(name= "measurementSpecification")
 	protected List<MeasurementSpecification> measurementSpecifications = new ArrayList<MeasurementSpecification>();
 
 	public ScenarioDefinition() {

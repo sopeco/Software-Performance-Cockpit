@@ -66,6 +66,37 @@ public class DummyFactory {
 		return builder.getScenarioDefinition();
 	}
 	
+	@SuppressWarnings("unchecked")
+	public static ScenarioDefinition loadDifferentScenarioDefinition() {
+		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder("Dummy2");
+		
+		builder.createNewNamespace("default");
+		ParameterDefinition dummyInputParam = builder.createParameter("DummyInput", ParameterType.INTEGER, ParameterRole.INPUT);
+		ParameterDefinition dummyOutputParam = builder.createParameter("DummyOutput", ParameterType.INTEGER, ParameterRole.OBSERVATION);
+		
+		builder.createMeasurementSpecification("DummyMeasurementSpecification");
+		
+		builder.createExperimentSeriesDefinition("Dummy0");
+		builder.createNumberOfRunsCondition(4);
+		builder.createDynamicValueAssignment(AssignmentType.Experiment, "Linear Numeric Variation", dummyInputParam, Collections.EMPTY_MAP);
+		builder.createExplorationStrategy("Full Exploration Strategy", Collections.EMPTY_MAP);	
+		builder.createAnalysisConfiguration("MARS", Collections.EMPTY_MAP);
+		builder.addDependentParameter(dummyOutputParam);
+		builder.addIndependentParameter(dummyInputParam);
+		
+		builder.createExperimentSeriesDefinition("Dummy1");
+		builder.createNumberOfRunsCondition(4);
+		builder.createDynamicValueAssignment(AssignmentType.Experiment, "Linear Numeric Variation", dummyInputParam, Collections.EMPTY_MAP);
+		builder.createExplorationStrategy("Full Exploration Strategy", Collections.EMPTY_MAP);	
+		builder.createAnalysisConfiguration("MARS", Collections.EMPTY_MAP);
+		builder.addDependentParameter(dummyOutputParam);
+		builder.addIndependentParameter(dummyInputParam);
+		
+		return builder.getScenarioDefinition();
+	}
+	
+	
+	
 	private static List<ExperimentSeries> createDummyExperimentSeries() throws IOException{
 		List<ExperimentSeries> seriesList = new LinkedList<ExperimentSeries>();
 		for (ExperimentSeriesDefinition esd : scenarioDefinition.getMeasurementSpecifications().get(0).getExperimentSeriesDefinitions()) {

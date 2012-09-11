@@ -10,6 +10,7 @@
 		<class>org.sopeco.persistence.dataset.DataSetAggregated</class>
 		<class>org.sopeco.persistence.entities.ProcessedDataSet</class>
 		<class>org.sopeco.persistence.entities.analysis.AnalysisResultStorageContainer</class>
+		<class>org.sopeco.persistence.entities.definition.ScenarioDefinition</class>
 		<properties>
 			
 			<property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver" />
@@ -36,6 +37,25 @@
 		      
 		      
 			-->
+		</properties>
+
+	</persistence-unit>
+	
+	<persistence-unit name="sopeco_metadata" transaction-type="RESOURCE_LOCAL">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<class>org.sopeco.persistence.metadata.entities.DatabaseInstance</class>
+		<properties>
+			
+			<property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver" />
+			<property name="javax.persistence.jdbc.url" value="jdbc:derby:memory:sopeco-jpa;create=true" />
+			<property name="javax.persistence.jdbc.user" value="app" />
+			<property name="javax.persistence.jdbc.password" value="app" />
+			
+			
+			<property name="eclipselink.target-database" value="Derby"/>  
+			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /> 
+			<property name="eclipselink.cache.shared.default" value="false"/>
+			<property name="eclipselink.logging.level" value="INFO"/> 
 		</properties>
 
 	</persistence-unit>

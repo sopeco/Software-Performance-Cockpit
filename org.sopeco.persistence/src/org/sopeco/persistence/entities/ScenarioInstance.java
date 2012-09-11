@@ -9,7 +9,10 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -39,9 +42,10 @@ public class ScenarioInstance implements Serializable {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "scenarioInstance", orphanRemoval = true, fetch = FetchType.EAGER)
 	private List<ExperimentSeries> experimentSeries = new ArrayList<ExperimentSeries>();
-
-	@Lob
-	@Column(name = "scenarioDefinition")
+	
+	
+	
+	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
 	private ScenarioDefinition scenarioDefinition;
 
 	/*
