@@ -8,6 +8,7 @@ import javax.persistence.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
@@ -109,5 +110,33 @@ public class MetaDataPersistenceProvider implements IMetaDataPersistenceProvider
 			logger.debug(errorMsg);
 			throw new DataNotFoundException(errorMsg);
 		}
+	}
+
+	@Override
+	public void remove(DatabaseInstance databaseInstance) throws DataNotFoundException {
+		String errorMsg = "Could not remove database instance " + databaseInstance.getConnectionUrl().toString();
+
+		EntityManager em = emf.createEntityManager();
+		try {
+
+			em.getTransaction().begin();
+
+			// load entity to make it "managed"
+			databaseInstance = em.find(DatabaseInstance.class, databaseInstance.getConnectionUrl());
+
+			em.remove(databaseInstance);
+
+			em.getTransaction().commit();
+		} catch (Exception e) {
+
+			throw new DataNotFoundException(errorMsg, e);
+
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
+		
 	}
 }

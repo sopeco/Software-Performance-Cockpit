@@ -23,7 +23,9 @@ public class PersistenceConfiguration {
 	private final static String DEFAULT_PERSISTENCE_CONFIG_FILE_NAME ="sopeco-persistence-defaults.conf";
 	private final static String DDL_GENERATION = "sopeco.config.persistence.ddlgeneration";
 	
-	public final static String META_DATA_DB = "sopeco.config.persistence.metaDBName";
+	public final static String META_DATA_DB = "sopeco.config.persistence.metaServer.dbName";
+	public final static String META_DATA_HOST = "sopeco.config.persistence.metaServer.host";
+	public final static String META_DATA_PORT = "sopeco.config.persistence.metaServer.port";
 	private final static String SERVER_HOST = "sopeco.config.persistence.server.host";
 	private final static String SERVER_PORT = "sopeco.config.persistence.server.port";
 	private final static String DATABASE_NAME = "sopeco.config.persistence.server.dbname";
@@ -46,6 +48,14 @@ public class PersistenceConfiguration {
 	
 	public String getDBName(){
 		return sopecoConfig.getPropertyAsStr(DATABASE_NAME);
+	}
+	
+	public String getDBHost(){
+		return sopecoConfig.getPropertyAsStr(SERVER_HOST);
+	}
+	
+	public String getDBPort(){
+		return sopecoConfig.getPropertyAsStr(SERVER_PORT);
 	}
 	
 	/**
@@ -88,7 +98,21 @@ public class PersistenceConfiguration {
 	 * @return the url of the meta data database
 	 */
 	public String getMetaDataConnectionUrl(){
-		return SERVER_URL_PREFIX + sopecoConfig.getPropertyAsStr(SERVER_HOST) 
-				+ ":" + sopecoConfig.getPropertyAsStr(SERVER_PORT) + "/" + sopecoConfig.getPropertyAsStr(META_DATA_DB) + SERVER_URL_SUFFIX;
+		return SERVER_URL_PREFIX + sopecoConfig.getPropertyAsStr(META_DATA_HOST) 
+				+ ":" + sopecoConfig.getPropertyAsStr(META_DATA_PORT) + "/" + sopecoConfig.getPropertyAsStr(META_DATA_DB) + SERVER_URL_SUFFIX;
 	}
+	
+	public String getMetaDataHost(){
+		return sopecoConfig.getPropertyAsStr(META_DATA_HOST);
+	}
+	
+	public String getMetaDataPort(){
+		return sopecoConfig.getPropertyAsStr(META_DATA_PORT);
+	}
+	
+	public String getMetaDataDBName(){
+		return sopecoConfig.getPropertyAsStr(META_DATA_DB);
+	}
+	
+	
 }
