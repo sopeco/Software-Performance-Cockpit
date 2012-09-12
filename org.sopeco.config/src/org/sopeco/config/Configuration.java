@@ -439,7 +439,7 @@ public class Configuration implements IConfiguration {
 
 	@Override
 	public void loadDefaultConfiguration(String fileName) throws ConfigurationException {
-		loadConfiguration(defaultValues, ClassLoader.getSystemClassLoader(), fileName);
+		loadConfiguration(defaultValues, this.getClass().getClassLoader(), fileName);
 	}
 
 	@Override
@@ -449,7 +449,7 @@ public class Configuration implements IConfiguration {
 
 	@Override
 	public void loadConfiguration(String fileName) throws ConfigurationException {
-		loadConfiguration(properties, ClassLoader.getSystemClassLoader(), fileName);
+		loadConfiguration(properties, this.getClass().getClassLoader(), fileName);
 	}
 
 	@Override
