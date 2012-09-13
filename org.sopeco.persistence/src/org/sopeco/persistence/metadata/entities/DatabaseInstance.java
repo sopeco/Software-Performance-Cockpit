@@ -16,6 +16,12 @@ public class DatabaseInstance {
 	@Column(name = "dbName")
 	private String dbName;
 	
+	@Column
+	private String password;
+	
+	@Column
+	private boolean protectedByPassword;
+	
 	public DatabaseInstance() {
 	}
 	
@@ -38,5 +44,25 @@ public class DatabaseInstance {
 
 	public void setDbName(String dbName) {
 		this.dbName = dbName;
+	}
+
+	public String getUser(){
+		return dbName;
+	}
+	
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public boolean isProtectedByPassword() {
+		return protectedByPassword;
+	}
+
+	public void setProtectedByPassword(boolean protectedByPassword) {
+		this.protectedByPassword = protectedByPassword;
 	}
 }

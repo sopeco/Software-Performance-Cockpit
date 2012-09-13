@@ -37,7 +37,7 @@ public class PersistenceProviderFactory {
 
 	private static Logger logger = LoggerFactory.getLogger(PersistenceProviderFactory.class);
 
-	private static IPersistenceProvider persistenceProviderInstance = null;
+	protected static IPersistenceProvider persistenceProviderInstance = null;
 	private static IMetaDataPersistenceProvider metaDataPersistenceProviderInstance = null;
 
 	public static IPersistenceProvider getPersistenceProvider() {
@@ -51,7 +51,7 @@ public class PersistenceProviderFactory {
 	}
 
 	public static IMetaDataPersistenceProvider getMetaDataPersistenceProvider() {
-		PersistenceConfiguration persistenceConfig = new PersistenceConfiguration();
+		PersistenceConfiguration persistenceConfig = PersistenceConfiguration.getSingleton();
 		if (!persistenceConfig.getDBType().equals(DBType.Server)) {
 			throw new RuntimeException("Meta data cannot be retrieved for DB type 'InMemory' !");
 		}
@@ -66,7 +66,7 @@ public class PersistenceProviderFactory {
 	private static IMetaDataPersistenceProvider createMetaDataPersistenceProvider() {
 		try {
 
-			PersistenceConfiguration persistenceConfig = new PersistenceConfiguration();
+			PersistenceConfiguration persistenceConfig = PersistenceConfiguration.getSingleton();
 
 			logger.debug("Create EntityManagerFactory for persistence unit {}.", META_DATA_PERSISTENCE_UNIT_VALUE);
 
@@ -81,11 +81,11 @@ public class PersistenceProviderFactory {
 		}
 	}
 
-	private static IPersistenceProvider createJPAPersistenceProvider() {
+	protected static IPersistenceProvider createJPAPersistenceProvider() {
 
 		try {
 
-			PersistenceConfiguration persistenceConfig = new PersistenceConfiguration();
+			PersistenceConfiguration persistenceConfig = PersistenceConfiguration.getSingleton();
 
 			logger.debug("Create EntityManagerFactory for persistence unit {}.", PERSISTENCE_UNIT_VALUE);
 			
