@@ -23,6 +23,7 @@ public class PersistenceConfiguration {
 
 	private static PersistenceConfiguration singletonInstance;
 	
+	
 	public static PersistenceConfiguration getSingleton(){
 		if(singletonInstance == null){
 			singletonInstance = new PersistenceConfiguration();

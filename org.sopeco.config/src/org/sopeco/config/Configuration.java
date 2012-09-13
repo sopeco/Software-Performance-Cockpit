@@ -388,10 +388,10 @@ public class Configuration implements IConfiguration {
 		// the system property 'logback.configurationFile'
 		// e.g.,
 		// $ java -Dlogback.configurationFile=/path/to/config.xml ...
-		LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
 		String fileName = getPropertyAsStr(CONF_LOGGER_CONFIG_FILE_NAME);
 		if (fileName != null) {
+			LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 			try {
 				logger.debug("Configuring logback using '{}'...", fileName);
 
