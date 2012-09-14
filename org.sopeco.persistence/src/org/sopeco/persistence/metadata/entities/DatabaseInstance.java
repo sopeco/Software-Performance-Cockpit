@@ -1,5 +1,7 @@
 package org.sopeco.persistence.metadata.entities;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -8,7 +10,13 @@ import javax.persistence.NamedQuery;
 
 @NamedQueries({ @NamedQuery(name = "findAllDataBaseInstances", query = "SELECT o FROM DatabaseInstance o") })
 @Entity
-public class DatabaseInstance {
+public class DatabaseInstance implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 357534372912798631L;
+
+
 	@Id
 	@Column(name = "id")
 	private String id;
