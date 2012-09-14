@@ -100,8 +100,9 @@ public class PersistenceProviderFactory {
 					getMetaDataPersistenceProvider().loadDatabaseInstance(persistenceConfig.getServerUrl());
 				} catch (DataNotFoundException dnfe) {
 					logger.debug("Creating a new meta data entry for DB Instance {}", persistenceConfig.getServerUrl());
+					
 					getMetaDataPersistenceProvider().store(
-							new DatabaseInstance(persistenceConfig.getDBName(), persistenceConfig.getServerUrl()));
+							new DatabaseInstance(persistenceConfig.getDBName(), persistenceConfig.getDBHost(), persistenceConfig.getDBPort(), persistenceConfig.isPasswordUsed()));
 				}
 
 			}

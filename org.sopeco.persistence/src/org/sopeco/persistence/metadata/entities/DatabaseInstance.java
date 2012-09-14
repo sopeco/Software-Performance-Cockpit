@@ -10,32 +10,34 @@ import javax.persistence.NamedQuery;
 @Entity
 public class DatabaseInstance {
 	@Id
-	@Column(name = "connectionUrl")
-	private String connectionUrl;
+	@Column(name = "id")
+	private String id;
+	
 	
 	@Column(name = "dbName")
 	private String dbName;
 	
-	@Column
-	private String password;
+	@Column(name = "host")
+	private String host;
+	
+	@Column(name = "port")
+	private String port;
+	
+	
+
 	
 	@Column
 	private boolean protectedByPassword;
 	
 	public DatabaseInstance() {
+		id = "";
 	}
 	
-	public DatabaseInstance(String dbName, String connectionUrl) {
+	public DatabaseInstance(String dbName, String host, String port, boolean passwordSet) {
 		setDbName(dbName);
-		setConnectionUrl(connectionUrl);
-	}
-
-	public String getConnectionUrl() {
-		return connectionUrl;
-	}
-
-	public void setConnectionUrl(String connectionUrl) {
-		this.connectionUrl = connectionUrl;
+		setHost(host);
+		setPort(port);
+		setProtectedByPassword(passwordSet);
 	}
 
 	public String getDbName() {
@@ -44,19 +46,14 @@ public class DatabaseInstance {
 
 	public void setDbName(String dbName) {
 		this.dbName = dbName;
+		updateId();
 	}
 
 	public String getUser(){
 		return dbName;
 	}
 	
-	public String getPassword() {
-		return password;
-	}
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
 
 	public boolean isProtectedByPassword() {
 		return protectedByPassword;
@@ -64,5 +61,31 @@ public class DatabaseInstance {
 
 	public void setProtectedByPassword(boolean protectedByPassword) {
 		this.protectedByPassword = protectedByPassword;
+	}
+
+	public String getHost() {
+		return host;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
+		updateId();
+	}
+
+	public String getPort() {
+		return port;
+	}
+
+	public void setPort(String port) {
+		this.port = port;
+		updateId();
+	}
+	
+	public String getId(){
+		return id;
+	}
+	
+	private void updateId(){
+		id = host + ":" + port + "/" + dbName;
 	}
 }

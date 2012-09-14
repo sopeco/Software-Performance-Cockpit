@@ -94,6 +94,10 @@ public class PersistenceConfiguration {
 	public void setUsePassword(boolean use){
 		 sopecoConfig.setProperty(DB_PASSWORD_USED, Boolean.toString(use));
 	}
+	
+	public boolean isPasswordUsed(){
+		return sopecoConfig.getPropertyAsBoolean(DB_PASSWORD_USED, false);
+	}
 
 	/**
 	 * @return the type of database to be used

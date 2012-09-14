@@ -114,7 +114,7 @@ public class MetaDataPersistenceProvider implements IMetaDataPersistenceProvider
 
 	@Override
 	public void remove(DatabaseInstance databaseInstance) throws DataNotFoundException {
-		String errorMsg = "Could not remove database instance " + databaseInstance.getConnectionUrl().toString();
+		String errorMsg = "Could not remove database instance " + databaseInstance.getId().toString();
 
 		EntityManager em = emf.createEntityManager();
 		try {
@@ -122,7 +122,7 @@ public class MetaDataPersistenceProvider implements IMetaDataPersistenceProvider
 			em.getTransaction().begin();
 
 			// load entity to make it "managed"
-			databaseInstance = em.find(DatabaseInstance.class, databaseInstance.getConnectionUrl());
+			databaseInstance = em.find(DatabaseInstance.class, databaseInstance.getId());
 
 			em.remove(databaseInstance);
 
