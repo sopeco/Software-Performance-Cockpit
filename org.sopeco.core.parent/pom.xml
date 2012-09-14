@@ -22,7 +22,7 @@
 		<module>../org.sopeco.model-mapping</module>
 		<!-- <module>../org.sopeco.core.test</module> -->
 		<module>../org.sopeco.plugin.std.parametervariation</module>
-		<!--  <module>../org.sopeco.sdq.rwrapper</module>-->
+		<!-- <module>../org.sopeco.sdq.rwrapper</module> -->
 		<module>../org.sopeco.plugin.std.exploration</module>
 		<module>../org.sopeco.plugin.std.analysis</module>
 		<module>../org.sopeco.plugin.std.constantassignment</module>
@@ -80,12 +80,12 @@
 			<artifactId>ant</artifactId>
 			<version>1.7.0</version>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.hyperic</groupId> -->
-<!-- 			<artifactId>sigar</artifactId> -->
-<!-- 			<version>1.6.4</version> -->
-			
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>org.hyperic</groupId> -->
+		<!-- <artifactId>sigar</artifactId> -->
+		<!-- <version>1.6.4</version> -->
+
+		<!-- </dependency> -->
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>org.eclipse.persistence.jpa</artifactId>
@@ -114,10 +114,10 @@
 			<version>10.8.2.2</version>
 		</dependency>
 		<dependency>
-      		<groupId>com.google.code.gson</groupId>
-      		<artifactId>gson</artifactId>
-      		<version>2.2.2</version>
-    	</dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.2</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -139,8 +139,23 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
-		
+
 		<sourceDirectory>src</sourceDirectory>
 		<testSourceDirectory>test</testSourceDirectory>
 		<resources>
