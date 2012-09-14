@@ -16,44 +16,44 @@ import org.sopeco.config.exception.ConfigurationException;
  */
 public interface IConfiguration {
 
-	public static final String ENV_SOPECO_HOME = "SOPECO_HOME";
+	String ENV_SOPECO_HOME = "SOPECO_HOME";
 
-	public static final String CONF_LOGGER_CONFIG_FILE_NAME = "sopeco.config.loggerConfigFileName";
+	String CONF_LOGGER_CONFIG_FILE_NAME = "sopeco.config.loggerConfigFileName";
 
-	public static final String CONF_SCENARIO_DESCRIPTION_FILE_NAME = "sopeco.config.measurementSpecFileName";
+	String CONF_SCENARIO_DESCRIPTION_FILE_NAME = "sopeco.config.measurementSpecFileName";
 
-	public static final String CONF_SCENARIO_DESCRIPTION = "sopeco.config.measurementSpecification";
+	String CONF_SCENARIO_DESCRIPTION = "sopeco.config.measurementSpecification";
 
-	public static final String CONF_MEASUREMENT_CONTROLLER_URI = "sopeco.config.measurementControllerURI";
+	String CONF_MEASUREMENT_CONTROLLER_URI = "sopeco.config.measurementControllerURI";
 
-	public static final String CONF_MEASUREMENT_CONTROLLER_CLASS_NAME = "sopeco.config.measurementControllerClassName";
+	String CONF_MEASUREMENT_CONTROLLER_CLASS_NAME = "sopeco.config.measurementControllerClassName";
 
-	public static final String CONF_APP_NAME = "sopeco.config.applicationName";
+	String CONF_APP_NAME = "sopeco.config.applicationName";
 
-	public static final String CONF_MAIN_CLASS = "sopeco.config.mainClass";
+	String CONF_MAIN_CLASS = "sopeco.config.mainClass";
 
-	public static final String CONF_MODEL_CHANGE_HANDLING_MODE = "sopeco.config.modelChangeHandlingMode";
-	public static final String MCH_MODE_OVERWRITE = "overwrite";
-	public static final String MCH_MODE_FAIL = "fail";
-	public static final String MCH_MODE_NEW_VERSION = "newVersion";
+	String CONF_MODEL_CHANGE_HANDLING_MODE = "sopeco.config.modelChangeHandlingMode";
+	String MCH_MODE_OVERWRITE = "overwrite";
+	String MCH_MODE_FAIL = "fail";
+	String MCH_MODE_NEW_VERSION = "newVersion";
 
 	/** Holds the path to the root folder of SoPeCo. */
-	public static final String CONF_APP_ROOT_FOLDER = "sopeco.config.rootFolder";
+	String CONF_APP_ROOT_FOLDER = "sopeco.config.rootFolder";
 
 	/**
 	 * Holds the path to the plugins folder, relative to the root folder of
 	 * SoPeCo.
 	 */
-	public static final String CONF_PLUGINS_DIRECTORIES = "sopeco.config.pluginsDirs";
+	String CONF_PLUGINS_DIRECTORIES = "sopeco.config.pluginsDirs";
 
-	public static final String CLA_EXTENSION_ID = "org.sopeco.config.commandlinearguments";
+	String CLA_EXTENSION_ID = "org.sopeco.config.commandlinearguments";
 
 	/** Folder for configuration files relative to the application root folder */
-	public static final String DEFAULT_CONFIG_FOLDER_NAME = "config";
+	String DEFAULT_CONFIG_FOLDER_NAME = "config";
 
-	public static final String DEFAULT_CONFIG_FILE_NAME = "sopeco-defaults.conf";
+	String DEFAULT_CONFIG_FILE_NAME = "sopeco-defaults.conf";
 
-	public static final String DIR_SEPARATOR = ":";
+	String DIR_SEPARATOR = ":";
 
 	/**
 	 * Returns the configured value of the given property in SoPeCo.
@@ -66,7 +66,7 @@ public interface IConfiguration {
 	 * @param key
 	 *            property key
 	 */
-	public Object getProperty(String key);
+	Object getProperty(String key);
 
 	/**
 	 * Returns the configured value of the given property as a String.
@@ -80,7 +80,7 @@ public interface IConfiguration {
 	 * 
 	 * @see #getProperty(String)
 	 */
-	public String getPropertyAsStr(String key);
+	String getPropertyAsStr(String key);
 
 	/**
 	 * Returns the configured value of the given property as a Boolean value.
@@ -99,7 +99,7 @@ public interface IConfiguration {
 	 * 
 	 * @see #getProperty(String)
 	 */
-	public boolean getPropertyAsBoolean(String key, boolean defaultValue);
+	boolean getPropertyAsBoolean(String key, boolean defaultValue);
 
 	/**
 	 * Returns the configured value of the given property as a Long value.
@@ -117,7 +117,7 @@ public interface IConfiguration {
 	 * 
 	 * @see #getProperty(String)
 	 */
-	public long getPropertyAsLong(String key, long defaultValue);
+	long getPropertyAsLong(String key, long defaultValue);
 
 	/**
 	 * Returns the configured value of the given property as an Integer value.
@@ -135,7 +135,7 @@ public interface IConfiguration {
 	 * 
 	 * @see #getProperty(String)
 	 */
-	public int getPropertyAsInteger(String key, int defaultValue);
+	int getPropertyAsInteger(String key, int defaultValue);
 
 	/**
 	 * Sets the value of a property for the current run.
@@ -145,7 +145,7 @@ public interface IConfiguration {
 	 * @param value
 	 *            property value
 	 */
-	public void setProperty(String key, Object value);
+	void setProperty(String key, Object value);
 
 	/**
 	 * Returns the default value (ignoring the current runtime configuration)
@@ -154,7 +154,7 @@ public interface IConfiguration {
 	 * @param key
 	 *            porperty key
 	 */
-	public Object getDefaultValue(String key);
+	Object getDefaultValue(String key);
 
 	/**
 	 * Processes the given command line arguments, the effects of which will
@@ -165,7 +165,7 @@ public interface IConfiguration {
 	 * @throws ConfigurationException
 	 *             if there is any problem with command line arguments
 	 */
-	public void processCommandLineArguments(String[] args) throws ConfigurationException;
+	void processCommandLineArguments(String[] args) throws ConfigurationException;
 
 	/**
 	 * Loads default configurations from a file name. If the file name is not an
@@ -174,7 +174,7 @@ public interface IConfiguration {
 	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory,</li>
 	 * <li>current folder,</li>
 	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory in classpath,</li>
-	 * <li>and finally the classpath.</li>
+	 * <li>and finaly the classpath.</li>
 	 * </ol>
 	 * where classpath is determined by the system class loader. See
 	 * {@link #loadDefaultConfiguration(ClassLoader, String)} for loading
@@ -190,7 +190,7 @@ public interface IConfiguration {
 	 *            the name of a properties file
 	 * @throws ConfigurationException
 	 */
-	public void loadDefaultConfiguration(String fileName) throws ConfigurationException;
+	void loadDefaultConfiguration(String fileName) throws ConfigurationException;
 
 	/**
 	 * Loads default configurations from a file name. If the file name is not an
@@ -199,7 +199,7 @@ public interface IConfiguration {
 	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory,</li>
 	 * <li>current folder,</li>
 	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory in classpath,</li>
-	 * <li>and finally the classpath.</li>
+	 * <li>and finaly the classpath.</li>
 	 * </ol>
 	 * where classpath is determined by the given class loader.
 	 * 
@@ -215,7 +215,7 @@ public interface IConfiguration {
 	 *            the name of a properties file
 	 * @throws ConfigurationException
 	 */
-	public void loadDefaultConfiguration(ClassLoader classLoader, String fileName) throws ConfigurationException;
+	void loadDefaultConfiguration(ClassLoader classLoader, String fileName) throws ConfigurationException;
 
 	/**
 	 * Loads user-level configurations from a file name. If the file name is not
@@ -224,7 +224,7 @@ public interface IConfiguration {
 	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory,</li>
 	 * <li>current folder,</li>
 	 * <li>the {@value #DEFAULT_CONFIG_FOLDER_NAME} directory in classpath,</li>
-	 * <li>and finally the classpath.</li>
+	 * <li>and finaly the classpath.</li>
 	 * </ol>
 	 * where classpath is determined by the system class loader. See
 	 * {@link #loadConfiguration(ClassLoader, String)} for loading default
@@ -240,7 +240,7 @@ public interface IConfiguration {
 	 *            the name of a properties file
 	 * @throws ConfigurationException
 	 */
-	public void loadConfiguration(String fileName) throws ConfigurationException;
+	void loadConfiguration(String fileName) throws ConfigurationException;
 
 	/**
 	 * Loads user-level configurations from a file name. If the file name is not
@@ -265,7 +265,7 @@ public interface IConfiguration {
 	 *            the name of a properties file
 	 * @throws ConfigurationException
 	 */
-	public void loadConfiguration(ClassLoader classLoader, String fileName) throws ConfigurationException;
+	void loadConfiguration(ClassLoader classLoader, String fileName) throws ConfigurationException;
 
 	/**
 	 * Performs any post processing of configuration settings that may be
@@ -275,7 +275,7 @@ public interface IConfiguration {
 	 * configuration values. It should be called automatically after a call to
 	 * {@link IConfiguration#loadConfiguration(String)}.
 	 */
-	public void applyConfiguration();
+	void applyConfiguration();
 
 	/**
 	 * Sets the value of scenario description file name.
@@ -284,7 +284,7 @@ public interface IConfiguration {
 	 *            file name
 	 * @see #CONF_SCENARIO_DESCRIPTION_FILE_NAME
 	 */
-	public void setScenarioDescriptionFileName(String fileName);
+	void setScenarioDescriptionFileName(String fileName);
 
 	/**
 	 * Sets the sceanrio description as the given object. This property in
@@ -295,7 +295,7 @@ public interface IConfiguration {
 	 *            an instance of a scenario description
 	 * @see #CONF_SCENARIO_DESCRIPTION
 	 */
-	public void setScenarioDescription(Object sceanrioDescription);
+	void setScenarioDescription(Object sceanrioDescription);
 
 	/**
 	 * Sets the measurement controller URI.
@@ -305,7 +305,7 @@ public interface IConfiguration {
 	 * @throws ConfigurationException
 	 * @see #CONF_MEASUREMENT_CONTROLLER_URI
 	 */
-	public void setMeasurementControllerURI(String uriStr) throws ConfigurationException;
+	void setMeasurementControllerURI(String uriStr) throws ConfigurationException;
 
 	/**
 	 * Sets the measurement controller class name. This also sets the
@@ -315,7 +315,7 @@ public interface IConfiguration {
 	 *            the full name of the class
 	 * @see #CONF_MEASUREMENT_CONTROLLER_CLASS_NAME
 	 */
-	public void setMeasurementControllerClassName(String className);
+	void setMeasurementControllerClassName(String className);
 
 	/**
 	 * Sets the application name for this executable instance.
@@ -323,7 +323,7 @@ public interface IConfiguration {
 	 * @param appName
 	 *            an application name
 	 */
-	public void setApplicationName(String appName);
+	void setApplicationName(String appName);
 
 	/**
 	 * Sets the main class that runs this thread. This will also be used in
@@ -331,7 +331,7 @@ public interface IConfiguration {
 	 * 
 	 * @param mainClass
 	 */
-	public void setMainClass(Class<?> mainClass);
+	void setMainClass(Class<?> mainClass);
 
 	/**
 	 * Sets the logger configuration file name and triggers logger
@@ -340,63 +340,63 @@ public interface IConfiguration {
 	 * @param fileName
 	 *            a file name
 	 */
-	public void setLoggerConfigFileName(String fileName);
+	void setLoggerConfigFileName(String fileName);
 
 	/**
 	 * Returns the application root directory.
 	 */
-	public String getAppRootDirectory();
+	String getAppRootDirectory();
 
 	/**
 	 * Returns the application's configuration directory.
 	 */
-	public String getAppConfDirectory();
+	String getAppConfDirectory();
 
 	/**
 	 * Gets the value of scenario description file name.
 	 * 
 	 * @see #CONF_SCENARIO_DESCRIPTION_FILE_NAME
 	 */
-	public String getScenarioDescriptionFileName();
+	String getScenarioDescriptionFileName();
 
 	/**
 	 * Gets the sceanrio description as the given object.
 	 * 
 	 * @see #CONF_SCENARIO_DESCRIPTION
 	 */
-	public Object getScenarioDescription();
+	Object getScenarioDescription();
 
 	/**
 	 * Gets the measurement controller URI.
 	 * 
 	 * @see #CONF_MEASUREMENT_CONTROLLER_URI
 	 */
-	public URI getMeasurementControllerURI();
+	URI getMeasurementControllerURI();
 
 	/**
 	 * Gets the measurement controller URI as a String.
 	 * 
 	 * @see #CONF_MEASUREMENT_CONTROLLER_URI
 	 */
-	public String getMeasurementControllerURIAsStr();
+	String getMeasurementControllerURIAsStr();
 
 	/**
 	 * Gets the measurement controller class name.
 	 * 
 	 * @see #CONF_MEASUREMENT_CONTROLLER_CLASS_NAME
 	 */
-	public String getMeasurementControllerClassName();
+	String getMeasurementControllerClassName();
 
 	/**
 	 * Gets the application name for this executable instance.
 	 */
-	public String getApplicationName();
+	String getApplicationName();
 
 	/**
 	 * Returns the main class that runs this thread. This value must have been
 	 * set by a call to {@link IConfiguration#setMainClass(Class)}.
 	 */
-	public Class<?> getMainClass();
+	Class<?> getMainClass();
 
 	/**
 	 * Writes the current configuration values into a file.
@@ -404,6 +404,6 @@ public interface IConfiguration {
 	 * @param fileName
 	 *            the name of the file
 	 */
-	public void writeConfiguration(String fileName) throws IOException;
+	void writeConfiguration(String fileName) throws IOException;
 
 }

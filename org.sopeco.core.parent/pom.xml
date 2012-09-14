@@ -154,6 +154,16 @@
 				</executions>
 			</plugin>
 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.9.1</version>
+				<configuration>
+					<configLocation>checkstyle-sopeco.config.xml</configLocation>
+				</configuration>
+			</plugin>
+
+
 		</plugins>
 
 		<sourceDirectory>src</sourceDirectory>

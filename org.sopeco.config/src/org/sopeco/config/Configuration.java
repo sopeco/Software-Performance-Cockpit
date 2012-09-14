@@ -37,12 +37,12 @@ import ch.qos.logback.core.joran.spi.JoranException;
  * @author Roozbeh Farahbod
  * 
  */
-public class Configuration implements IConfiguration {
+public final class Configuration implements IConfiguration {
 
-	private static final Logger logger = LoggerFactory.getLogger(Configuration.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
 
 	/** Holds the singleton reference to this class. */
-	private static IConfiguration SINGLETON = null;
+	private static IConfiguration singleton = null;
 
 	/** Holds the default property values. */
 	private Map<String, Object> defaultValues = new HashMap<String, Object>();
@@ -50,12 +50,15 @@ public class Configuration implements IConfiguration {
 	/** Holds the configured property values. */
 	private Map<String, Object> properties = new HashMap<String, Object>();
 
+	private static final int HELP_FORMATTER_WIDTH = 120;
+
 	/*
 	 * Preventing the instantiation of the class by other classes.
 	 */
 	private Configuration(Class<?> mainClass) {
 		try {
-			logger.info("Initializing SoPeCo configuration module{}.", (mainClass == null ? "" : " with main class " + mainClass.getName() + ""));
+			LOGGER.info("Initializing SoPeCo configuration module{}.", (mainClass == null ? "" : " with main class "
+					+ mainClass.getName() + ""));
 			setDefaultValues(mainClass);
 		} catch (ConfigurationException e) {
 			throw new RuntimeException(e);
@@ -68,10 +71,11 @@ public class Configuration implements IConfiguration {
 	 * @return
 	 */
 	public static IConfiguration getSingleton() {
-		if (SINGLETON == null)
-			SINGLETON = new Configuration(null);
+		if (singleton == null) {
+			singleton = new Configuration(null);
+		}
 
-		return SINGLETON;
+		return singleton;
 	}
 
 	/**
@@ -81,19 +85,23 @@ public class Configuration implements IConfiguration {
 	 * @see #setMainClass(Class)
 	 */
 	public static IConfiguration getSingleton(Class<?> mainClass) {
-		if (SINGLETON == null)
-			SINGLETON = new Configuration(mainClass);
+		if (singleton == null) {
+			singleton = new Configuration(mainClass);
+		}
 
-		return SINGLETON;
+		return singleton;
 	}
 
 	@Override
 	public Object getProperty(String key) {
 		Object value = properties.get(key);
-		if (value == null)
+		if (value == null) {
 			value = System.getProperty(key);
-		if (value == null)
+		}
+
+		if (value == null) {
 			value = defaultValues.get(key);
+		}
 
 		return value;
 	}
@@ -103,17 +111,21 @@ public class Configuration implements IConfiguration {
 		final Object value = getProperty(key);
 		if (value != null) {
 			return value.toString();
-		} else
+		} else {
 			return null;
+		}
+
 	}
 
 	@Override
 	public boolean getPropertyAsBoolean(String key, boolean defaultValue) {
 		final String value = getPropertyAsStr(key);
-		if (value == null)
+		if (value == null) {
 			return defaultValue;
-		else
+		} else {
 			return Tools.strEqualName("true", value) || Tools.strEqualName("yes", value);
+		}
+
 	}
 
 	@Override
@@ -154,23 +166,30 @@ public class Configuration implements IConfiguration {
 		Option help = new Option("help", "print this message");
 
 		// option: sopeco config file
-		Option config = OptionBuilder.withArgName("file").hasArg().withDescription("sopeco configuration file").create("config");
+		Option config = OptionBuilder.withArgName("file").hasArg().withDescription("sopeco configuration file")
+				.create("config");
 
 		// option: logger config file
-		Option logconfig = OptionBuilder.withArgName("file").hasArg().withDescription("the logback configuration file").create("logconfig");
+		Option logconfig = OptionBuilder.withArgName("file").hasArg().withDescription("the logback configuration file")
+				.create("logconfig");
 
 		// option: ME URI
-		Option meURI = OptionBuilder.withArgName("URI").hasArg().withDescription("URI of the measurement environment controller service").create("uri");
+		Option meURI = OptionBuilder.withArgName("URI").hasArg()
+				.withDescription("URI of the measurement environment controller service").create("uri");
 
 		// option: ME Class
-		Option meClass = OptionBuilder.withArgName("class").hasArg().withDescription("classname of the measurement environment controller").create("meClass");
+		Option meClass = OptionBuilder.withArgName("class").hasArg()
+				.withDescription("classname of the measurement environment controller").create("meClass");
 
 		// option: scenario definition
-		Option scenarioDef = OptionBuilder.withArgName("file").hasArg().withDescription("scenario definition file").create("sd");
-		Option modelChangeHandling = OptionBuilder.withArgName("mchMode").hasArg().withDescription("mode describing how to handle model changes").create("mch");
+		Option scenarioDef = OptionBuilder.withArgName("file").hasArg().withDescription("scenario definition file")
+				.create("sd");
+		Option modelChangeHandling = OptionBuilder.withArgName("mchMode").hasArg()
+				.withDescription("mode describing how to handle model changes").create("mch");
 
 		// option
-		Option logVerbosity = OptionBuilder.withArgName("level").hasArg().withDescription("logging verbosity level (overrides log config)").create("lv");
+		Option logVerbosity = OptionBuilder.withArgName("level").hasArg()
+				.withDescription("logging verbosity level (overrides log config)").create("lv");
 
 		// Option selectedSeries = OptionBuilder.withArgName("series")
 		// .withValueSeparator(',')
@@ -257,9 +276,10 @@ public class Configuration implements IConfiguration {
 	 * @throws ConfigurationException
 	 */
 	private void setDefaultValues(Class<?> mainClass) throws ConfigurationException {
-		if (mainClass != null)
+		if (mainClass != null) {
 			defaultValues.put(CONF_MAIN_CLASS, mainClass);
-		
+		}
+
 		getAppRootDirectory();
 
 		loadDefaultConfiguration(DEFAULT_CONFIG_FILE_NAME);
@@ -273,7 +293,7 @@ public class Configuration implements IConfiguration {
 	 */
 	private void printHelpMessage(Options options) {
 		HelpFormatter formatter = new HelpFormatter();
-		formatter.setWidth(120);
+		formatter.setWidth(HELP_FORMATTER_WIDTH);
 		formatter.setArgName("Test");
 		formatter.printHelp(getApplicationName(), options, true);
 	}
@@ -298,7 +318,7 @@ public class Configuration implements IConfiguration {
 		try {
 			setProperty(CONF_MEASUREMENT_CONTROLLER_URI, new URI(uri));
 		} catch (URISyntaxException e) {
-			logger.error("Could not parse the URI {}. Error: {}", uri, e.getMessage());
+			LOGGER.error("Could not parse the URI {}. Error: {}", uri, e.getMessage());
 			throw new ConfigurationException(e);
 		}
 	}
@@ -393,7 +413,7 @@ public class Configuration implements IConfiguration {
 		if (fileName != null) {
 			LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 			try {
-				logger.debug("Configuring logback using '{}'...", fileName);
+				LOGGER.debug("Configuring logback using '{}'...", fileName);
 
 				JoranConfigurator configurator = new JoranConfigurator();
 				configurator.setContext(lc);
@@ -402,14 +422,19 @@ public class Configuration implements IConfiguration {
 				// rules
 				lc.reset();
 
-				configurator.doConfigure(findConfigFileAsInputStream(ClassLoader.getSystemClassLoader(), null, fileName));
+				configurator
+						.doConfigure(findConfigFileAsInputStream(ClassLoader.getSystemClassLoader(), null, fileName));
 			} catch (JoranException je) {
-				logger.warn("Failed loading the logback configuration file. Using default configuration. Error message: {}", je.getMessage());
+				LOGGER.warn(
+						"Failed loading the logback configuration file. Using default configuration. Error message: {}",
+						je.getMessage());
 			} catch (FileNotFoundException e) {
-				logger.warn("Failed loading the logback configuration file. Configuration file cannot be opened. ('{}')", fileName);
+				LOGGER.warn(
+						"Failed loading the logback configuration file. Configuration file cannot be opened. ('{}')",
+						fileName);
 			}
 
-			logger.debug("Logback configured.");
+			LOGGER.debug("Logback configured.");
 		}
 	}
 
@@ -417,24 +442,28 @@ public class Configuration implements IConfiguration {
 	public void writeConfiguration(String fileName) throws IOException {
 		Properties props = new Properties();
 
-		logger.debug("Writing configuration file to {}...", fileName);
+		LOGGER.debug("Writing configuration file to {}...", fileName);
 
-		for (Entry<String, Object> e : defaultValues.entrySet())
+		for (Entry<String, Object> e : defaultValues.entrySet()) {
 			copyConfigItem(e, props);
+		}
 
-		for (Entry<String, Object> e : properties.entrySet())
+		for (Entry<String, Object> e : properties.entrySet()) {
 			copyConfigItem(e, props);
+		}
 
 		props.store(new FileOutputStream(fileName), "SoPeCo Configuration");
 
-		logger.debug("Configuration file written to {}.", fileName);
+		LOGGER.debug("Configuration file written to {}.", fileName);
 	}
 
 	private void copyConfigItem(Entry<String, Object> e, Properties destination) {
 		if (e.getValue() instanceof Number || e.getValue() instanceof Boolean || e.getValue() instanceof String) {
 			destination.setProperty(e.getKey(), e.getValue().toString());
-		} else
-			logger.debug("Skipping configuration item '{}'.", e.getKey());
+		} else {
+			LOGGER.debug("Skipping configuration item '{}'.", e.getKey());
+		}
+
 	}
 
 	@Override
@@ -460,15 +489,19 @@ public class Configuration implements IConfiguration {
 	/**
 	 * Loads configuration into a configuration map.
 	 */
-	private void loadConfiguration(Map<String, Object> dest, ClassLoader classLoader, String fileName) throws ConfigurationException {
+	private void loadConfiguration(Map<String, Object> dest, ClassLoader classLoader, String fileName)
+			throws ConfigurationException {
 		InputStream in = null;
 		try {
 			in = findConfigFileAsInputStream(classLoader, DEFAULT_CONFIG_FOLDER_NAME, fileName);
 		} catch (FileNotFoundException e) {
+			LOGGER.warn("Exception caught: {}", e);
 		}
 
-		if (in == null)
-			logger.warn("Cannot load configuration file '{}'.", fileName);
+		if (in == null) {
+			LOGGER.warn("Cannot load configuration file '{}'.", fileName);
+		}
+
 		else {
 			loadConfigFromStream(dest, in);
 			applyConfiguration();
@@ -492,8 +525,10 @@ public class Configuration implements IConfiguration {
 		for (Entry<Object, Object> entry : prop.entrySet()) {
 			if (dest == properties) {
 				setProperty((String) entry.getKey(), entry.getValue());
-			} else
+			} else {
 				dest.put((String) entry.getKey(), entry.getValue());
+			}
+
 		}
 	}
 
@@ -511,7 +546,8 @@ public class Configuration implements IConfiguration {
 	 * 
 	 * @throws FileNotFoundException
 	 */
-	private InputStream findConfigFileAsInputStream(ClassLoader classLoader, String container, String fileName) throws FileNotFoundException {
+	private InputStream findConfigFileAsInputStream(ClassLoader classLoader, String container, String fileName)
+			throws FileNotFoundException {
 
 		String pathToFile = fileName;
 
@@ -523,7 +559,8 @@ public class Configuration implements IConfiguration {
 
 		// 1. Try the container directory, if it exists
 		pathToFile = Tools.concatFileName(getAppRootDirectory(),
-				((container == null || container.length() == 0) ? fileName : (Tools.concatFileName(container, fileName))));
+				((container == null || container.length() == 0) ? fileName
+						: (Tools.concatFileName(container, fileName))));
 		if (Tools.fileExists(pathToFile)) {
 			return new FileInputStream(pathToFile);
 		}
@@ -552,10 +589,12 @@ public class Configuration implements IConfiguration {
 			}
 		}
 
-		if (inStream != null)
+		if (inStream != null) {
 			return inStream;
-		else
+		} else {
 			throw new FileNotFoundException();
+		}
+
 	}
 
 }
