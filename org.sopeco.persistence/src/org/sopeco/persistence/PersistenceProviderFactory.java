@@ -8,6 +8,7 @@ import javax.persistence.Persistence;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.config.Configuration;
 import org.sopeco.persistence.config.PersistenceConfiguration;
 import org.sopeco.persistence.config.PersistenceConfiguration.DBType;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
@@ -34,7 +35,12 @@ public class PersistenceProviderFactory {
 	private final static String MEM_DB_URL_VALUE = "jdbc:derby:memory:sopeco-jpa;create=true";
 
 	private final static String DDL_GENERATION = "eclipselink.ddl-generation";
-
+    private final static String JAVAX_PERSISTENCE_USER = "javax.persistence.jdbc.user";
+    private final static String JAVAX_PERSISTENCE_PASSWORD = "javax.persistence.jdbc.password";
+    private final static String JAVAX_PERSISTENCE_USER_DEFAULT = "app";
+    private final static String JAVAX_PERSISTENCE_PASSWORD_DEFAULT = "app";
+    
+    
 	private static Logger logger = LoggerFactory.getLogger(PersistenceProviderFactory.class);
 
 	protected static IPersistenceProvider persistenceProviderInstance = null;
@@ -95,14 +101,14 @@ public class PersistenceProviderFactory {
 					configOverrides);
 
 			if (persistenceConfig.getDBType().equals(DBType.Server)) {
+				DatabaseInstance dbInstance = new DatabaseInstance(persistenceConfig.getDBName(), persistenceConfig.getDBHost(), persistenceConfig.getDBPort(), persistenceConfig.isPasswordUsed());
 				try {
 					// check whether meta data entry is available
-					getMetaDataPersistenceProvider().loadDatabaseInstance(persistenceConfig.getServerUrl());
+					getMetaDataPersistenceProvider().loadDatabaseInstance(dbInstance.getId());
 				} catch (DataNotFoundException dnfe) {
-					logger.debug("Creating a new meta data entry for DB Instance {}", persistenceConfig.getServerUrl());
+					logger.debug("Creating a new meta data entry for DB Instance {}", dbInstance.getId());
 					
-					getMetaDataPersistenceProvider().store(
-							new DatabaseInstance(persistenceConfig.getDBName(), persistenceConfig.getDBHost(), persistenceConfig.getDBPort(), persistenceConfig.isPasswordUsed()));
+					getMetaDataPersistenceProvider().store(dbInstance);
 				}
 
 			}
@@ -125,6 +131,13 @@ public class PersistenceProviderFactory {
 		case Server:
 			configOverrides.put(DB_DRIVER_CLASS, SERVER_DB_DRIVER_CLASS_VALUE);
 			configOverrides.put(DB_URL, persistenceConfig.getServerUrl());
+			if(persistenceConfig.isPasswordUsed()){
+				configOverrides.put(JAVAX_PERSISTENCE_USER, persistenceConfig.getDBName());
+				configOverrides.put(JAVAX_PERSISTENCE_PASSWORD, persistenceConfig.getPassword());	
+			}else{
+				configOverrides.put(JAVAX_PERSISTENCE_USER, JAVAX_PERSISTENCE_USER_DEFAULT);
+				configOverrides.put(JAVAX_PERSISTENCE_PASSWORD, JAVAX_PERSISTENCE_PASSWORD_DEFAULT);
+			}
 			break;
 
 		default:

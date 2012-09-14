@@ -91,6 +91,10 @@ public class PersistenceConfiguration {
 		 sopecoConfig.setProperty(DB_PASSWORD, password);
 	}
 	
+	public String getPassword(){
+		return sopecoConfig.getPropertyAsStr(DB_PASSWORD);
+	}
+	
 	public void setUsePassword(boolean use){
 		 sopecoConfig.setProperty(DB_PASSWORD_USED, Boolean.toString(use));
 	}
@@ -130,15 +134,15 @@ public class PersistenceConfiguration {
 	 * @return the url of the database server
 	 */
 	public String getServerUrl() {
-		String passwordSuffix = "";
-		if (sopecoConfig.getPropertyAsBoolean(DB_PASSWORD_USED, false)) {
-			passwordSuffix = ";user=" + sopecoConfig.getPropertyAsStr(DATABASE_NAME) + ";password="
-					+ sopecoConfig.getPropertyAsStr(DB_PASSWORD);
-		}
+//		String passwordSuffix = "";
+//		if (sopecoConfig.getPropertyAsBoolean(DB_PASSWORD_USED, false)) {
+//			passwordSuffix = ";user=" + sopecoConfig.getPropertyAsStr(DATABASE_NAME) + ";password="
+//					+ sopecoConfig.getPropertyAsStr(DB_PASSWORD);
+//		}
 
 		return SERVER_URL_PREFIX + sopecoConfig.getPropertyAsStr(SERVER_HOST) + ":"
 				+ sopecoConfig.getPropertyAsStr(SERVER_PORT) + "/" + sopecoConfig.getPropertyAsStr(DATABASE_NAME)
-				+ SERVER_URL_SUFFIX + passwordSuffix;
+				+ SERVER_URL_SUFFIX;
 	}
 
 	/**
