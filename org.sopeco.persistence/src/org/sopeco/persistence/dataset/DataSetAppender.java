@@ -2,14 +2,13 @@ package org.sopeco.persistence.dataset;
 
 import java.util.ArrayList;
 
-
 /**
  * Builder to merge multiple DataSets into a single one.
  * 
  * @author Jens Happe
  * 
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class DataSetAppender extends AbstractDataSetRowBuilder {
 
 	public DataSetAppender() {
@@ -29,20 +28,17 @@ public class DataSetAppender extends AbstractDataSetRowBuilder {
 			return;
 		}
 
-		if (inputColumnMap.isEmpty()) {
+		if (getInputColumnMap().isEmpty()) {
 			for (DataSetInputColumn column : dataset.getInputColumns()) {
-				DataSetInputColumn col = new DataSetInputColumn(
-						column.getParameter(), new ArrayList());
-				inputColumnMap.put(column.getParameter(), col);
+				DataSetInputColumn col = new DataSetInputColumn(column.getParameter(), new ArrayList());
+				getInputColumnMap().put(column.getParameter(), col);
 			}
 		}
 
-		if (observationColumnMap.isEmpty()) {
-			for (DataSetObservationColumn column : dataset
-					.getObservationColumns()) {
-				DataSetObservationColumn col = new DataSetObservationColumn(
-						column.getParameter(), new ArrayList());
-				observationColumnMap.put(column.getParameter(), col);
+		if (getObservationColumnMap().isEmpty()) {
+			for (DataSetObservationColumn column : dataset.getObservationColumns()) {
+				DataSetObservationColumn col = new DataSetObservationColumn(column.getParameter(), new ArrayList());
+				getObservationColumnMap().put(column.getParameter(), col);
 			}
 		}
 
@@ -67,28 +63,19 @@ public class DataSetAppender extends AbstractDataSetRowBuilder {
 
 	private void appendNewValues(DataSetAggregated dataset, int sourceIndex) {
 		for (DataSetInputColumn appendColumn : dataset.getInputColumns()) {
-			DataSetInputColumn column = inputColumnMap.get(appendColumn
-					.getParameter());
-			column.getValueList().add(
-					appendColumn.getParameterValue(sourceIndex).getValue());
+			DataSetInputColumn column = getInputColumnMap().get(appendColumn.getParameter());
+			column.getValueList().add(appendColumn.getParameterValue(sourceIndex).getValue());
 		}
-		for (DataSetObservationColumn appendColumn : dataset
-				.getObservationColumns()) {
-			DataSetObservationColumn column = observationColumnMap
-					.get(appendColumn.getParameter());
-			column.getValueLists().add(
-					appendColumn.getParameterValues(sourceIndex));
+		for (DataSetObservationColumn appendColumn : dataset.getObservationColumns()) {
+			DataSetObservationColumn column = getObservationColumnMap().get(appendColumn.getParameter());
+			column.getValueLists().add(appendColumn.getParameterValues(sourceIndex));
 		}
 	}
 
-	private void addValuesToExisting(DataSetAggregated dataset,
-			int sourceIndex, int targetIndex) {
-		for (DataSetObservationColumn appendColumn : dataset
-				.getObservationColumns()) {
-			DataSetObservationColumn column = observationColumnMap
-					.get(appendColumn.getParameter());
-			column.getParameterValues(targetIndex).addValues(
-					appendColumn.getParameterValues(sourceIndex).getValues());
+	private void addValuesToExisting(DataSetAggregated dataset, int sourceIndex, int targetIndex) {
+		for (DataSetObservationColumn appendColumn : dataset.getObservationColumns()) {
+			DataSetObservationColumn column = getObservationColumnMap().get(appendColumn.getParameter());
+			column.getParameterValues(targetIndex).addValues(appendColumn.getParameterValues(sourceIndex).getValues());
 		}
 	}
 
@@ -96,9 +83,8 @@ public class DataSetAppender extends AbstractDataSetRowBuilder {
 
 		for (int i = 0; i < size(); i++) {
 			boolean found = true;
-			for (DataSetInputColumn col : inputColumnMap.values()) {
-				if (!col.getParameterValue(i).getValue()
-						.equals(row.getInputParameterValue(col.getParameter()))) {
+			for (DataSetInputColumn col : getInputColumnMap().values()) {
+				if (!col.getParameterValue(i).getValue().equals(row.getInputParameterValue(col.getParameter()))) {
 					found = false;
 					break;
 				}

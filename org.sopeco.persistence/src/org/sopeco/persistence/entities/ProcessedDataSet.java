@@ -1,13 +1,6 @@
 package org.sopeco.persistence.entities;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Transient;
@@ -24,19 +16,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.persistence.PersistenceProviderFactory;
 import org.sopeco.persistence.dataset.DataSetAggregated;
-import org.sopeco.persistence.entities.definition.ParameterDefinition;
-import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
-import org.sopeco.persistence.util.ParameterCollection;
 
 /**
- * Processed dataset is a wrapper around a data set that is the result 
- * of some data processing over experiment results of an experiment series. 
+ * Processed dataset is a wrapper around a data set that is the result of some
+ * data processing over experiment results of an experiment series.
  * 
  * @author Roozbeh Farahbod
  * 
  */
-@SuppressWarnings({"rawtypes"})
+@SuppressWarnings({ "rawtypes" })
 @NamedQuery(name = "findAllProcessedDataSets", query = "SELECT o FROM ProcessedDataSet o")
 @Entity
 public class ProcessedDataSet implements Serializable {
@@ -47,15 +36,15 @@ public class ProcessedDataSet implements Serializable {
 	 * Unique identifier of the DataSet
 	 */
 	@Id
-	@Column(name= "id")
+	@Column(name = "id")
 	private String id;
 
-	@Column(name= "label")
+	@Column(name = "label")
 	private String label;
-	
+
 	@Transient
 	private DataSetAggregated dataSet;
-	
+
 	@Column(name = "successfulResultDataSetId")
 	private String dataSetId;
 
@@ -66,14 +55,15 @@ public class ProcessedDataSet implements Serializable {
 			@JoinColumn(name = "experimentSeriesVersion", referencedColumnName = "version") })
 	private ExperimentSeries experimentSeries;
 
-	public ProcessedDataSet() {}
-	
+	public ProcessedDataSet() {
+	}
+
 	public ProcessedDataSet(String id, ExperimentSeries es, DataSetAggregated dsa) {
 		setId(id);
 		setExperimentSeries(es);
 		setDataSet(dsa);
 	}
-	
+
 	public String getId() {
 		return id;
 	}
@@ -94,13 +84,12 @@ public class ProcessedDataSet implements Serializable {
 
 		if (dataSet == null && dataSetId != null) {
 			try {
-				dataSet = PersistenceProviderFactory.getPersistenceProvider().loadDataSet(
-						dataSetId);
+				dataSet = PersistenceProviderFactory.getPersistenceProvider().loadDataSet(dataSetId);
 			} catch (DataNotFoundException e) {
 				logger.warn(e.getMessage());
 			}
 		}
-		
+
 		return dataSet;
 	}
 
@@ -118,22 +107,20 @@ public class ProcessedDataSet implements Serializable {
 	}
 
 	public void storeDataSets() {
-		if(this.getDataSet()!=null) {
+		if (this.getDataSet() != null) {
 			PersistenceProviderFactory.getPersistenceProvider().store(this.getDataSet());
 		}
-		
+
 	}
 
 	public void removeDataSets() {
-		if(this.dataSetId!=null) {
+		if (this.dataSetId != null) {
 			try {
 				PersistenceProviderFactory.getPersistenceProvider().remove(this.getDataSet());
 			} catch (DataNotFoundException e) {
 				logger.warn(e.getMessage());
 			}
-		}	
+		}
 	}
 
-
-	
 }

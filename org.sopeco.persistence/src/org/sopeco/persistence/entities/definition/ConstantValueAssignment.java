@@ -48,23 +48,29 @@ public class ConstantValueAssignment extends ParameterValueAssignment {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (!super.equals(obj))
+		}
+		if (!super.equals(obj)) {
 			return false;
+		}
 		
 		ConstantValueAssignment other = (ConstantValueAssignment) obj;
 		if (value == null) {
-			if (other.value != null)
+			if (other.value != null) {
 				return false;
-		} else if (!value.equals(other.value))
+			}
+		} else if (!value.equals(other.value)) {
 			return false;
+		}
 		
 		if (parameter == null) {
-			if (other.parameter != null)
+			if (other.parameter != null) {
 				return false;
-		} else if (!parameter.equals(other.parameter))
+			}
+		} else if (!parameter.equals(other.parameter)) {
 			return false;
+		}
 		return true;
 	}
 	

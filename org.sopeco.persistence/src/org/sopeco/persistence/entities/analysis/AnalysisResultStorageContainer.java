@@ -7,26 +7,27 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 
-
 /**
- * Stores any analysis result that implements {@link IStorableAnalysisResult}
+ * Stores any analysis result that implements {@link IStorableAnalysisResult}.
  * 
  * @author Dennis Westermann
- *
+ * 
  */
 @Entity
 public class AnalysisResultStorageContainer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
+
 	@Id
 	@Column(name = "resultId")
-	String resultId;
-	
+	private String resultId;
+
+
 	@Lob
 	@Column(name = "resultObject")
-	IStorableAnalysisResult resultObject;
-	
+	private IStorableAnalysisResult resultObject;
+
 	public String getResultId() {
 		return resultId;
 	}
@@ -35,7 +36,6 @@ public class AnalysisResultStorageContainer implements Serializable {
 		this.resultId = resultId;
 	}
 
-	
 	public IStorableAnalysisResult getResultObject() {
 		return resultObject;
 	}
@@ -43,7 +43,5 @@ public class AnalysisResultStorageContainer implements Serializable {
 	public void setResultObject(IStorableAnalysisResult resultObject) {
 		this.resultObject = resultObject;
 	}
-	
-	
-	
+
 }

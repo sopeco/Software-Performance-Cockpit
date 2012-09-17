@@ -1,15 +1,25 @@
 package org.sopeco.persistence.dataset.util;
 
-
 /**
  * @author Dennis Westermann
- *
+ * 
  */
 public enum ParameterType {
-	
-			DOUBLE,
-			INTEGER,
-			STRING,
-			BOOLEAN,
-	
-} 
+	/**
+	 * represents Double values.
+	 */
+	DOUBLE,
+	/**
+	 * represents Integer values.
+	 */
+	INTEGER,
+	/**
+	 * represents String values.
+	 */
+	STRING,
+	/**
+	 * represents Boolean values.
+	 */
+	BOOLEAN,
+
+}

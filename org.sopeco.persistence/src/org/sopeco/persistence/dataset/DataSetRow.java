@@ -1,7 +1,6 @@
 package org.sopeco.persistence.dataset;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.List;
 
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
@@ -13,7 +12,7 @@ import org.sopeco.persistence.entities.definition.ParameterRole;
  * @author Jens Happe
  * 
  */
-@SuppressWarnings({"rawtypes"})
+@SuppressWarnings({ "rawtypes" })
 public class DataSetRow implements Serializable {
 
 	/**
@@ -64,8 +63,7 @@ public class DataSetRow implements Serializable {
 	 */
 	public ParameterValue getInputParameterValue(ParameterDefinition parameter) {
 		if (!parameter.getRole().equals(ParameterRole.INPUT)) {
-			throw new IllegalArgumentException(
-					"Parameter must be an input parameter");
+			throw new IllegalArgumentException("Parameter must be an input parameter");
 		}
 		for (ParameterValue pv : inputParameterValues) {
 			if (pv.getParameter().equals(parameter)) {
@@ -80,11 +78,9 @@ public class DataSetRow implements Serializable {
 	 *            Parameter of interest.
 	 * @return The value of a particular parameter in this row.
 	 */
-	public ParameterValueList getObservableParameterValues(
-			ParameterDefinition parameter) {
+	public ParameterValueList getObservableParameterValues(ParameterDefinition parameter) {
 		if (!parameter.getRole().equals(ParameterRole.OBSERVATION)) {
-			throw new IllegalArgumentException(
-					"Parameter must be an input parameter");
+			throw new IllegalArgumentException("Parameter must be an input parameter");
 		}
 		for (ParameterValueList pvl : observationParameterValues) {
 			if (pvl.getParameter().equals(parameter)) {
@@ -100,10 +96,8 @@ public class DataSetRow implements Serializable {
 			return false;
 		}
 		DataSetRow other = (DataSetRow) obj;
-		if ((this.getInputRowValues().size() != other.getInputRowValues()
-				.size())
-				|| (this.getObservableRowValues().size() != other
-						.getObservableRowValues().size())) {
+		if ((this.getInputRowValues().size() != other.getInputRowValues().size())
+				|| (this.getObservableRowValues().size() != other.getObservableRowValues().size())) {
 			return false;
 		}
 
@@ -134,8 +128,7 @@ public class DataSetRow implements Serializable {
 	public boolean equalIndependentParameterValues(DataSetRow other) {
 		for (ParameterValue<?> pv : this.getInputRowValues()) {
 			try {
-				ParameterValue<?> otherValue = other.getInputParameterValue(pv
-						.getParameter());
+				ParameterValue<?> otherValue = other.getInputParameterValue(pv.getParameter());
 				if (!otherValue.getValue().equals(pv.getValue())) {
 					return false;
 				}
@@ -146,7 +139,5 @@ public class DataSetRow implements Serializable {
 
 		return true;
 	}
-	
-
 
 }

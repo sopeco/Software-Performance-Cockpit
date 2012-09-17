@@ -9,14 +9,13 @@ import java.util.UUID;
 
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
-
 /**
  * Builder for DataSets from the column perspective.
  * 
  * @author Jens Happe
  * 
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class SimpleDataSetColumnBuilder {
 
 	/**
@@ -53,12 +52,10 @@ public class SimpleDataSetColumnBuilder {
 		if (columnMap.isEmpty()) {
 			size = column.getValueList().size();
 		} else if (column.size() != size) {
-			throw new IllegalArgumentException("Column length does not match ("
-					+ column.getParameter() + ").");
+			throw new IllegalArgumentException("Column length does not match (" + column.getParameter() + ").");
 		}
 		if (columnMap.containsKey(column.getParameter())) {
-			throw new IllegalArgumentException("Column already exists ("
-					+ column.getParameter() + ").");
+			throw new IllegalArgumentException("Column already exists (" + column.getParameter() + ").");
 		}
 		columnMap.put(column.getParameter(), column);
 		parameterIndexes.put(parameterIndexes.size(), column.getParameter());
@@ -97,8 +94,7 @@ public class SimpleDataSetColumnBuilder {
 	 * @return New DataSet.
 	 */
 	public SimpleDataSet createDataSet() {
-		return new SimpleDataSet(new ArrayList<SimpleDataSetColumn>(
-				getColumns()), size, UUID.randomUUID().toString());
+		return new SimpleDataSet(new ArrayList<SimpleDataSetColumn>(getColumns()), size, UUID.randomUUID().toString());
 	}
 
 	/**
@@ -110,8 +106,7 @@ public class SimpleDataSetColumnBuilder {
 	 * @return New DataSet.
 	 */
 	public SimpleDataSet createDataSet(String id) {
-		return new SimpleDataSet(new ArrayList<SimpleDataSetColumn>(
-				getColumns()), size, id);
+		return new SimpleDataSet(new ArrayList<SimpleDataSetColumn>(getColumns()), size, id);
 	}
 
 	/**

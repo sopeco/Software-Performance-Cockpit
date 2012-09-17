@@ -9,15 +9,11 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
-import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.persistence.entities.keys.ScenarioInstancePK;
@@ -27,7 +23,8 @@ import org.sopeco.persistence.entities.keys.ScenarioInstancePK;
  * 
  * @author Dennis Westermann
  */
-@NamedQueries({ @NamedQuery(name = "findAllScenarioInstances", query = "SELECT o FROM ScenarioInstance o"),
+@NamedQueries({
+		@NamedQuery(name = "findAllScenarioInstances", query = "SELECT o FROM ScenarioInstance o"),
 		@NamedQuery(name = "findScenarioInstancesByName", query = "SELECT o FROM ScenarioInstance o WHERE o.primaryKey.name = :name") })
 @Entity
 public class ScenarioInstance implements Serializable {
@@ -42,9 +39,7 @@ public class ScenarioInstance implements Serializable {
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "scenarioInstance", orphanRemoval = true, fetch = FetchType.EAGER)
 	private List<ExperimentSeries> experimentSeries = new ArrayList<ExperimentSeries>();
-	
-	
-	
+
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
 	private ScenarioDefinition scenarioDefinition;
 
@@ -149,7 +144,7 @@ public class ScenarioInstance implements Serializable {
 	 */
 	public ExperimentSeries getExperimentSeries(String name, Long version) {
 		for (ExperimentSeries series : getExperimentSeriesList()) {
-			if (series.getName().equals(name) && series.getVersion() == version) {
+			if (series.getName().equals(name) && series.getVersion().equals(version)) {
 				return series;
 			}
 		}
@@ -177,13 +172,14 @@ public class ScenarioInstance implements Serializable {
 
 	public void extendScenarioInstance(ScenarioDefinition otherSD) {
 		List<ExperimentSeriesDefinition> esdList = this.getScenarioDefinition().extendBy(otherSD);
-// Why? Introduced a bug! TODO: Discuss
-//		for (ExperimentSeriesDefinition esd : esdList) {
-//			ExperimentSeries expSeries = EntityFactory.createExperimentSeries(esd);
-//			expSeries.setScenarioInstance(this);
-//			this.getExperimentSeriesList().add(expSeries);
-//
-//		}
+		// Why? Introduced a bug! TODO: Discuss
+		// for (ExperimentSeriesDefinition esd : esdList) {
+		// ExperimentSeries expSeries =
+		// EntityFactory.createExperimentSeries(esd);
+		// expSeries.setScenarioInstance(this);
+		// this.getExperimentSeriesList().add(expSeries);
+		//
+		// }
 	}
 
 	/*
@@ -193,14 +189,17 @@ public class ScenarioInstance implements Serializable {
 	@Override
 	public boolean equals(Object o) {
 
-		if (this == o)
+		if (this == o) {
 			return true;
-		if (o == null || getClass() != o.getClass())
+		}
+		if (o == null || getClass() != o.getClass()) {
 			return false;
+		}
 
 		ScenarioInstance obj = (ScenarioInstance) o;
-		if (primaryKey == null || obj.getPrimaryKey() == null)
+		if (primaryKey == null || obj.getPrimaryKey() == null) {
 			return false;
+		}
 		return this.primaryKey.equals(obj.getPrimaryKey());
 
 	}

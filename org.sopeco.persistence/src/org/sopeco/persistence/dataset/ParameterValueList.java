@@ -10,77 +10,88 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 // TODO documentation!
 
-@SuppressWarnings({"unchecked", "rawtypes"})
+/**
+ * Objects of this class contain a list of values for a certain parameter.
+ * 
+ * @author Alexander Wert
+ * 
+ * @param <T>
+ *            Type of the values.
+ */
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class ParameterValueList<T> implements Serializable {
 
 	private static final long serialVersionUID = -6730179918476230975L;
-	private ParameterDefinition parameter;
-	private List<T> values;
+	private ParameterDefinition parameterDefinition;
+	private List<T> valueList;
 
 	public ParameterValueList(ParameterDefinition parameter) {
 		super();
-		this.parameter = parameter;
-		values = new ArrayList<T>();
+		this.parameterDefinition = parameter;
+		valueList = new ArrayList<T>();
 	}
 
 	public ParameterValueList(ParameterDefinition parameter, List<T> values) {
 		super();
-		this.parameter = parameter;
-		this.values = values;
+		this.parameterDefinition = parameter;
+		this.valueList = values;
 	}
 
 	/**
 	 * Creates a single value parameter value list.
-	 * @param singleParameterValue a single parameter value instance
+	 * 
+	 * @param singleParameterValue
+	 *            a single parameter value instance
 	 */
 	public ParameterValueList(ParameterValue<T> singleParameterValue) {
 		super();
-		this.parameter = singleParameterValue.getParameter();
-		this.values = new ArrayList<T>();
-		this.values.add(singleParameterValue.getValue());
+		this.parameterDefinition = singleParameterValue.getParameter();
+		this.valueList = new ArrayList<T>();
+		this.valueList.add(singleParameterValue.getValue());
 	}
-	
+
 	public ParameterDefinition getParameter() {
-		return parameter;
+		return parameterDefinition;
 	}
 
 	public List<T> getValues() {
-		return values;
+		return valueList;
 	}
 
-	public double getMean(){
+	public double getMean() {
 		double mean = 0.0;
 		if (getValues().size() > 0) {
 			for (T value : getValues()) {
-				if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.DOUBLE)) {
+				if (ParameterUtil.getTypeEnumeration(parameterDefinition.getType()).equals(ParameterType.DOUBLE)) {
 					mean += (Double) value;
-				} else if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.INTEGER)) {
+				} else if (ParameterUtil.getTypeEnumeration(parameterDefinition.getType())
+						.equals(ParameterType.INTEGER)) {
 					mean += ((Integer) value).doubleValue();
-				} else
+				} else {
 					throw new IllegalStateException(
 							"The functions getMin() and getMax() are not supported for columns associated with a parameter type other than Double or Integer!");
+				}
 
 			}
 		}
-		return mean/getValues().size();
+		return mean / getValues().size();
 	}
-	
-	public ParameterValue<?> getMeanAsParameterValue(){
-		 return ParameterValueFactory.createParameterValue(parameter, getMean());
+
+	public ParameterValue<?> getMeanAsParameterValue() {
+		return ParameterValueFactory.createParameterValue(parameterDefinition, getMean());
 	}
-	
+
 	public void merge(ParameterValueList other) {
-		if (!parameter.equals(other.getParameter())) {
-			throw new IllegalArgumentException(
-					"Cannot merge ParameterValueLists of different ParameterDefinitions!");
+		if (!parameterDefinition.equals(other.getParameter())) {
+			throw new IllegalArgumentException("Cannot merge ParameterValueLists of different ParameterDefinitions!");
 		}
-		this.values.addAll(other.getValues());
+		this.valueList.addAll(other.getValues());
 	}
 
 	public void addValue(Object value) {
 		T convertedValue = (T) ParameterValueFactory.convertValue(value,
-				ParameterUtil.getTypeEnumeration(parameter.getType()));
-		this.values.add(convertedValue);
+				ParameterUtil.getTypeEnumeration(parameterDefinition.getType()));
+		this.valueList.add(convertedValue);
 	}
 
 	public void addValues(List<Object> values) {
@@ -91,7 +102,7 @@ public class ParameterValueList<T> implements Serializable {
 
 	public List<String> getValueStrings() {
 		List<String> result = new ArrayList<String>();
-		for (Object value : values) {
+		for (Object value : valueList) {
 			if (value instanceof Double) {
 				result.add(Double.toString((Double) value));
 			} else if (value instanceof Integer) {
@@ -108,34 +119,36 @@ public class ParameterValueList<T> implements Serializable {
 
 	public List<Double> getValuesAsDouble() {
 		List<Double> result = new ArrayList<Double>();
-		for (Object value : values) {
+		for (Object value : valueList) {
 			if (value instanceof Double) {
 				result.add((Double) value);
 			} else if (value instanceof Integer) {
 				result.add(((Integer) value).doubleValue());
-			} else
+			} else {
 				throw new IllegalStateException(
 						"The function getValueAsDouble is supported only by Double and Integer ParameterValues!");
+			}
 		}
 		return result;
 	}
 
 	public List<Integer> getValuesAsInteger() {
 		List<Integer> result = new ArrayList<Integer>();
-		for (Object value : values) {
+		for (Object value : valueList) {
 			if (value instanceof Double) {
 				result.add(((Double) value).intValue());
 			} else if (value instanceof Integer) {
 				result.add((Integer) value);
-			} else
+			} else {
 				throw new IllegalStateException(
 						"The function getValueAsInteger is supported only by Double and Integer ParameterValues!");
+			}
 		}
 
 		return result;
 	}
-	
-	public int getSize(){
-		return values.size();
+
+	public int getSize() {
+		return valueList.size();
 	}
 }

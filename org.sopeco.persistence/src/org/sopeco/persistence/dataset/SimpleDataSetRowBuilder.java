@@ -12,7 +12,7 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
  * @author Jens Happe
  * 
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class SimpleDataSetRowBuilder extends SimpleAbstractDataSetRowBuilder {
 
 	/**
@@ -42,8 +42,7 @@ public class SimpleDataSetRowBuilder extends SimpleAbstractDataSetRowBuilder {
 		if (nextRow == null) {
 			throw new IllegalStateException("The row must be started first.");
 		}
-		ParameterValue parameterValue = ParameterValueFactory
-				.createParameterValue(parameter, value);
+		ParameterValue parameterValue = ParameterValueFactory.createParameterValue(parameter, value);
 
 		nextRow.add(parameterValue);
 	}
@@ -67,18 +66,16 @@ public class SimpleDataSetRowBuilder extends SimpleAbstractDataSetRowBuilder {
 	 *            Row to be added.
 	 */
 	public void appendRow(Collection<ParameterValue> row) {
-		if (columnMap.isEmpty()) {
+		if (getColumnMap().isEmpty()) {
 			for (ParameterValue value : row) {
-				SimpleDataSetColumn colum = new SimpleDataSetColumn(
-						value.getParameter(), new ArrayList());
-				columnMap.put(value.getParameter().getFullName(), colum);
+				SimpleDataSetColumn colum = new SimpleDataSetColumn(value.getParameter(), new ArrayList());
+				getColumnMap().put(value.getParameter().getFullName(), colum);
 			}
 		}
 
 		checkParameters(row);
 		for (ParameterValue value : row) {
-			SimpleDataSetColumn column = columnMap.get(value.getParameter()
-					.getFullName());
+			SimpleDataSetColumn column = getColumnMap().get(value.getParameter().getFullName());
 			column.getValueList().add(value.getValue());
 		}
 	}

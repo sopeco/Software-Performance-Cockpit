@@ -5,10 +5,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
-
 
 /**
  * Builder for DataSets from the column perspective.
@@ -16,7 +14,7 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
  * @author Jens Happe
  * 
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class DataSetColumnBuilder {
 
 	/**
@@ -65,12 +63,10 @@ public class DataSetColumnBuilder {
 		if (inputColumnMap.isEmpty()) {
 			size = column.getValueList().size();
 		} else if (column.size() != size) {
-			throw new IllegalArgumentException("Column length does not match ("
-					+ column.getParameter() + ").");
+			throw new IllegalArgumentException("Column length does not match (" + column.getParameter() + ").");
 		}
 		if (inputColumnMap.containsKey(column.getParameter())) {
-			throw new IllegalArgumentException("Column already exists ("
-					+ column.getParameter() + ").");
+			throw new IllegalArgumentException("Column already exists (" + column.getParameter() + ").");
 		}
 		inputColumnMap.put(column.getParameter(), column);
 		// parameterIndexes.put(parameterIndexes.size(), column.getParameter());
@@ -80,12 +76,10 @@ public class DataSetColumnBuilder {
 		if (observationColumnMap.isEmpty()) {
 			size = column.getValueLists().size();
 		} else if (column.size() != size) {
-			throw new IllegalArgumentException("Column length does not match ("
-					+ column.getParameter() + ").");
+			throw new IllegalArgumentException("Column length does not match (" + column.getParameter() + ").");
 		}
 		if (observationColumnMap.containsKey(column.getParameter())) {
-			throw new IllegalArgumentException("Column already exists ("
-					+ column.getParameter() + ").");
+			throw new IllegalArgumentException("Column already exists (" + column.getParameter() + ").");
 		}
 		observationColumnMap.put(column.getParameter(), column);
 		// parameterIndexes.put(parameterIndexes.size(), column.getParameter());
@@ -106,7 +100,6 @@ public class DataSetColumnBuilder {
 			addColumn(column);
 		}
 	}
-
 
 	/**
 	 * @return All columns held by the dataset.
@@ -132,9 +125,9 @@ public class DataSetColumnBuilder {
 	 * @return New DataSet.
 	 */
 	public DataSetAggregated createDataSet() {
-		return new DataSetAggregated(new ArrayList<DataSetInputColumn>(
-				getInputColumns()), new ArrayList<DataSetObservationColumn>(
-				getObservationColumns()), size, Long.toString(System.nanoTime()));
+		return new DataSetAggregated(new ArrayList<DataSetInputColumn>(getInputColumns()),
+				new ArrayList<DataSetObservationColumn>(getObservationColumns()), size,
+				Long.toString(System.nanoTime()));
 	}
 
 	/**
@@ -146,9 +139,8 @@ public class DataSetColumnBuilder {
 	 * @return New DataSet.
 	 */
 	public DataSetAggregated createDataSet(String id) {
-		return new DataSetAggregated(new ArrayList<DataSetInputColumn>(
-				getInputColumns()), new ArrayList<DataSetObservationColumn>(
-				getObservationColumns()), size, id);
+		return new DataSetAggregated(new ArrayList<DataSetInputColumn>(getInputColumns()),
+				new ArrayList<DataSetObservationColumn>(getObservationColumns()), size, id);
 	}
 
 	/**
@@ -182,8 +174,7 @@ public class DataSetColumnBuilder {
 			throw new IllegalStateException("The row must be started first.");
 		}
 		if (!(nextColumn instanceof DataSetInputColumn)) {
-			throw new IllegalStateException(
-					"The started column must be an input column!");
+			throw new IllegalStateException("The started column must be an input column!");
 		}
 		((DataSetInputColumn) nextColumn).getValueList().add(value);
 	}
@@ -200,15 +191,13 @@ public class DataSetColumnBuilder {
 			throw new IllegalStateException("The row must be started first.");
 		}
 		if (!(nextColumn instanceof DataSetObservationColumn)) {
-			throw new IllegalStateException(
-					"The started column must be an input column!");
+			throw new IllegalStateException("The started column must be an input column!");
 		}
 		for (Object val : values) {
 			((DataSetObservationColumn) nextColumn).addValue(val);
 		}
 
 	}
-
 
 	/**
 	 * Adds a set of new values to the column under construction (created by
@@ -222,8 +211,7 @@ public class DataSetColumnBuilder {
 			throw new IllegalStateException("The column must be started first.");
 		}
 		if (!(nextColumn instanceof DataSetInputColumn)) {
-			throw new IllegalStateException(
-					"The started column must be an input column!");
+			throw new IllegalStateException("The started column must be an input column!");
 		}
 		((DataSetInputColumn) nextColumn).getValueList().addAll(valueList);
 	}
@@ -240,11 +228,9 @@ public class DataSetColumnBuilder {
 			throw new IllegalStateException("The row must be started first.");
 		}
 		if (!(nextColumn instanceof DataSetObservationColumn)) {
-			throw new IllegalStateException(
-					"The started column must be an obsrevation column!");
+			throw new IllegalStateException("The started column must be an obsrevation column!");
 		}
-		((DataSetObservationColumn) nextColumn).getValueLists().addAll(
-				valueLists);
+		((DataSetObservationColumn) nextColumn).getValueLists().addAll(valueLists);
 	}
 
 	/**

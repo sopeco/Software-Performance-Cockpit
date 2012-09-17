@@ -21,9 +21,8 @@ import org.sopeco.persistence.entities.definition.ParameterRole;
  * @author Jens Happe
  * 
  */
-@SuppressWarnings({"rawtypes"})
-public class SimpleDataSet implements
-		Iterable<SimpleDataSetRow>, Serializable {
+@SuppressWarnings({ "rawtypes" })
+public class SimpleDataSet implements Iterable<SimpleDataSetRow>, Serializable {
 
 	/**
 	 * 
@@ -55,13 +54,12 @@ public class SimpleDataSet implements
 	 * 
 	 * @param columnList
 	 */
-	protected SimpleDataSet(List<SimpleDataSetColumn> columnList, int size,
-			String id) {
+	protected SimpleDataSet(List<SimpleDataSetColumn> columnList, int numOfRows, String datasetId) {
 		super();
-		this.id = id;
+		this.id = datasetId;
 		this.columnMap = new HashMap<ParameterDefinition, SimpleDataSetColumn>();
 		this.parameterIndexes = new HashMap<Integer, ParameterDefinition>();
-		this.size = size;
+		this.size = numOfRows;
 		int index = 0;
 		for (SimpleDataSetColumn column : columnList) {
 			columnMap.put(column.getParameter(), column);
@@ -177,8 +175,7 @@ public class SimpleDataSet implements
 
 			@Override
 			public void remove() {
-				throw new IllegalStateException(
-						"SimpleDataSet cannot be edited.");
+				throw new IllegalStateException("SimpleDataSet cannot be edited.");
 			}
 		};
 	}
@@ -187,12 +184,10 @@ public class SimpleDataSet implements
 	public boolean equals(Object object) {
 		if (object instanceof SimpleDataSet) {
 			SimpleDataSet other = (SimpleDataSet) object;
-			if ((this.columnMap.size() == other.columnMap.size())
-					&& this.size() == other.size()) {
+			if ((this.columnMap.size() == other.columnMap.size()) && this.size() == other.size()) {
 				for (SimpleDataSetColumn column : this.getColumns()) {
 					if (other.contains(column.getParameter())) {
-						SimpleDataSetColumn otherColumn = other
-								.getColumn(column.getParameter());
+						SimpleDataSetColumn otherColumn = other.getColumn(column.getParameter());
 						if (!column.equals(otherColumn)) {
 							return false;
 						}
@@ -205,6 +200,15 @@ public class SimpleDataSet implements
 			}
 		}
 		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((columnMap == null) ? 0 : columnMap.hashCode());
+		result = prime * result + size;
+		return result;
 	}
 
 	public List<SimpleDataSetRow> getRowList() {
@@ -276,14 +280,14 @@ public class SimpleDataSet implements
 	// return true;
 	// }
 
-//	private boolean containsParameter(String parameterId) {
-//		for (SimpleDataSetColumn<?> c : this.getColumns()) {
-//			if (c.getParameter().getFullName().equals(parameterId)) {
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
+	// private boolean containsParameter(String parameterId) {
+	// for (SimpleDataSetColumn<?> c : this.getColumns()) {
+	// if (c.getParameter().getFullName().equals(parameterId)) {
+	// return true;
+	// }
+	// }
+	// return false;
+	// }
 
 	@Override
 	public String toString() {
@@ -317,20 +321,20 @@ public class SimpleDataSet implements
 		parameterIndexes.put(parameterIndexes.size(), col.getParameter());
 	}
 
-	protected void setSize(int size) {
-		this.size = size;
+	protected void setSize(int numOfRows) {
+		this.size = numOfRows;
 	}
-	
-	public DataSetAggregated convertToAggregatedDataSet(){
+
+	public DataSetAggregated convertToAggregatedDataSet() {
 		// TODO: implement right
 		DataSetAppender appender = new DataSetAppender();
-		for(SimpleDataSetRow row : getRowList()){
+		for (SimpleDataSetRow row : getRowList()) {
 			DataSetRowBuilder builder = new DataSetRowBuilder();
 			builder.startRow();
-			for(ParameterValue pv : row.getRowValues()){
-				if(pv.getParameter().getRole().equals(ParameterRole.INPUT)){
+			for (ParameterValue pv : row.getRowValues()) {
+				if (pv.getParameter().getRole().equals(ParameterRole.INPUT)) {
 					builder.addInputParameterValue(pv.getParameter(), pv.getValue());
-				}else if(pv.getParameter().getRole().equals(ParameterRole.OBSERVATION)){
+				} else if (pv.getParameter().getRole().equals(ParameterRole.OBSERVATION)) {
 					builder.addObservationParameterValue(pv.getParameter(), pv.getValue());
 				}
 			}

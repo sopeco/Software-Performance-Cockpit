@@ -12,6 +12,12 @@ import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
 
+/**
+ * Peresistence provider for meta data, such as available database instances.
+ * 
+ * @author Alexander Wert
+ * 
+ */
 public class MetaDataPersistenceProvider implements IMetaDataPersistenceProvider {
 	private EntityManagerFactory emf;
 	private static Logger logger = LoggerFactory.getLogger(MetaDataPersistenceProvider.class);
@@ -137,6 +143,6 @@ public class MetaDataPersistenceProvider implements IMetaDataPersistenceProvider
 			}
 			em.close();
 		}
-		
+
 	}
 }

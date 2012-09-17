@@ -5,7 +5,15 @@ import java.util.List;
 
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
-@SuppressWarnings({"unchecked", "rawtypes"})
+/**
+ * Builder for observation columns.
+ * 
+ * @author Alexander Wert
+ * 
+ * @param <T>
+ *            Type of the values contained in that column.
+ */
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class ObservationColumnBuilder<T> {
 	private DataSetObservationColumn<T> column;
 
@@ -39,7 +47,7 @@ public class ObservationColumnBuilder<T> {
 		}
 		column.getValueLists().add(value);
 	}
-	
+
 	/**
 	 * Adds a new value to the column under construction (created by
 	 * startColumn).

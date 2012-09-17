@@ -82,10 +82,11 @@ public class SimpleDataSetColumn<T> implements Iterable<ParameterValue<T>>,
 	 */
 	@SuppressWarnings("unchecked")
 	public ParameterValue<T> getParameterValue(int row) {
-		if (row >= this.valueList.size())
+		if (row >= this.valueList.size()) {
 			throw new IllegalArgumentException(
 					"Index exceeds row length. Index: " + row + " row length: "
 							+ valueList.size());
+		}
 		T value = valueList.get(row);
 		return (ParameterValue<T>) ParameterValueFactory.createParameterValue(
 				parameter, value);
@@ -133,16 +134,7 @@ public class SimpleDataSetColumn<T> implements Iterable<ParameterValue<T>>,
 		};
 	}
 
-	@SuppressWarnings({ "rawtypes" })
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof SimpleDataSetColumn) {
-			SimpleDataSetColumn other = (SimpleDataSetColumn) obj;
-			return this.getParameter().equals(other.getParameter())
-					&& this.getValueList().equals(other.getValueList());
-		}
-		return false;
-	}
+
 
 	public boolean isVaried() {
 		if (getValueList().size() > 0) {
@@ -168,9 +160,10 @@ public class SimpleDataSetColumn<T> implements Iterable<ParameterValue<T>>,
 					if (((Integer) value).doubleValue() < min) {
 						min = ((Integer) value).doubleValue();
 					}
-				} else
+				} else {
 					throw new IllegalStateException(
 							"The functions getMin() and getMax() are not supported for columns associated with a parameter type other than Double or Integer!");
+				}
 
 			}
 		}
@@ -189,9 +182,10 @@ public class SimpleDataSetColumn<T> implements Iterable<ParameterValue<T>>,
 					if (((Integer) value).doubleValue() > max) {
 						max = ((Integer) value).doubleValue();
 					}
-				} else
+				} else {
 					throw new IllegalStateException(
 							"The functions getMin() and getMax() are not supported for columns associated with a parameter type other than Double or Integer!");
+				}
 
 			}
 		}
@@ -217,4 +211,26 @@ public class SimpleDataSetColumn<T> implements Iterable<ParameterValue<T>>,
 	protected void addValue(T value) {
 		valueList.add(value);
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((parameter == null) ? 0 : parameter.hashCode());
+		result = prime * result + ((valueList == null) ? 0 : valueList.hashCode());
+		return result;
+	}
+
+	@SuppressWarnings({ "rawtypes" })
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof SimpleDataSetColumn) {
+			SimpleDataSetColumn other = (SimpleDataSetColumn) obj;
+			return this.getParameter().equals(other.getParameter())
+					&& this.getValueList().equals(other.getValueList());
+		}
+		return false;
+	}
+	
+	
 }

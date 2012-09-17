@@ -13,43 +13,56 @@ import org.sopeco.config.exception.ConfigurationException;
  * @author Dennis Westermann
  * 
  */
-public class PersistenceConfiguration {
+public final class PersistenceConfiguration {
 	private Logger logger = LoggerFactory.getLogger(PersistenceConfiguration.class);
+
+	/**
+	 * Enumeration for different database types.
+	 * 
+	 * @author Alexander Wert
+	 * 
+	 */
 	public enum DBType {
-		InMemory, Server
+		/**
+		 * An in memory database is used.
+		 */
+		InMemory,
+		/**
+		 * An database server is used.
+		 */
+		Server
 	}
 
-	private final static String DB_TYPE = "sopeco.config.persistence.dbtype";
+	private static final String DB_TYPE = "sopeco.config.persistence.dbtype";
 
 	private static PersistenceConfiguration singletonInstance;
-	
-	
-	public static PersistenceConfiguration getSingleton(){
-		if(singletonInstance == null){
+
+	public static PersistenceConfiguration getSingleton() {
+		if (singletonInstance == null) {
 			singletonInstance = new PersistenceConfiguration();
 		}
-		
+
 		return singletonInstance;
 	}
-	
+
 	private IConfiguration sopecoConfig;
-	
 
-	public final static String DEFAULT_PERSISTENCE_CONFIG_FILE_NAME = "sopeco-persistence-defaults.conf";
-	public final static String DDL_GENERATION = "sopeco.config.persistence.ddlgeneration";
+	private static final String DEFAULT_PERSISTENCE_CONFIG_FILE_NAME = "sopeco-persistence-defaults.conf";
+	private static final String DDL_GENERATION = "sopeco.config.persistence.ddlgeneration";
 
-	public final static String META_DATA_DB = "sopeco.config.persistence.metaServer.dbName";
-	public final static String META_DATA_HOST = "sopeco.config.persistence.metaServer.host";
-	public final static String META_DATA_PORT = "sopeco.config.persistence.metaServer.port";
-	public final static String SERVER_HOST = "sopeco.config.persistence.server.host";
-	public final static String SERVER_PORT = "sopeco.config.persistence.server.port";
-	public final static String DATABASE_NAME = "sopeco.config.persistence.server.dbname";
-	public final static String DB_PASSWORD_USED = "sopeco.config.persistence.server.protectedByPassword";
-	public final static String DB_PASSWORD = "sopeco.config.persistence.server.password";
+	private static final String META_DATA_DB = "sopeco.config.persistence.metaServer.dbName";
+	private static final String META_DATA_HOST = "sopeco.config.persistence.metaServer.host";
+	private static final String META_DATA_PORT = "sopeco.config.persistence.metaServer.port";
+	private static final String SERVER_HOST = "sopeco.config.persistence.server.host";
+	private static final String SERVER_PORT = "sopeco.config.persistence.server.port";
+	private static final String DATABASE_NAME = "sopeco.config.persistence.server.dbname";
+	private static final String DB_PASSWORD_USED = "sopeco.config.persistence.server.protectedByPassword";
+	private static final String DB_PASSWORD = "sopeco.config.persistence.server.password";
 
-	public final static String SERVER_URL_PREFIX = "jdbc:derby://";
-	public final static String SERVER_URL_SUFFIX = ";create=true";
-	public final static String SERVER_URL_SHUTDOWN_SUFFIX = ";shutdown=true";
+	private static final String SERVER_URL_PREFIX = "jdbc:derby://";
+	private static final String SERVER_URL_SUFFIX = ";create=true";
+	private static final String SERVER_URL_SHUTDOWN_SUFFIX = ";shutdown=true";
+
 	private PersistenceConfiguration() {
 		sopecoConfig = Configuration.getSingleton();
 
@@ -66,40 +79,40 @@ public class PersistenceConfiguration {
 	public String getDBName() {
 		return sopecoConfig.getPropertyAsStr(DATABASE_NAME);
 	}
-	
+
 	public void updateDBName(String dbName) {
-		 sopecoConfig.setProperty(DATABASE_NAME, dbName);
+		sopecoConfig.setProperty(DATABASE_NAME, dbName);
 	}
 
 	public String getDBHost() {
 		return sopecoConfig.getPropertyAsStr(SERVER_HOST);
 	}
-	
+
 	public void updateDBHost(String dbName) {
-		 sopecoConfig.setProperty(SERVER_HOST, dbName);
+		sopecoConfig.setProperty(SERVER_HOST, dbName);
 	}
 
 	public String getDBPort() {
 		return sopecoConfig.getPropertyAsStr(SERVER_PORT);
 	}
-	
+
 	public void updateDBPort(String dbPort) {
-		 sopecoConfig.setProperty(SERVER_PORT, dbPort);
+		sopecoConfig.setProperty(SERVER_PORT, dbPort);
 	}
-	
+
 	public void updateDBPassword(String password) {
-		 sopecoConfig.setProperty(DB_PASSWORD, password);
+		sopecoConfig.setProperty(DB_PASSWORD, password);
 	}
-	
-	public String getPassword(){
+
+	public String getPassword() {
 		return sopecoConfig.getPropertyAsStr(DB_PASSWORD);
 	}
-	
-	public void setUsePassword(boolean use){
-		 sopecoConfig.setProperty(DB_PASSWORD_USED, Boolean.toString(use));
+
+	public void setUsePassword(boolean use) {
+		sopecoConfig.setProperty(DB_PASSWORD_USED, Boolean.toString(use));
 	}
-	
-	public boolean isPasswordUsed(){
+
+	public boolean isPasswordUsed() {
 		return sopecoConfig.getPropertyAsBoolean(DB_PASSWORD_USED, false);
 	}
 
@@ -134,11 +147,12 @@ public class PersistenceConfiguration {
 	 * @return the url of the database server
 	 */
 	public String getServerUrl() {
-//		String passwordSuffix = "";
-//		if (sopecoConfig.getPropertyAsBoolean(DB_PASSWORD_USED, false)) {
-//			passwordSuffix = ";user=" + sopecoConfig.getPropertyAsStr(DATABASE_NAME) + ";password="
-//					+ sopecoConfig.getPropertyAsStr(DB_PASSWORD);
-//		}
+		// String passwordSuffix = "";
+		// if (sopecoConfig.getPropertyAsBoolean(DB_PASSWORD_USED, false)) {
+		// passwordSuffix = ";user=" +
+		// sopecoConfig.getPropertyAsStr(DATABASE_NAME) + ";password="
+		// + sopecoConfig.getPropertyAsStr(DB_PASSWORD);
+		// }
 
 		return SERVER_URL_PREFIX + sopecoConfig.getPropertyAsStr(SERVER_HOST) + ":"
 				+ sopecoConfig.getPropertyAsStr(SERVER_PORT) + "/" + sopecoConfig.getPropertyAsStr(DATABASE_NAME)
@@ -146,18 +160,18 @@ public class PersistenceConfiguration {
 	}
 
 	public String getServerUrlWithShutdown() {
-//		String passwordSuffix = "";
-//		if (sopecoConfig.getPropertyAsBoolean(DB_PASSWORD_USED, false)) {
-//			passwordSuffix = ";user=" + sopecoConfig.getPropertyAsStr(DATABASE_NAME) + ";password="
-//					+ sopecoConfig.getPropertyAsStr(DB_PASSWORD);
-//		}
+		// String passwordSuffix = "";
+		// if (sopecoConfig.getPropertyAsBoolean(DB_PASSWORD_USED, false)) {
+		// passwordSuffix = ";user=" +
+		// sopecoConfig.getPropertyAsStr(DATABASE_NAME) + ";password="
+		// + sopecoConfig.getPropertyAsStr(DB_PASSWORD);
+		// }
 
 		return SERVER_URL_PREFIX + sopecoConfig.getPropertyAsStr(SERVER_HOST) + ":"
 				+ sopecoConfig.getPropertyAsStr(SERVER_PORT) + "/" + sopecoConfig.getPropertyAsStr(DATABASE_NAME)
 				+ SERVER_URL_SHUTDOWN_SUFFIX;
 	}
 
-	
 	/**
 	 * @return the url of the meta data database
 	 */

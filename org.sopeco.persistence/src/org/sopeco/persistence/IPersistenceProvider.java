@@ -23,15 +23,15 @@ public interface IPersistenceProvider {
 
 	/* create, update */
 	void store(ExperimentSeriesRun experimentSeriesRun);
-	
+
 	void store(ProcessedDataSet processedDataSet);
-	
+
 	void store(ExperimentSeries experimentSeries);
 
 	void store(ScenarioInstance scenarioInstance);
 
 	void store(ScenarioDefinition scenarioDefinition);
-	
+
 	void store(String resultId, IStorableAnalysisResult analysisResult);
 
 	void store(DataSetAggregated dataSet);
@@ -40,14 +40,13 @@ public interface IPersistenceProvider {
 	List<ScenarioInstance> loadScenarioInstances(String scenarioName) throws DataNotFoundException;
 
 	List<ScenarioInstance> loadAllScenarioInstances() throws DataNotFoundException;
-	
+
 	List<ScenarioDefinition> loadAllScenarioDefinitions() throws DataNotFoundException;
 
 	ScenarioInstance loadScenarioInstance(String scenarioName, String measurementEnvironmentUrl)
 			throws DataNotFoundException;
-	
-	ScenarioDefinition loadScenarioDefinition(String scenarioName)
-			throws DataNotFoundException;
+
+	ScenarioDefinition loadScenarioDefinition(String scenarioName) throws DataNotFoundException;
 
 	ScenarioInstance loadScenarioInstance(ScenarioInstancePK primaryKey) throws DataNotFoundException;
 
@@ -56,7 +55,7 @@ public interface IPersistenceProvider {
 
 	ExperimentSeries loadExperimentSeries(String experimentSeriesName, Long version, String scenarioInstanceName,
 			String measurementEnvironmentUrl) throws DataNotFoundException;
-	
+
 	List<ExperimentSeries> loadAllExperimentSeries(String experimentSeriesName, String scenarioInstanceName,
 			String measurementEnvironmentUrl) throws DataNotFoundException;
 
@@ -65,14 +64,14 @@ public interface IPersistenceProvider {
 	ExperimentSeriesRun loadExperimentSeriesRun(Long timestamp) throws DataNotFoundException;
 
 	IStorableAnalysisResult loadAnalysisResult(String resultId) throws DataNotFoundException;
-	
+
 	DataSetAggregated loadDataSet(String dataSetId) throws DataNotFoundException;
 
 	/* delete */
 	void remove(ExperimentSeriesRun experimentSeriesRun) throws DataNotFoundException;
 
 	void remove(ProcessedDataSet processedDataSet) throws DataNotFoundException;
-	
+
 	void remove(ExperimentSeries experimentSeries) throws DataNotFoundException;
 
 	void remove(ScenarioInstance scenarioInstance) throws DataNotFoundException;
@@ -80,8 +79,5 @@ public interface IPersistenceProvider {
 	void remove(String analysisResultId) throws DataNotFoundException;
 
 	void remove(DataSetAggregated dataSet) throws DataNotFoundException;
-
-
-	
 
 }

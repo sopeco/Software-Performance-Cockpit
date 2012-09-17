@@ -5,6 +5,12 @@ import java.util.List;
 
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
+/**
+ * Comprises common members and abstract functions for all concrete column implementations.
+ * @author Alexander Wert
+ *
+ * @param <T> Type of the values stored in that column
+ */
 public abstract class AbstractDataSetColumn<T> implements Serializable {
 	/**
 	 * 
@@ -13,7 +19,7 @@ public abstract class AbstractDataSetColumn<T> implements Serializable {
 	/**
 	 * Parameter / identifier of the column in the DataSet.
 	 */
-	protected ParameterDefinition parameter;
+	private ParameterDefinition parameter;
 
 	/**
 	 * @return Parameter / Identifier of the column.
@@ -22,14 +28,18 @@ public abstract class AbstractDataSetColumn<T> implements Serializable {
 		return parameter;
 	}
 
+	protected void setParameter(ParameterDefinition pDef) {
+		parameter = pDef;
+	}
+
 	/**
 	 * @return Number of values of the column.
 	 */
 	public abstract int size();
-	
+
 	public abstract double getMin();
 
 	public abstract double getMax();
-	
-	public abstract List<ParameterValue<?>> getParameterValues(); 
+
+	public abstract List<ParameterValue<?>> getParameterValues();
 }

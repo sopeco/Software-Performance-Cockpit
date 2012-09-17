@@ -194,14 +194,17 @@ public class ExperimentSeries implements Serializable {
 	public boolean equals(Object o) {
 
 		// TODO cleanup
-		if (this == o)
+		if (this == o) {
 			return true;
-		if (o == null || !getClass().equals(o.getClass()))
+		}
+		if (o == null || !getClass().equals(o.getClass())) {
 			return false;
+		}
 
 		ExperimentSeries obj = (ExperimentSeries) o;
-		if (primaryKey == null || obj.getPrimaryKey() == null)
+		if (primaryKey == null || obj.getPrimaryKey() == null) {
 			return false;
+		}
 		return this.primaryKey.equals(obj.getPrimaryKey());
 
 	}

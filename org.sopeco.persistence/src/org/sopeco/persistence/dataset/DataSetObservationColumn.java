@@ -10,9 +10,15 @@ import org.sopeco.persistence.dataset.util.ParameterUtil;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 
-
-public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T>
-		implements Iterable<ParameterValueList<T>>, Serializable {
+/**
+ * Column class for storing observation values.
+ * 
+ * @author Alexander Wert
+ * 
+ * @param <T> Type of the observation values
+ */
+public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T> implements Iterable<ParameterValueList<T>>,
+		Serializable {
 
 	/**
 	 * 
@@ -27,17 +33,15 @@ public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T>
 	 * Constructor. To be used by builders & factories only.
 	 * 
 	 * @param parameter
-	 * @param valueList
+	 * @param values
 	 */
-	protected DataSetObservationColumn(ParameterDefinition parameter,
-			List<ParameterValueList<T>> valueList) {
+	protected DataSetObservationColumn(ParameterDefinition parameter, List<ParameterValueList<T>> values) {
 		super();
 		if (!parameter.getRole().equals(ParameterRole.OBSERVATION)) {
-			throw new IllegalArgumentException(
-					"Cannot create a DataSetInputColumn for a non observation parameter.");
+			throw new IllegalArgumentException("Cannot create a DataSetInputColumn for a non observation parameter.");
 		}
-		this.parameter = parameter;
-		this.valueList = valueList;
+		setParameter(parameter);
+		this.valueList = values;
 	}
 
 	/**
@@ -66,8 +70,7 @@ public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T>
 		for (ParameterValueList<T> pvl : valueList) {
 			for (Object value : pvl.getValues()) {
 
-				result.add(ParameterValueFactory.createParameterValue(
-						parameter, value));
+				result.add(ParameterValueFactory.createParameterValue(getParameter(), value));
 			}
 
 		}
@@ -89,17 +92,18 @@ public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T>
 		double min = Double.MAX_VALUE;
 		if (getAllValues().size() > 0) {
 			for (T value : getAllValues()) {
-				if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.DOUBLE)) {
+				if (ParameterUtil.getTypeEnumeration(getParameter().getType()).equals(ParameterType.DOUBLE)) {
 					if ((Double) value < min) {
 						min = (Double) value;
 					}
-				} else if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.INTEGER)) {
+				} else if (ParameterUtil.getTypeEnumeration(getParameter().getType()).equals(ParameterType.INTEGER)) {
 					if (((Integer) value).doubleValue() < min) {
 						min = ((Integer) value).doubleValue();
 					}
-				} else
+				} else {
 					throw new IllegalStateException(
 							"The functions getMin() and getMax() are not supported for columns associated with a parameter type other than Double or Integer!");
+				}
 
 			}
 		}
@@ -110,17 +114,18 @@ public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T>
 		double max = Double.MIN_VALUE;
 		if (getAllValues().size() > 0) {
 			for (T value : getAllValues()) {
-				if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.DOUBLE)) {
+				if (ParameterUtil.getTypeEnumeration(getParameter().getType()).equals(ParameterType.DOUBLE)) {
 					if ((Double) value > max) {
 						max = (Double) value;
 					}
-				} else if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.INTEGER)) {
+				} else if (ParameterUtil.getTypeEnumeration(getParameter().getType()).equals(ParameterType.INTEGER)) {
 					if (((Integer) value).doubleValue() > max) {
 						max = ((Integer) value).doubleValue();
 					}
-				} else
+				} else {
 					throw new IllegalStateException(
 							"The functions getMin() and getMax() are not supported for columns associated with a parameter type other than Double or Integer!");
+				}
 
 			}
 		}
@@ -133,10 +138,10 @@ public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T>
 	 * @return Value at the given row.
 	 */
 	public ParameterValueList<T> getParameterValues(int row) {
-		if (row >= this.valueList.size())
-			throw new IllegalArgumentException(
-					"Index exceeds row length. Index: " + row + " row length: "
-							+ valueList.size());
+		if (row >= this.valueList.size()) {
+			throw new IllegalArgumentException("Index exceeds row length. Index: " + row + " row length: "
+					+ valueList.size());
+		}
 		ParameterValueList<T> values = valueList.get(row);
 		return values;
 	}
@@ -167,21 +172,21 @@ public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T>
 	}
 
 	protected void addValues(List<T> values) {
-		
-		ParameterValueList<T> pvl = new ParameterValueList<T>(parameter, values);
+
+		ParameterValueList<T> pvl = new ParameterValueList<T>(getParameter(), values);
 		valueList.add(pvl);
 	}
 
 	protected void addValues(ParameterValueList<T> values) {
-		
+
 		valueList.add(values);
 	}
-	
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected void addValue(Object value) {
 		List list = new ArrayList();
 		list.add(value);
-		ParameterValueList<T> pvl = new ParameterValueList<T>(parameter, list);
+		ParameterValueList<T> pvl = new ParameterValueList<T>(getParameter(), list);
 		valueList.add(pvl);
 	}
 
@@ -189,6 +194,5 @@ public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T>
 	public List<ParameterValue<?>> getParameterValues() {
 		return getAllValuesAsParameterValues();
 	}
-	
-	
+
 }

@@ -45,7 +45,7 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 
 	@Column(name = "label")
 	private String label;
-	
+
 	@Transient
 	private DataSetAggregated successfulResultDataSet;
 
@@ -103,7 +103,7 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 	public List<ExperimentFailedException> getExperimentFailedExceptions() {
 		return experimentFailedExceptions;
 	}
-	
+
 	public void setSuccessfulResultDataSet(DataSetAggregated resultDataSet) {
 
 		this.successfulResultDataSet = resultDataSet;
@@ -114,11 +114,11 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 	public void addExperimentFailedException(ExperimentFailedException exception) {
 		this.experimentFailedExceptions.add(exception);
 	}
-	
+
 	public void setExperimentFailedExceptions(List<ExperimentFailedException> exceptions) {
 		this.experimentFailedExceptions = exceptions;
 	}
-	
+
 	public Long getTimestamp() {
 		return timestamp;
 	}
@@ -134,15 +134,16 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 	 * Stores the successful result data set in the database.
 	 */
 	public void storeDataSets() {
-		if(this.getSuccessfulResultDataSet()!=null) {
+		if (this.getSuccessfulResultDataSet() != null) {
 			PersistenceProviderFactory.getPersistenceProvider().store(this.getSuccessfulResultDataSet());
 		}
 	}
+
 	/**
 	 * Removes the successful result data set from the database.
 	 */
 	public void removeDataSets() {
-		if(this.successfulResultDataSetId!=null) {
+		if (this.successfulResultDataSetId != null) {
 			try {
 				PersistenceProviderFactory.getPersistenceProvider().remove(this.getSuccessfulResultDataSet());
 			} catch (DataNotFoundException e) {
@@ -162,8 +163,9 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 	public void appendSuccessfulResults(DataSetAggregated experimentRunResults) {
 
 		DataSetAppender appender = new DataSetAppender();
-		if (this.getSuccessfulResultDataSet() != null)
+		if (this.getSuccessfulResultDataSet() != null) {
 			appender.append(successfulResultDataSet);
+		}
 		appender.append(experimentRunResults);
 		this.setSuccessfulResultDataSet(appender.createDataSet());
 
@@ -176,16 +178,20 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 	@Override
 	public boolean equals(Object o) {
 
-		if (this == o)
+		if (this == o) {
 			return true;
-		if (o == null || getClass() != o.getClass())
+		}
+		if (o == null || getClass() != o.getClass()) {
 			return false;
+		}
 
 		ExperimentSeriesRun obj = (ExperimentSeriesRun) o;
-		if (timestamp == null || obj.timestamp == null)
+		if (timestamp == null || obj.timestamp == null) {
 			return false;
-		if (!timestamp.equals(obj.timestamp))
+		}
+		if (!timestamp.equals(obj.timestamp)) {
 			return false;
+		}
 
 		return true;
 

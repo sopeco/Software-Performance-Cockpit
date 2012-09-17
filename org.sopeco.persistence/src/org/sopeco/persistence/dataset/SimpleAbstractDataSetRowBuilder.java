@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-
 /**
  * Abstract class for row based SimpleDataSet builder. Current implementations
  * are DataSetRowBuilder and DataSetAppender.
@@ -14,13 +13,13 @@ import java.util.UUID;
  * @author Jens Happe
  * 
  */
-@SuppressWarnings({"rawtypes"})
+@SuppressWarnings({ "rawtypes" })
 public abstract class SimpleAbstractDataSetRowBuilder {
 
 	/**
 	 * Data (in form of columns) of the SimpleDataSet under construction.
 	 */
-	protected Map<String, SimpleDataSetColumn> columnMap = new HashMap<String, SimpleDataSetColumn>();
+	private Map<String, SimpleDataSetColumn> columnMap = new HashMap<String, SimpleDataSetColumn>();
 
 	/**
 	 * Constructor.
@@ -37,10 +36,10 @@ public abstract class SimpleAbstractDataSetRowBuilder {
 	 *            Row to be checked.
 	 */
 	protected void checkParameters(Collection<ParameterValue> row) {
-		boolean isValid = row.size() == columnMap.size();
+		boolean isValid = row.size() == getColumnMap().size();
 
 		for (ParameterValue value : row) {
-			if (!columnMap.containsKey(value.getParameter().getFullName())) {
+			if (!getColumnMap().containsKey(value.getParameter().getFullName())) {
 				isValid = false;
 				break;
 			}
@@ -58,8 +57,8 @@ public abstract class SimpleAbstractDataSetRowBuilder {
 	 * @return New SimpleDataSet.
 	 */
 	public SimpleDataSet createDataSet() {
-		return new SimpleDataSet(new ArrayList<SimpleDataSetColumn>(
-				columnMap.values()), size(), UUID.randomUUID().toString());
+		return new SimpleDataSet(new ArrayList<SimpleDataSetColumn>(getColumnMap().values()), size(), UUID.randomUUID()
+				.toString());
 	}
 
 	/**
@@ -71,15 +70,14 @@ public abstract class SimpleAbstractDataSetRowBuilder {
 	 * @return New SimpleDataSet.
 	 */
 	public SimpleDataSet createDataSet(String id) {
-		return new SimpleDataSet(new ArrayList<SimpleDataSetColumn>(
-				columnMap.values()), size(), id);
+		return new SimpleDataSet(new ArrayList<SimpleDataSetColumn>(getColumnMap().values()), size(), id);
 	}
 
 	/**
 	 * @return Number of rows in the SimpleDataSet.
 	 */
 	public int size() {
-		for (SimpleDataSetColumn column : columnMap.values()) {
+		for (SimpleDataSetColumn column : getColumnMap().values()) {
 			if (column.getValueList() != null) {
 				return column.getValueList().size();
 			} else {
@@ -87,6 +85,14 @@ public abstract class SimpleAbstractDataSetRowBuilder {
 			}
 		}
 		return 0;
+	}
+
+	protected Map<String, SimpleDataSetColumn> getColumnMap() {
+		return columnMap;
+	}
+
+	protected void setColumnMap(Map<String, SimpleDataSetColumn> columns) {
+		this.columnMap = columns;
 	}
 
 }

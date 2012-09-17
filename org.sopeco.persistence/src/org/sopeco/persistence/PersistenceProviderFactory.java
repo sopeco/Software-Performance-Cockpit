@@ -30,27 +30,35 @@ import org.sopeco.persistence.metadata.entities.DatabaseInstance;
  * 
  */
 public class PersistenceProviderFactory {
-
-	// JPA Provider constants
-	private final static String PERSISTENCE_UNIT_VALUE = "sopeco";
-	private final static String META_DATA_PERSISTENCE_UNIT_VALUE = "sopeco_metadata";
-	private final static String DB_DRIVER_CLASS = "javax.persistence.jdbc.driver";
-	private final static String SERVER_DB_DRIVER_CLASS_VALUE = "org.apache.derby.jdbc.ClientDriver";
-	private final static String MEM_DB_DRIVER_CLASS_VALUE = "org.apache.derby.jdbc.EmbeddedDriver";
-
-	private final static String DB_URL = "javax.persistence.jdbc.url";
-	private final static String MEM_DB_URL_VALUE = "jdbc:derby:memory:sopeco-jpa;create=true";
-
-	private final static String DDL_GENERATION = "eclipselink.ddl-generation";
-	private final static String JAVAX_PERSISTENCE_USER = "javax.persistence.jdbc.user";
-	private final static String JAVAX_PERSISTENCE_PASSWORD = "javax.persistence.jdbc.password";
-	private final static String JAVAX_PERSISTENCE_USER_DEFAULT = "app";
-	private final static String JAVAX_PERSISTENCE_PASSWORD_DEFAULT = "app";
-
 	private static Logger logger = LoggerFactory.getLogger(PersistenceProviderFactory.class);
+	
 
+	/**
+	 * Singleton instance of the persistence provider.
+	 */
 	protected static IPersistenceProvider persistenceProviderInstance = null;
 	private static IMetaDataPersistenceProvider metaDataPersistenceProviderInstance = null;
+	
+	// JPA Provider constants
+	private static final  String PERSISTENCE_UNIT_VALUE = "sopeco";
+	private static final String META_DATA_PERSISTENCE_UNIT_VALUE = "sopeco_metadata";
+	private static final String DB_DRIVER_CLASS = "javax.persistence.jdbc.driver";
+	private static final String SERVER_DB_DRIVER_CLASS_VALUE = "org.apache.derby.jdbc.ClientDriver";
+	private static final String MEM_DB_DRIVER_CLASS_VALUE = "org.apache.derby.jdbc.EmbeddedDriver";
+
+	private static final String DB_URL = "javax.persistence.jdbc.url";
+	private static final String MEM_DB_URL_VALUE = "jdbc:derby:memory:sopeco-jpa;create=true";
+
+	private static final String DDL_GENERATION = "eclipselink.ddl-generation";
+	private static final String JAVAX_PERSISTENCE_USER = "javax.persistence.jdbc.user";
+	private static final String JAVAX_PERSISTENCE_PASSWORD = "javax.persistence.jdbc.password";
+	private static final String JAVAX_PERSISTENCE_USER_DEFAULT = "app";
+	private static final String JAVAX_PERSISTENCE_PASSWORD_DEFAULT = "app";
+
+
+
+
+	
 
 	public static IPersistenceProvider getPersistenceProvider() {
 

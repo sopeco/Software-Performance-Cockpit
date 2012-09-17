@@ -59,7 +59,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 		try {
 			// experimentSeriesRun.increaseVersion();
 			em.getTransaction().begin();
-			experimentSeriesRun = em.merge(experimentSeriesRun);
+			em.merge(experimentSeriesRun);
 			em.getTransaction().commit();
 
 		} finally {
@@ -77,7 +77,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 		EntityManager em = emf.createEntityManager();
 		try {
 			em.getTransaction().begin();
-			dataSet = em.merge(dataSet);
+			em.merge(dataSet);
 			em.getTransaction().commit();
 
 		} finally {
@@ -637,14 +637,12 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 	@Override
 	public void store(ProcessedDataSet processedDataSet) {
 		processedDataSet.storeDataSets(); // required due to decoupling of
-		// data
-		// sets from entity structure
 
 		EntityManager em = emf.createEntityManager();
 		try {
 			// experimentSeriesRun.increaseVersion();
 			em.getTransaction().begin();
-			processedDataSet = em.merge(processedDataSet);
+			em.merge(processedDataSet);
 			em.getTransaction().commit();
 
 		} finally {
@@ -710,6 +708,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<ScenarioDefinition> loadAllScenarioDefinitions() throws DataNotFoundException {
 		List<ScenarioDefinition> scenarioDefinitions;

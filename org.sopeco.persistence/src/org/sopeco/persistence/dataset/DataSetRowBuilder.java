@@ -159,29 +159,29 @@ public class DataSetRowBuilder extends AbstractDataSetRowBuilder {
 	 */
 	public void appendRow(Collection<ParameterValue<?>> inputValues, List<ParameterValueList<?>> observationValues) {
 
-		if (inputColumnMap.isEmpty()) {
+		if (getInputColumnMap().isEmpty()) {
 			for (ParameterValue value : inputValues) {
 				DataSetInputColumn colum = new DataSetInputColumn(value.getParameter(), new ArrayList());
-				inputColumnMap.put(value.getParameter(), colum);
+				getInputColumnMap().put(value.getParameter(), colum);
 			}
 		}
 
 		checkInputParameters(inputValues);
 		for (ParameterValue value : inputValues) {
-			DataSetInputColumn column = inputColumnMap.get(value.getParameter());
+			DataSetInputColumn column = getInputColumnMap().get(value.getParameter());
 			column.getValueList().add(value.getValue());
 		}
 
-		if (observationColumnMap.isEmpty()) {
+		if (getObservationColumnMap().isEmpty()) {
 			for (ParameterValueList pvl : observationValues) {
 				DataSetObservationColumn colum = new DataSetObservationColumn(pvl.getParameter(), new ArrayList());
-				observationColumnMap.put(pvl.getParameter(), colum);
+				getObservationColumnMap().put(pvl.getParameter(), colum);
 			}
 		}
 
 		checkOutputParameters(observationValues);
 		for (ParameterValueList pvl : observationValues) {
-			DataSetObservationColumn column = observationColumnMap.get(pvl.getParameter());
+			DataSetObservationColumn column = getObservationColumnMap().get(pvl.getParameter());
 			column.getValueLists().add(pvl);
 		}
 
@@ -211,18 +211,18 @@ public class DataSetRowBuilder extends AbstractDataSetRowBuilder {
 		}
 	}
 
-	public ParameterValue getCurrentInputValue(ParameterDefinition ParameterDefinition) {
+	public ParameterValue getCurrentInputValue(ParameterDefinition parameterDefinition) {
 		for (ParameterValue pv : nextRowInput) {
-			if (pv.getParameter().equals(ParameterDefinition)) {
+			if (pv.getParameter().equals(parameterDefinition)) {
 				return pv;
 			}
 		}
 		return null;
 	}
 
-	public ParameterValueList getCurrentObservationValues(ParameterDefinition ParameterDefinition) {
+	public ParameterValueList getCurrentObservationValues(ParameterDefinition parameterDefinition) {
 		for (ParameterValueList pvl : nextRowObservation) {
-			if (pvl.getParameter().equals(ParameterDefinition)) {
+			if (pvl.getParameter().equals(parameterDefinition)) {
 				return pvl;
 			}
 		}

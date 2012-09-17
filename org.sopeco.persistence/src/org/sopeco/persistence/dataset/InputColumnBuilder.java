@@ -6,7 +6,12 @@ import java.util.List;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
 
-
+/**
+ * Builder for input columns.
+ * @author Alexander Wert
+ *
+ * @param <T> Type of the values contained in that column
+ */
 public class InputColumnBuilder<T> {
 
 	private DataSetInputColumn<T> column;

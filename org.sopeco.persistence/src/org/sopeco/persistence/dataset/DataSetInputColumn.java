@@ -21,9 +21,9 @@ import org.sopeco.persistence.entities.definition.ParameterRole;
  * @param <T>
  *            Type of the column's data.
  */
-@SuppressWarnings({"unchecked","rawtypes"})
-public class DataSetInputColumn<T> extends AbstractDataSetColumn<T> implements
-		Iterable<ParameterValue<T>>, Serializable {
+@SuppressWarnings({ "unchecked", "rawtypes" })
+public class DataSetInputColumn<T> extends AbstractDataSetColumn<T> implements Iterable<ParameterValue<T>>,
+		Serializable {
 
 	/**
 	 * 
@@ -33,7 +33,6 @@ public class DataSetInputColumn<T> extends AbstractDataSetColumn<T> implements
 	 * Values associated to the parameter.
 	 */
 	private List<T> valueList;
-	
 
 	/**
 	 * Constructor. To be used by builders & factories only.
@@ -41,14 +40,13 @@ public class DataSetInputColumn<T> extends AbstractDataSetColumn<T> implements
 	 * @param parameter
 	 * @param valueList
 	 */
-	protected DataSetInputColumn(ParameterDefinition parameter, List<T> valueList) {
+	protected DataSetInputColumn(ParameterDefinition parameter, List<T> values) {
 		super();
 		if (!parameter.getRole().equals(ParameterRole.INPUT)) {
-			throw new IllegalArgumentException(
-					"Cannot create a DataSetInputColumn for a non input parameter.");
+			throw new IllegalArgumentException("Cannot create a DataSetInputColumn for a non input parameter.");
 		}
-		this.parameter = parameter;
-		this.valueList = valueList;
+		setParameter(parameter);
+		this.valueList = values;
 	}
 
 	/**
@@ -63,15 +61,14 @@ public class DataSetInputColumn<T> extends AbstractDataSetColumn<T> implements
 	 *            Row of interest.
 	 * @return Value at the given row.
 	 */
-	
+
 	public ParameterValue<T> getParameterValue(int row) {
-		if (row >= this.valueList.size())
-			throw new IllegalArgumentException(
-					"Index exceeds row length. Index: " + row + " row length: "
-							+ valueList.size());
+		if (row >= this.valueList.size()) {
+			throw new IllegalArgumentException("Index exceeds row length. Index: " + row + " row length: "
+					+ valueList.size());
+		}
 		T value = valueList.get(row);
-		return (ParameterValue<T>) ParameterValueFactory.createParameterValue(
-				parameter, value);
+		return (ParameterValue<T>) ParameterValueFactory.createParameterValue(getParameter(), value);
 	}
 
 	/**
@@ -84,7 +81,7 @@ public class DataSetInputColumn<T> extends AbstractDataSetColumn<T> implements
 		List<ParameterValue<?>> result = new ArrayList<ParameterValue<?>>();
 		for (T value : valueList) {
 			ParameterValue<T> pv = (ParameterValue<T>) ParameterValueFactory
-					.createParameterValue(parameter, value);
+					.createParameterValue(getParameter(), value);
 			result.add(pv);
 		}
 		return result;
@@ -115,13 +112,19 @@ public class DataSetInputColumn<T> extends AbstractDataSetColumn<T> implements
 		};
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((valueList == null) ? 0 : valueList.hashCode());
+		return result;
+	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof DataSetInputColumn) {
 			DataSetInputColumn other = (DataSetInputColumn) obj;
-			return this.getParameter().equals(other.getParameter())
-					&& this.getValueList().equals(other.getValueList());
+			return this.getParameter().equals(other.getParameter()) && this.getValueList().equals(other.getValueList());
 		}
 		return false;
 	}
@@ -142,17 +145,18 @@ public class DataSetInputColumn<T> extends AbstractDataSetColumn<T> implements
 		double min = Double.MAX_VALUE;
 		if (getValueList().size() > 0) {
 			for (T value : getValueList()) {
-				if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.DOUBLE)) {
+				if (ParameterUtil.getTypeEnumeration(getParameter().getType()).equals(ParameterType.DOUBLE)) {
 					if ((Double) value < min) {
 						min = (Double) value;
 					}
-				} else if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.INTEGER)) {
+				} else if (ParameterUtil.getTypeEnumeration(getParameter().getType()).equals(ParameterType.INTEGER)) {
 					if (((Integer) value).doubleValue() < min) {
 						min = ((Integer) value).doubleValue();
 					}
-				} else
+				} else {
 					throw new IllegalStateException(
 							"The functions getMin() and getMax() are not supported for columns associated with a parameter type other than Double or Integer!");
+				}
 
 			}
 		}
@@ -163,17 +167,18 @@ public class DataSetInputColumn<T> extends AbstractDataSetColumn<T> implements
 		double max = Double.MIN_VALUE;
 		if (getValueList().size() > 0) {
 			for (T value : getValueList()) {
-				if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.DOUBLE)) {
+				if (ParameterUtil.getTypeEnumeration(getParameter().getType()).equals(ParameterType.DOUBLE)) {
 					if ((Double) value > max) {
 						max = (Double) value;
 					}
-				} else if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.INTEGER)) {
+				} else if (ParameterUtil.getTypeEnumeration(getParameter().getType()).equals(ParameterType.INTEGER)) {
 					if (((Integer) value).doubleValue() > max) {
 						max = ((Integer) value).doubleValue();
 					}
-				} else
+				} else {
 					throw new IllegalStateException(
 							"The functions getMin() and getMax() are not supported for columns associated with a parameter type other than Double or Integer!");
+				}
 
 			}
 		}
@@ -187,8 +192,7 @@ public class DataSetInputColumn<T> extends AbstractDataSetColumn<T> implements
 	}
 
 	public DataSetInputColumn<T> getCopy() {
-		DataSetInputColumn<T> copy = new DataSetInputColumn<T>(parameter,
-				new ArrayList());
+		DataSetInputColumn<T> copy = new DataSetInputColumn<T>(getParameter(), new ArrayList());
 		for (T val : valueList) {
 			copy.getValueList().add(val);
 		}
