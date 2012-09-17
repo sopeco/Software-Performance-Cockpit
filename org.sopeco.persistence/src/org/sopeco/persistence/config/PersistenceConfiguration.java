@@ -35,21 +35,21 @@ public class PersistenceConfiguration {
 	private IConfiguration sopecoConfig;
 	
 
-	private final static String DEFAULT_PERSISTENCE_CONFIG_FILE_NAME = "sopeco-persistence-defaults.conf";
-	private final static String DDL_GENERATION = "sopeco.config.persistence.ddlgeneration";
+	public final static String DEFAULT_PERSISTENCE_CONFIG_FILE_NAME = "sopeco-persistence-defaults.conf";
+	public final static String DDL_GENERATION = "sopeco.config.persistence.ddlgeneration";
 
-	private final static String META_DATA_DB = "sopeco.config.persistence.metaServer.dbName";
-	private final static String META_DATA_HOST = "sopeco.config.persistence.metaServer.host";
-	private final static String META_DATA_PORT = "sopeco.config.persistence.metaServer.port";
-	private final static String SERVER_HOST = "sopeco.config.persistence.server.host";
-	private final static String SERVER_PORT = "sopeco.config.persistence.server.port";
-	private final static String DATABASE_NAME = "sopeco.config.persistence.server.dbname";
-	private final static String DB_PASSWORD_USED = "sopeco.config.persistence.server.protectedByPassword";
-	private final static String DB_PASSWORD = "sopeco.config.persistence.server.password";
+	public final static String META_DATA_DB = "sopeco.config.persistence.metaServer.dbName";
+	public final static String META_DATA_HOST = "sopeco.config.persistence.metaServer.host";
+	public final static String META_DATA_PORT = "sopeco.config.persistence.metaServer.port";
+	public final static String SERVER_HOST = "sopeco.config.persistence.server.host";
+	public final static String SERVER_PORT = "sopeco.config.persistence.server.port";
+	public final static String DATABASE_NAME = "sopeco.config.persistence.server.dbname";
+	public final static String DB_PASSWORD_USED = "sopeco.config.persistence.server.protectedByPassword";
+	public final static String DB_PASSWORD = "sopeco.config.persistence.server.password";
 
-	private final static String SERVER_URL_PREFIX = "jdbc:derby://";
-	private final static String SERVER_URL_SUFFIX = ";create=true";
-
+	public final static String SERVER_URL_PREFIX = "jdbc:derby://";
+	public final static String SERVER_URL_SUFFIX = ";create=true";
+	public final static String SERVER_URL_SHUTDOWN_SUFFIX = ";shutdown=true";
 	private PersistenceConfiguration() {
 		sopecoConfig = Configuration.getSingleton();
 
@@ -145,6 +145,19 @@ public class PersistenceConfiguration {
 				+ SERVER_URL_SUFFIX;
 	}
 
+	public String getServerUrlWithShutdown() {
+//		String passwordSuffix = "";
+//		if (sopecoConfig.getPropertyAsBoolean(DB_PASSWORD_USED, false)) {
+//			passwordSuffix = ";user=" + sopecoConfig.getPropertyAsStr(DATABASE_NAME) + ";password="
+//					+ sopecoConfig.getPropertyAsStr(DB_PASSWORD);
+//		}
+
+		return SERVER_URL_PREFIX + sopecoConfig.getPropertyAsStr(SERVER_HOST) + ":"
+				+ sopecoConfig.getPropertyAsStr(SERVER_PORT) + "/" + sopecoConfig.getPropertyAsStr(DATABASE_NAME)
+				+ SERVER_URL_SHUTDOWN_SUFFIX;
+	}
+
+	
 	/**
 	 * @return the url of the meta data database
 	 */
