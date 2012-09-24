@@ -31,16 +31,11 @@ import org.sopeco.persistence.metadata.entities.DatabaseInstance;
  */
 public class PersistenceProviderFactory {
 	private static Logger logger = LoggerFactory.getLogger(PersistenceProviderFactory.class);
-	
 
-	/**
-	 * Singleton instance of the persistence provider.
-	 */
-	protected static IPersistenceProvider persistenceProviderInstance = null;
-	private static IMetaDataPersistenceProvider metaDataPersistenceProviderInstance = null;
-	
+	private static PersistenceProviderFactory instance;
+
 	// JPA Provider constants
-	private static final  String PERSISTENCE_UNIT_VALUE = "sopeco";
+	private static final String PERSISTENCE_UNIT_VALUE = "sopeco";
 	private static final String META_DATA_PERSISTENCE_UNIT_VALUE = "sopeco_metadata";
 	private static final String DB_DRIVER_CLASS = "javax.persistence.jdbc.driver";
 	private static final String SERVER_DB_DRIVER_CLASS_VALUE = "org.apache.derby.jdbc.ClientDriver";
@@ -55,38 +50,82 @@ public class PersistenceProviderFactory {
 	private static final String JAVAX_PERSISTENCE_USER_DEFAULT = "app";
 	private static final String JAVAX_PERSISTENCE_PASSWORD_DEFAULT = "app";
 
-
-
-
-	
-
-	public static IPersistenceProvider getPersistenceProvider() {
-
-		if (persistenceProviderInstance == null) {
-			logger.debug("Creating new peristence provider instance.");
-			persistenceProviderInstance = createJPAPersistenceProvider();
+	/**
+	 * Returns the singleton instance of the persistence provider factory.
+	 * 
+	 * @return Returns the singleton instance of the persistence provider
+	 *         factory.
+	 */
+	public static PersistenceProviderFactory getInstance() {
+		if (instance == null) {
+			instance = new PersistenceProviderFactory();
 		}
-
-		return persistenceProviderInstance;
+		return instance;
 	}
 
-	public static IMetaDataPersistenceProvider getMetaDataPersistenceProvider() {
-		PersistenceConfiguration persistenceConfig = PersistenceConfiguration.getSingleton();
+	private Map<String, IPersistenceProvider> persistenceProviderInstances;
+	private Map<String, IMetaDataPersistenceProvider> metaDataPersistenceProviderInstances;
+
+	/**
+	 * Private Constructor for singleton instance.
+	 */
+	private PersistenceProviderFactory() {
+
+	}
+
+	/**
+	 * Returns the session-singleton instance of the persistence provider for
+	 * the session specified by the passed sessionId.
+	 * 
+	 * @param sessionId
+	 *            id specifying the session for which the persistence provider
+	 *            should be returned.
+	 * @return Returns the session-singleton instance of the persistence
+	 *         provider.
+	 */
+	public IPersistenceProvider getPersistenceProvider(String sessionId) {
+		if (persistenceProviderInstances == null) {
+			persistenceProviderInstances = new HashMap<String, IPersistenceProvider>();
+		}
+		if (persistenceProviderInstances.get(sessionId) == null) {
+			logger.debug("Creating new peristence provider instance for session {}.", sessionId);
+			persistenceProviderInstances.put(sessionId, createJPAPersistenceProvider(sessionId));
+		}
+
+		return persistenceProviderInstances.get(sessionId);
+	}
+
+	/**
+	 * Returns the session-singleton instance of the meta-data persistence
+	 * provider for the session specified by the passed sessionId.
+	 * 
+	 * @param sessionId
+	 *            id specifying the session for which the persistence provider
+	 *            should be returned.
+	 * @return Returns the session-singleton instance of the meta-data
+	 *         persistence provider.
+	 */
+	public IMetaDataPersistenceProvider getMetaDataPersistenceProvider(String sessionId) {
+		PersistenceConfiguration persistenceConfig = PersistenceConfiguration.getSessionSingleton(sessionId);
 		if (!persistenceConfig.getDBType().equals(DBType.Server)) {
 			throw new RuntimeException("Meta data cannot be retrieved for DB type 'InMemory' !");
 		}
-		if (metaDataPersistenceProviderInstance == null) {
-			logger.debug("Creating new peristence provider instance for meta data.");
-			metaDataPersistenceProviderInstance = createMetaDataPersistenceProvider();
+
+		if (metaDataPersistenceProviderInstances == null) {
+			metaDataPersistenceProviderInstances = new HashMap<String, IMetaDataPersistenceProvider>();
+		}
+		if (metaDataPersistenceProviderInstances.get(sessionId) == null) {
+			logger.debug("Creating new meta-data peristence provider instance for session {}.", sessionId);
+			metaDataPersistenceProviderInstances.put(sessionId, createMetaDataPersistenceProvider(sessionId));
 		}
 
-		return metaDataPersistenceProviderInstance;
+		return metaDataPersistenceProviderInstances.get(sessionId);
 	}
 
-	private static IMetaDataPersistenceProvider createMetaDataPersistenceProvider() {
+	private IMetaDataPersistenceProvider createMetaDataPersistenceProvider(String sessionId) {
 		try {
 
-			PersistenceConfiguration persistenceConfig = PersistenceConfiguration.getSingleton();
+			PersistenceConfiguration persistenceConfig = PersistenceConfiguration.getSessionSingleton(sessionId);
 
 			logger.debug("Create EntityManagerFactory for persistence unit {}.", META_DATA_PERSISTENCE_UNIT_VALUE);
 
@@ -95,17 +134,17 @@ public class PersistenceProviderFactory {
 			EntityManagerFactory factory = Persistence.createEntityManagerFactory(META_DATA_PERSISTENCE_UNIT_VALUE,
 					configOverrides);
 
-			return new MetaDataPersistenceProvider(factory);
+			return new MetaDataPersistenceProvider(sessionId, factory);
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Could not create peristence provider for meta data!", e);
 		}
 	}
 
-	protected static IPersistenceProvider createJPAPersistenceProvider() {
+	protected IPersistenceProvider createJPAPersistenceProvider(String sessionId) {
 
 		try {
 
-			PersistenceConfiguration persistenceConfig = PersistenceConfiguration.getSingleton();
+			PersistenceConfiguration persistenceConfig = PersistenceConfiguration.getSessionSingleton(sessionId);
 
 			if (persistenceConfig.isPasswordUsed()) {
 				enableAuthentication(persistenceConfig);
@@ -124,12 +163,12 @@ public class PersistenceProviderFactory {
 						persistenceConfig.isPasswordUsed());
 				try {
 					// check whether meta data entry is available
-					getMetaDataPersistenceProvider().loadDatabaseInstance(dbInstance.getId());
+					getMetaDataPersistenceProvider(sessionId).loadDatabaseInstance(dbInstance.getId());
 				} catch (DataNotFoundException dnfe) {
 					// entry is not available create a new one
 					logger.debug("Creating a new meta data entry for DB Instance {}", dbInstance.getId());
 
-					getMetaDataPersistenceProvider().store(dbInstance);
+					getMetaDataPersistenceProvider(sessionId).store(dbInstance);
 				} catch (PersistenceException persistenceException) {
 					// if meta database is not available show a warning,
 					// otherwise propagate the thrown exception
@@ -153,7 +192,7 @@ public class PersistenceProviderFactory {
 
 			}
 
-			return new JPAPersistenceProvider(factory);
+			return new JPAPersistenceProvider(sessionId, factory);
 		} catch (SQLNonTransientConnectionException sqlException) {
 			throw new WrongCredentialsException("Could not connect to database. User name or password are wrong!");
 		} catch (Exception e) {
@@ -161,7 +200,7 @@ public class PersistenceProviderFactory {
 		}
 	}
 
-	private static Map<String, Object> getConfigOverrides(PersistenceConfiguration persistenceConfig) {
+	private Map<String, Object> getConfigOverrides(PersistenceConfiguration persistenceConfig) {
 		Map<String, Object> configOverrides = new HashMap<String, Object>();
 
 		switch (persistenceConfig.getDBType()) {
@@ -191,7 +230,7 @@ public class PersistenceProviderFactory {
 		return configOverrides;
 	}
 
-	private static Map<String, Object> getConfigOverridesForMetaData(PersistenceConfiguration persistenceConfig) {
+	private Map<String, Object> getConfigOverridesForMetaData(PersistenceConfiguration persistenceConfig) {
 		Map<String, Object> configOverrides = new HashMap<String, Object>();
 		configOverrides.put(DB_DRIVER_CLASS, SERVER_DB_DRIVER_CLASS_VALUE);
 		configOverrides.put(DB_URL, persistenceConfig.getMetaDataConnectionUrl());
@@ -200,7 +239,7 @@ public class PersistenceProviderFactory {
 		return configOverrides;
 	}
 
-	private static void enableAuthentication(PersistenceConfiguration persistenceConfig) throws SQLException {
+	private void enableAuthentication(PersistenceConfiguration persistenceConfig) throws SQLException {
 
 		try {
 			Class.forName(SERVER_DB_DRIVER_CLASS_VALUE);

@@ -21,7 +21,7 @@ public class ExtensionsTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		IConfiguration config = Configuration.getSingleton(this.getClass());
+		IConfiguration config = Configuration.getSessionUnrelatedSingleton(this.getClass());
 		config.setProperty(IConfiguration.CONF_PLUGINS_DIRECTORIES, "secondPluginDir");
 		
 		registry = ExtensionRegistry.getSingleton();

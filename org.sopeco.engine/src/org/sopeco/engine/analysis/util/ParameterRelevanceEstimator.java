@@ -21,7 +21,14 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
  * @author Pascal Meier
  * 
  */
-public class ParameterRelevanceEstimator {
+public final class ParameterRelevanceEstimator {
+
+	/**
+	 * It is an utility class, so use a private constructor.
+	 */
+	private ParameterRelevanceEstimator() {
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * Threshold for the sum of the relative parameter influences that must be
@@ -44,13 +51,17 @@ public class ParameterRelevanceEstimator {
 	 * the independent parameters in relevant and irrelevant parameters
 	 * according to the influence descriptors contained in the result.
 	 * 
+	 * 
+	 * @param sessionId
+	 *            session to be used to retrieve ParameterRelevanceEstimator
+	 *            configuration settings
 	 * @param parameterInfluenceAnalysisResult
 	 *            result object derived by a parameter influence analysis
 	 * 
 	 * @return a result object that holds the list of relevant and irrelevant
 	 *         parameters
 	 */
-	public static ParameterRelevanceResult interpretParameterInfluenceResult(
+	public static ParameterRelevanceResult interpretParameterInfluenceResult(String sessionId,
 			IParameterInfluenceResult parameterInfluenceAnalysisResult) {
 
 		List<IParameterInfluenceDescriptor> parameterInfluences = parameterInfluenceAnalysisResult
@@ -70,9 +81,8 @@ public class ParameterRelevanceEstimator {
 
 		int index = parameterInfluences.size() - 1;
 		double lastRelevantParamInfluence = 0.0;
-		while (sumOfRelevantInfluences < Double.parseDouble(Configuration.getSingleton().getPropertyAsStr(
-				INFLUENCE_SUM_TH))
-				* totalSumOfInfluences) {
+		while (sumOfRelevantInfluences < Double.parseDouble(Configuration.getSessionSingleton(sessionId)
+				.getPropertyAsStr(INFLUENCE_SUM_TH)) * totalSumOfInfluences) {
 			IParameterInfluenceDescriptor influenceDescriptor = parameterInfluences.get(index);
 			index--;
 			sumOfRelevantInfluences = sumOfRelevantInfluences + Math.abs(influenceDescriptor.getInfluenceValue());
@@ -86,7 +96,8 @@ public class ParameterRelevanceEstimator {
 			index--;
 
 			if ((Math.abs(influenceDescriptor.getInfluenceValue()) / totalSumOfInfluences) >= (Double
-					.parseDouble(Configuration.getSingleton().getPropertyAsStr(STILL_CONSIDER_RELEVANT_TH)) * lastRelevantParamInfluence)) {
+					.parseDouble(Configuration.getSessionSingleton(sessionId).getPropertyAsStr(
+							STILL_CONSIDER_RELEVANT_TH)) * lastRelevantParamInfluence)) {
 				result.addRelevantParameter(influenceDescriptor.getIndependentParameter());
 			} else {
 				result.addRelevantParameter(influenceDescriptor.getIndependentParameter());
@@ -109,8 +120,8 @@ public class ParameterRelevanceEstimator {
 	 * @param dependentParameter
 	 *            the parameter for which the difference should be calculated
 	 * @param relevanceFactor
-	 *            indicator for the relevance. If the difference between the
-	 *            min and the max value is greater than the result of minValue *
+	 *            indicator for the relevance. If the difference between the min
+	 *            and the max value is greater than the result of minValue *
 	 *            relevanceFactor, it is considered as significant.
 	 * @return <code>true</code> if the values of the dependent parameter differ
 	 *         significantly, otherwise <code>false</code>
@@ -147,9 +158,9 @@ public class ParameterRelevanceEstimator {
 	 * @param dependentParameter
 	 *            the parameter for which the difference should be calculated
 	 * @param differenceThreshold
-	 *            indicator for the relevance. If the difference between the
-	 *            min and the max value is greater than the differenceThreshold,
-	 *            it is considered as significant.
+	 *            indicator for the relevance. If the difference between the min
+	 *            and the max value is greater than the differenceThreshold, it
+	 *            is considered as significant.
 	 * @return <code>true</code> if the values of the dependent parameter differ
 	 *         significantly, otherwise <code>false</code>
 	 */

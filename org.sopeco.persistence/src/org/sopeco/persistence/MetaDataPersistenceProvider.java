@@ -8,9 +8,9 @@ import javax.persistence.Query;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.persistence.metadata.entities.DatabaseInstance;
+import org.sopeco.util.session.SessionAwareObject;
 
 /**
  * Peresistence provider for meta data, such as available database instances.
@@ -18,7 +18,7 @@ import org.sopeco.persistence.metadata.entities.DatabaseInstance;
  * @author Alexander Wert
  * 
  */
-public class MetaDataPersistenceProvider implements IMetaDataPersistenceProvider {
+public class MetaDataPersistenceProvider extends SessionAwareObject implements IMetaDataPersistenceProvider {
 	private EntityManagerFactory emf;
 	private static Logger logger = LoggerFactory.getLogger(MetaDataPersistenceProvider.class);
 
@@ -31,8 +31,8 @@ public class MetaDataPersistenceProvider implements IMetaDataPersistenceProvider
 	 *            - the name of the persistence unit that should be used by the
 	 *            provider
 	 */
-	protected MetaDataPersistenceProvider(EntityManagerFactory factory) {
-
+	protected MetaDataPersistenceProvider(String sessionId, EntityManagerFactory factory) {
+		super(sessionId);
 		emf = factory;
 
 	}

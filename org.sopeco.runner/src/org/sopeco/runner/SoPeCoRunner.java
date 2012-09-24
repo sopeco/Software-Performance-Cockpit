@@ -4,6 +4,7 @@
 package org.sopeco.runner;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,8 +52,9 @@ public class SoPeCoRunner implements Runnable {
 	 */
 	@Override
 	public void run() {
+		String sessionId = UUID.randomUUID().toString();
 		lastExecutedScenarioInstance = null;
-		IConfiguration config = Configuration.getSingleton();
+		IConfiguration config = Configuration.getSessionSingleton(sessionId);
 	
 		// if the user has set any command-line arguments
 		if (args != null) {
@@ -101,7 +103,7 @@ public class SoPeCoRunner implements Runnable {
 			logger.debug("Scenario definition is passed as an object.");
 		}
 		
-		IEngine engine = EngineFactory.INSTANCE.createEngine();
+		IEngine engine = EngineFactory.getInstance().createEngine(sessionId);
 		
 		lastExecutedScenarioInstance = engine.run(scenario);
 

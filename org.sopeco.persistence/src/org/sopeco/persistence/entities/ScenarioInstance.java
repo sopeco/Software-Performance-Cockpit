@@ -14,6 +14,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
+import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.persistence.entities.keys.ScenarioInstancePK;
@@ -48,6 +49,8 @@ public class ScenarioInstance implements Serializable {
 	 */
 	@EmbeddedId
 	private ScenarioInstancePK primaryKey = new ScenarioInstancePK();
+
+
 
 	/*
 	 * Getters and Setters
@@ -152,23 +155,7 @@ public class ScenarioInstance implements Serializable {
 		return null;
 	}
 
-	/**
-	 * Stores the data sets of all experiment runs in the database.
-	 */
-	public void storeDataSets() {
-		for (ExperimentSeries series : this.experimentSeries) {
-			series.storeDataSets();
-		}
-	}
 
-	/**
-	 * Removes the data sets of all experiment runs in the database.
-	 */
-	public void removeDataSets() {
-		for (ExperimentSeries series : this.experimentSeries) {
-			series.removeDataSets();
-		}
-	}
 
 	public void extendScenarioInstance(ScenarioDefinition otherSD) {
 		List<ExperimentSeriesDefinition> esdList = this.getScenarioDefinition().extendBy(otherSD);
@@ -219,5 +206,7 @@ public class ScenarioInstance implements Serializable {
 		return "ScenarioInstance{" + "name='" + this.primaryKey.getName() + "\' " + "measurementEnvironmentUrl='"
 				+ this.primaryKey.getMeasurementEnvironmentUrl() + '\'' + '}';
 	}
+
+
 
 }

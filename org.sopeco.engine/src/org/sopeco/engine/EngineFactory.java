@@ -1,7 +1,7 @@
 package org.sopeco.engine;
 
-import java.io.File;
 import java.net.URI;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,26 +24,38 @@ import org.sopeco.persistence.PersistenceProviderFactory;
  * 
  * @author Dennis Westermann
  * @author Roozbeh Farahbod
+ * @author Alexander Wert
  */
-public class EngineFactory {
+public final class EngineFactory {
 
-	private static final Logger logger = LoggerFactory.getLogger(EngineFactory.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EngineFactory.class);
 
-	public static EngineFactory INSTANCE = new EngineFactory();
-
-	protected static IEngine engine = null;
+	private static EngineFactory instance;
 
 	private static final String DEFAULT_ENGINE_CONFIG_FILE_NAME = "sopeco-engine-defaults.conf";
 
 	/**
-	 * Creates an engine.
+	 * Private constructor for singleton.
 	 */
-	public IEngine createEngine() {
-		final IConfiguration config = Configuration.getSingleton();
+	private EngineFactory() {
 
-		loadDefaultConfigValues();
+	}
 
-		IPersistenceProvider persistenceProvider = PersistenceProviderFactory.getPersistenceProvider();
+	/**
+	 * Creates an instance for {@link IEngine} using the given sessionId for all
+	 * its session-aware objects .
+	 * 
+	 * @param sessionId
+	 *            Session id to be used for the new engine and all its
+	 *            session-aware elements.
+	 * @return Returns the newly created engine instance.
+	 * 
+	 * 
+	 */
+	public IEngine createEngine(String sessionId) {
+		final IConfiguration config = Configuration.getSessionSingleton(sessionId);
+
+		loadDefaultConfigValues(sessionId);
 
 		IExperimentController experimentController;
 		String meClassName = config.getMeasurementControllerClassName();
@@ -53,9 +65,9 @@ public class EngineFactory {
 			final URI meURI = config.getMeasurementControllerURI();
 			final IMeasurementEnvironmentController meController = RmiMEConnector.connectToMEController(meURI);
 
-			logger.debug("Connected to the measurement environment controller service.");
+			LOGGER.debug("Connected to the measurement environment controller service.");
 
-			experimentController = createExperimentController(meController, persistenceProvider);
+			experimentController = createExperimentController(sessionId, meController);
 
 		} else {
 			// load the given class
@@ -63,54 +75,47 @@ public class EngineFactory {
 				Class<?> mec = Class.forName(meClassName);
 				Object o = mec.newInstance();
 				if (o instanceof IMeasurementEnvironmentController) {
-					logger.debug("Measurement environment controller is instantiated.");
-					experimentController = createExperimentController((IMeasurementEnvironmentController) o, persistenceProvider);
-				} else
-					throw new RuntimeException("The measurement environment class must implement " + IMeasurementEnvironmentController.class.getName() + ".");
+					LOGGER.debug("Measurement environment controller is instantiated.");
+					experimentController = createExperimentController(sessionId, (IMeasurementEnvironmentController) o);
+				} else {
+					throw new RuntimeException("The measurement environment class must implement "
+							+ IMeasurementEnvironmentController.class.getName() + ".");
+				}
 			} catch (ClassNotFoundException e) {
 				throw new RuntimeException("Cannot load the measurement environment class (" + meClassName + ").");
 			} catch (InstantiationException e) {
-				throw new RuntimeException("Cannot instantiate the measurement environment object. Error: " + e.getMessage());
+				throw new RuntimeException("Cannot instantiate the measurement environment object. Error: "
+						+ e.getMessage());
 			} catch (IllegalAccessException e) {
-				throw new RuntimeException("Cannot instantiate the measurement environment object. Error: " + e.getMessage());
+				throw new RuntimeException("Cannot instantiate the measurement environment object. Error: "
+						+ e.getMessage());
 			}
 		}
 
-		logger.debug("Experiment controller is created.");
+		LOGGER.debug("Experiment controller is created.");
 
 		IExperimentSeriesManager expSeriesManager;
 		expSeriesManager = new ExperimentSeriesManager();
 
-		engine = new EngineImp(experimentController, expSeriesManager, persistenceProvider);
-
+		IEngine engine = new EngineImp(sessionId, experimentController, expSeriesManager);
+		((ExperimentSeriesManager) expSeriesManager).setEngine(engine);
 		return engine;
 	}
 
+
+
 	/**
-	 * Loads the configuration defaults from the specified path into the SoPeCo configuration.
+	 * Loads the configuration defaults from the specified path into the SoPeCo
+	 * configuration.
 	 */
-	private void loadDefaultConfigValues() {
+	private void loadDefaultConfigValues(String sessionId) {
 		try {
-			Configuration.getSingleton()
-					.loadDefaultConfiguration(this.getClass().getClassLoader(), DEFAULT_ENGINE_CONFIG_FILE_NAME);
+			Configuration.getSessionSingleton(sessionId).loadDefaultConfiguration(this.getClass().getClassLoader(),
+					DEFAULT_ENGINE_CONFIG_FILE_NAME);
 		} catch (ConfigurationException e) {
-			logger.error("Unable to read default config.");
+			LOGGER.error("Unable to read default config.");
 			throw new RuntimeException(e);
 		}
-	}
-
-	/**
-	 * Returns the last created engine. If the engine is not created before,
-	 * returns null.
-	 * 
-	 * @see #createEngine()
-	 */
-	public IEngine getEngine() {
-		return engine;
-	}
-	
-	public void registerEngine(IEngine newEngine){
-		engine = newEngine;
 	}
 
 	/**
@@ -120,11 +125,22 @@ public class EngineFactory {
 	 * @param meController
 	 * @return an instance of experiment controller
 	 */
-	protected IExperimentController createExperimentController(IMeasurementEnvironmentController meController, IPersistenceProvider persistenceProvider) {
-		ExperimentController expController = new ExperimentController();
+	protected IExperimentController createExperimentController(String sessionId, IMeasurementEnvironmentController meController) {
+		ExperimentController expController = new ExperimentController(sessionId);
 		expController.setMeasurementEnvironmentController(meController);
-		expController.setPersistenceProvider(persistenceProvider);
 		return expController;
+	}
+
+	/**
+	 * Returns the singleton instance of the factory.
+	 * 
+	 * @return Returns the singleton instance of the factory.
+	 */
+	public static EngineFactory getInstance() {
+		if (instance == null) {
+			instance = new EngineFactory();
+		}
+		return instance;
 	}
 
 }

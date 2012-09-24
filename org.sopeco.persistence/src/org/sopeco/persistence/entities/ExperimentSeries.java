@@ -18,6 +18,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
+import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetAppender;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
@@ -30,7 +31,8 @@ import org.sopeco.persistence.entities.keys.ExperimentSeriesPK;
  */
 @Entity
 @NamedQueries({ @NamedQuery(name = "findExperimentSeriesByName", query = "SELECT o FROM ExperimentSeries o WHERE o.primaryKey.name = :name "
-		+ "AND o.primaryKey.scenarioInstanceName = :scenarioInstanceName " + "AND o.primaryKey.measurementEnvironmentUrl = :measurementEnvironmentUrl") })
+		+ "AND o.primaryKey.scenarioInstanceName = :scenarioInstanceName "
+		+ "AND o.primaryKey.measurementEnvironmentUrl = :measurementEnvironmentUrl") })
 public class ExperimentSeries implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -55,6 +57,7 @@ public class ExperimentSeries implements Serializable {
 
 	@EmbeddedId
 	private ExperimentSeriesPK primaryKey = new ExperimentSeriesPK();
+
 
 	/*
 	 * Getters and Setters
@@ -108,7 +111,6 @@ public class ExperimentSeries implements Serializable {
 		pds.setExperimentSeries(this);
 	}
 
-
 	public ExperimentSeriesPK getPrimaryKey() {
 		return primaryKey;
 	}
@@ -151,29 +153,7 @@ public class ExperimentSeries implements Serializable {
 		return result;
 	}
 
-	/**
-	 * Stores the data sets of all experiment series runs in the database.
-	 */
-	public void storeDataSets() {
-		for (ExperimentSeriesRun run : this.experimentSeriesRuns) {
-			run.storeDataSets();
-		}
-		for (ProcessedDataSet pds : this.processedDataSets) {
-			pds.storeDataSets();
-		}
-	}
 
-	/**
-	 * Removes the data sets of all experiment series runs in the database.
-	 */
-	public void removeDataSets() {
-		for (ExperimentSeriesRun run : this.experimentSeriesRuns) {
-			run.removeDataSets();
-		}
-		for (ProcessedDataSet pds : this.processedDataSets) {
-			pds.removeDataSets();
-		}
-	}
 
 	/**
 	 * 
@@ -221,7 +201,10 @@ public class ExperimentSeries implements Serializable {
 	@Override
 	public String toString() {
 
-		return "ExperimentSeries{" + "name='" + this.primaryKey.getName() + "\' " + "scenarioInstance='" + scenarioInstance.toString() + '\'' + '}';
+		return "ExperimentSeries{" + "name='" + this.primaryKey.getName() + "\' " + "scenarioInstance='"
+				+ scenarioInstance.toString() + '\'' + '}';
 	}
+
+	
 
 }

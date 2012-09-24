@@ -1,10 +1,14 @@
 package org.sopeco.persistence.config;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
 import org.sopeco.config.exception.ConfigurationException;
+import org.sopeco.util.session.SessionAwareObject;
 
 /**
  * This class holds the configuration keys and default values. Moreover, it
@@ -13,8 +17,7 @@ import org.sopeco.config.exception.ConfigurationException;
  * @author Dennis Westermann
  * 
  */
-public final class PersistenceConfiguration {
-	private Logger logger = LoggerFactory.getLogger(PersistenceConfiguration.class);
+public final class PersistenceConfiguration extends SessionAwareObject {
 
 	/**
 	 * Enumeration for different database types.
@@ -33,20 +36,7 @@ public final class PersistenceConfiguration {
 		Server
 	}
 
-	private static final String DB_TYPE = "sopeco.config.persistence.dbtype";
-
-	private static PersistenceConfiguration singletonInstance;
-
-	public static PersistenceConfiguration getSingleton() {
-		if (singletonInstance == null) {
-			singletonInstance = new PersistenceConfiguration();
-		}
-
-		return singletonInstance;
-	}
-
-	private IConfiguration sopecoConfig;
-
+	private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceConfiguration.class);
 	private static final String DEFAULT_PERSISTENCE_CONFIG_FILE_NAME = "sopeco-persistence-defaults.conf";
 	private static final String DDL_GENERATION = "sopeco.config.persistence.ddlgeneration";
 
@@ -63,55 +53,139 @@ public final class PersistenceConfiguration {
 	private static final String SERVER_URL_SUFFIX = ";create=true";
 	private static final String SERVER_URL_SHUTDOWN_SUFFIX = ";shutdown=true";
 
-	private PersistenceConfiguration() {
-		sopecoConfig = Configuration.getSingleton();
+	private static final String DB_TYPE = "sopeco.config.persistence.dbtype";
+
+	private static Map<String, PersistenceConfiguration> sessionSingletonInstances;
+
+	/**
+	 * Returns the session-singleton instance of the persistence configuration
+	 * for the session specified by the given sessionId.
+	 * 
+	 * @param sessionId
+	 *            Id specifying the session for which the persistence
+	 *            configuration should be returned.
+	 * @return Returns the session-singleton instance of the persistence
+	 *         configuration.
+	 */
+	public static PersistenceConfiguration getSessionSingleton(String sessionId) {
+		if (sessionSingletonInstances == null) {
+			sessionSingletonInstances = new HashMap<String, PersistenceConfiguration>();
+		}
+
+		if (sessionSingletonInstances.get(sessionId) == null) {
+			sessionSingletonInstances.put(sessionId, new PersistenceConfiguration(sessionId));
+		}
+
+		return sessionSingletonInstances.get(sessionId);
+	}
+
+	private IConfiguration sopecoConfig;
+
+	private PersistenceConfiguration(String sessionId) {
+		super(sessionId);
+		sopecoConfig = Configuration.getSessionSingleton(sessionId);
 
 		try {
 			sopecoConfig.loadDefaultConfiguration(this.getClass().getClassLoader(),
 					DEFAULT_PERSISTENCE_CONFIG_FILE_NAME);
 		} catch (ConfigurationException e) {
-			logger.error("Unable to read default config.");
+			LOGGER.error("Unable to read default config.");
 			throw new RuntimeException(e);
 		}
 
 	}
 
+	/**
+	 * Returns the database name.
+	 * 
+	 * @return Returns the database name.
+	 */
 	public String getDBName() {
 		return sopecoConfig.getPropertyAsStr(DATABASE_NAME);
 	}
 
+	/**
+	 * Updates the database name.
+	 * 
+	 * @param dbName
+	 *            the new database name
+	 */
 	public void updateDBName(String dbName) {
 		sopecoConfig.setProperty(DATABASE_NAME, dbName);
 	}
 
+	/**
+	 * Returns the host name.
+	 * 
+	 * @return Returns the hsot name.
+	 */
 	public String getDBHost() {
 		return sopecoConfig.getPropertyAsStr(SERVER_HOST);
 	}
 
-	public void updateDBHost(String dbName) {
-		sopecoConfig.setProperty(SERVER_HOST, dbName);
+	/**
+	 * Updates the host name.
+	 * 
+	 * @param dbHost
+	 *            the new host name
+	 */
+	public void updateDBHost(String dbHost) {
+		sopecoConfig.setProperty(SERVER_HOST, dbHost);
 	}
 
+	/**
+	 * Returns the database port.
+	 * 
+	 * @return Returns the database port.
+	 */
 	public String getDBPort() {
 		return sopecoConfig.getPropertyAsStr(SERVER_PORT);
 	}
 
+	/**
+	 * Updates the database port.
+	 * 
+	 * @param dbPort
+	 *            the new port
+	 */
 	public void updateDBPort(String dbPort) {
 		sopecoConfig.setProperty(SERVER_PORT, dbPort);
 	}
 
+	/**
+	 * Updates the database password.
+	 * 
+	 * @param password
+	 *            the new password
+	 */
 	public void updateDBPassword(String password) {
 		sopecoConfig.setProperty(DB_PASSWORD, password);
 	}
 
+	/**
+	 * Returns the password for the database.
+	 * 
+	 * @return Returns the password for the database.
+	 */
 	public String getPassword() {
 		return sopecoConfig.getPropertyAsStr(DB_PASSWORD);
 	}
 
+	/**
+	 * sets whether a password should be used or not.
+	 * 
+	 * @param use
+	 *            use password or not.
+	 */
 	public void setUsePassword(boolean use) {
 		sopecoConfig.setProperty(DB_PASSWORD_USED, Boolean.toString(use));
 	}
 
+	/**
+	 * Indicates whether a password should be used.
+	 * 
+	 * @return Returns true, if password is used.
+	 */
 	public boolean isPasswordUsed() {
 		return sopecoConfig.getPropertyAsBoolean(DB_PASSWORD_USED, false);
 	}
@@ -147,25 +221,18 @@ public final class PersistenceConfiguration {
 	 * @return the url of the database server
 	 */
 	public String getServerUrl() {
-		// String passwordSuffix = "";
-		// if (sopecoConfig.getPropertyAsBoolean(DB_PASSWORD_USED, false)) {
-		// passwordSuffix = ";user=" +
-		// sopecoConfig.getPropertyAsStr(DATABASE_NAME) + ";password="
-		// + sopecoConfig.getPropertyAsStr(DB_PASSWORD);
-		// }
-
 		return SERVER_URL_PREFIX + sopecoConfig.getPropertyAsStr(SERVER_HOST) + ":"
 				+ sopecoConfig.getPropertyAsStr(SERVER_PORT) + "/" + sopecoConfig.getPropertyAsStr(DATABASE_NAME)
 				+ SERVER_URL_SUFFIX;
 	}
 
+	/**
+	 * Returns the connection url to the database which shuts down the database.
+	 * 
+	 * @return Returns the connection url to the database which shuts down the
+	 *         database.
+	 */
 	public String getServerUrlWithShutdown() {
-		// String passwordSuffix = "";
-		// if (sopecoConfig.getPropertyAsBoolean(DB_PASSWORD_USED, false)) {
-		// passwordSuffix = ";user=" +
-		// sopecoConfig.getPropertyAsStr(DATABASE_NAME) + ";password="
-		// + sopecoConfig.getPropertyAsStr(DB_PASSWORD);
-		// }
 
 		return SERVER_URL_PREFIX + sopecoConfig.getPropertyAsStr(SERVER_HOST) + ":"
 				+ sopecoConfig.getPropertyAsStr(SERVER_PORT) + "/" + sopecoConfig.getPropertyAsStr(DATABASE_NAME)
@@ -181,14 +248,29 @@ public final class PersistenceConfiguration {
 				+ SERVER_URL_SUFFIX;
 	}
 
+	/**
+	 * Returns the host name of the meta-data database.
+	 * 
+	 * @return Returns the host name of the meta-data database.
+	 */
 	public String getMetaDataHost() {
 		return sopecoConfig.getPropertyAsStr(META_DATA_HOST);
 	}
 
+	/**
+	 * Returns the port of the meta-data database.
+	 * 
+	 * @return Returns the port of the meta-data database.
+	 */
 	public String getMetaDataPort() {
 		return sopecoConfig.getPropertyAsStr(META_DATA_PORT);
 	}
 
+	/**
+	 * Returns the name of the meta-data database.
+	 * 
+	 * @return Returns the name of the meta-data database.
+	 */
 	public String getMetaDataDBName() {
 		return sopecoConfig.getPropertyAsStr(META_DATA_DB);
 	}

@@ -17,6 +17,7 @@ import javax.persistence.Transient;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.PersistenceProviderFactory;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetAppender;
@@ -63,6 +64,12 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 			@JoinColumn(name = "experimentSeriesVersion", referencedColumnName = "version") })
 	private ExperimentSeries experimentSeries;
 
+	
+	/**
+	 * The persistence provider instance which loaded this object.
+	 */
+	@Transient
+	private IPersistenceProvider persistenceProvider;
 	/*
 	 * Getter and Setter
 	 */
@@ -91,7 +98,11 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 
 		if (successfulResultDataSet == null && successfulResultDataSetId != null) {
 			try {
-				successfulResultDataSet = PersistenceProviderFactory.getPersistenceProvider().loadDataSet(
+				if(getPersistenceProvider() == null){
+					logger.error("The persistence provider for this entity has not been set!");
+					throw new RuntimeException("The persistence provider for this entity has not been set!");
+				}
+				successfulResultDataSet = getPersistenceProvider().loadDataSet(
 						successfulResultDataSetId);
 			} catch (DataNotFoundException e) {
 				logger.warn(e.getMessage());
@@ -133,19 +144,19 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 	/**
 	 * Stores the successful result data set in the database.
 	 */
-	public void storeDataSets() {
+	public void storeDataSets(IPersistenceProvider provider) {
 		if (this.getSuccessfulResultDataSet() != null) {
-			PersistenceProviderFactory.getPersistenceProvider().store(this.getSuccessfulResultDataSet());
+			provider.store(this.getSuccessfulResultDataSet());
 		}
 	}
 
 	/**
 	 * Removes the successful result data set from the database.
 	 */
-	public void removeDataSets() {
+	public void removeDataSets(IPersistenceProvider provider) {
 		if (this.successfulResultDataSetId != null) {
 			try {
-				PersistenceProviderFactory.getPersistenceProvider().remove(this.getSuccessfulResultDataSet());
+				provider.remove(this.getSuccessfulResultDataSet());
 			} catch (DataNotFoundException e) {
 				logger.warn(e.getMessage());
 			}
@@ -224,6 +235,14 @@ public class ExperimentSeriesRun implements Serializable, Comparable<ExperimentS
 	@Override
 	public int compareTo(ExperimentSeriesRun compareRun) {
 		return (int) (compareRun.getTimestamp() - this.getTimestamp());
+	}
+	
+	public IPersistenceProvider getPersistenceProvider() {
+		return persistenceProvider;
+	}
+
+	public void setPersistenceProvider(IPersistenceProvider persistenceProvider) {
+		this.persistenceProvider = persistenceProvider;
 	}
 
 }

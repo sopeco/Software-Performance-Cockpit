@@ -8,25 +8,30 @@ import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 
 /**
- * The interface for constant assignment extension artifacts. 
+ * The interface for constant assignment extension artifacts.
  * 
  * @author Roozbeh Farahbod
- *
+ * 
  */
 public interface IConstantAssignment extends ISoPeCoExtensionArtifact {
 
 	/**
-	 * Returns <code>true</code> if it can provide the assignment for the given 
+	 * Returns <code>true</code> if it can provide the assignment for the given
 	 * configuration.
 	 * 
-	 * @param valueAssignment the constant value assignment configuration
+	 * @param valueAssignment
+	 *            the constant value assignment configuration
+	 * 
+	 * @return true, if a value van be assigned, otherwise false
 	 */
-	public boolean canAssign(ConstantValueAssignment valueAssignment);
-	
+	boolean canAssign(ConstantValueAssignment valueAssignment);
+
 	/**
 	 * Creates a parameter value based on the given value assignemtn.
 	 * 
-	 * @param valueAssignment the constant value assignment configuration
+	 * @param valueAssignment
+	 *            the constant value assignment configuration
+	 * @return a new parameter value
 	 */
-	public ParameterValue<?> createParameterValue(ConstantValueAssignment valueAssignment);
+	ParameterValue<?> createParameterValue(ConstantValueAssignment valueAssignment);
 }

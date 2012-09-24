@@ -204,7 +204,7 @@ public class AnalysisWrapper {
 	}
 
 	private String getbaseUrl() {
-		String url = Configuration.getSingleton().getPropertyAsStr(BASE_URL_PROPERTY);
+		String url = Configuration.getSessionUnrelatedSingleton(this.getClass()).getPropertyAsStr(BASE_URL_PROPERTY);
 		return url == null ? DEFAULT_BASE_URL : url;
 	}
 }

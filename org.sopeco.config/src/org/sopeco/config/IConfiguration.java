@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.URI;
 
 import org.sopeco.config.exception.ConfigurationException;
+import org.sopeco.util.session.ISessionAwareObject;
 
 /**
  * Interface to the SoPeCo global configuration component.
@@ -14,7 +15,7 @@ import org.sopeco.config.exception.ConfigurationException;
  * @author Roozbeh Farahbod
  * 
  */
-public interface IConfiguration {
+public interface IConfiguration extends ISessionAwareObject{
 
 	String ENV_SOPECO_HOME = "SOPECO_HOME";
 
@@ -34,6 +35,7 @@ public interface IConfiguration {
 
 	String CONF_MODEL_CHANGE_HANDLING_MODE = "sopeco.config.modelChangeHandlingMode";
 	String MCH_MODE_OVERWRITE = "overwrite";
+	String MCH_MODE_OVERWRITE_KEEP_RESULTS = "overwriteKeepResults";
 	String MCH_MODE_FAIL = "fail";
 	String MCH_MODE_NEW_VERSION = "newVersion";
 

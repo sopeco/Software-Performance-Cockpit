@@ -30,11 +30,11 @@ import org.sopeco.util.system.SystemTools;
  * @author Roozbeh Farahbod
  * 
  */
-public class ExtensionRegistry implements IExtensionRegistry {
+public final class ExtensionRegistry implements IExtensionRegistry {
 
 	private static Logger logger = LoggerFactory.getLogger(ExtensionRegistry.class);
 
-	public static final String DEFAULT_PLUGINS_FOLDER_IN_CLASSPATH = "plugins";
+	private static final String DEFAULT_PLUGINS_FOLDER_IN_CLASSPATH = "plugins";
 
 	/**
 	 * Holds the list of extension point identifiers supported by the engine.
@@ -45,7 +45,7 @@ public class ExtensionRegistry implements IExtensionRegistry {
 
 	private static final String EXTENSIONS_FILE_NAME = "extensions.info";
 
-	private static IExtensionRegistry SINGLETON = null;
+	private static IExtensionRegistry singleton = null;
 
 	/** Holds a mapping of extension names to extensions. */
 	private Map<String, ISoPeCoExtension<?>> extensions = new HashMap<String, ISoPeCoExtension<?>>();
@@ -57,11 +57,14 @@ public class ExtensionRegistry implements IExtensionRegistry {
 
 	/**
 	 * Returns a singleton instance of the extension registry.
+	 * 
+	 * @return Returns a singleton instance of the extension registry.
 	 */
 	public static IExtensionRegistry getSingleton() {
-		if (SINGLETON == null)
-			SINGLETON = new ExtensionRegistry();
-		return SINGLETON;
+		if (singleton == null) {
+			singleton = new ExtensionRegistry();
+		}
+		return singleton;
 	}
 
 	@Override
@@ -103,8 +106,9 @@ public class ExtensionRegistry implements IExtensionRegistry {
 	private void initialize() {
 		if (!initialized) {
 			loadEngineExtensions();
-		} else
+		} else {
 			logger.warn("Plugin registry cannot be re-initialized.");
+		}
 
 		initialized = true;
 	}
@@ -117,7 +121,6 @@ public class ExtensionRegistry implements IExtensionRegistry {
 		loadExtensions();
 	}
 
-
 	/**
 	 * Loads the extensions with basic class loading.
 	 * 
@@ -128,67 +131,72 @@ public class ExtensionRegistry implements IExtensionRegistry {
 	 */
 	@SuppressWarnings("rawtypes")
 	private void loadExtensions() {
-		final IConfiguration config = Configuration.getSingleton();
+		final IConfiguration config = Configuration.getSessionUnrelatedSingleton(this.getClass());
 		String pluginsDirNames = config.getPropertyAsStr(IConfiguration.CONF_PLUGINS_DIRECTORIES);
-		
+
 		Set<String> pluginsDirsSet = new HashSet<String>();
 		pluginsDirsSet.add(DEFAULT_PLUGINS_FOLDER_IN_CLASSPATH);
 		if (pluginsDirNames != null) {
 			String[] pluginsDirs = Tools.tokenize(pluginsDirNames, IConfiguration.DIR_SEPARATOR);
-		
-			for (String dir: pluginsDirs)
+
+			for (String dir : pluginsDirs) {
 				pluginsDirsSet.add(dir);
+			}
 		}
-		
+
 		Set<URL> jarURLs = new HashSet<URL>();
 		Set<URL> extensionsInfoURLs = new HashSet<URL>();
 
 		// 1. Load all plugins information from all sources
-		
-		// 1.1 Gather list of JAR files in plugins folders and gathers extensions.info files in those directories
-		for (String dir: pluginsDirsSet) {
+
+		// 1.1 Gather list of JAR files in plugins folders and gathers
+		// extensions.info files in those directories
+		for (String dir : pluginsDirsSet) {
 			loadExtensionsInfoAndJARs(dir, extensionsInfoURLs, jarURLs);
 		}
-		
+
 		ClassLoader classLoader = new URLClassLoader(jarURLs.toArray(new URL[] {}), this.getClass().getClassLoader());
 
 		// unpack all extensions.info's separately and gathers them in the list
-		
+
 		try {
 			String tempPluginsDir = SystemTools.extractFilesFromClasspath("plugins", "sopecoPlugins", "plugins files");
-			
+
 			String[] infoFiles = Tools.getFileNames(tempPluginsDir, "*.info");
-			for (String infoFileName: infoFiles) {
+			for (String infoFileName : infoFiles) {
 				final String fullName = Tools.concatFileName(tempPluginsDir, infoFileName);
 				URL url = new URL("file", "", fullName);
 				extensionsInfoURLs.add(url);
 			}
-			
-			
+
 		} catch (Exception e) {
 			logger.error("Could not unpack plugins information in the classpath. Reason:", e);
 		}
-		
+
 		// 2. Look for all 'extensions.info' files in the classpath
-		//    and the default location
-		
-		final String EXTENSION_FILE_PATH = DEFAULT_PLUGINS_FOLDER_IN_CLASSPATH + '/' + EXTENSIONS_FILE_NAME;
+		// and the default location
+
+		final String extensionFilePath = DEFAULT_PLUGINS_FOLDER_IN_CLASSPATH + '/' + EXTENSIONS_FILE_NAME;
 		Enumeration<URL> eURLs;
 		try {
-			eURLs = classLoader.getResources(EXTENSION_FILE_PATH);
+			eURLs = classLoader.getResources(extensionFilePath);
 			while (eURLs.hasMoreElements()) {
 				extensionsInfoURLs.add(eURLs.nextElement());
 			}
-			
-		} catch (IOException e1) {}
 
-		for (URL url : extensionsInfoURLs)
+		} catch (IOException e1) {
+			throw new RuntimeException(e1);
+		}
+
+		for (URL url : extensionsInfoURLs) {
 			logger.debug("Found extensions info at: {}", url);
-		if (extensionsInfoURLs.size() == 0)
+		}
+		if (extensionsInfoURLs.size() == 0) {
 			logger.warn("Found no extensions information.");
+		}
 
 		// 4. gather the list of all extension class files
-		
+
 		Set<String> extensionClasses = new HashSet<String>();
 		for (URL url : extensionsInfoURLs) {
 			try {
@@ -199,11 +207,12 @@ public class ExtensionRegistry implements IExtensionRegistry {
 		}
 
 		// 5. Load extensions
-		
+
 		for (String extClassName : extensionClasses) {
-			if (extClassName.trim().isEmpty())
+			if (extClassName.trim().isEmpty()) {
 				continue;
-			
+			}
+
 			Class<?> c;
 			try {
 				c = classLoader.loadClass(extClassName);
@@ -214,25 +223,30 @@ public class ExtensionRegistry implements IExtensionRegistry {
 					logger.debug("Loading extension {}.", ext.getName());
 				}
 			} catch (Exception e) {
-				logger.warn("Could not load extension {}. Reason: ({}) {}", new Object[] { extClassName, e.getClass().getSimpleName(), e.getMessage() });
+				logger.warn("Could not load extension {}. Reason: ({}) {}", new Object[] { extClassName,
+						e.getClass().getSimpleName(), e.getMessage() });
 			}
 		}
 	}
 
 	/**
-	 * Loads JAR files and plugin extension information from the given relative plugins directory. 
+	 * Loads JAR files and plugin extension information from the given relative
+	 * plugins directory.
 	 * 
-	 * @param pluginsDirName relative path to the plugins folder
-	 * @param extensionsInfoURLs the resulting set of URLs to extension infos
-	 * @param jarURLs the resulting aggregated JAR URLs 
+	 * @param pluginsDirName
+	 *            relative path to the plugins folder
+	 * @param extensionsInfoURLs
+	 *            the resulting set of URLs to extension infos
+	 * @param jarURLs
+	 *            the resulting aggregated JAR URLs
 	 */
 	private void loadExtensionsInfoAndJARs(String pluginsDirName, Set<URL> extensionsInfoURLs, Set<URL> jarURLs) {
-		IConfiguration config = Configuration.getSingleton();
+		IConfiguration config = Configuration.getSessionUnrelatedSingleton(this.getClass());
 
 		if (!Tools.isAbsolutePath(pluginsDirName)) {
 			pluginsDirName = Tools.concatFileName(config.getAppRootDirectory(), pluginsDirName);
 		}
-			
+
 		final File pluginsDir = new File(pluginsDirName);
 		final String defExtensionsFileName = pluginsDirName + File.separatorChar + EXTENSIONS_FILE_NAME;
 		final File defExtensionsFile = new File(defExtensionsFileName);
@@ -252,122 +266,39 @@ public class ExtensionRegistry implements IExtensionRegistry {
 					}
 				}
 			}
-			for (URL url : jarURLs)
+			for (URL url : jarURLs) {
 				logger.debug("Found extension JAR file {}", url);
-
+			}
 		} else {
 			logger.debug("Could not locate the plugins folder ({}), but it is OK.", pluginsDirName);
 		}
 
 		// 2. add the 'extensions.info' of the plugins directory if it exists
-		
+
 		if (defExtensionsFile.exists()) {
 			try {
 				extensionsInfoURLs.add(new URL("file", "", defExtensionsFileName));
 			} catch (MalformedURLException e1) {
-				logger.warn("Could not read '{}'. Reason: (MalformedURLException) {}", defExtensionsFile, e1.getMessage());
+				logger.warn("Could not read '{}'. Reason: (MalformedURLException) {}", defExtensionsFile,
+						e1.getMessage());
 			}
 		}
 
 	}
-	
-	
+
 	@Override
-	public <EA extends ISoPeCoExtensionArtifact> EA getExtensionArtifact(Class<? extends ISoPeCoExtension<EA>> c, String name) {
+	public <EA extends ISoPeCoExtensionArtifact> EA getExtensionArtifact(Class<? extends ISoPeCoExtension<EA>> c,
+			String name) {
 		Extensions<? extends ISoPeCoExtension<EA>> extensions = getExtensions(c);
 
-		for (ISoPeCoExtension<EA> ext : extensions)
-			if (Tools.strEqualName(ext.getName(), name))
+		for (ISoPeCoExtension<EA> ext : extensions) {
+			if (Tools.strEqualName(ext.getName(), name)) {
 				return ext.createExtensionArtifact();
-
+			}
+		}
 		logger.warn("Could not find extension {} for extension category {}.", name, c.getSimpleName());
 
 		return null;
 	}
-
-	// ----------------------------
-
-	public static void main(String[] args) {
-		IExtensionRegistry er = ExtensionRegistry.getSingleton();
-	}
-
-	// ------------- Equinox Tests
-
-	// // ---------------------
-	//
-	// public static void main(String[] args) {
-	// ServiceLoader<FrameworkFactory> ffsl =
-	// ServiceLoader.load(FrameworkFactory.class);
-	// Iterator<FrameworkFactory> iterator = ffsl.iterator();
-	// FrameworkFactory ff = null;
-	// if (iterator.hasNext())
-	// ff = iterator.next();
-	// Map<String, String> config = new HashMap<String, String>();
-	//
-	// config.put("data", "/roozbeh/temp/plugins");
-	//
-	// Framework fw = ff.newFramework(config);
-	// try {
-	// fw.start();
-	//
-	// System.out.println("Framework: " + fw);
-	//
-	// BundleContext bc = fw.getBundleContext();
-	// ServiceTracker tracker = new ServiceTracker(bc,
-	// IExtensionRegistry.class.getName(), null);
-	// tracker.open();
-	// IExtensionRegistry registry =(IExtensionRegistry) tracker.getService();
-	//
-	// System.out.println(registry);
-	//
-	// fw.stop();
-	// fw.waitForStop(0);
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	// }
-
-	// public static void main(String[] args) {
-	// ServiceLoader<FrameworkFactory> ffsl =
-	// ServiceLoader.load(FrameworkFactory.class);
-	// Iterator<FrameworkFactory> iterator = ffsl.iterator();
-	// FrameworkFactory ff = null;
-	// if (iterator.hasNext())
-	// ff = iterator.next();
-	// Map<String,String> config = new HashMap<String,String>();
-	//
-	// config.put("data", "/roozbeh/temp/plugins");
-	//
-	// Framework fw = ff.newFramework(config);
-	// try {
-	// fw.start();
-	//
-	// System.out.println(fw);
-	//
-	// BundleContext bc = fw.getBundleContext();
-	//
-	// //bc.installBundle("file:///roozbeh/temp/plugins/org.sopeco.plugin.std.exploration_1.0.0.test.jar");
-	// bc.installBundle("file:///roozbeh/temp/plugins/org.sopeco.plugin.std.parametervariation_1.0.0.test.jar");
-	//
-	// System.out.println(bc.getBundles().length);
-	//
-	// for (Bundle b: bc.getBundles())
-	// System.out.println(b);
-	//
-	// org.eclipse.core.runtime.IExtensionRegistry ier =
-	// RegistryFactory.createRegistry(null, "m", "u");
-	//
-	// System.out.println(ier);
-	//
-	// // Equinox e = (Equinox) fw;
-	// // for (ServiceReference<?> sf: e.getRegisteredServices())
-	// // System.out.println(sf);
-	// fw.stop();
-	// fw.waitForStop(0);
-	// } catch (Exception e) {
-	// e.printStackTrace();
-	// }
-	//
-	// }
 
 }

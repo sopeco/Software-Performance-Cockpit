@@ -19,6 +19,7 @@ import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.persistence.entities.keys.ExperimentSeriesPK;
 import org.sopeco.persistence.entities.keys.ScenarioInstancePK;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
+import org.sopeco.util.session.SessionAwareObject;
 
 /**
  * This class implements the SoPeCo persistence interface based on the Java
@@ -27,7 +28,7 @@ import org.sopeco.persistence.exceptions.DataNotFoundException;
  * @author Dennis Westermann
  * 
  */
-public class JPAPersistenceProvider implements IPersistenceProvider {
+public class JPAPersistenceProvider extends SessionAwareObject implements IPersistenceProvider {
 
 	private EntityManagerFactory emf;
 
@@ -42,8 +43,8 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 	 *            - the name of the persistence unit that should be used by the
 	 *            provider
 	 */
-	protected JPAPersistenceProvider(EntityManagerFactory factory) {
-
+	protected JPAPersistenceProvider(String sessionId, EntityManagerFactory factory) {
+		super(sessionId);
 		emf = factory;
 
 	}
@@ -51,9 +52,11 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 	@Override
 	public void store(ExperimentSeriesRun experimentSeriesRun) {
 
-		experimentSeriesRun.storeDataSets(); // required due to decoupling of
-												// data
-												// sets from entity structure
+		experimentSeriesRun.storeDataSets(this); // required due to decoupling
+													// of
+													// data
+													// sets from entity
+													// structure
 
 		EntityManager em = emf.createEntityManager();
 		try {
@@ -92,7 +95,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 	@Override
 	public void store(ExperimentSeries experimentSeries) {
 
-		experimentSeries.storeDataSets(); // required due to decoupling of data
+		storeDataSets(experimentSeries); // required due to decoupling of data
 											// sets from entity structure
 
 		EntityManager em = emf.createEntityManager();
@@ -114,8 +117,11 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 	@Override
 	public void store(ScenarioInstance scenarioInstance) {
 
-		scenarioInstance.storeDataSets(); // required due to decoupling of data
+		storeDataSets(scenarioInstance); // required due to decoupling of data
 											// sets from entity structure
+		if(scenarioInstance.getScenarioDefinition()!=null){
+			this.store(scenarioInstance.getScenarioDefinition());
+		}
 
 		EntityManager em = emf.createEntityManager();
 		try {
@@ -214,6 +220,15 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 
 		// check if query was successful
 		if (experimentSeries != null) {
+			// set persistence provider for experiment series runs and processed
+			// datasets, as these require the provider for lazy loading datasets
+			for (ExperimentSeriesRun run : experimentSeries.getExperimentSeriesRuns()) {
+				run.setPersistenceProvider(this);
+			}
+			for (ProcessedDataSet pd : experimentSeries.getProcessedDataSets()) {
+				pd.setPersistenceProvider(this);
+			}
+
 			return experimentSeries;
 		} else {
 			logger.debug(errorMsg);
@@ -240,6 +255,19 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 					resultSeries = series;
 				}
 			}
+			if (resultSeries != null) {
+				// set persistence provider for experiment series runs and
+				// processed
+				// datasets, as these require the provider for lazy loading
+				// datasets
+				for (ExperimentSeriesRun run : resultSeries.getExperimentSeriesRuns()) {
+					run.setPersistenceProvider(this);
+				}
+				for (ProcessedDataSet pd : resultSeries.getProcessedDataSets()) {
+					pd.setPersistenceProvider(this);
+				}
+			}
+
 			return resultSeries;
 		}
 
@@ -275,6 +303,16 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 
 		// check if query was successful
 		if (experimentSeriesWithEqualName != null) {
+			// set persistence provider for experiment series runs and processed
+			// datasets, as these require the provider for lazy loading datasets
+			for (ExperimentSeries es : experimentSeriesWithEqualName) {
+				for (ExperimentSeriesRun run : es.getExperimentSeriesRuns()) {
+					run.setPersistenceProvider(this);
+				}
+				for (ProcessedDataSet pd : es.getProcessedDataSets()) {
+					pd.setPersistenceProvider(this);
+				}
+			}
 			return experimentSeriesWithEqualName;
 		} else {
 			logger.debug(errorMsg);
@@ -310,6 +348,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 
 		// check if query was successful
 		if (experimentSeriesRun != null) {
+			experimentSeriesRun.setPersistenceProvider(this);
 			return experimentSeriesRun;
 		} else {
 			logger.debug(errorMsg);
@@ -334,6 +373,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 
 		// check if query was successful
 		if (dataSet != null) {
+
 			return dataSet;
 		} else {
 			logger.debug(errorMsg);
@@ -372,6 +412,18 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 
 		// check if query was successful
 		if (scenarioInstances != null) {
+			// set persistence provider for experiment series runs and processed
+			// datasets, as these require the provider for lazy loading datasets
+			for (ScenarioInstance si : scenarioInstances) {
+				for (ExperimentSeries es : si.getExperimentSeriesList()) {
+					for (ExperimentSeriesRun run : es.getExperimentSeriesRuns()) {
+						run.setPersistenceProvider(this);
+					}
+					for (ProcessedDataSet pd : es.getProcessedDataSets()) {
+						pd.setPersistenceProvider(this);
+					}
+				}
+			}
 			return scenarioInstances;
 		} else {
 			logger.debug(errorMsg);
@@ -403,6 +455,18 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 
 		// check if query was successful
 		if (scenarioInstances != null) {
+			// set persistence provider for experiment series runs and processed
+			// datasets, as these require the provider for lazy loading datasets
+			for (ScenarioInstance si : scenarioInstances) {
+				for (ExperimentSeries es : si.getExperimentSeriesList()) {
+					for (ExperimentSeriesRun run : es.getExperimentSeriesRuns()) {
+						run.setPersistenceProvider(this);
+					}
+					for (ProcessedDataSet pd : es.getProcessedDataSets()) {
+						pd.setPersistenceProvider(this);
+					}
+				}
+			}
 			return scenarioInstances;
 		} else {
 			logger.debug(errorMsg);
@@ -445,6 +509,17 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 
 		// check if query was successful
 		if (scenarioInstance != null) {
+			// set persistence provider for experiment series runs and processed
+			// datasets, as these require the provider for lazy loading datasets
+			for (ExperimentSeries es : scenarioInstance.getExperimentSeriesList()) {
+				for (ExperimentSeriesRun run : es.getExperimentSeriesRuns()) {
+					run.setPersistenceProvider(this);
+				}
+				for (ProcessedDataSet pd : es.getProcessedDataSets()) {
+					pd.setPersistenceProvider(this);
+				}
+			}
+
 			return scenarioInstance;
 		} else {
 			logger.debug(errorMsg);
@@ -486,9 +561,11 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 
 		String errorMsg = "Could not remove experiment series run " + experimentSeriesRun.toString();
 
-		experimentSeriesRun.removeDataSets(); // required due to decoupling of
-												// data
-												// sets from entity structure
+		experimentSeriesRun.removeDataSets(this); // required due to decoupling
+													// of
+													// data
+													// sets from entity
+													// structure
 
 		EntityManager em = emf.createEntityManager();
 		try {
@@ -520,7 +597,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 	public void remove(ExperimentSeries experimentSeries) throws DataNotFoundException {
 		String errorMsg = "Could not remove experiment series " + experimentSeries.toString();
 
-		experimentSeries.removeDataSets(); // required due to decoupling of data
+		removeDataSets(experimentSeries); // required due to decoupling of data
 											// sets from entity structure
 
 		EntityManager em = emf.createEntityManager();
@@ -550,7 +627,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 	@Override
 	public void remove(ScenarioInstance scenarioInstance) throws DataNotFoundException {
 
-		scenarioInstance.removeDataSets(); // required due to decoupling of data
+		removeDataSets(scenarioInstance); // required due to decoupling of data
 											// sets from entity structure
 
 		String errorMsg = "Could not remove scenario instance " + scenarioInstance.toString();
@@ -636,7 +713,7 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 
 	@Override
 	public void store(ProcessedDataSet processedDataSet) {
-		processedDataSet.storeDataSets(); // required due to decoupling of
+		processedDataSet.storeDataSets(this); // required due to decoupling of
 
 		EntityManager em = emf.createEntityManager();
 		try {
@@ -658,9 +735,9 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 	public void remove(ProcessedDataSet processedDataSet) throws DataNotFoundException {
 		String errorMsg = "Could not remove experiment series run " + processedDataSet.toString();
 
-		processedDataSet.removeDataSets(); // required due to decoupling of
-											// data
-											// sets from entity structure
+		processedDataSet.removeDataSets(this); // required due to decoupling of
+												// data
+												// sets from entity structure
 
 		EntityManager em = emf.createEntityManager();
 		try {
@@ -768,6 +845,48 @@ public class JPAPersistenceProvider implements IPersistenceProvider {
 		} else {
 			logger.debug(errorMsg);
 			throw new DataNotFoundException(errorMsg);
+		}
+	}
+
+	/**
+	 * Stores the data sets of all experiment runs in the database.
+	 */
+	public void storeDataSets(ScenarioInstance scenario) {
+		for (ExperimentSeries series : scenario.getExperimentSeriesList()) {
+			storeDataSets(series);
+		}
+	}
+
+	/**
+	 * Removes the data sets of all experiment runs in the database.
+	 */
+	public void removeDataSets(ScenarioInstance scenario) {
+		for (ExperimentSeries series : scenario.getExperimentSeriesList()) {
+			removeDataSets(series);
+		}
+	}
+
+	/**
+	 * Stores the data sets of all experiment series runs in the database.
+	 */
+	public void storeDataSets(ExperimentSeries experimentSeries) {
+		for (ExperimentSeriesRun run : experimentSeries.getExperimentSeriesRuns()) {
+			run.storeDataSets(this);
+		}
+		for (ProcessedDataSet pds : experimentSeries.getProcessedDataSets()) {
+			pds.storeDataSets(this);
+		}
+	}
+
+	/**
+	 * Removes the data sets of all experiment series runs in the database.
+	 */
+	public void removeDataSets(ExperimentSeries experimentSeries) {
+		for (ExperimentSeriesRun run : experimentSeries.getExperimentSeriesRuns()) {
+			run.removeDataSets(this);
+		}
+		for (ProcessedDataSet pds : experimentSeries.getProcessedDataSets()) {
+			pds.removeDataSets(this);
 		}
 	}
 

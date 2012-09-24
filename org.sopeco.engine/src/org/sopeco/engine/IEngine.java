@@ -10,39 +10,64 @@ import org.sopeco.engine.registry.IExtensionRegistry;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.util.session.ISessionAwareObject;
 
 /**
  * Interface of the SoPeCo Engine.
  * 
  * @author Roozbeh Farahbod
- *
+ * 
  */
-public interface IEngine {
+public interface IEngine extends ISessionAwareObject {
 
 	/**
-	 * Returns the global configuration element.
+	 * Returns the configuration element used for the session this engine
+	 * belongs to.
+	 * 
+	 * @return the configuration element used for the session this engine
+	 *         belongs to.
 	 */
-	public IConfiguration getConfiguration();
-	
+	IConfiguration getConfiguration();
+
 	/**
 	 * Returns the SoPeCo extension registry.
+	 * 
+	 * @return the SoPeCo extension registry.
 	 */
-	public IExtensionRegistry getExtensionRegistry();
+	IExtensionRegistry getExtensionRegistry();
 
 	// TODO comments and imps
-	
-	public IExperimentController getExperimentController();
-	
-	public IExperimentSeriesManager getExperimentSeriesManager();
-	
-	public IPersistenceProvider getPersistenceProvider();
-	
+
 	/**
-	 * Runs the scenario; i.e., runs the measurements defined
-	 * in the scenario against the target system. 
+	 * Returns the experiment controller used by this engine.
 	 * 
-	 * @param scenario a scenario definition
+	 * @return the experiment controller used by this engine.
+	 */
+	IExperimentController getExperimentController();
+
+	/**
+	 * Returns the experiment series manager used by this engine.
+	 * 
+	 * @return the experiment series manager used by this engine.
+	 */
+	IExperimentSeriesManager getExperimentSeriesManager();
+
+	/**
+	 * Returns the persistence provider used for the session this engine belongs
+	 * to.
+	 * 
+	 * @return the persistence provider used for the session this engine belongs
+	 *         to.
+	 */
+	IPersistenceProvider getPersistenceProvider();
+
+	/**
+	 * Runs the scenario; i.e., runs the measurements defined in the scenario
+	 * against the target system.
+	 * 
+	 * @param scenario
+	 *            a scenario definition
 	 * @return a scenario instance
 	 */
-	public ScenarioInstance run(ScenarioDefinition scenario);
+	ScenarioInstance run(ScenarioDefinition scenario);
 }

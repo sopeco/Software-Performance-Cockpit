@@ -22,6 +22,6 @@ public interface IExperimentSeriesManager {
 	 * 
 	 * @param expSeries an experiment series instance
 	 */
-	public void runExperimentSeries(ExperimentSeries expSeries);
+	 void runExperimentSeries(ExperimentSeries expSeries);
 
 }

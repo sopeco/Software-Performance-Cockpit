@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.config.exception.ConfigurationException;
 import org.sopeco.util.Tools;
+import org.sopeco.util.session.SessionAwareObject;
 
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
@@ -37,12 +38,15 @@ import ch.qos.logback.core.joran.spi.JoranException;
  * @author Roozbeh Farahbod
  * 
  */
-public final class Configuration implements IConfiguration {
+public final class Configuration extends SessionAwareObject implements IConfiguration {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
 
-	/** Holds the singleton reference to this class. */
-	private static IConfiguration singleton = null;
+	private static final String GLOBAL_SESSION_ID = "globalSessionId";
+
+	private static Map<String, IConfiguration> sessionAwareConfigurations = new HashMap<String, IConfiguration>();
+
+	private static IConfiguration sessionUnrelatedConfig;
 
 	/** Holds the default property values. */
 	private Map<String, Object> defaultValues = new HashMap<String, Object>();
@@ -55,7 +59,8 @@ public final class Configuration implements IConfiguration {
 	/*
 	 * Preventing the instantiation of the class by other classes.
 	 */
-	private Configuration(Class<?> mainClass) {
+	private Configuration(Class<?> mainClass, String sessionId) {
+		super(sessionId);
 		try {
 			LOGGER.info("Initializing SoPeCo configuration module{}.", (mainClass == null ? "" : " with main class "
 					+ mainClass.getName() + ""));
@@ -66,30 +71,65 @@ public final class Configuration implements IConfiguration {
 	};
 
 	/**
-	 * Returns a singleton instance of the kernel.
+	 * Returns a singleton instance of the configuration instance which does not
+	 * belong to any session. Use this instance with care. It should be only
+	 * used, if the configuration settings are really unrelated to any session!
 	 * 
-	 * @return
+	 * @return Returns a session-unrelated instance of the configuration.
 	 */
-	public static IConfiguration getSingleton() {
-		if (singleton == null) {
-			singleton = new Configuration(null);
-		}
-
-		return singleton;
+	public static IConfiguration getSessionUnrelatedSingleton() {
+		return getSessionSingleton(null, GLOBAL_SESSION_ID);
 	}
 
 	/**
-	 * Returns a singleton instance of the configuration with the given main
-	 * class.
+	 * Returns a singleton instance of the configuration instance which does not
+	 * belong to any session. Use this instance with care. It should be only
+	 * used, if the configuration settings are really unrelated to any session!
+	 * Uses the given class for loading configuration settings.
 	 * 
+	 * @param mainClass
+	 *            the class whose class loader should be used for configuration
+	 * @return Returns a session-unrelated instance of the configuration.
+	 */
+	public static IConfiguration getSessionUnrelatedSingleton(Class<?> mainClass) {
+		return getSessionSingleton(mainClass, GLOBAL_SESSION_ID);
+	}
+
+	/**
+	 * Returns a session-singleton instance of the configuration for the passed
+	 * session id.
+	 * 
+	 * @param sessionId
+	 *            the session id specifying the session for which the
+	 *            configuration should be returned.
+	 * 
+	 * @return Returns a session-singleton instance of the configuration for the
+	 *         passed session id
+	 */
+	public static IConfiguration getSessionSingleton(String sessionId) {
+		return getSessionSingleton(null, sessionId);
+	}
+
+	/**
+	 * Returns a session-singleton instance of the configuration with the given
+	 * main class.
+	 * 
+	 * @param mainClass
+	 *            the class whose class loader should be used for configuration
+	 * @param sessionId
+	 *            the session id specifying the session for which the
+	 *            configuration should be returned.
+	 * 
+	 * @return Returns a session-singleton instance of the configuration with
+	 *         the given main class.
 	 * @see #setMainClass(Class)
 	 */
-	public static IConfiguration getSingleton(Class<?> mainClass) {
-		if (singleton == null) {
-			singleton = new Configuration(mainClass);
+	public static IConfiguration getSessionSingleton(Class<?> mainClass, String sessionId) {
+		if (!sessionAwareConfigurations.containsKey(sessionId)) {
+			sessionAwareConfigurations.put(sessionId, new Configuration(mainClass, sessionId));
 		}
 
-		return singleton;
+		return sessionAwareConfigurations.get(sessionId);
 	}
 
 	@Override
@@ -500,9 +540,7 @@ public final class Configuration implements IConfiguration {
 
 		if (in == null) {
 			LOGGER.warn("Cannot load configuration file '{}'.", fileName);
-		}
-
-		else {
+		} else {
 			loadConfigFromStream(dest, in);
 			applyConfiguration();
 		}

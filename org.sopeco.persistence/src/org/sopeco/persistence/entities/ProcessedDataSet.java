@@ -14,6 +14,7 @@ import javax.persistence.Transient;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.PersistenceProviderFactory;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
@@ -55,6 +56,12 @@ public class ProcessedDataSet implements Serializable {
 			@JoinColumn(name = "experimentSeriesVersion", referencedColumnName = "version") })
 	private ExperimentSeries experimentSeries;
 
+	/**
+	 * The persistence provider instance which loaded this object.
+	 */
+	@Transient
+	private IPersistenceProvider persistenceProvider;
+	
 	public ProcessedDataSet() {
 	}
 
@@ -84,7 +91,7 @@ public class ProcessedDataSet implements Serializable {
 
 		if (dataSet == null && dataSetId != null) {
 			try {
-				dataSet = PersistenceProviderFactory.getPersistenceProvider().loadDataSet(dataSetId);
+				dataSet = getPersistenceProvider().loadDataSet(dataSetId);
 			} catch (DataNotFoundException e) {
 				logger.warn(e.getMessage());
 			}
@@ -106,21 +113,29 @@ public class ProcessedDataSet implements Serializable {
 		this.experimentSeries = experimentSeries;
 	}
 
-	public void storeDataSets() {
+	public void storeDataSets(IPersistenceProvider provider) {
 		if (this.getDataSet() != null) {
-			PersistenceProviderFactory.getPersistenceProvider().store(this.getDataSet());
+			provider.store(this.getDataSet());
 		}
 
 	}
 
-	public void removeDataSets() {
+	public void removeDataSets(IPersistenceProvider provider) {
 		if (this.dataSetId != null) {
 			try {
-				PersistenceProviderFactory.getPersistenceProvider().remove(this.getDataSet());
+				provider.remove(this.getDataSet());
 			} catch (DataNotFoundException e) {
 				logger.warn(e.getMessage());
 			}
 		}
+	}
+	
+	public IPersistenceProvider getPersistenceProvider() {
+		return persistenceProvider;
+	}
+
+	public void setPersistenceProvider(IPersistenceProvider persistenceProvider) {
+		this.persistenceProvider = persistenceProvider;
 	}
 
 }

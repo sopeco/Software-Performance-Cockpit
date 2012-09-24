@@ -39,10 +39,19 @@ public class ExperimentSeriesManager implements IExperimentSeriesManager {
 
 	private final static Logger logger = LoggerFactory.getLogger(ExperimentSeriesManager.class);
 	
+	private IEngine engine;
+	
+	public void setEngine(IEngine usedEngine) {
+		this.engine = usedEngine;
+	}
+	
 
 	@Override
 	public void runExperimentSeries(ExperimentSeries expSeries) {
-		final IEngine engine = EngineFactory.INSTANCE.getEngine();
+		if(engine == null){
+			logger.error("Engine has not been set!");
+			throw new RuntimeException("Engine is not set!");
+		}
 		final IExtensionRegistry registry = engine.getExtensionRegistry();
 		final ExperimentSeriesDefinition expSeriesDef = expSeries.getExperimentSeriesDefinition();
 		IExperimentController expController = engine.getExperimentController();
