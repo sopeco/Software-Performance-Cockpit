@@ -34,7 +34,7 @@ import org.sopeco.persistence.exceptions.DataNotFoundException;
 public class OverwriteTest {
 	Logger logger = LoggerFactory.getLogger(NewVersionTest.class);
 
-	private static final String ME_URI = "rmi://localhost:1099/DummyMEController";
+	private static final String ME_URI = "rmi://localhost:1098/DummyMEController";
 
 
 	private static final String MODEL_CHANGE_HANDLILNG_MODE = "overwrite";
