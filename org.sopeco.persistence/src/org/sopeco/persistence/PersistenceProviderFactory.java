@@ -69,7 +69,7 @@ public class PersistenceProviderFactory {
 	/**
 	 * Private Constructor for singleton instance.
 	 */
-	private PersistenceProviderFactory() {
+	protected PersistenceProviderFactory() {
 
 	}
 
