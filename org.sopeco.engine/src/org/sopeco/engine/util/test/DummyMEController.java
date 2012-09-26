@@ -1,6 +1,7 @@
 package org.sopeco.engine.util.test;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentControlle
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
+import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.NumberOfRepetitions;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.util.ParameterCollection;
@@ -28,19 +30,19 @@ import org.sopeco.util.Tools;
  */
 public class DummyMEController implements IMeasurementEnvironmentController {
 
-	private static Logger logger = LoggerFactory.getLogger(DummyMEController.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(DummyMEController.class);
 
 	private ParameterCollection<ParameterDefinition> observationParameterList = null;
 
 	@Override
 	public void initialize(ParameterCollection<ParameterValue<?>> initializationPVList) {
-		logger.debug("Initialize measurement environment:");
+		LOGGER.debug("Initialize measurement environment:");
 		logParameterValueCollection(initializationPVList);
 	}
 
 	@Override
 	public void prepareExperimentSeries(ParameterCollection<ParameterValue<?>> preparationPVList) {
-		logger.debug("Prepare experiment series:");
+		LOGGER.debug("Prepare experiment series:");
 		logParameterValueCollection(preparationPVList);
 	}
 
@@ -48,44 +50,44 @@ public class DummyMEController implements IMeasurementEnvironmentController {
 	public Collection<ParameterValueList<?>> runExperiment(ParameterCollection<ParameterValue<?>> inputPVList,
 			ExperimentTerminationCondition terminationCondition) {
 		Map<ParameterDefinition, ParameterValueList<?>> map = new HashMap<ParameterDefinition, ParameterValueList<?>>();
-		for (ParameterDefinition pd : observationParameterList)
+		for (ParameterDefinition pd : observationParameterList) {
 			map.put(pd, new ParameterValueList<Serializable>(pd));
-
-		logger.debug("Run experiment: ");
+		}
+		LOGGER.debug("Run experiment: ");
 		logParameterValueCollection(inputPVList);
 
 		for (int i = 0; i < ((NumberOfRepetitions) terminationCondition).getNumberOfRepetitions(); i++) {
-			logger.debug("Running repetition {}.", i + 1);
+			LOGGER.debug("Running repetition {}.", i + 1);
 			for (ParameterDefinition parameter : observationParameterList) {
 				map.get(parameter).addValue(createRandomValue(parameter));
 			}
 		}
-		logger.debug("Finished experiment.");
+		LOGGER.debug("Finished experiment.");
 		return new ArrayList<ParameterValueList<?>>(map.values());
 
 	}
 
 	@Override
 	public void finalizeExperimentSeries() {
-		logger.debug("Finalize experiment series.");
+		LOGGER.debug("Finalize experiment series.");
 	}
 
 	@Override
 	public void setObservationParameters(ParameterCollection<ParameterDefinition> observationParameters) {
-		logger.debug("Set observation parameters: ");
+		LOGGER.debug("Set observation parameters: ");
 		logParameterDefinitionCollection(observationParameters);
 		this.observationParameterList = observationParameters;
 	}
 
 	private void logParameterValueCollection(ParameterCollection<ParameterValue<?>> parameterCollection) {
 		for (ParameterValue<?> parameterValue : parameterCollection) {
-			logger.debug("{}: {}", parameterValue.getParameter().getFullName(), parameterValue.getValueAsString());
+			LOGGER.debug("{}: {}", parameterValue.getParameter().getFullName(), parameterValue.getValueAsString());
 		}
 	}
 
 	private void logParameterDefinitionCollection(ParameterCollection<ParameterDefinition> parameterCollection) {
 		for (ParameterDefinition parameterDefinition : parameterCollection) {
-			logger.debug("{}", parameterDefinition.getFullName());
+			LOGGER.debug("{}", parameterDefinition.getFullName());
 		}
 	}
 
@@ -103,5 +105,10 @@ public class DummyMEController implements IMeasurementEnvironmentController {
 		default:
 			throw new IllegalArgumentException("ParameterType not supported: " + parameter);
 		}
+	}
+
+	@Override
+	public MeasurementEnvironmentDefinition getMEDefinition() throws RemoteException {
+		return null;
 	}
 }

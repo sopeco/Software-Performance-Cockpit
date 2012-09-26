@@ -1,6 +1,7 @@
 package org.sopeco.runner;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,6 +14,7 @@ import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentControlle
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
+import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.NumberOfRepetitions;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.util.ParameterCollection;
@@ -103,5 +105,11 @@ public class DummyMEController implements IMeasurementEnvironmentController {
 		default:
 			throw new IllegalArgumentException("ParameterType not supported: " + parameter);
 		}
+	}
+
+	@Override
+	public MeasurementEnvironmentDefinition getMEDefinition() throws RemoteException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
