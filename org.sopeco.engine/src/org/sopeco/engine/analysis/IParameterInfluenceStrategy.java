@@ -9,5 +9,11 @@ package org.sopeco.engine.analysis;
  */
 public interface IParameterInfluenceStrategy extends IAnalysisStrategy {
 
+	/**
+	 * Returns an influence result provided by this parameter influence
+	 * strategy.
+	 * 
+	 * @return an influence result
+	 */
 	IParameterInfluenceResult getParameterInfluenceResult();
 }

@@ -27,14 +27,14 @@ public class ScreeningDesignResult implements IScreeningAnalysisResult {
 	 * List of all derived ParameterEffect-objects.
 	 */
 	private List<ParameterEffect> parameterEffects;
-	
+
 	/**
 	 * Unique identifier for this result instance.
 	 */
 	private String resultId;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 * 
 	 * @param strategy
 	 *            the analysis strategy.
@@ -49,6 +49,12 @@ public class ScreeningDesignResult implements IScreeningAnalysisResult {
 		return this.strategy;
 	}
 
+	/**
+	 * Adds the given parameter effect to the screening design result.
+	 * 
+	 * @param effect
+	 *            {@link ParameterEffect} to be added
+	 */
 	public void addParameterEffect(ParameterEffect effect) {
 		if (effect != null) {
 			parameterEffects.add(effect);
@@ -83,12 +89,11 @@ public class ScreeningDesignResult implements IScreeningAnalysisResult {
 	}
 
 	@Override
-	public ParameterEffect getInteractionEffectByParameters(
-			List<ParameterDefinition> parameters) {
+	public ParameterEffect getInteractionEffectByParameters(List<ParameterDefinition> parameters) {
 
 		for (ParameterEffect effect : parameterEffects) {
 			if (parameters.size() == effect.getIndependentParameters().size()
-					&& effect.getIndependentParameters().contains(parameters)) {
+					&& effect.getIndependentParameters().containsAll(parameters)) {
 				return effect;
 			}
 		}
@@ -96,12 +101,11 @@ public class ScreeningDesignResult implements IScreeningAnalysisResult {
 	}
 
 	@Override
-	public List<ParameterEffect> getAllInteractionEffectsByParameters(
-			List<ParameterDefinition> parameters) {
+	public List<ParameterEffect> getAllInteractionEffectsByParameters(List<ParameterDefinition> parameters) {
 
 		List<ParameterEffect> resultEffects = new ArrayList<ParameterEffect>();
 		for (ParameterEffect effect : parameterEffects) {
-			if (effect.getIndependentParameters().contains(parameters)) {
+			if (effect.getIndependentParameters().containsAll(parameters)) {
 				resultEffects.add(effect);
 			}
 		}
@@ -109,8 +113,7 @@ public class ScreeningDesignResult implements IScreeningAnalysisResult {
 	}
 
 	@Override
-	public List<ParameterEffect> getInteractionEffectsOfSingleParam(
-			ParameterDefinition param) {
+	public List<ParameterEffect> getInteractionEffectsOfSingleParam(ParameterDefinition param) {
 		List<ParameterEffect> resultEffects = new ArrayList<ParameterEffect>();
 		for (ParameterEffect effect : parameterEffects) {
 			if (effect.getIndependentParameters().size() >= 2) {
@@ -133,7 +136,7 @@ public class ScreeningDesignResult implements IScreeningAnalysisResult {
 		}
 		return null;
 	}
-	
+
 	@Override
 	public List<IParameterInfluenceDescriptor> getAllParameterInfluenceDescriptors() {
 		List<IParameterInfluenceDescriptor> influenceList = new LinkedList<IParameterInfluenceDescriptor>();
@@ -146,7 +149,6 @@ public class ScreeningDesignResult implements IScreeningAnalysisResult {
 		return getMainEffectByParam(parameter);
 	}
 
-
 	@Override
 	public String getId() {
 		return this.resultId;
@@ -154,7 +156,7 @@ public class ScreeningDesignResult implements IScreeningAnalysisResult {
 
 	@Override
 	public void setId(String id) {
-		
+
 		this.resultId = id;
 	}
 }

@@ -23,11 +23,18 @@ import org.sopeco.util.system.OutputStreamLogger;
  * @author Jens Happe
  * 
  */
-public class RmiMEConnector {
-	
+public final class RmiMEConnector {
+
+	/**
+	 * This is a utility class, thus using private constructor.
+	 */
+	private RmiMEConnector() {
+
+	}
+
 	/** default logger */
 	private static Logger logger = LoggerFactory.getLogger(RmiMEConnector.class);
-	
+
 	/** singleton for RMI registry */
 	private static Registry registry = null;
 
@@ -46,7 +53,8 @@ public class RmiMEConnector {
 
 			logger.debug("Looking up {}", meURI);
 
-			IMeasurementEnvironmentController meController = (IMeasurementEnvironmentController) Naming.lookup(meURI.toString());
+			IMeasurementEnvironmentController meController = (IMeasurementEnvironmentController) Naming.lookup(meURI
+					.toString());
 
 			logger.info("Received SatelliteController instance from {}", meURI);
 
@@ -70,7 +78,7 @@ public class RmiMEConnector {
 	 * 
 	 * @param meController
 	 *            controller to be called remotely
-	 * @param meURI
+	 * @param meUriStr
 	 *            String representation of the URI where the controller shall be
 	 *            published.
 	 */
@@ -95,37 +103,37 @@ public class RmiMEConnector {
 	public static void startRemoteMEController(IMeasurementEnvironmentController meController, URI meURI) {
 
 		try {
-			
+
 			logger.info("Publishing MEController under: {}", meURI.toString());
 
 			Registry registry = getRegistry(meURI);
 
-			IMeasurementEnvironmentController meControllerStub = (IMeasurementEnvironmentController) UnicastRemoteObject.exportObject(meController, 0);
+			IMeasurementEnvironmentController meControllerStub = (IMeasurementEnvironmentController) UnicastRemoteObject
+					.exportObject(meController, 0);
 
 			configureRemoteLogger();
 
 			registry.rebind(getName(meURI), meControllerStub);
 
 			logger.info("Publishing finished.", meURI.toString());
-			
+
 		} catch (RemoteException e) {
-			
+
 			logger.error("Cannot start the RMI server. Error: {}", e.getMessage());
 			throw new RuntimeException("Cannot start the RMI server. Error: ", e);
-		
+
 		}
 	}
 
-	
 	/**
 	 * Gets or creates the RMI registry for the given URI.
-	 *  
+	 * 
 	 * @param meURI
 	 * @throws RemoteException
 	 */
 	private static synchronized Registry getRegistry(URI meURI) throws RemoteException {
-		if (registry == null){
-			registry  = LocateRegistry.createRegistry(meURI.getPort()); 
+		if (registry == null) {
+			registry = LocateRegistry.createRegistry(meURI.getPort());
 		}
 		return registry;
 	}

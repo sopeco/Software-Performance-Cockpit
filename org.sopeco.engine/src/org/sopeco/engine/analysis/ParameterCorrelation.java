@@ -9,6 +9,8 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
  * @author Dennis Westermann, Pascal Meier
  */
 public class ParameterCorrelation implements Comparable<ParameterCorrelation>, IParameterInfluenceDescriptor {
+
+	private static final double SMALL_NUMBER = 0.000001;
 	/**
 	 * Independent parameter of which the effect is estimated
 	 */
@@ -31,16 +33,19 @@ public class ParameterCorrelation implements Comparable<ParameterCorrelation>, I
 	private double pValue;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 * 
-	 * @param parameter
+	 * @param indepParameter
 	 *            independent parameter of which the effect is estimated
 	 * @param corrValue
 	 *            Percent value of the estimated influence
-	 * @param parameterBoundary
-	 *            information about the boundaries of the parameter
+	 * @param depParameter
+	 *            dependent parameter where to observe the effect
+	 * @param pValue
+	 *            the calculated p-Value
 	 */
-	public ParameterCorrelation(ParameterDefinition indepParameter, ParameterDefinition depParameter, double corrValue, double pValue) {
+	public ParameterCorrelation(ParameterDefinition indepParameter, ParameterDefinition depParameter, double corrValue,
+			double pValue) {
 		super();
 		this.indepParameter = indepParameter;
 		this.corrValue = corrValue;
@@ -64,8 +69,7 @@ public class ParameterCorrelation implements Comparable<ParameterCorrelation>, I
 		return depParameter;
 	}
 
-	
-	/** 
+	/**
 	 * Returns the same result as the getCorrelation() method.
 	 * 
 	 * @return the correlation value (see getCorrelation())
@@ -74,7 +78,7 @@ public class ParameterCorrelation implements Comparable<ParameterCorrelation>, I
 	public double getInfluenceValue() {
 		return this.getCorrelation();
 	}
-	
+
 	/**
 	 * @return a value between -1 and 1 that describes the correlation between
 	 *         the dependent and the independent parameter. The closer the value
@@ -110,16 +114,12 @@ public class ParameterCorrelation implements Comparable<ParameterCorrelation>, I
 	 *         significance level, otherwise <code>false</code>.
 	 */
 	public boolean isCorrelated(double significanceLevel) {
-		if (pValue < 1 - significanceLevel) {
-			return true;
-		} else {
-			return false;
-		}
+		return pValue < (1 - significanceLevel);
 	}
 
 	@Override
 	public int compareTo(ParameterCorrelation otherParameterInfluence) {
-		if (Math.abs(this.corrValue - otherParameterInfluence.getCorrelation()) < 0.000001) {
+		if (Math.abs(this.corrValue - otherParameterInfluence.getCorrelation()) < SMALL_NUMBER) {
 			return 0;
 		} else if (Math.abs(this.corrValue) > Math.abs(otherParameterInfluence.getCorrelation())) {
 			return 1;
@@ -127,10 +127,9 @@ public class ParameterCorrelation implements Comparable<ParameterCorrelation>, I
 		return -1;
 	}
 
+	@Override
 	public String toString() {
 		return indepParameter.getName() + " " + corrValue;
 	}
-
-	
 
 }

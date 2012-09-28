@@ -9,7 +9,10 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
  * 
  * @author Dennis Westermann
  */
-public class ParameterRegressionCoefficient implements Comparable<ParameterRegressionCoefficient>, IParameterInfluenceDescriptor {
+public class ParameterRegressionCoefficient implements Comparable<ParameterRegressionCoefficient>,
+		IParameterInfluenceDescriptor {
+
+	private static final double SMALL_NUMBER = 0.000001;
 	/**
 	 * Independent parameter of which the effect is estimated
 	 */
@@ -24,11 +27,17 @@ public class ParameterRegressionCoefficient implements Comparable<ParameterRegre
 	private double regressionCoefficient;
 
 	/**
+	 * Constructor.
+	 * 
 	 * @param indepParameter
+	 *            the independent parameter
 	 * @param depParameter
+	 *            the observed parameter
 	 * @param regressionCoefficient
+	 *            regression coefficient
 	 */
-	public ParameterRegressionCoefficient(ParameterDefinition indepParameter, ParameterDefinition depParameter, double regressionCoefficient) {
+	public ParameterRegressionCoefficient(ParameterDefinition indepParameter, ParameterDefinition depParameter,
+			double regressionCoefficient) {
 		super();
 		this.indepParameter = indepParameter;
 		this.regressionCoefficient = regressionCoefficient;
@@ -72,7 +81,7 @@ public class ParameterRegressionCoefficient implements Comparable<ParameterRegre
 
 	@Override
 	public int compareTo(ParameterRegressionCoefficient otherParameterInfluence) {
-		if (Math.abs(this.regressionCoefficient - otherParameterInfluence.getCoefficient()) < 0.000001) {
+		if (Math.abs(this.regressionCoefficient - otherParameterInfluence.getCoefficient()) < SMALL_NUMBER) {
 			return 0;
 		} else if (Math.abs(this.regressionCoefficient) > Math.abs(otherParameterInfluence.getCoefficient())) {
 			return 1;
@@ -80,6 +89,7 @@ public class ParameterRegressionCoefficient implements Comparable<ParameterRegre
 		return -1;
 	}
 
+	@Override
 	public String toString() {
 		return indepParameter.getName() + " " + regressionCoefficient;
 	}

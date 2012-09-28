@@ -138,11 +138,7 @@ public final class ParameterRelevanceEstimator {
 		double distance = maxValue - minValue;
 
 		// determine relevance
-		if (distance >= minValue * relevanceFactor) {
-			return true;
-		} else {
-			return false;
-		}
+		return distance >= (minValue * relevanceFactor);
 
 	}
 
@@ -176,11 +172,7 @@ public final class ParameterRelevanceEstimator {
 		double distance = maxValue - minValue;
 
 		// determine relevance
-		if (distance >= differenceThreshold) {
-			return true;
-		} else {
-			return false;
-		}
+		return distance >= differenceThreshold;
 	}
 
 }

@@ -10,6 +10,10 @@ package org.sopeco.engine.analysis;
  */
 public interface IAnovaStrategy extends IAnalysisStrategy {
 
+	/**
+	 * Returns an ANOVA result provided by this ANOVA strategy.
+	 * @return ANOVA result.
+	 */
 	IAnovaResult getAnovaResult();
 
 }

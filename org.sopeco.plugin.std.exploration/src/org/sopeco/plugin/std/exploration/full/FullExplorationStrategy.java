@@ -64,7 +64,7 @@ public class FullExplorationStrategy extends AbstractSoPeCoExtensionArtifact imp
 
 	@Override
 	public boolean canRun(ExperimentSeriesDefinition expSeries) {
-		return Tools.strEqualName(provider.getName(), expSeries.getExplorationStrategy().getName());
+		return Tools.strEqualName(getProvider().getName(), expSeries.getExplorationStrategy().getName());
 	}
 
 	@Override

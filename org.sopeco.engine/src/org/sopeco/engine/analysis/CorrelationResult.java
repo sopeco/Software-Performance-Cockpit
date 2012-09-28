@@ -31,7 +31,7 @@ public class CorrelationResult implements ICorrelationResult {
 	private AnalysisConfiguration configuration;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 * 
 	 * @param configuration
 	 *            configuration of the correlation analysis
@@ -44,7 +44,7 @@ public class CorrelationResult implements ICorrelationResult {
 	/**
 	 * Used to store a new ParameterCorrelation-object in the result.
 	 * 
-	 * @param ParameterCorrelation
+	 * @param corr
 	 *            ParameterCorrelation that describes the correlation of a
 	 *            parameter with the observation parameter.
 	 */

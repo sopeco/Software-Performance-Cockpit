@@ -14,10 +14,12 @@ import org.sopeco.engine.registry.ISoPeCoExtension;
 public interface IParameterVariationExtension extends ISoPeCoExtension<IParameterVariation> {
 
 	/** The name of the special constant variation extension. */
-	public static final String CONSTANT_VARIATION_EXTENSION_NAME = "Constant Variation";
+	 String CONSTANT_VARIATION_EXTENSION_NAME = "Constant Variation";
 	
 	/**
 	 * Creates a new parameter variation strategy provided by the extension.
+	 * 
+	 * @return returns the created parameter variation strategy
 	 */
-	public IParameterVariation createExtensionArtifact();
+	 IParameterVariation createExtensionArtifact();
 }

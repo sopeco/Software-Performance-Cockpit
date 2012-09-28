@@ -27,7 +27,7 @@ public interface IPredictionFunctionResult extends IAnalysisResult {
 	 * @throws UnknownParameterException
 	 * 
 	 */
-	public ParameterValue<?> predictOutputParameter(List<ParameterValue<?>> inputParameters);
+	ParameterValue<?> predictOutputParameter(List<ParameterValue<?>> inputParameters);
 
 	/**
 	 * Calculates the output parameter's {@link ParameterValue} for the given
@@ -39,14 +39,14 @@ public interface IPredictionFunctionResult extends IAnalysisResult {
 	 * @return Result computed from the input values.
 	 * @throws UnknownParameterException
 	 */
-	public ParameterValue<?> predictOutputParameter(ParameterValue<?> inputParameter);
+	ParameterValue<?> predictOutputParameter(ParameterValue<?> inputParameter);
 
 	/**
 	 * Returns a String-representation of the contained function.
 	 * 
 	 * @return The representing String.
 	 */
-	public String getFunctionAsString();
+	String getFunctionAsString();
 
 	/**
 	 * Returns a map that holds the information how the values of a non-numeric
@@ -55,6 +55,6 @@ public interface IPredictionFunctionResult extends IAnalysisResult {
 	 * @return a map that holds the information how the values of a non-numeric
 	 *         parameter have been encoded to an Integer representation
 	 */
-	public Map<ParameterDefinition, Map<Object, Integer>> getNonNumericParameterEncodings();
+	Map<ParameterDefinition, Map<Object, Integer>> getNonNumericParameterEncodings();
 
 }

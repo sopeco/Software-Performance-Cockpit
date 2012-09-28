@@ -29,9 +29,9 @@ public class ScreeningAnalysisStrategyExtension extends AbstractAnalysisStrategy
 
 	@Override
 	protected void prepareConfigurationParameterMap() {
-		configParams.put(ScreeningAnalysisStrategyConfiguration.INTERACTION_DEPTH, 
+		getModifiableConfigParams().put(ScreeningAnalysisStrategyConfiguration.INTERACTION_DEPTH, 
 				Integer.toString(ScreeningAnalysisStrategyConfiguration.INTERACTION_DEPTH_DEFAULT_VALUE));
-		configParams.put(ScreeningAnalysisStrategyConfiguration.RANDOMIZE_RUNS, 
+		getModifiableConfigParams().put(ScreeningAnalysisStrategyConfiguration.RANDOMIZE_RUNS, 
 				Boolean.toString(ScreeningAnalysisStrategyConfiguration.RANDOMIZE_RUNS_DEFAULT_VALUE));
 	}
 	

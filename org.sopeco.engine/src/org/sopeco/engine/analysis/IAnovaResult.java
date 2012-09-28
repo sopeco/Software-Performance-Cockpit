@@ -3,7 +3,7 @@ package org.sopeco.engine.analysis;
 import java.util.List;
 
 /**
- * Contains the result of an ANOVA test
+ * Contains the result of an ANOVA test.
  * 
  * @author Dennis Westermann
  */
@@ -15,7 +15,7 @@ public interface IAnovaResult extends IParameterInfluenceResult {
 	 * 
 	 * @return list of all main effects
 	 */
-	public List<AnovaCalculatedEffect> getAllMainEffects();
+	List<AnovaCalculatedEffect> getAllMainEffects();
 
 	/**
 	 * Returns a list of ParameterEffect-Objects where the effect is significant
@@ -27,7 +27,7 @@ public interface IAnovaResult extends IParameterInfluenceResult {
 	 * 
 	 * @return list of main effects with the given significance level
 	 */
-	public List<AnovaCalculatedEffect> getMainEffects(double significanceLevel);
+	List<AnovaCalculatedEffect> getMainEffects(double significanceLevel);
 
 	/**
 	 * Returns a list of all ParameterEffect-Objects describing the F-value of
@@ -35,7 +35,7 @@ public interface IAnovaResult extends IParameterInfluenceResult {
 	 * 
 	 * @return list of all interaction effects
 	 */
-	public List<AnovaCalculatedEffect> getAllInteractionEffects();
+	List<AnovaCalculatedEffect> getAllInteractionEffects();
 
 	/**
 	 * Returns a list of all InteractionEffects with the given depth.
@@ -48,7 +48,7 @@ public interface IAnovaResult extends IParameterInfluenceResult {
 	 * 
 	 * @return list of interaction effects with the given depth
 	 */
-	public List<AnovaCalculatedEffect> getInteractionEffects(int depth);
+	List<AnovaCalculatedEffect> getInteractionEffects(int depth);
 
 	/**
 	 * Returns a list of ParameterEffect-Objects where the effect is significant
@@ -60,7 +60,7 @@ public interface IAnovaResult extends IParameterInfluenceResult {
 	 * 
 	 * @return list of interaction effects with the given significance level
 	 */
-	public List<AnovaCalculatedEffect> getInteractionEffects(double significanceLevel);
+	List<AnovaCalculatedEffect> getInteractionEffects(double significanceLevel);
 
 	/**
 	 * Returns a list of all InteractionEffects with the given depth and the
@@ -74,6 +74,6 @@ public interface IAnovaResult extends IParameterInfluenceResult {
 	 * @return list of interaction effects with the given depth and significance
 	 *         level
 	 */
-	public List<AnovaCalculatedEffect> getInteractionEffects(int depth, double significanceLevel);
+	List<AnovaCalculatedEffect> getInteractionEffects(int depth, double significanceLevel);
 
 }

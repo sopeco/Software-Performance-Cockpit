@@ -31,7 +31,7 @@ public class CSVVariationExtension extends AbstractParameterVariationExtension {
 
 	@Override
 	protected void prepareConfigurationParameterMap() {
-		configParams.put("values", "");
+		getModifiableConfigParameters().put("values", "");
 	}
 
 }

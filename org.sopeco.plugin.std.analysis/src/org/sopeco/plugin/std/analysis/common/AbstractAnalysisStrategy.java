@@ -192,7 +192,7 @@ public abstract class AbstractAnalysisStrategy extends AbstractRStrategy {
 	}
 
 	public boolean supports(AnalysisConfiguration strategyConf) {
-		return strategyConf.getName().equalsIgnoreCase(provider.getName());
+		return strategyConf.getName().equalsIgnoreCase(getProvider().getName());
 	}
 
 }

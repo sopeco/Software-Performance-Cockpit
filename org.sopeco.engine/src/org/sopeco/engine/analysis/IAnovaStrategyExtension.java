@@ -16,7 +16,8 @@ public interface IAnovaStrategyExtension extends ISoPeCoExtension<IAnovaStrategy
 
 	/**
 	 * Creates an ANOVA analysis strategy provided by the extension.
+	 * @return ANOVA analysis strategy 
 	 */
-	public IAnovaStrategy createExtensionArtifact();
+	 IAnovaStrategy createExtensionArtifact();
 
 }

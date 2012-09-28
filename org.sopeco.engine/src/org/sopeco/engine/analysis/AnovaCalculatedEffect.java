@@ -13,54 +13,115 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
  */
 public class AnovaCalculatedEffect extends ParameterEffect {
 
-	int degreesOfFreedom;
-	double sumOfSquares;
-	double meanSquare;
-	double fValue;
-	double pValue;
+	private int degreesOfFreedom;
+	private double sumOfSquares;
+	private double meanSquare;
+	private double fValue;
+	private double pValue;
 
-	public AnovaCalculatedEffect(List<ParameterDefinition> analysedParameters,
-			ParameterDefinition observationParameter) {
+	/**
+	 * Constructor.
+	 * 
+	 * @param analysedParameters
+	 *            a list of independent parameters whose effects should be
+	 *            analysed
+	 * @param observationParameter
+	 *            the observation parameter where to observe the effect
+	 */
+	public AnovaCalculatedEffect(List<ParameterDefinition> analysedParameters, ParameterDefinition observationParameter) {
 		super(analysedParameters, observationParameter, 0);
 	}
 
+	/**
+	 * Returns the degree of freedom for ANOVA.
+	 * 
+	 * @return the degree of freedom for ANOVA.
+	 */
 	public int getDegreesOfFreedom() {
 		return degreesOfFreedom;
 	}
 
+	/**
+	 * Sets the degrees of freedom to be used for ANOVA.
+	 * 
+	 * @param degreesOfFreedom
+	 *            degrees of freedom
+	 */
 	public void setDegreesOfFreedom(int degreesOfFreedom) {
 		this.degreesOfFreedom = degreesOfFreedom;
 	}
 
+	/**
+	 * Returns the sum of squares of the residuals.
+	 * 
+	 * @return the sum of squares of the residuals.
+	 */
 	public double getSumOfSquares() {
 		return sumOfSquares;
 	}
 
+	/**
+	 * Sets sum of squares.
+	 * 
+	 * @param sumOfSquares
+	 *            sum of squares
+	 */
 	public void setSumOfSquares(double sumOfSquares) {
 		this.sumOfSquares = sumOfSquares;
 	}
 
+	/**
+	 * Returns the mean square.
+	 * 
+	 * @return the mean square.
+	 */
 	public double getMeanSquare() {
 		return meanSquare;
 	}
 
+	/**
+	 * Sets the mean square.
+	 * 
+	 * @param meanSquare
+	 *            the mean square
+	 */
 	public void setMeanSquare(double meanSquare) {
 		this.meanSquare = meanSquare;
 	}
 
+	/**
+	 * Returns the F-value indicating whether the difference in values is due to
+	 * an effect of the parameters.
+	 * 
+	 * @return the F-value.
+	 */
 	public double getfValue() {
 		return fValue;
 	}
 
+	/**
+	 * Sets the F-value.
+	 * 
+	 * @param fValue
+	 *            the F-value
+	 */
 	public void setfValue(double fValue) {
 		this.fValue = fValue;
 		this.setEffectValue(fValue);
 	}
 
+	/**
+	 * Returns the p-value.
+	 * 
+	 * @return the p-value.
+	 */
 	public double getpValue() {
 		return pValue;
 	}
 
+	/**
+	 * Sets the p-Value . * @param pValue the p-Value
+	 */
 	public void setpValue(double pValue) {
 		this.pValue = pValue;
 	}
@@ -78,10 +139,6 @@ public class AnovaCalculatedEffect extends ParameterEffect {
 	 *         significance level, otherwise <code>false</code>.
 	 */
 	public boolean isSignificant(double significanceLevel) {
-		if (pValue < 1 - significanceLevel) {
-			return true;
-		} else {
-			return false;
-		}
+		return pValue < (1 - significanceLevel);
 	}
 }

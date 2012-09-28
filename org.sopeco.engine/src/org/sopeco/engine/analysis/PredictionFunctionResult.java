@@ -2,7 +2,6 @@ package org.sopeco.engine.analysis;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -31,14 +30,12 @@ public class PredictionFunctionResult implements IPredictionFunctionResult {
 
 	private static Logger logger = LoggerFactory.getLogger(PredictionFunctionResult.class);
 
-	String resultId;
-	String predictionFunction;
-	ScriptEngineManager scriptEngineManager;
-	ScriptEngine javaScriptEngine;
-	ParameterDefinition dependentParameter;
-	HashSet<String> indepParameterNames = new HashSet<String>();
-	HashSet<ParameterDefinition> indepPaparameters = new HashSet<ParameterDefinition>();
-	AnalysisConfiguration analysisConfiguration;
+	private String resultId;
+	private String predictionFunction;
+	private ScriptEngineManager scriptEngineManager;
+	private ScriptEngine javaScriptEngine;
+	private ParameterDefinition dependentParameter;
+	private AnalysisConfiguration analysisConfiguration;
 	private Map<ParameterDefinition, Map<Object, Integer>> nonNumericParameterEncodings = new HashMap<ParameterDefinition, Map<Object, Integer>>();
 
 	/**

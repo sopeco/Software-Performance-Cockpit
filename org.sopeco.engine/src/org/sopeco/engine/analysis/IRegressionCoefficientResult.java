@@ -14,18 +14,20 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
 public interface IRegressionCoefficientResult extends IParameterInfluenceResult {
 
 	/**
-	 * Returns a list of all ParameterRegressionCoefficient-Objects describing the
-	 * correlation of the parameters with the dependent parameter.
+	 * Returns a list of all ParameterRegressionCoefficient-Objects describing
+	 * the correlation of the parameters with the dependent parameter.
 	 * 
 	 * @return list of ParameterRegressionCoefficients
 	 */
-	public List<ParameterRegressionCoefficient> getAllParameterRegressionCoefficients();
+	List<ParameterRegressionCoefficient> getAllParameterRegressionCoefficients();
 
 	/**
-	 * Returns the ParameterCorrelation-Object of the specified parameter(s).
+	 * Returns the ParameterCorrelation-Object of the specified parameter.
 	 * 
+	 * @param parameter
+	 *            parameter for which the correlation should be retrievedF
 	 * @return list of ParameterCorrelations
 	 */
-	public ParameterCorrelation getParameterRegressionCoefficientByParam(ParameterDefinition parameter);
+	ParameterCorrelation getParameterRegressionCoefficientByParam(ParameterDefinition parameter);
 
 }

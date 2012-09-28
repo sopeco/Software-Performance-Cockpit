@@ -1,8 +1,5 @@
 package org.sopeco.engine.experiment;
 
-import java.util.List;
-
-import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
@@ -33,7 +30,8 @@ public interface IExperimentController {
 	/**
 	 * Prepares the experiment controller for one single experiment series. This
 	 * is called before subsequent calls to
-	 * {@link #runExperiment(List, ExperimentTerminationCondition)}.
+	 * {@link #runExperiment(ParameterCollection, ExperimentTerminationCondition)}
+	 * .
 	 * 
 	 * @param experimentSeriesRun
 	 *            an instance of experiment series run
@@ -60,7 +58,7 @@ public interface IExperimentController {
 	 * Finalizes the experiment; a proxy method to the measurement environment
 	 * controller.
 	 * 
-	 * @see IMeasurementEnvironmentController
+	 * 
 	 */
 	void finalizeExperimentSeries();
 

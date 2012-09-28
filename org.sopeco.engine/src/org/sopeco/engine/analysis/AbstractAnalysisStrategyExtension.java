@@ -17,7 +17,7 @@ import java.util.Map;
 public abstract class AbstractAnalysisStrategyExtension {
 	
 	/** Holds a mapping of configuration parameters to their optional default values. */
-	protected final Map<String, String> configParams = new HashMap<String, String>();
+	private final Map<String, String> configParams = new HashMap<String, String>();
 
 	protected AbstractAnalysisStrategyExtension() {
 		prepareConfigurationParameterMap();
@@ -29,9 +29,20 @@ public abstract class AbstractAnalysisStrategyExtension {
 	 */
 	protected abstract void prepareConfigurationParameterMap();
 
-	
+	/**
+	 * Returns the supported configurations parameters. The returned map is not modifiable.
+	 * @return the supported configurations parameters.
+	 */
 	public Map<String, String> getConfigParameters() {
-		return Collections.unmodifiableMap(configParams);
+		return Collections.unmodifiableMap(getModifiableConfigParams());
+	}
+
+	/**
+	 * Returns the supported configurations parameters. Use this method to modify the parameters.
+	 * @return the supported configurations parameters.
+	 */
+	protected Map<String, String> getModifiableConfigParams() {
+		return configParams;
 	}
 
 }

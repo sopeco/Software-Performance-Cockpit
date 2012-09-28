@@ -32,7 +32,7 @@ import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 
 public class OverwriteTest {
-	Logger logger = LoggerFactory.getLogger(NewVersionTest.class);
+	Logger logger = LoggerFactory.getLogger(OverwriteTest.class);
 
 	private static final String ME_URI = "rmi://localhost:1098/DummyMEController";
 
@@ -46,7 +46,7 @@ public class OverwriteTest {
 	public static void startMEController() {
 		try {
 			// use this project folder as root.
-			Configuration.getSessionSingleton(NewVersionTest.class, SESSION_ID);
+			Configuration.getSessionSingleton(OverwriteTest.class, SESSION_ID);
 
 			meController = new DummyMEController();
 			URI meURI = URI.create(ME_URI);
@@ -62,7 +62,7 @@ public class OverwriteTest {
 
 	@BeforeClass
 	public static void initialize() {
-		Configuration.getSessionSingleton(NewVersionTest.class, SESSION_ID).setProperty("sopeco.config.persistence.dbtype",
+		Configuration.getSessionSingleton(OverwriteTest.class, SESSION_ID).setProperty("sopeco.config.persistence.dbtype",
 				"InMemory");
 		provider = PersistenceProviderFactory.getInstance().getPersistenceProvider(SESSION_ID);
 

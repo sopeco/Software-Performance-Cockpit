@@ -14,44 +14,61 @@ import org.sopeco.persistence.util.ParameterCollection;
 import org.sopeco.persistence.util.ParameterCollectionFactory;
 
 /**
- * A collection of utility methods needed in the context of SoPeCo experiments. 
+ * A collection of utility methods needed in the context of SoPeCo experiments.
  * 
  * @author Roozbeh Farahbod
- *
+ * 
  */
-public class EngineTools {
+public final class EngineTools {
 
 	/**
-	 * Returns a collection of parameter value assignments based on the given constant value assignments.
+	 * Utility class. Only static methods, thus private constructor.
+	 */
+	private EngineTools() {
+
+	}
+
+	/**
+	 * Returns a collection of parameter value assignments based on the given
+	 * constant value assignments.
 	 * 
 	 * @param constantValueAssignments
-	 * @return returns a collection of {@link ParameterValue}; never returns null.
+	 *            constant value assignments where to read the parameter values
+	 *            from
+	 * @return returns a collection of {@link ParameterValue}; never returns
+	 *         null.
 	 */
-	public static ParameterCollection<ParameterValue<?>> getConstantParameterValues(Collection<ConstantValueAssignment> constantValueAssignments) {
+	public static ParameterCollection<ParameterValue<?>> getConstantParameterValues(
+			Collection<ConstantValueAssignment> constantValueAssignments) {
 		ParameterCollection<ParameterValue<?>> result = ParameterCollectionFactory.createParameterValueCollection();
-		
-		for (ConstantValueAssignment cva: constantValueAssignments) {
+
+		for (ConstantValueAssignment cva : constantValueAssignments) {
 			ParameterValue<?> pv = getConstantParameterValue(cva);
-			if (pv != null)
+			if (pv != null) {
 				result.add(pv);
-			else {
-				// TODO throw runtime error
+			} else {
+				throw new RuntimeException("Parameter value is null!");
 			}
 		}
 		return result;
 	}
 
 	/**
-	 * Returns a single parameter value assignment based on the given constant value assignment.
+	 * Returns a single parameter value assignment based on the given constant
+	 * value assignment.
 	 * 
 	 * @param constantValueAssignment
-	 * @return returns a {@link ParameterValue}. If the constant value is not supported, returns <code>null</code>.
+	 *            constant value assignments where to read the parameter value
+	 *            from
+	 * @return returns a {@link ParameterValue}. If the constant value is not
+	 *         supported, returns <code>null</code>.
 	 */
 	public static ParameterValue<?> getConstantParameterValue(ConstantValueAssignment constantValueAssignment) {
-		IConstantAssignment ca = ExtensionRegistry.getSingleton().getExtensionArtifact(IConstantAssignmentExtension.class, constantValueAssignment.getParameter().getType());
-		if (ca.canAssign(constantValueAssignment))
+		IConstantAssignment ca = ExtensionRegistry.getSingleton().getExtensionArtifact(
+				IConstantAssignmentExtension.class, constantValueAssignment.getParameter().getType());
+		if (ca.canAssign(constantValueAssignment)) {
 			return ca.createParameterValue(constantValueAssignment);
-		else {
+		} else {
 			return null;
 		}
 	}

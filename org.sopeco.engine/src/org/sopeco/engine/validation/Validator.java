@@ -9,7 +9,14 @@ import org.sopeco.engine.analysis.IPredictionFunctionResult;
  * @author Dennis Westermann
  * 
  */
-public class Validator {
+public final class Validator {
+
+	/**
+	 * Utility class, only static methods, thus private constructor
+	 */
+	private Validator() {
+
+	}
 
 	/**
 	 * Runs a validation based on the given {@link ValidationObject} and the
@@ -25,7 +32,8 @@ public class Validator {
 	 * @return a {@link ValidationResult} that provides different error measures
 	 *         derived by the comparison of measured and predicted data
 	 */
-	public static ValidationResult validate(IPredictionFunctionResult predictionObject, ValidationObject validationObject) {
+	public static ValidationResult validate(IPredictionFunctionResult predictionObject,
+			ValidationObject validationObject) {
 		return new ValidationResult(predictionObject, validationObject);
 	}
 

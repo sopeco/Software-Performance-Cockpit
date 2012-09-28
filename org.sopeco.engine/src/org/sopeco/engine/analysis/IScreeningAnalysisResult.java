@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 
-
 /**
  * Contains a result of a screening analysis which determines the effect of one
  * parameter or of interacting parameters on a dependent parameter.
@@ -20,30 +19,32 @@ public interface IScreeningAnalysisResult extends IParameterInfluenceResult {
 	 * 
 	 * @return list of ParameterEffects
 	 */
-	public List<ParameterEffect> getAllParameterEffects();
+	List<ParameterEffect> getAllParameterEffects();
 
 	/**
 	 * Returns a list of all MainEffects of all parameters.
 	 * 
 	 * @return list of ParameterEffects
 	 */
-	public List<ParameterEffect> getAllMainEffects();
+	List<ParameterEffect> getAllMainEffects();
 
 	/**
 	 * Returns a list of all InteractionEffects of all parameters.
 	 * 
 	 * @return list of ParameterEffects
 	 */
-	public List<ParameterEffect> getAllInteractionEffects();
+	List<ParameterEffect> getAllInteractionEffects();
 
 	/**
 	 * Returns the object describing the Main-ParameterEffect of the specified
 	 * parameter.
 	 * 
+	 * @param parameter
+	 *            parameter for which the main effect should be retrieved
 	 * @return a ParameterEffect describing the main effect of the specified
 	 *         parameter
 	 */
-	public ParameterEffect getMainEffectByParam(ParameterDefinition parameter);
+	ParameterEffect getMainEffectByParam(ParameterDefinition parameter);
 
 	/**
 	 * Returns all InteractionEffects of the specified parameter with other
@@ -53,8 +54,7 @@ public interface IScreeningAnalysisResult extends IParameterInfluenceResult {
 	 *            parameter to get interaction effects for
 	 * @return list of ParameterEffects of the interactions, can be empty
 	 */
-	public List<ParameterEffect> getInteractionEffectsOfSingleParam(
-			ParameterDefinition parameter);
+	List<ParameterEffect> getInteractionEffectsOfSingleParam(ParameterDefinition parameter);
 
 	/**
 	 * Returns a ParameterEffect-object which represents the single interaction
@@ -65,8 +65,7 @@ public interface IScreeningAnalysisResult extends IParameterInfluenceResult {
 	 * @return value representing the interaction effect of the parameters, or
 	 *         null if not existent
 	 */
-	public ParameterEffect getInteractionEffectByParameters(
-			List<ParameterDefinition> parameters);
+	ParameterEffect getInteractionEffectByParameters(List<ParameterDefinition> parameters);
 
 	/**
 	 * Returns all ParameterEffect-objects which represent all interaction
@@ -78,7 +77,6 @@ public interface IScreeningAnalysisResult extends IParameterInfluenceResult {
 	 * @return value representing the interaction effect of the parameters, or
 	 *         null if not existent
 	 */
-	public List<ParameterEffect> getAllInteractionEffectsByParameters(
-			List<ParameterDefinition> parameters);
+	List<ParameterEffect> getAllInteractionEffectsByParameters(List<ParameterDefinition> parameters);
 
 }

@@ -32,7 +32,7 @@ public class AnovaResult implements IAnovaResult {
 	private AnalysisConfiguration configuration;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 * 
 	 * @param configuration
 	 *            configuration of the ANOVA analysis
@@ -47,6 +47,7 @@ public class AnovaResult implements IAnovaResult {
 	 * Adds a main effect to this result instance.
 	 * 
 	 * @param effect
+	 *            the main effect to be added
 	 */
 	public void addMainEffect(AnovaCalculatedEffect effect) {
 		this.mainEffects.add(effect);
@@ -56,6 +57,7 @@ public class AnovaResult implements IAnovaResult {
 	 * Adds an interaction effect to this result instance.
 	 * 
 	 * @param effect
+	 *            the interaction effect to be added
 	 */
 	public void addInteractionEffect(AnovaCalculatedEffect effect) {
 		this.interactionEffects.add(effect);

@@ -18,7 +18,7 @@ public interface ICorrelationResult extends IParameterInfluenceResult {
 	 * 
 	 * @return list of ParameterCorrelations
 	 */
-	public List<ParameterCorrelation> getAllParameterCorrelations();
+	List<ParameterCorrelation> getAllParameterCorrelations();
 
 	/**
 	 * Returns the ParameterCorrelation-Object of the specified parameter(s).
@@ -32,6 +32,6 @@ public interface ICorrelationResult extends IParameterInfluenceResult {
 	 *         the given parameter is not in the list of independent parameters
 	 *         of the correlation analysis that created the result.
 	 */
-	public ParameterCorrelation getParameterCorrelationByParam(ParameterDefinition parameter);
+	ParameterCorrelation getParameterCorrelationByParam(ParameterDefinition parameter);
 
 }

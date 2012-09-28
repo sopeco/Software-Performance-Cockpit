@@ -123,13 +123,13 @@ public class BreakdownExplorationController extends AbstractSoPeCoExtensionArtif
 		List<ParameterDefinition> parameterDefinitions = getParameterDefinitions(parameterVariations);
 
 		if (strategyConfig.getName().equalsIgnoreCase(BreakdownConfiguration.EQUIDISTANT_BREAKDOWN)) {
-			breakdownImpl = new EquidistantBreakdownImpl(strategyConfig, environmentCachedAcess, parameterDefinitions, stopController, provider);
+			breakdownImpl = new EquidistantBreakdownImpl(strategyConfig, environmentCachedAcess, parameterDefinitions, stopController, getProvider());
 		} else if (strategyConfig.getName().equalsIgnoreCase(BreakdownConfiguration.RANDOM_BREAKDOWN)) {
-			breakdownImpl = new RandomBreakdownImpl(strategyConfig, environmentCachedAcess, parameterDefinitions, stopController, provider);
+			breakdownImpl = new RandomBreakdownImpl(strategyConfig, environmentCachedAcess, parameterDefinitions, stopController, getProvider());
 		} else if (strategyConfig.getName().equalsIgnoreCase(BreakdownConfiguration.ADAPTIVE_EQUIDISTANT_BREAKDOWN)) {
-			breakdownImpl = new AdaptiveEquidistantBreakdownImpl(strategyConfig, environmentCachedAcess, parameterDefinitions, stopController, provider);
+			breakdownImpl = new AdaptiveEquidistantBreakdownImpl(strategyConfig, environmentCachedAcess, parameterDefinitions, stopController, getProvider());
 		} else if (strategyConfig.getName().equalsIgnoreCase(BreakdownConfiguration.ADAPTIVE_RANDOM_BREAKDOWN)) {
-			breakdownImpl = new AdaptiveRandomBreakdownImpl(strategyConfig, environmentCachedAcess, parameterDefinitions, stopController, provider);
+			breakdownImpl = new AdaptiveRandomBreakdownImpl(strategyConfig, environmentCachedAcess, parameterDefinitions, stopController, getProvider());
 		} else {
 			throw new IllegalArgumentException("Strategy not supported: " + strategyConfig.getName());
 		}

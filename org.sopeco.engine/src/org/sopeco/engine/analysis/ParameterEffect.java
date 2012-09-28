@@ -12,6 +12,8 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
  * @author Dennis Westermann
  */
 public class ParameterEffect implements Comparable<ParameterEffect>, IParameterInfluenceDescriptor {
+
+	private static final double SMALL_NUMBER = 0.000001;
 	/**
 	 * List of independent parameters
 	 */
@@ -26,20 +28,18 @@ public class ParameterEffect implements Comparable<ParameterEffect>, IParameterI
 	private double effectValue = 0;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 * 
 	 * @param analysedParameters
 	 *            list of the independent paramters
 	 * @param effectValue
 	 *            estimation of the effect of the independent parameters on the
 	 *            observation parameter
-	 * @param parameterBoundaries
-	 *            List containing information-objects describing the boundaries
-	 *            of the parameters.
 	 * @param observationParameter
 	 *            the dependent parameter
 	 */
-	public ParameterEffect(List<ParameterDefinition> analysedParameters, ParameterDefinition observationParameter, double effectValue) {
+	public ParameterEffect(List<ParameterDefinition> analysedParameters, ParameterDefinition observationParameter,
+			double effectValue) {
 		super();
 		this.independentParameters = analysedParameters;
 		this.effectValue = effectValue;
@@ -61,21 +61,32 @@ public class ParameterEffect implements Comparable<ParameterEffect>, IParameterI
 	public ParameterDefinition getIndependentParameter() {
 
 		if (independentParameters.size() != 1) {
-			throw new IllegalStateException("Method is only supported for main effects (i.e. exactly one independent parameter).");
+			throw new IllegalStateException(
+					"Method is only supported for main effects (i.e. exactly one independent parameter).");
 		} else {
 			return independentParameters.get(0);
 		}
 
 	}
 
+	/**
+	 * Returns a list of independent parameters.
+	 * 
+	 * @return a list of independent parameters
+	 */
 	public List<ParameterDefinition> getIndependentParameters() {
 		return independentParameters;
 	}
 
+	/**
+	 * Returns the effect value.
+	 * 
+	 * @return the effect value
+	 */
 	public double getEffectValue() {
 		return effectValue;
 	}
-	
+
 	protected void setEffectValue(double effectValue) {
 		this.effectValue = effectValue;
 	}
@@ -93,7 +104,7 @@ public class ParameterEffect implements Comparable<ParameterEffect>, IParameterI
 
 	@Override
 	public int compareTo(ParameterEffect otherEffect) {
-		if (Math.abs(this.effectValue - otherEffect.getEffectValue()) < 0.000001) {
+		if (Math.abs(this.effectValue - otherEffect.getEffectValue()) < SMALL_NUMBER) {
 			return 0;
 		} else if (Math.abs(this.effectValue) > Math.abs(otherEffect.getEffectValue())) {
 			return 1;

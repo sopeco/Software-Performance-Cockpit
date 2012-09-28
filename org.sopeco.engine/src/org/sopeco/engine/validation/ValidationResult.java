@@ -82,7 +82,7 @@ public class ValidationResult {
 	 * @param validationObject
 	 * @throws IllegalArgumentException
 	 */
-	protected ValidationResult(IPredictionFunctionResult predictionObject, ValidationObject validationObject) throws IllegalArgumentException {
+	protected ValidationResult(IPredictionFunctionResult predictionObject, ValidationObject validationObject) {
 		super();
 		this.predictionObject = predictionObject;
 		this.validationObject = validationObject;
@@ -105,16 +105,17 @@ public class ValidationResult {
 		validate();
 	}
 
-	private void validate() throws IllegalArgumentException {
+	private void validate() {
 		calculateErrors();
 	}
 
-	private void calculateErrors() throws IllegalArgumentException {
+	private void calculateErrors() {
 
 		int i = 0;
 		for (ValidationRow validationRow : validationObject) {
 			// addToXMatrix(validationRow.getIndependentParameterValues(), i);
-			double predicted = predictionObject.predictOutputParameter(validationRow.getIndependentParameterValues()).getValueAsDouble();
+			double predicted = predictionObject.predictOutputParameter(validationRow.getIndependentParameterValues())
+					.getValueAsDouble();
 			double expected = validationRow.getDependentParameterValue().getValueAsDouble();
 
 			predictedDepParamValues[i] = predicted;
@@ -122,10 +123,11 @@ public class ValidationResult {
 			sumOfSquaresOfPredDepParam += predicted * predicted;
 			expectedDepParamValues[i] = expected;
 			absoluteErrors[i] = Math.abs(predicted - expected);
-			if (expected != 0)
+			if (expected != 0) {
 				relativeErrors[i] = Math.abs(absoluteErrors[i] / expected);
-			else
+			} else {
 				relativeErrors[i] = Math.abs(absoluteErrors[i]);
+			}
 
 			sumOfAbsoluteErrors += absoluteErrors[i];
 			sumOfRelativeErrors += relativeErrors[i];
@@ -156,98 +158,222 @@ public class ValidationResult {
 
 	}
 
+	/**
+	 * returns the prediction object.
+	 * 
+	 * @return the prediction object
+	 */
 	public IPredictionFunctionResult getPredictionObject() {
 		return predictionObject;
 	}
 
+	/**
+	 * returns the validation object.
+	 * 
+	 * @return the validation object
+	 */
 	public ValidationObject getValidationData() {
 		return validationObject;
 	}
 
+	/**
+	 * Returns the number of predictions.
+	 * 
+	 * @return number of predictions
+	 */
 	public int getNumPredictions() {
 		return numPredictions;
 	}
 
+	/**
+	 * Returns the number of independent parameters.
+	 * 
+	 * @return number of indipendent parameters
+	 */
 	public int getNumIndepParameters() {
 		return numIndepParameters;
 	}
 
+	/**
+	 * Returns an array of predicted values for the dependent parameter.
+	 * 
+	 * @return an array of predicted values for the dependent parameter
+	 */
 	public double[] getPredictedDepParamValues() {
 		return predictedDepParamValues;
 	}
 
+	/**
+	 * Returns an array of expected values for the dependent parameter.
+	 * 
+	 * @return an array of expected values for the dependent parameter
+	 */
 	public double[] getExpectedDepParamValues() {
 		return expectedDepParamValues;
 	}
 
+	/**
+	 * Returns the sum of all predicted values for the dependent parameter.
+	 * 
+	 * @return sum of all predicted values for the dependent parameter
+	 */
 	public double getSumOfPredDepParamValues() {
 		return sumOfPredDepParamValues;
 	}
 
+	/**
+	 * Returns the sum of squares of all predicted values for the dependent
+	 * parameter.
+	 * 
+	 * @return sum of squares of all predicted values for the dependent
+	 *         parameter
+	 */
 	public double getSumOfSquaresOfPredDepParam() {
 		return sumOfSquaresOfPredDepParam;
 	}
 
+	/**
+	 * Returns the sum of squares of the mean of predicted values for the
+	 * dependent parameter.
+	 * 
+	 * @return sum of squares of the mean of predicted values for the dependent
+	 *         parameter
+	 */
 	public double getSumOfSquaresOfPredDepParamMean() {
 		return sumOfSquaresOfPredDepParamMean;
 	}
 
+	/**
+	 * Returns an array of absolute errors.
+	 * 
+	 * @return an array of absolute errors.
+	 */
 	public double[] getAbsoluteErrors() {
 		return absoluteErrors;
 	}
 
+	/**
+	 * Returns an array of relative errors.
+	 * 
+	 * @return an array of relative errors.
+	 */
 	public double[] getRelativeErrors() {
 		return relativeErrors;
 	}
 
+	/**
+	 * Returns the sum of absolute errors.
+	 * 
+	 * @return sum of absolute errors
+	 */
 	public double getSumOfAbsoluteErrors() {
 		return sumOfAbsoluteErrors;
 	}
 
+	/**
+	 * Returns the sum of relative errors.
+	 * 
+	 * @return sum of relative errors
+	 */
 	public double getSumOfRelativeErrors() {
 		return sumOfRelativeErrors;
 	}
 
+	/**
+	 * Returns the mean absolute error.
+	 * 
+	 * @return mean absolute error
+	 */
 	public double getMeanAbsoluteError() {
 		return meanAbsoluteError;
 	}
 
+	/**
+	 * Returns the mean relative error.
+	 * 
+	 * @return mean relative error
+	 */
 	public double getMeanRelativeError() {
 		return meanRelativeError;
 	}
 
+	/**
+	 * Returns the sum of squared absolute errors.
+	 * 
+	 * @return sum of squared absolute errors
+	 */
 	public double getSumOfSquaredAbsoluteErrors() {
 		return sumOfSquaredAbsoluteErrors;
 	}
 
+	/**
+	 * Returns the sum of squared relative errors.
+	 * 
+	 * @return sum of squared relative errors
+	 */
 	public double getSumOfSquaredRelativeErrors() {
 		return sumOfSquaredRelativeErrors;
 	}
 
+	/**
+	 * Returns the total sum of all squares.
+	 * 
+	 * @return total sum of all squares.
+	 */
 	public double getTotalSumOfSquares() {
 		return totalSumOfSquares;
 	}
 
+	/**
+	 * Returns the sum of squares explained by regression.
+	 * 
+	 * @return sum of squares explained by regression.
+	 */
 	public double getSumOfSquaresExplainedByRegression() {
 		return sumOfSquaresExplainedByRegression;
 	}
 
+	/**
+	 * Returns the coefficient of determination.
+	 * 
+	 * @return coefficient of determination
+	 */
 	public double getCoefficientOfDetermination() {
 		return coefficientOfDetermination;
 	}
 
+	/**
+	 * Returns the coefficient of correlation.
+	 * 
+	 * @return coefficient of correlation
+	 */
 	public double getCoefficientOfCorrelation() {
 		return coefficientOfCorrelation;
 	}
 
+	/**
+	 * rReturns the standard deviation of errors.
+	 * 
+	 * @return standard deviation of errors
+	 */
 	public double getStandardDeviationOfErrors() {
 		return standardDeviationOfErrors;
 	}
 
+	/**
+	 * Returns the mean square of regression.
+	 * 
+	 * @return mean square of regression
+	 */
 	public double getMeanSquareOfRegression() {
 		return meanSquareOfRegression;
 	}
 
+	/**
+	 * Returns the mean of squared errors.
+	 * 
+	 * @return mean of squared errors
+	 */
 	public double getMeanSquaredError() {
 		return meanSquaredError;
 	}

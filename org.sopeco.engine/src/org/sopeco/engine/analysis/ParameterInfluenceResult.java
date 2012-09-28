@@ -15,22 +15,21 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
  */
 public class ParameterInfluenceResult implements IParameterInfluenceResult {
 
-	
 	private static final long serialVersionUID = 1L;
-	
+
 	/** An id that uniquely identifies this result instance **/
 	private String id;
-	
+
 	/** List to store influence values of the parameters */
 	private HashMap<ParameterDefinition, IParameterInfluenceDescriptor> parameterInfluenceDescriptors;
-	
+
 	/**
 	 * Configuration used to derive this result object.
 	 */
 	private AnalysisConfiguration configuration;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 * 
 	 * @param configuration
 	 *            configuration of the correlation analysis
@@ -43,9 +42,9 @@ public class ParameterInfluenceResult implements IParameterInfluenceResult {
 	/**
 	 * Used to store a new ParameterCorrelation-object in the result.
 	 * 
-	 * @param ParameterCorrelation
-	 *            ParameterCorrelation that describes the correlation of a
-	 *            parameter with the observation parameter.
+	 * @param influenceDescriptor
+	 *            {@link IParameterInfluenceDescriptor} that describes the
+	 *            correlation of a parameter with the observation parameter.
 	 */
 	public void addParameterInfluenceDescriptor(IParameterInfluenceDescriptor influenceDescriptor) {
 		parameterInfluenceDescriptors.put(influenceDescriptor.getIndependentParameter(), influenceDescriptor);
@@ -68,7 +67,7 @@ public class ParameterInfluenceResult implements IParameterInfluenceResult {
 
 	@Override
 	public List<IParameterInfluenceDescriptor> getAllParameterInfluenceDescriptors() {
-		List<IParameterInfluenceDescriptor> resultList  = new LinkedList<IParameterInfluenceDescriptor>();
+		List<IParameterInfluenceDescriptor> resultList = new LinkedList<IParameterInfluenceDescriptor>();
 		resultList.addAll(parameterInfluenceDescriptors.values());
 		return resultList;
 	}
@@ -77,6 +76,5 @@ public class ParameterInfluenceResult implements IParameterInfluenceResult {
 	public IParameterInfluenceDescriptor getParameterInfluenceDescriptorByParam(ParameterDefinition parameter) {
 		return parameterInfluenceDescriptors.get(parameter);
 	}
-
 
 }

@@ -8,7 +8,10 @@ package org.sopeco.engine.registry;
  */
 public abstract class AbstractSoPeCoExtensionArtifact implements ISoPeCoExtensionArtifact {
 
-	protected final ISoPeCoExtension<?> provider; 
+	/**
+	 * Extension provider.
+	 */
+	private final ISoPeCoExtension<?> provider; 
 	
 	/**
 	 * Creates a new extension artifact with the given extension provider.

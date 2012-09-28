@@ -255,13 +255,15 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 			// builder.addInputParameterValue(pv.getParameter(), pv.getValue());
 
 			// 2.3. add input values
-			for (ParameterValue<?> parameterValue : inputParamCollection)
+			for (ParameterValue<?> parameterValue : inputParamCollection) {
 				builder.addInputParameterValue(parameterValue.getParameter(), parameterValue.getValue());
+			}
 
 			// 2.4. add observation values, if the experiment was successful
 			if (experimentSuccessful) {
-				for (ParameterValueList<?> pvl : observations)
+				for (ParameterValueList<?> pvl : observations) {
 					builder.addObservationParameterValues(pvl);
+				}
 			}
 
 			builder.finishRow();

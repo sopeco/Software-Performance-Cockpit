@@ -13,14 +13,18 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
 public interface IParameterInfluenceDescriptor {
 
 	/**
+	 * Returns the independent parameter definition.
+	 * 
 	 * @return the independent parameter definition
 	 */
-	public ParameterDefinition getIndependentParameter();
+	ParameterDefinition getIndependentParameter();
 
 	/**
+	 * Returns the dependent parameter definition.
+	 * 
 	 * @return the dependent parameter definition
 	 */
-	public ParameterDefinition getDependentParameter();
+	ParameterDefinition getDependentParameter();
 
 	/**
 	 * @return the value that describes the influence of the independent

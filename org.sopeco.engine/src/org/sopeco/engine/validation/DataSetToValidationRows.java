@@ -18,20 +18,31 @@ import org.sopeco.persistence.dataset.util.ParameterUtil;
  * @author Dennis Westermann
  * 
  */
-public class DataSetToValidationRows {
+public final class DataSetToValidationRows {
+
+	/**
+	 * Utility class, only static methods, thus private constructor.
+	 */
+	private DataSetToValidationRows() {
+
+	}
+
 	/**
 	 * This method extracts the correct parameter values (as described in the
 	 * analysis configuration) from the data set and returns a list of
 	 * TrainingTuples.
 	 * 
-	 * @param manyToOneDependency
+	 * @param nameOfDependentParameter
+	 *            name of the dependent parameter
+	 * @param namesOfIndependentParameters
+	 *            list of names of the independent parameters
 	 * @param data
+	 *            dataset to be converted
 	 * 
-	 * @return
+	 * @return a list of validation rows
 	 */
 	@SuppressWarnings("rawtypes")
-	public static ArrayList<ValidationRow> convert(DataSetAggregated data,
-			String nameOfDependentParameter,
+	public static ArrayList<ValidationRow> convert(DataSetAggregated data, String nameOfDependentParameter,
 			List<String> namesOfIndependentParameters) {
 		ArrayList<ValidationRow> extractedRows = new ArrayList<ValidationRow>();
 
@@ -43,19 +54,12 @@ public class DataSetToValidationRows {
 			ValidationRow validationRow = new ValidationRow();
 
 			for (AbstractDataSetColumn<?> column : data.getColumns()) {
-				if (column.getParameter().getFullName()
-						.equals(nameOfDependentParameter)) {
-					validationRow
-							.setDependentParameterValue(((DataSetObservationColumn) column)
-									.getParameterValues(i)
-									.getMeanAsParameterValue());
-					validationRow
-							.setDependentParameterName(nameOfDependentParameter);
-				} else if (namesOfIndependentParameters.contains(column
-						.getParameter().getFullName())) {
-					validationRow
-							.addIndependentParameterValue(((DataSetInputColumn) column)
-									.getParameterValue(i));
+				if (column.getParameter().getFullName().equals(nameOfDependentParameter)) {
+					validationRow.setDependentParameterValue(((DataSetObservationColumn) column).getParameterValues(i)
+							.getMeanAsParameterValue());
+					validationRow.setDependentParameterName(nameOfDependentParameter);
+				} else if (namesOfIndependentParameters.contains(column.getParameter().getFullName())) {
+					validationRow.addIndependentParameterValue(((DataSetInputColumn) column).getParameterValue(i));
 				}
 			}
 			extractedRows.add(validationRow);
@@ -84,11 +88,12 @@ public class DataSetToValidationRows {
 	private static void validateTypes(DataSetAggregated dataSet) {
 
 		for (AbstractDataSetColumn<?> column : dataSet.getColumns()) {
-//			if (!valideType(column))
-//				throw new IllegalStateException (
-//						"The type ("+ column.getParameter().getType() +") of the independent parameter "
-//								+ column.getParameter().getFullName()
-//								+ " is not valid");
+			// if (!valideType(column))
+			// throw new IllegalStateException (
+			// "The type ("+ column.getParameter().getType()
+			// +") of the independent parameter "
+			// + column.getParameter().getFullName()
+			// + " is not valid");
 		}
 	}
 
@@ -101,8 +106,9 @@ public class DataSetToValidationRows {
 	 */
 	private static boolean valideType(AbstractDataSetColumn<?> column) {
 		if (ParameterUtil.getTypeEnumeration(column.getParameter().getType()).equals(ParameterType.INTEGER)
-				|| ParameterUtil.getTypeEnumeration(column.getParameter().getType()).equals(ParameterType.DOUBLE))
+				|| ParameterUtil.getTypeEnumeration(column.getParameter().getType()).equals(ParameterType.DOUBLE)) {
 			return true;
+		}
 		return false;
 	}
 
@@ -119,9 +125,9 @@ public class DataSetToValidationRows {
 
 		for (AbstractDataSetColumn<?> column : dataSet.getColumns()) {
 			int actualLength = column.size();
-			if (expectedLength != actualLength)
-				throw new IllegalStateException(
-						"Length of ParameterValueLists differs");
+			if (expectedLength != actualLength) {
+				throw new IllegalStateException("Length of ParameterValueLists differs");
+			}
 		}
 
 	}

@@ -40,13 +40,27 @@ public interface IExplorationStrategy extends ISoPeCoExtensionArtifact {
 	void runExperimentSeries(ExperimentSeriesRun expSeriesRun, List<IParameterVariation> parameterVariations);
 
 	/**
+	 * Sets the persistence provider.
 	 * 
 	 * @param persistenceProvider
+	 *            new persistence provider to be used
 	 */
 	void setPersistenceProvider(IPersistenceProvider persistenceProvider);
 
+	/**
+	 * Sets the experiment controller.
+	 * 
+	 * @param experimentController
+	 *            new experiment controller to be used
+	 */
 	void setExperimentController(IExperimentController experimentController);
 
+	/**
+	 * Sets the extension registry.
+	 * 
+	 * @param registry
+	 *            New registry to be used
+	 */
 	void setExtensionRegistry(IExtensionRegistry registry);
 
 }

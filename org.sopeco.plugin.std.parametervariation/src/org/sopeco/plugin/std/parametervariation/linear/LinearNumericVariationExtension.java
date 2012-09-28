@@ -28,9 +28,9 @@ public class LinearNumericVariationExtension extends AbstractParameterVariationE
 
 	@Override
 	protected void prepareConfigurationParameterMap() {
-		configParams.put("min", "");
-		configParams.put("max", "");
-		configParams.put("step", "1");
+		getModifiableConfigParameters().put("min", "");
+		getModifiableConfigParameters().put("max", "");
+		getModifiableConfigParameters().put("step", "1");
 	}
 
 }
