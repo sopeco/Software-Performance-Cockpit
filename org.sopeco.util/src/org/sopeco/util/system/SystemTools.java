@@ -227,7 +227,8 @@ public class SystemTools {
 		if (timeStamp) {
 			// remove dots and colons from timestamp as they are not allowed for windows directory names
 			String clearedTimeStamp = Tools.getTimeStamp().replace('.', '_');
-			clearedTimeStamp= clearedTimeStamp.replace(':', '_');
+			clearedTimeStamp = clearedTimeStamp.replace(':', '_');
+			clearedTimeStamp = clearedTimeStamp.replace(' ', '_');
 
 			destName = destName + "_" + clearedTimeStamp;
 		}

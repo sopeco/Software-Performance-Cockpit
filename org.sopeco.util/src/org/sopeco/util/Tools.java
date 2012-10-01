@@ -3,6 +3,7 @@
  */
 package org.sopeco.util;
 
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,6 +25,9 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.apache.commons.math3.distribution.TDistribution;
+import org.apache.commons.math3.distribution.ZipfDistribution;
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.apache.tools.ant.DirectoryScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -609,4 +613,32 @@ public class Tools {
 		final File file = new File(fileName);
 		return file.exists();
 	}
+
+	/**
+	 * Calculates confidence interval width for the given SummaryStatistics and the significance level.
+	 * 
+	 * @param summaryStatistics the data
+	 * @param significance desired significance level
+	 * @return the width of the confidence interval around the mean with the given significance level 
+	 */
+	public static double getConfidenceIntervalWidth(SummaryStatistics summaryStatistics, double significance) {
+		TDistribution tDist = new TDistribution(summaryStatistics.getN() - 1);
+		double a = tDist.inverseCumulativeProbability(1.0 - significance / 2);
+		return a * summaryStatistics.getStandardDeviation() / Math.sqrt(summaryStatistics.getN());
+	}
+
+	/**
+	 * Calculates confidence interval width for the given data and the significance level.
+	 * 
+	 * @param sampleSize number of values 
+	 * @param stdDev standard deviation of the values
+	 * @param significance desired significance level
+	 * @return the width of the confidence interval around the mean with the given significance level 
+	 */
+	public static double getConfidenceIntervalWidth(int sampleSize, double stdDev, double significance) {
+		TDistribution tDist = new TDistribution(sampleSize - 1);
+		double a = tDist.inverseCumulativeProbability(1.0 - significance / 2);
+		return a * stdDev / Math.sqrt(sampleSize);
+	}
+
 }
