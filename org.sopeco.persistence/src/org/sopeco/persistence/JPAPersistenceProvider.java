@@ -119,7 +119,7 @@ public class JPAPersistenceProvider extends SessionAwareObject implements IPersi
 
 		storeDataSets(scenarioInstance); // required due to decoupling of data
 											// sets from entity structure
-		if(scenarioInstance.getScenarioDefinition()!=null){
+		if (scenarioInstance.getScenarioDefinition() != null) {
 			this.store(scenarioInstance.getScenarioDefinition());
 		}
 
@@ -656,6 +656,36 @@ public class JPAPersistenceProvider extends SessionAwareObject implements IPersi
 
 	}
 
+	@Override
+	public void remove(ScenarioDefinition scenarioDefinition) throws DataNotFoundException {
+
+		String errorMsg = "Could not remove scenario definition " + scenarioDefinition.toString();
+
+		EntityManager em = emf.createEntityManager();
+		try {
+
+			em.getTransaction().begin();
+
+			// load entity to make it "managed"
+			scenarioDefinition = em.find(ScenarioDefinition.class, scenarioDefinition.getScenarioName());
+
+			em.remove(scenarioDefinition);
+
+			em.getTransaction().commit();
+		} catch (Exception e) {
+
+			throw new DataNotFoundException(errorMsg, e);
+
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
+
+	}
+
+	@Override
 	public void remove(String analysisResultId) throws DataNotFoundException {
 		final String errorMsg = "Could not remove analysis result with id " + analysisResultId;
 
@@ -850,6 +880,9 @@ public class JPAPersistenceProvider extends SessionAwareObject implements IPersi
 
 	/**
 	 * Stores the data sets of all experiment runs in the database.
+	 * 
+	 * @param scenario
+	 *            the scenario instance whose experiments should be stored
 	 */
 	public void storeDataSets(ScenarioInstance scenario) {
 		for (ExperimentSeries series : scenario.getExperimentSeriesList()) {
@@ -859,6 +892,9 @@ public class JPAPersistenceProvider extends SessionAwareObject implements IPersi
 
 	/**
 	 * Removes the data sets of all experiment runs in the database.
+	 * 
+	 * @param scenario
+	 *            the scenario instance whose experiments should be removed
 	 */
 	public void removeDataSets(ScenarioInstance scenario) {
 		for (ExperimentSeries series : scenario.getExperimentSeriesList()) {
@@ -868,6 +904,9 @@ public class JPAPersistenceProvider extends SessionAwareObject implements IPersi
 
 	/**
 	 * Stores the data sets of all experiment series runs in the database.
+	 * 
+	 * @param experimentSeries
+	 *            the experiment series whose experiments should be stored
 	 */
 	public void storeDataSets(ExperimentSeries experimentSeries) {
 		for (ExperimentSeriesRun run : experimentSeries.getExperimentSeriesRuns()) {
@@ -880,6 +919,9 @@ public class JPAPersistenceProvider extends SessionAwareObject implements IPersi
 
 	/**
 	 * Removes the data sets of all experiment series runs in the database.
+	 * 
+	 * @param experimentSeries
+	 *            the experiment series whose experiments should be removed
 	 */
 	public void removeDataSets(ExperimentSeries experimentSeries) {
 		for (ExperimentSeriesRun run : experimentSeries.getExperimentSeriesRuns()) {

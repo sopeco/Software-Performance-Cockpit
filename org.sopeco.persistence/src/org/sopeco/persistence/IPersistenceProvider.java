@@ -76,6 +76,8 @@ public interface IPersistenceProvider {
 
 	void remove(ScenarioInstance scenarioInstance) throws DataNotFoundException;
 
+	void remove(ScenarioDefinition scenarioDefinition) throws DataNotFoundException;
+	
 	void remove(String analysisResultId) throws DataNotFoundException;
 
 	void remove(DataSetAggregated dataSet) throws DataNotFoundException;
