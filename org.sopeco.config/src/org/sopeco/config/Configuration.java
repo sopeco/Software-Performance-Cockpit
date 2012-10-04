@@ -150,7 +150,7 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	public String getPropertyAsStr(String key) {
 		final Object value = getProperty(key);
 		if (value != null) {
-			return value.toString();
+			return value.toString().trim();
 		} else {
 			return null;
 		}
@@ -163,7 +163,7 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		if (value == null) {
 			return defaultValue;
 		} else {
-			return Tools.strEqualName("true", value) || Tools.strEqualName("yes", value);
+			return Tools.strEqualName("true", value.trim()) || Tools.strEqualName("yes", value.trim());
 		}
 
 	}
@@ -174,7 +174,7 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		if (value == null) {
 			return defaultValue;
 		} else {
-			return Long.parseLong(value);
+			return Long.parseLong(value.trim());
 		}
 	}
 
@@ -184,7 +184,7 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		if (value == null) {
 			return defaultValue;
 		} else {
-			return Integer.parseInt(value);
+			return Integer.parseInt(value.trim());
 		}
 	}
 

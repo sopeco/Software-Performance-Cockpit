@@ -104,9 +104,9 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 
 			meController.prepareExperimentSeries(preparationPVs);
 
-			ParameterCollection<ParameterDefinition> observationParams = ParameterCollectionFactory
-					.createParameterDefinitionCollection(meDefinition.getRoot().getObservationParameters());
-			meController.setObservationParameters(observationParams);
+//			ParameterCollection<ParameterDefinition> observationParams = ParameterCollectionFactory
+//					.createParameterDefinitionCollection(meDefinition.getRoot().getObservationParameters());
+//			meController.setObservationParameters(observationParams);
 
 		} catch (RemoteException e) {
 			throw new RuntimeException("RemoteException.", e);

@@ -22,6 +22,7 @@ import org.sopeco.engine.EngineFactory;
 import org.sopeco.engine.IEngine;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
 import org.sopeco.engine.measurementenvironment.rmi.RmiMEConnector;
+import org.sopeco.engine.util.test.DummyMEController;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.PersistenceProviderFactory;
 import org.sopeco.persistence.entities.ExperimentSeries;

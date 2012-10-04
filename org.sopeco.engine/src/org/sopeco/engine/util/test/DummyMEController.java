@@ -5,18 +5,23 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.engine.measurementenvironment.AbstractMEController;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
+import org.sopeco.engine.measurementenvironment.InputParameter;
+import org.sopeco.engine.measurementenvironment.ObservationParameter;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.NumberOfRepetitions;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
+import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.persistence.util.ParameterCollection;
 import org.sopeco.util.Tools;
 
@@ -28,68 +33,34 @@ import org.sopeco.util.Tools;
  * @author Dennis Westermann
  * 
  */
-public class DummyMEController implements IMeasurementEnvironmentController {
+public class DummyMEController extends AbstractMEController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DummyMEController.class);
 
-	private ParameterCollection<ParameterDefinition> observationParameterList = null;
+	@InputParameter(namespace = "init")
+	private int initParameter;
+	@InputParameter(namespace = "prepare")
+	private int prepareParameter;
+	@InputParameter(namespace = "test.input")
+	private int inputParameter;
+	@InputParameter(namespace = "test.input")
+	private int inputParameter2;
+	@ObservationParameter(namespace = "test.observation")
+	private ParameterValueList<Integer> observationParameterOne;
+	@ObservationParameter(namespace = "test.observation")
+	private ParameterValueList<String> observationParameterTwo;
 
-	@Override
-	public void initialize(ParameterCollection<ParameterValue<?>> initializationPVList) {
-		LOGGER.debug("Initialize measurement environment:");
-		logParameterValueCollection(initializationPVList);
-	}
 
-	@Override
-	public void prepareExperimentSeries(ParameterCollection<ParameterValue<?>> preparationPVList) {
-		LOGGER.debug("Prepare experiment series:");
-		logParameterValueCollection(preparationPVList);
-	}
 
-	@Override
-	public Collection<ParameterValueList<?>> runExperiment(ParameterCollection<ParameterValue<?>> inputPVList,
-			ExperimentTerminationCondition terminationCondition) {
-		Map<ParameterDefinition, ParameterValueList<?>> map = new HashMap<ParameterDefinition, ParameterValueList<?>>();
-		for (ParameterDefinition pd : observationParameterList) {
-			map.put(pd, new ParameterValueList<Serializable>(pd));
-		}
-		LOGGER.debug("Run experiment: ");
-		logParameterValueCollection(inputPVList);
 
-		for (int i = 0; i < ((NumberOfRepetitions) terminationCondition).getNumberOfRepetitions(); i++) {
-			LOGGER.debug("Running repetition {}.", i + 1);
-			for (ParameterDefinition parameter : observationParameterList) {
-				map.get(parameter).addValue(createRandomValue(parameter));
-			}
-		}
-		LOGGER.debug("Finished experiment.");
-		return new ArrayList<ParameterValueList<?>>(map.values());
 
-	}
 
 	@Override
 	public void finalizeExperimentSeries() {
 		LOGGER.debug("Finalize experiment series.");
 	}
 
-	@Override
-	public void setObservationParameters(ParameterCollection<ParameterDefinition> observationParameters) {
-		LOGGER.debug("Set observation parameters: ");
-		logParameterDefinitionCollection(observationParameters);
-		this.observationParameterList = observationParameters;
-	}
 
-	private void logParameterValueCollection(ParameterCollection<ParameterValue<?>> parameterCollection) {
-		for (ParameterValue<?> parameterValue : parameterCollection) {
-			LOGGER.debug("{}: {}", parameterValue.getParameter().getFullName(), parameterValue.getValueAsString());
-		}
-	}
-
-	private void logParameterDefinitionCollection(ParameterCollection<ParameterDefinition> parameterCollection) {
-		for (ParameterDefinition parameterDefinition : parameterCollection) {
-			LOGGER.debug("{}", parameterDefinition.getFullName());
-		}
-	}
 
 	private Object createRandomValue(ParameterDefinition parameter) {
 		Random r = new Random(System.nanoTime());
@@ -107,8 +78,44 @@ public class DummyMEController implements IMeasurementEnvironmentController {
 		}
 	}
 
+
+
 	@Override
-	public MeasurementEnvironmentDefinition getMEDefinition() throws RemoteException {
-		return null;
+	protected void initialize() {
+		LOGGER.debug("Initialize measurement environment: initParameter = {}", initParameter);
+		
+	}
+
+	@Override
+	protected void prepareExperimentSeries() {
+		LOGGER.debug("Initialize measurement environment: prepareParameter = {}", prepareParameter);
+		
+	}
+
+	@Override
+	protected void runExperiment() {
+		
+		
+		
+		LOGGER.debug("Run experiment: ");
+		LOGGER.debug("Initialize measurement environment: inputParameter = {}", inputParameter);
+
+		for (int i = 0; i < ((NumberOfRepetitions) getTerminationCondition()).getNumberOfRepetitions(); i++) {
+			LOGGER.debug("Running repetition {}.", i + 1);
+			observationParameterOne.addValue(createRandomValue(observationParameterOne.getParameter()));
+			observationParameterTwo.addValue(createRandomValue(observationParameterTwo.getParameter()));
+		}
+		LOGGER.debug("Finished experiment.");
+		
+	
+	}
+
+
+
+	@Override
+	protected void defineResultSet() {
+		addParameterObservationsToResult(observationParameterOne);
+		addParameterObservationsToResult(observationParameterTwo);
+		
 	}
 }

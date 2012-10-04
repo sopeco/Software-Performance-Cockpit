@@ -13,11 +13,11 @@ import org.sopeco.persistence.util.ScenarioDefinitionBuilder.AssignmentType;
 
 public class DummyModelBuilder {
 	public static final String SCENARIO_NAME = "TestScenario";
-	public static final String INPUT_PARAM_1 = "DummyInput_1";
+	public static final String INPUT_PARAM_1 = "inputParameter";
 	public static ParameterDefinition dummyInputParam_1 = null;
-	public static final String INPUT_PARAM_2 = "DummyInput_2";
+	public static final String INPUT_PARAM_2 = "inputParameter2";
 	public static ParameterDefinition dummyInputParam_2 = null;
-	public static final String OUTPUT_PARAM = "DummyOutput";
+	public static final String OUTPUT_PARAM = "observationParameterOne";
 	public static ParameterDefinition dummyOutputParam = null;
 
 	public static final String MEASUREMENT_SPEC_1 = "DummyMeasurementSpec_1";
@@ -145,9 +145,11 @@ public class DummyModelBuilder {
 	}
 
 	public static void createMeasurementEnvironment(ScenarioDefinitionBuilder builder) {
-		builder.createNewNamespace("default");
+		builder.createNewNamespace("test");
+		builder.createChildNamespace("input");
 		dummyInputParam_1 = builder.createParameter(INPUT_PARAM_1, ParameterType.INTEGER, ParameterRole.INPUT);
 		dummyInputParam_2 = builder.createParameter(INPUT_PARAM_2, ParameterType.INTEGER, ParameterRole.INPUT);
+		builder.createSiblingNamespace("observation");
 		dummyOutputParam = builder.createParameter(OUTPUT_PARAM, ParameterType.INTEGER, ParameterRole.OBSERVATION);
 	}
 }

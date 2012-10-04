@@ -8,7 +8,6 @@ import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
-import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.exceptions.ExperimentFailedException;
 import org.sopeco.persistence.util.ParameterCollection;
 
@@ -21,6 +20,8 @@ import org.sopeco.persistence.util.ParameterCollection;
  * 
  */
 public interface IMeasurementEnvironmentController extends Remote {
+
+
 
 	/**
 	 * Initializes the measurement environment controller with a list of
@@ -72,17 +73,6 @@ public interface IMeasurementEnvironmentController extends Remote {
 	 *             throws this exception if remote communication fails
 	 */
 	void finalizeExperimentSeries() throws RemoteException;
-
-	/**
-	 * Sets the collection of observation parameters.
-	 * 
-	 * @param observationParameters
-	 *            the collection of observation parameters
-	 * @throws RemoteException
-	 *             throws this exception if remote communication fails
-	 */
-	void setObservationParameters(ParameterCollection<ParameterDefinition> observationParameters)
-			throws RemoteException;
 
 	/**
 	 * Returns the measurement environment definition (
