@@ -237,7 +237,7 @@ public abstract class AbstractMEController implements IMeasurementEnvironmentCon
 		if (field.isAnnotationPresent(InputParameter.class)) {
 			InputParameter spcAnn = field.getAnnotation(InputParameter.class);
 
-			if (spcAnn.name().equals("DEFAULT")) {
+			if (spcAnn.name().equals(InputParameter.DEFAULT)) {
 				return field.getName();
 			} else {
 				return spcAnn.name();
@@ -245,7 +245,7 @@ public abstract class AbstractMEController implements IMeasurementEnvironmentCon
 		} else if (field.isAnnotationPresent(ObservationParameter.class)) {
 			ObservationParameter spcAnn = field.getAnnotation(ObservationParameter.class);
 
-			if (spcAnn.name().equals("DEFAULT")) {
+			if (spcAnn.name().equals(InputParameter.DEFAULT)) {
 				return field.getName();
 			} else {
 				return spcAnn.name();

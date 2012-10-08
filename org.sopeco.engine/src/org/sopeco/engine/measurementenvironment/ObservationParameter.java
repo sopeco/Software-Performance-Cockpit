@@ -21,10 +21,10 @@ public @interface ObservationParameter {
 	/**
 	 * Specifies the name of the parameter.
 	 */
-	String name() default "DEFAULT";
+	String name() default InputParameter.DEFAULT;
 
 	/**
 	 * Specifies the full qualified namespace this parameter belongs to.
 	 */
-	String namespace() default "root";
+	String namespace() default InputParameter.ROOT;
 }

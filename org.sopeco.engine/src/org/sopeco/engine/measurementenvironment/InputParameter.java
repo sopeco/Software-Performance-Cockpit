@@ -5,8 +5,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.sopeco.persistence.entities.definition.ParameterRole;
-
 /**
  * This annotation is used for defining input / initialization or preparation parameters in mesearument environment
  * controllers.
@@ -17,13 +15,17 @@ import org.sopeco.persistence.entities.definition.ParameterRole;
 @Target(value = ElementType.FIELD)
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface InputParameter {
+	
+	public static final String DEFAULT = "DEFAULT";
+	public static final String ROOT = "root";
+	
 	/**
 	 * Specifies the name of the parameter.
 	 */
-	String name() default "DEFAULT";
+	String name() default DEFAULT;
 
 	/**
 	 * Specifies the full qualified namespace this parameter belongs to.
 	 */
-	String namespace() default "root";
+	String namespace() default ROOT;
 }
