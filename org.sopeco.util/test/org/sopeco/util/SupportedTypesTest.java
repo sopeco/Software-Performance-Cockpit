@@ -15,7 +15,9 @@ public class SupportedTypesTest {
 	@Test
 	public void testGet() {
 		assertEquals(SupportedTypes.Double, SupportedTypes.get(Double.class));
+		assertEquals(SupportedTypes.Double, SupportedTypes.get(Double.TYPE));
 		assertEquals(SupportedTypes.Integer, SupportedTypes.get(Integer.class));
+		assertEquals(SupportedTypes.Integer, SupportedTypes.get("int"));
 		assertNull(SupportedTypes.get(SupportedTypesTest.class));
 	
 		assertEquals(SupportedTypes.Integer, SupportedTypes.get("intEger"));

@@ -2,6 +2,7 @@ package org.sopeco.engine.measurementenvironment;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -270,26 +271,22 @@ public abstract class AbstractMEController implements IMeasurementEnvironmentCon
 	}
 
 	/**
-	 * Interpretes the type of the given class and returns the corresponding
+	 * Interprets the type of the given class and returns the corresponding
 	 * string representation used for SoPeCo Parameter types. Throws a runtime
 	 * exception if the given type is not supported.
 	 * 
+	 * @param type a given type
 	 */
-	private String interpreteType(Object type) {
-		if (type.equals(Long.TYPE) || type.equals(Long.class) || type.equals(Integer.TYPE)
-				|| type.equals(Integer.class)) {
-			return Tools.SupportedTypes.Integer.toString();
+	private String interpreteType(Type type) {
+		if (type instanceof Class) {
+			Tools.SupportedTypes sType = Tools.SupportedTypes.get(((Class)type).getSimpleName());
+		
+			if (sType != null) {
+				return sType.toString();
+			}
 		}
-		if (type.equals(String.class)) {
-			return Tools.SupportedTypes.String.toString();
-		}
-		if (type.equals(Boolean.TYPE) || type.equals(Boolean.class)) {
-			return Tools.SupportedTypes.Boolean.toString();
-		}
-		if (type.equals(Double.TYPE) || type.equals(Double.class)) {
-			return Tools.SupportedTypes.Double.toString();
-		}
-
+		
+		// else
 		throw new RuntimeException("Unsupported parameter type for input parameter! "
 				+ "Supported values are Integer, Double, Boolean or String");
 	}

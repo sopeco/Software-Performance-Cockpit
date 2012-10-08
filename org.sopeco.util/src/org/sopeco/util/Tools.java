@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.commons.math3.distribution.TDistribution;
-import org.apache.commons.math3.distribution.ZipfDistribution;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.apache.tools.ant.DirectoryScanner;
 import org.slf4j.Logger;
@@ -63,13 +62,16 @@ public class Tools {
 		 * that class. Otherwise, returns null.
 		 */
 		public static SupportedTypes get(String name) {
-			if (Tools.strEqualName(name, Double.class.getSimpleName()))
+			if (Tools.strEqualName(name, java.lang.Double.class.getSimpleName()) || Tools.strEqualName(name, java.lang.Double.TYPE.getSimpleName()))
 				return Double;
-			if (Tools.strEqualName(name, Integer.class.getSimpleName()))
+			
+			if (Tools.strEqualName(name, java.lang.Integer.class.getSimpleName()) || Tools.strEqualName(name, java.lang.Integer.TYPE.getSimpleName()))
 				return Integer;
+			
 			if (Tools.strEqualName(name, String.class.getSimpleName()))
 				return String;
-			if (Tools.strEqualName(name, Boolean.class.getSimpleName()))
+			
+			if (Tools.strEqualName(name, Boolean.class.getSimpleName()) || Tools.strEqualName(name, java.lang.Boolean.TYPE.getSimpleName()))
 				return Boolean;
 
 			return null;
