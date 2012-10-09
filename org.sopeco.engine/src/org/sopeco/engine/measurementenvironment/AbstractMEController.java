@@ -416,7 +416,7 @@ public abstract class AbstractMEController extends MEControllerResource {
 	 * This method should contain the execution logic of an experiment within a
 	 * concrete MEController.
 	 */
-	protected abstract void runExperiment();
+	protected abstract void runExperiment() throws ExperimentFailedException;
 
 	/**
 	 * This method should encapsulate the finalization routine for the
