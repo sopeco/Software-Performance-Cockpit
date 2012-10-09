@@ -31,7 +31,7 @@ import org.sopeco.util.Tools;
  * 
  */
 
-public abstract class AbstractMEController implements IMeasurementEnvironmentController {
+public abstract class AbstractMEController extends MEControllerResource {
 	/**
 	 * namespace used per default for the root namespace.
 	 */
@@ -71,28 +71,36 @@ public abstract class AbstractMEController implements IMeasurementEnvironmentCon
 	}
 
 	@Override
-	public void initialize(ParameterCollection<ParameterValue<?>> initializationPVs) throws RemoteException {
-
+	protected void initialize(ParameterCollection<ParameterValue<?>> initializationPVs) {
 		setParameterValues(initializationPVs);
 		initialize();
 	}
 
 	@Override
-	public void prepareExperimentSeries(ParameterCollection<ParameterValue<?>> preparationPVs) throws RemoteException {
-
+	protected void prepareExperimentSeries(ParameterCollection<ParameterValue<?>> preparationPVs) {
 		setParameterValues(preparationPVs);
 		prepareExperimentSeries();
 	}
 
 	@Override
-	public Collection<ParameterValueList<?>> runExperiment(ParameterCollection<ParameterValue<?>> inputPVs,
-			ExperimentTerminationCondition terminationCondition) throws RemoteException, ExperimentFailedException {
+	protected Collection<ParameterValueList<?>> runExperiment(ParameterCollection<ParameterValue<?>> inputPVs,
+			ExperimentTerminationCondition terminationCondition) throws ExperimentFailedException {
+		cleanUpObservations();
 		resultSet.clear();
 		setParameterValues(inputPVs);
 		this.terminationCondition = terminationCondition;
 		runExperiment();
 		defineResultSet();
 		return resultSet;
+	}
+
+	@Override
+	protected void cleanUpMEController() {
+		terminationCondition = null;
+		resultSet.clear();
+		cleanUpInpuValues();
+		cleanUpObservations();
+
 	}
 
 	/**
@@ -345,6 +353,45 @@ public abstract class AbstractMEController implements IMeasurementEnvironmentCon
 		return null;
 	}
 
+	private void cleanUpObservations() {
+		for (ParameterDefinition observationParameter : meDefinition.getRoot().getObservationParameters()) {
+			Field obsParField = sopecoParameterFields.get(observationParameter.getFullName());
+			try {
+				obsParField.set(this, new ParameterValueList(observationParameter));
+			} catch (Exception e) {
+				throw new RuntimeException("Failed setting parameter value.");
+			}
+		}
+	}
+
+	private void cleanUpInpuValues() {
+		try {
+			for (ParameterDefinition parameter : meDefinition.getRoot().getAllParameters()) {
+				if (parameter.getRole().equals(ParameterRole.INPUT)) {
+					Field inputField = sopecoParameterFields.get(parameter.getFullName());
+
+					switch (Tools.SupportedTypes.valueOf(parameter.getType())) {
+					case Boolean:
+						inputField.setBoolean(this, false);
+						break;
+					case Double:
+						inputField.setDouble(this, 0.0);
+						break;
+					case Integer:
+						inputField.setInt(this, 0);
+						break;
+					case String:
+						inputField.set(this, null);
+						break;
+
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("Failed cleaning up input parameters!", e);
+		}
+	}
+
 	/**
 	 * This method should define which ParameterValueList should be included
 	 * into the result set of an experiment run. Use
@@ -370,5 +417,11 @@ public abstract class AbstractMEController implements IMeasurementEnvironmentCon
 	 * concrete MEController.
 	 */
 	protected abstract void runExperiment();
+
+	/**
+	 * This method should encapsulate the finalization routine for the
+	 * experiment series of the specific MEController.
+	 */
+	protected abstract void finalizeExperimentSeries();
 
 }

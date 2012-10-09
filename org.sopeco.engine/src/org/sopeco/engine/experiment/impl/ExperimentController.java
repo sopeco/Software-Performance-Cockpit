@@ -18,7 +18,6 @@ import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
-import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.exceptions.ExperimentFailedException;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.persistence.util.ParameterCollection;
@@ -34,6 +33,11 @@ import org.sopeco.util.session.SessionAwareObject;
  * 
  */
 public class ExperimentController extends SessionAwareObject implements IExperimentController {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3792616812815582063L;
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExperimentController.class);
 
 	private static final String USE_CACHE_PROPERTY = "sopeco.config.engine.useExperimentResultCache";
@@ -78,7 +82,7 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 
 			this.initializationPVs = initializationPVs;
 
-			meController.initialize(initializationPVs);
+			meController.initialize(getSessionId(), initializationPVs);
 
 		} catch (RemoteException e) {
 			throw new RuntimeException("RemoteException.", e);
@@ -102,11 +106,12 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 			this.currentExperimentSeriesRun = experimentSeriesRun;
 			this.preparationPVs = preparationPVs;
 
-			meController.prepareExperimentSeries(preparationPVs);
+			meController.prepareExperimentSeries(getSessionId(), preparationPVs);
 
-//			ParameterCollection<ParameterDefinition> observationParams = ParameterCollectionFactory
-//					.createParameterDefinitionCollection(meDefinition.getRoot().getObservationParameters());
-//			meController.setObservationParameters(observationParams);
+			// ParameterCollection<ParameterDefinition> observationParams =
+			// ParameterCollectionFactory
+			// .createParameterDefinitionCollection(meDefinition.getRoot().getObservationParameters());
+			// meController.setObservationParameters(observationParams);
 
 		} catch (RemoteException e) {
 			throw new RuntimeException("RemoteException.", e);
@@ -170,7 +175,7 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 	public void finalizeExperimentSeries() {
 		try {
 
-			meController.finalizeExperimentSeries();
+			meController.finalizeExperimentSeries(getSessionId());
 
 		} catch (RemoteException e) {
 			throw new RuntimeException("RemoteException.", e);
@@ -233,7 +238,8 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 			if (runExperimentOnME) {
 				try {
 					LOGGER.debug("Starting experiment on measurement environment...");
-					observations = meController.runExperiment(inputParamCollection, terminationCondition);
+					observations = meController.runExperiment(getSessionId(), inputParamCollection,
+							terminationCondition);
 					experimentSuccessful = true;
 					LOGGER.debug("Experiment finished successfully on measurement environment.");
 				} catch (ExperimentFailedException e) {
@@ -293,5 +299,31 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 	@Override
 	public ExperimentFailedException getLastFailedExperimentException() {
 		return experimentFailedException;
+	}
+
+	@Override
+	public void acquireMEController() {
+		long timeout = Configuration.getSessionSingleton(getSessionId()).getPropertyAsLong(
+				IConfiguration.CONF_MEC_ACQUISITION_TIMEOUT, 0);
+		try {
+			boolean acquired = meController.acquireMEController(getSessionId(), timeout);
+			if (!acquired) {
+				throw new RuntimeException(
+						"MEController in use. Were not able to acquire the controller within a time frame of "
+								+ timeout + " seconds");
+			}
+		} catch (RemoteException e) {
+			throw new RuntimeException("RemoteException.", e);
+		}
+	}
+
+	@Override
+	public void releaseMEController() {
+		try {
+			meController.releaseMEController(getSessionId());
+		} catch (RemoteException e) {
+			throw new RuntimeException("RemoteException.", e);
+		}
+
 	}
 }

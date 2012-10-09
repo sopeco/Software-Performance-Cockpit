@@ -16,8 +16,15 @@ import java.lang.annotation.Target;
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface InputParameter {
 	
+	/**
+	 * Default parameter name.
+	 */
 	public static final String DEFAULT = "DEFAULT";
-	public static final String ROOT = "root";
+	
+	/**
+	 * Default root namespace. 
+	 */
+	public static final String ROOT = "";
 	
 	/**
 	 * Specifies the name of the parameter.

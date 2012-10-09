@@ -44,10 +44,14 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 	private final IPersistenceProvider persistenceProvider;
 
 	/**
-	 * Constructor. 
-	 * @param sessionId Session id to be used by this session aware object
-	 * @param experimentController experiment controller to be used for executing experiments
-	 * @param experimentSeriesManager experiment series manager to be used for managing series
+	 * Constructor.
+	 * 
+	 * @param sessionId
+	 *            Session id to be used by this session aware object
+	 * @param experimentController
+	 *            experiment controller to be used for executing experiments
+	 * @param experimentSeriesManager
+	 *            experiment series manager to be used for managing series
 	 */
 	public EngineImp(String sessionId, IExperimentController experimentController,
 			IExperimentSeriesManager experimentSeriesManager) {
@@ -77,6 +81,7 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 	public ScenarioInstance run(ScenarioDefinition scenario) {
 		ScenarioInstance scenarioInstance;
 		try {
+
 			scenarioInstance = persistenceProvider.loadScenarioInstance(scenario.getScenarioName(), getConfiguration()
 					.getMeasurementControllerURIAsStr());
 			LOGGER.debug("Loaded ScenarioInstance {} from database", scenarioInstance);
@@ -86,33 +91,39 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 					.getMeasurementControllerURIAsStr(), scenario);
 			persistenceProvider.store(scenarioInstance);
 
-
 		} catch (DataNotFoundException e) {
 			scenarioInstance = EntityFactory.createScenarioInstance(scenario, getConfiguration()
 					.getMeasurementControllerURIAsStr());
 			persistenceProvider.store(scenarioInstance);
 			LOGGER.debug("Created new ScenarioInstance {}", scenarioInstance);
 		}
+		experimentController.acquireMEController();
+		try {
+			for (MeasurementSpecification measSpec : scenario.getMeasurementSpecifications()) {
 
-		for (MeasurementSpecification measSpec : scenario.getMeasurementSpecifications()) {
-			experimentController.initialize(
-					EngineTools.getConstantParameterValues(measSpec.getInitializationAssignemts()),
-					scenario.getMeasurementEnvironmentDefinition());
+				experimentController.initialize(
+						EngineTools.getConstantParameterValues(measSpec.getInitializationAssignemts()),
+						scenario.getMeasurementEnvironmentDefinition());
 
-			// loop over all the experiment series in the specs
-			for (ExperimentSeriesDefinition esd : measSpec.getExperimentSeriesDefinitions()) {
+				// loop over all the experiment series in the specs
+				for (ExperimentSeriesDefinition esd : measSpec.getExperimentSeriesDefinitions()) {
 
-				ExperimentSeries series = scenarioInstance.getExperimentSeries(esd.getName(), esd.getVersion());
-				if (series == null) {
-					series = EntityFactory.createExperimentSeries(esd);
-					scenarioInstance.getExperimentSeriesList().add(series);
-					series.setScenarioInstance(scenarioInstance);
+					ExperimentSeries series = scenarioInstance.getExperimentSeries(esd.getName(), esd.getVersion());
+					if (series == null) {
+						series = EntityFactory.createExperimentSeries(esd);
+						scenarioInstance.getExperimentSeriesList().add(series);
+						series.setScenarioInstance(scenarioInstance);
 
-					persistenceProvider.store(series);
+						persistenceProvider.store(series);
+					}
+
+					experimentSeriesManager.runExperimentSeries(series);
 				}
-
-				experimentSeriesManager.runExperimentSeries(series);
 			}
+			experimentController.releaseMEController();
+		} catch (Exception e) {
+			experimentController.releaseMEController();
+			throw new RuntimeException(e);
 		}
 
 		try {

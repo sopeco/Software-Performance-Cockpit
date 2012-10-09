@@ -7,6 +7,7 @@ import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.exceptions.ExperimentFailedException;
 import org.sopeco.persistence.util.ParameterCollection;
+import org.sopeco.util.session.ISessionAwareObject;
 
 /**
  * An ExperimentController controls execution of any single experiment.
@@ -14,7 +15,17 @@ import org.sopeco.persistence.util.ParameterCollection;
  * @author D053711
  * 
  */
-public interface IExperimentController {
+public interface IExperimentController extends ISessionAwareObject {
+
+	/**
+	 * Acquires the used MEController for measurement execution.
+	 */
+	void acquireMEController();
+
+	/**
+	 * Releases used MEController.
+	 */
+	void releaseMEController();
 
 	/**
 	 * Initializes the experiment controller before the one set of experiments.

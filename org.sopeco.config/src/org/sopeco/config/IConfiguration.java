@@ -32,6 +32,8 @@ public interface IConfiguration extends ISessionAwareObject{
 	String CONF_APP_NAME = "sopeco.config.applicationName";
 
 	String CONF_MAIN_CLASS = "sopeco.config.mainClass";
+	
+	String CONF_MEC_ACQUISITION_TIMEOUT = "sopeco.config.MECAcquisitionTimeout";
 
 	String CONF_MODEL_CHANGE_HANDLING_MODE = "sopeco.config.modelChangeHandlingMode";
 	String MCH_MODE_OVERWRITE = "overwrite";

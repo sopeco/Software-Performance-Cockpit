@@ -53,6 +53,17 @@ public class DummyModelBuilder {
 		return builder.getScenarioDefinition();
 	}
 
+	public static ScenarioDefinition getAnotherScenariodefinition() {
+		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder(SCENARIO_NAME+"2");
+		createMeasurementEnvironment(builder);
+
+		builder.createMeasurementSpecification(MEASUREMENT_SPEC_1);
+		createESD_1(builder);
+		builder.createConstantValueAssignment(AssignmentType.Initialization, dummyInputParam_2, "1");
+
+		return builder.getScenarioDefinition();
+	}
+	
 	public static ScenarioDefinition getScenariodefinitionWithDifferentMSAndESD() {
 		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder(SCENARIO_NAME);
 		createMeasurementEnvironment(builder);
