@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterRole;
+import org.sopeco.util.Tools;
 
 /**
  * A SimpleDataSet is a column-based storage for data. It contains the values
@@ -291,31 +292,61 @@ public class SimpleDataSet implements Iterable<SimpleDataSetRow>, Serializable {
 
 	@Override
 	public String toString() {
-		if (size <= 0) {
-			return "EMPTY_DATASET" + super.toString();
-		}
-		boolean firstIteration = true;
-		String result = "";
-		String space = "\t";
-		String newLine = "\n";
-		for (SimpleDataSetRow row : this.getRowList()) {
-			if (firstIteration) {
-				for (ParameterValue<?> val : row.getRowValues()) {
-					result += val.getParameter().getName() + space;
-				}
-				result += newLine;
-				firstIteration = false;
-			}
+		List<String> lines = convertToCSV("\t");
 
-			for (ParameterValue<?> val : row.getRowValues()) {
-				result += val.getValue() + space;
-			}
-			result += newLine;
-
+		StringBuffer output = new StringBuffer();
+		for (String line: lines) {
+			output.append(line + Tools.getEOL());
 		}
-		return result;
+		
+		return output.toString();
 	}
 
+	/**
+	 * Creates a CSV style representation of the content of this dataset with the tab character as the separator.
+	 * 
+	 * @return a list of String values, each representing one line. The first line is the header.
+	 * @see #convertToCSV(String)
+	 */
+	public List<String> convertToCSV() {
+		return convertToCSV("\t");
+	}
+	
+	/**
+	 * Creates a CSV style representation of the content of this dataset.
+	 * 
+	 * @param separator the separator to use between values
+	 * @return a list of String values, each representing one line. The first line is the header.
+	 */
+	public List<String> convertToCSV(String separator) {
+		List<String> result = new ArrayList<String>();
+
+		if (size <= 0) {
+			result.add("EMPTY_DATASET" + super.toString());
+		} else {
+			boolean firstIteration = true;
+			for (SimpleDataSetRow row : this.getRowList()) {
+				String line = "";
+				if (firstIteration) {
+					for (ParameterValue<?> val : row.getRowValues()) {
+						line += val.getParameter().getName() + separator;
+					}
+					result.add(line);
+					firstIteration = false;
+					line = "";
+				}
+
+				for (ParameterValue<?> val : row.getRowValues()) {
+					line += val.getValue() + separator;
+				}
+				
+				result.add(line);
+			}
+		}
+
+		return result;
+	}
+	
 	protected void addColumn(SimpleDataSetColumn<?> col) {
 		columnMap.put(col.getParameter(), col);
 		parameterIndexes.put(parameterIndexes.size(), col.getParameter());
