@@ -372,13 +372,13 @@ public abstract class AbstractMEController extends MEControllerResource {
 
 					switch (Tools.SupportedTypes.valueOf(parameter.getType())) {
 					case Boolean:
-						inputField.setBoolean(this, false);
+						inputField.set(this, false);
 						break;
 					case Double:
-						inputField.setDouble(this, 0.0);
+						inputField.set(this, 0.0);
 						break;
 					case Integer:
-						inputField.setInt(this, 0);
+						inputField.set(this, 0);
 						break;
 					case String:
 						inputField.set(this, null);

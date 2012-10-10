@@ -71,7 +71,7 @@ public abstract class MEControllerResource implements IMeasurementEnvironmentCon
 			throws RemoteException {
 		checkExecutionPermission(acquirerID);
 		updateState(MEControllerState.INITIALIZATION);
-
+		initialize(initializationPVs);
 	}
 
 	@Override
@@ -79,7 +79,7 @@ public abstract class MEControllerResource implements IMeasurementEnvironmentCon
 			throws RemoteException {
 		checkExecutionPermission(acquirerID);
 		updateState(MEControllerState.SERIES_PREPARATION);
-
+		prepareExperimentSeries(preparationPVs);
 	}
 
 	@Override
@@ -95,6 +95,7 @@ public abstract class MEControllerResource implements IMeasurementEnvironmentCon
 	public void finalizeExperimentSeries(String acquirerID) throws RemoteException {
 		checkExecutionPermission(acquirerID);
 		updateState(MEControllerState.FINALIZING_SERIES);
+		finalizeExperimentSeries();
 	}
 
 	@Override
