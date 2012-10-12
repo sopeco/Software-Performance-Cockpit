@@ -1,8 +1,8 @@
 package org.sopeco.engine.validation;
 
 import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertTrue;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,7 +11,6 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.sopeco.engine.analysis.PredictionFunctionResult;
-import org.sopeco.engine.util.test.DummyFactory;
 import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.entities.definition.ParameterRole;
@@ -62,5 +61,7 @@ public class ValidatorTest {
 		System.out.println("MRE: " + validationResult2.getMeanRelativeError());
 		
 	}
+	
+	
 
 }

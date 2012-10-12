@@ -2,8 +2,10 @@ package org.sopeco.model.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.compare.util.ModelUtils;
@@ -300,12 +302,15 @@ public class EMFUtil {
 	private static org.sopeco.persistence.entities.definition.ExperimentTerminationCondition convertExperimentTerminationCondition(
 			ExperimentTerminationCondition emfTerminationCondition) {
 		if (emfTerminationCondition instanceof TimeOut) {
-			return EntityFactory
-					.createTimeOutTerminationCondition(((TimeOut) emfTerminationCondition).getMaxDuration());
+			Map<String, String> terminationConfig = new HashMap<String, String>();
+			terminationConfig.put("timeout", String.valueOf(((TimeOut) emfTerminationCondition).getMaxDuration()));
+			return EntityFactory.createTerminationCondition("Timeout", terminationConfig);
 		} else if (emfTerminationCondition instanceof NumberOfRepetitions) {
-			return EntityFactory
-					.createNumberOfRepetitionsTerminationCondition(((NumberOfRepetitions) emfTerminationCondition)
-							.getNumberOfRepetitions());
+			Map<String, String> terminationConfig = new HashMap<String, String>();
+			terminationConfig.put("repetitions", String.valueOf(((NumberOfRepetitions) emfTerminationCondition)
+					.getNumberOfRepetitions()));
+			return EntityFactory.createTerminationCondition("Number Of Repetitions", terminationConfig);
+			
 		}
 		throw new IllegalArgumentException("Unknown experiment termination condition: "
 				+ emfTerminationCondition.getClass().getName());

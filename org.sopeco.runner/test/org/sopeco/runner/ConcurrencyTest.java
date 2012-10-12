@@ -17,7 +17,6 @@ import org.sopeco.engine.EngineFactory;
 import org.sopeco.engine.IEngine;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
 import org.sopeco.engine.measurementenvironment.rmi.RmiMEConnector;
-import org.sopeco.engine.util.test.DummyMEController;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
 public class ConcurrencyTest {

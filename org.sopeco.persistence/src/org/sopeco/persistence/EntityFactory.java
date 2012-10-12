@@ -17,12 +17,10 @@ import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition
 import org.sopeco.persistence.entities.definition.ExplorationStrategy;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
-import org.sopeco.persistence.entities.definition.NumberOfRepetitions;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
-import org.sopeco.persistence.entities.definition.TimeOut;
 
 /**
  * The factory is used to create new instances of the SoPeCo persistence
@@ -149,17 +147,14 @@ public final class EntityFactory {
 		ac.getConfiguration().putAll(config);
 		return ac;
 	}
-
-	public static TimeOut createTimeOutTerminationCondition(long maxDuration) {
-		TimeOut timeOut = new TimeOut();
-		timeOut.setMaxDuration(maxDuration);
-		return timeOut;
-	}
-
-	public static NumberOfRepetitions createNumberOfRepetitionsTerminationCondition(int numberOfRepetitions) {
-		NumberOfRepetitions numRep = new NumberOfRepetitions();
-		numRep.setNumberOfRepetitions(numberOfRepetitions);
-		return numRep;
+	
+	public static ExperimentTerminationCondition createTerminationCondition(String name, Map<String, String> config) {
+		ExperimentTerminationCondition etc = new ExperimentTerminationCondition();
+		etc.setName(name);
+		if (config != null) {
+			etc.getConfiguration().putAll(config);
+		}
+		return etc;
 	}
 
 	public static ConstantValueAssignment createConstantValueAssignment(final ParameterDefinition parameter,

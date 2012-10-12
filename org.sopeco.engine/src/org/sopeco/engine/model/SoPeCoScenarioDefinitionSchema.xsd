@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.sopeco.org/SoPeCoScenarioDefinitionSchema"
+	xmlns:tns="http://www.sopeco.org/SoPeCoScenarioDefinitionSchema"
+	elementFormDefault="qualified">
+	
+	<element name="scenario" type="tns:ScenarioDefinition"></element>
+
+	<complexType name="ScenarioDefinition">
+		<sequence maxOccurs="unbounded" minOccurs="0">
+			<element name="measurementSpecification" type="tns:MeasurementSpecification"
+				maxOccurs="unbounded" minOccurs="1"></element>
+		</sequence>
+		<attribute name="name" type="string" use="required"></attribute>
+	</complexType>
+
+
+	<complexType name="MeasurementSpecification">
+		<sequence>
+			<element name="experimentSeries" type="tns:ExperimentSeriesDefinition"
+				maxOccurs="unbounded" minOccurs="1">
+			</element>
+			<element name="initializationAssignments" type="tns:ConstantValueAssignment"
+				maxOccurs="unbounded" minOccurs="0">
+			</element>
+		</sequence>
+		<attribute name="name" type="string" use="required"></attribute>
+	</complexType>
+
+	<complexType name="ExperimentSeriesDefinition">
+		<all>
+			<element name="explorationStrategy" type="tns:ExplorationStrategy"
+				maxOccurs="1" minOccurs="1">
+			</element>
+			<element name="terminationCondition" type="tns:ExtensibleElement"
+				maxOccurs="1" minOccurs="1">
+			</element>
+			<element name="experimentSeriesPreparation" maxOccurs="1"
+				minOccurs="0">
+				<complexType>
+					<sequence>
+						<element name="constantAssignment" type="tns:ConstantValueAssignment"
+							maxOccurs="unbounded" minOccurs="0">
+						</element>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="experimentSeriesExecution" maxOccurs="1" minOccurs="1">
+				<complexType>
+					<sequence>
+						<element name="constantAssignment" type="tns:ConstantValueAssignment"
+							maxOccurs="unbounded" minOccurs="0">
+						</element>
+						<element name="dynamicAssignment" type="tns:DynamicValueAssignment"
+							maxOccurs="unbounded" minOccurs="0">
+						</element>
+					</sequence>
+				</complexType>
+			</element>
+		</all>
+		<attribute name="name" type="string" use="required"></attribute>
+	</complexType>
+
+
+
+	<complexType name="ConstantValueAssignment">
+		<attribute name="parameter" type="string" use="required"></attribute>
+		<attribute name="value" type="string" use="required"></attribute>
+	</complexType>
+
+
+	<complexType name="DynamicValueAssignment">
+
+		<sequence>
+			<element name="config" type="tns:ConfigurationNode"
+				maxOccurs="unbounded" minOccurs="0">
+			</element>
+		</sequence>
+		<attribute name="name" type="string" use="required"></attribute>
+		<attribute name="parameter" type="string"></attribute>
+
+	</complexType>
+
+
+	<complexType name="ConfigurationNode">
+		<attribute name="key" type="string" use="required"></attribute>
+		<attribute name="value" type="string" use="required"></attribute>
+	</complexType>
+
+	<complexType name="ExtensibleElement">
+		<sequence>
+			<element name="config" type="tns:ConfigurationNode"
+				maxOccurs="unbounded" minOccurs="0">
+			</element>
+		</sequence>
+		<attribute name="name" type="string" use="required"></attribute>
+	</complexType>
+
+	<complexType name="AnalysisConfiguration">
+		<complexContent>
+			<extension base="tns:ExtensibleElement">
+				<sequence>
+					<element name="dependentParameter" type="string" maxOccurs="unbounded"
+						minOccurs="0">
+					</element>
+					<element name="independentParameter" type="string"
+						maxOccurs="unbounded" minOccurs="0"></element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="ExplorationStrategy">
+		<complexContent>
+			<extension base="tns:ExtensibleElement">
+				<sequence>
+					<element name="analysisConfig" type="tns:AnalysisConfiguration"
+						maxOccurs="unbounded" minOccurs="0"></element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+
+</schema>

@@ -9,6 +9,7 @@ import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
+import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.PersistenceProviderFactory;
 import org.sopeco.persistence.dataset.DataSetAggregated;
@@ -124,6 +125,7 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 		if (terminationCondition == null) {
 			throw new IllegalArgumentException("TerminationCondition must be set (not null).");
 		}
+		
 
 		boolean experimentWasSuccessful = false;
 

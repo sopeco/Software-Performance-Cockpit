@@ -1,0 +1,2 @@
+org.sopeco.plugin.std.termination.repetitions.NumberOfRepetitionsExtension
+org.sopeco.plugin.std.termination.timeout.TimeOutExtension

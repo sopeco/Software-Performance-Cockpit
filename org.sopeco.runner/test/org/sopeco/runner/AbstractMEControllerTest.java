@@ -1,4 +1,4 @@
-package org.sopeco.engine.measurementenvironment;
+package org.sopeco.runner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
-import org.sopeco.engine.util.test.DummyMEController;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueFactory;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 import org.sopeco.persistence.util.ParameterCollectionFactory;
+import org.sopeco.runner.DummyMEController;
 
 public class AbstractMEControllerTest {
 	@Test
@@ -60,6 +60,8 @@ public class AbstractMEControllerTest {
 				initNS.getParameter("initParameter"), 11);
 		List<ParameterValue<?>> pvc = new ArrayList<ParameterValue<?>>();
 		pvc.add(initPV);
-		dummyController.initialize(ParameterCollectionFactory.createParameterValueCollection(pvc));
+		dummyController.acquireMEController("myID", 0);
+		dummyController.initialize("myID", ParameterCollectionFactory.createParameterValueCollection(pvc));
+		dummyController.releaseMEController("myID");
 	}
 }

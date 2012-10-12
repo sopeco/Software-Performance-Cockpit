@@ -13,12 +13,10 @@ import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition
 import org.sopeco.persistence.entities.definition.ExplorationStrategy;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
-import org.sopeco.persistence.entities.definition.NumberOfRepetitions;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
-import org.sopeco.persistence.entities.definition.TimeOut;
 
 /**
  * Builder to create SoPeCo Scenario Definitions from code instead of the EMF
@@ -36,7 +34,6 @@ public class ScenarioDefinitionBuilder {
 	private AnalysisConfiguration currentAnalysisConfiguration;
 	private MeasurementSpecification currentMeasurementSpecification;
 
-	
 	/**
 	 * Defines the type of assignment for a parameter in an
 	 * {@link MeasurementSpecification}.
@@ -59,7 +56,6 @@ public class ScenarioDefinitionBuilder {
 
 		MeasurementEnvironmentDefinition meDefinition = EntityFactory.createMeasurementEnvironmentDefinition();
 		scenarioDefinition.setMeasurementEnvironmentDefinition(meDefinition);
-
 
 		ParameterNamespace root = EntityFactory.createNamespace("");
 		meDefinition.setRoot(root);
@@ -147,7 +143,7 @@ public class ScenarioDefinitionBuilder {
 		this.scenarioDefinition.getMeasurementSpecifications().add(measurementSpecification);
 		this.currentMeasurementSpecification = measurementSpecification;
 	}
-	
+
 	/**
 	 * Creates a new {@link ExperimentSeriesDefinition} with the given name and
 	 * adds it to the {@link MeasurementSpecification}.
@@ -163,29 +159,18 @@ public class ScenarioDefinitionBuilder {
 	}
 
 	/**
-	 * Creates a {@link ExperimentTerminationCondition} that is based on the
-	 * number of repetitions. The termination condition is added to the last
-	 * created {@link ExperimentSeriesDefinition}.
+	 * Creates a new {@link ExperimentTerminationCondition} with the given
+	 * properties and adds it to the last created
+	 * {@link ExperimentSeriesDefinition}.
 	 * 
-	 * @param numberOfRepetitions
-	 *            the number of repetitions for each experiment
+	 * @param name
+	 *            the name of the termination condition strategy to create
+	 * @param configuration
+	 *            the configuration of the termination condition to create
 	 */
-	public void createNumberOfRunsCondition(int numberOfRepetitions) {
-		NumberOfRepetitions nor = EntityFactory.createNumberOfRepetitionsTerminationCondition(numberOfRepetitions);
+	public void createExperimentTerminationCondition(String name, Map<String, String> configuration) {
+		ExperimentTerminationCondition nor = EntityFactory.createTerminationCondition(name, configuration);
 		this.currentExperimentSeriesDefintition.setExperimentTerminationCondition(nor);
-	}
-
-	/**
-	 * Creates a {@link ExperimentTerminationCondition} that is based on the
-	 * maximal allowed duration for an experiment. The termination condition is
-	 * added to the last created {@link ExperimentSeriesDefinition}.
-	 * 
-	 * @param maxDuration
-	 *            the maximal allowed duration for each experiment
-	 */
-	public void createTimeOutCondition(int maxDuration) {
-		TimeOut timeOut = EntityFactory.createTimeOutTerminationCondition(maxDuration);
-		this.currentExperimentSeriesDefintition.setExperimentTerminationCondition(timeOut);
 	}
 
 	/**
@@ -205,15 +190,16 @@ public class ScenarioDefinitionBuilder {
 	 *            the configuration values for the assignment
 	 * @return the created {@link DynamicValueAssignment} instance
 	 */
-	public DynamicValueAssignment createDynamicValueAssignment(AssignmentType type, String name, ParameterDefinition parameter,
-			Map<String, String> configuration) {
+	public DynamicValueAssignment createDynamicValueAssignment(AssignmentType type, String name,
+			ParameterDefinition parameter, Map<String, String> configuration) {
 		DynamicValueAssignment dva = EntityFactory.createDynamicValueAssignment(name, parameter, configuration);
 		switch (type) {
 		case Experiment:
 			this.currentExperimentSeriesDefintition.getExperimentAssignments().add(dva);
 			return dva;
 		default:
-			throw new IllegalArgumentException("Invalid assignment type. DynamicValueAssignments are only allowed as ExperimentAssignments.");
+			throw new IllegalArgumentException(
+					"Invalid assignment type. DynamicValueAssignments are only allowed as ExperimentAssignments.");
 		}
 	}
 
@@ -234,7 +220,8 @@ public class ScenarioDefinitionBuilder {
 	 *            the constant value for the assignment in String representation
 	 * @return the created {@link DynamicValueAssignment} instance
 	 */
-	public ConstantValueAssignment createConstantValueAssignment(AssignmentType type, ParameterDefinition parameter, String value) {
+	public ConstantValueAssignment createConstantValueAssignment(AssignmentType type, ParameterDefinition parameter,
+			String value) {
 		ConstantValueAssignment cva = EntityFactory.createConstantValueAssignment(parameter, value);
 
 		switch (type) {
@@ -250,7 +237,7 @@ public class ScenarioDefinitionBuilder {
 		default:
 			throw new IllegalArgumentException("Invalid assignment type.");
 		}
-		
+
 		return cva;
 	}
 

@@ -1,11 +1,13 @@
-package org.sopeco.engine.util.test;
+package org.sopeco.engine.validation;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.dataset.DataSetAggregated;
@@ -49,7 +51,9 @@ public class DummyFactory {
 		builder.createMeasurementSpecification("DummyMeasurementSpecification");
 		
 		builder.createExperimentSeriesDefinition("Dummy0");
-		builder.createNumberOfRunsCondition(4);
+		Map<String, String> terminationConfig = new HashMap<String, String>();
+		terminationConfig.put("repetitions", "4");
+		builder.createExperimentTerminationCondition("Number Of Repetitions", terminationConfig);
 		builder.createDynamicValueAssignment(AssignmentType.Experiment, "Linear Numeric Variation", dummyInputParam, Collections.EMPTY_MAP);
 		builder.createExplorationStrategy("Full Exploration Strategy", Collections.EMPTY_MAP);	
 		builder.createAnalysisConfiguration("MARS", Collections.EMPTY_MAP);
@@ -57,7 +61,8 @@ public class DummyFactory {
 		builder.addIndependentParameter(dummyInputParam);
 		
 		builder.createExperimentSeriesDefinition("Dummy1");
-		builder.createNumberOfRunsCondition(4);
+
+		builder.createExperimentTerminationCondition("Number Of Repetitions", terminationConfig);
 		builder.createDynamicValueAssignment(AssignmentType.Experiment, "Linear Numeric Variation", dummyInputParam, Collections.EMPTY_MAP);
 		builder.createExplorationStrategy("Full Exploration Strategy", Collections.EMPTY_MAP);	
 		builder.createAnalysisConfiguration("MARS", Collections.EMPTY_MAP);

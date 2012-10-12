@@ -5,6 +5,8 @@ import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.After;
 import org.junit.Before;
@@ -122,7 +124,9 @@ public class ProcessedDatasetTest {
 
 	private void createESD(ScenarioDefinitionBuilder builder) {
 		builder.createExperimentSeriesDefinition(EXPERIMENT_SERIES);
-		builder.createNumberOfRunsCondition(1);
+		Map<String, String> terminationConfig = new HashMap<String, String>();
+		terminationConfig.put("repetitions", "1");
+		builder.createExperimentTerminationCondition("Number Of Repetitions", terminationConfig);
 
 		builder.createExplorationStrategy("Full Exploration Strategy", Collections.EMPTY_MAP);
 	}

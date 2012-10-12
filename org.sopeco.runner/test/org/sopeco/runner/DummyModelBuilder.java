@@ -132,7 +132,9 @@ public class DummyModelBuilder {
 
 	public static void createESD_1(ScenarioDefinitionBuilder builder) {
 		builder.createExperimentSeriesDefinition(EXPERIMENT_SERIES_1);
-		builder.createNumberOfRunsCondition(numbetOfRuns);
+		Map<String, String> terminationConfig = new HashMap<String, String>();
+		terminationConfig.put("repetitions", String.valueOf(numbetOfRuns));
+		builder.createExperimentTerminationCondition("Number Of Repetitions", terminationConfig);
 		builder.createDynamicValueAssignment(AssignmentType.Experiment, "Linear Numeric Variation", dummyInputParam_1,
 				linearVariationConfig);
 
@@ -141,7 +143,9 @@ public class DummyModelBuilder {
 
 	public static void createESD_2(ScenarioDefinitionBuilder builder) {
 		builder.createExperimentSeriesDefinition(EXPERIMENT_SERIES_2);
-		builder.createNumberOfRunsCondition(numbetOfRuns);
+		Map<String, String> terminationConfig = new HashMap<String, String>();
+		terminationConfig.put("repetitions", String.valueOf(numbetOfRuns));
+		builder.createExperimentTerminationCondition("Number Of Repetitions", terminationConfig);
 		builder.createDynamicValueAssignment(AssignmentType.Experiment, "Linear Numeric Variation", dummyInputParam_1,
 				linearVariationConfig);
 		builder.createExplorationStrategy("Full Exploration Strategy", Collections.EMPTY_MAP);
@@ -149,7 +153,9 @@ public class DummyModelBuilder {
 
 	public static void createModifiedESD_1(ScenarioDefinitionBuilder builder) {
 		builder.createExperimentSeriesDefinition(EXPERIMENT_SERIES_1);
-		builder.createNumberOfRunsCondition(numbetOfRuns);
+		Map<String, String> terminationConfig = new HashMap<String, String>();
+		terminationConfig.put("repetitions", String.valueOf(numbetOfRuns));
+		builder.createExperimentTerminationCondition("Number Of Repetitions", terminationConfig);
 		builder.createDynamicValueAssignment(AssignmentType.Experiment, "Linear Numeric Variation", dummyInputParam_1,
 				linearVariationConfig2);
 		builder.createExplorationStrategy("Full Exploration Strategy", Collections.EMPTY_MAP);

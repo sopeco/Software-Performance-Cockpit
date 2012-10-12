@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.sopeco.engine.experimentseries.ITerminationCondition;
+import org.sopeco.engine.experimentseries.ITerminationConditionExtension;
+import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
@@ -48,7 +51,7 @@ public abstract class AbstractMEController extends MEControllerResource {
 	/**
 	 * Termination condition, passed during experiment execution
 	 */
-	private ExperimentTerminationCondition terminationCondition;
+	private ITerminationCondition terminationCondition;
 	/**
 	 * A set of parameter value lists containing all observation values which
 	 * should be returned after experiment run execution
@@ -88,7 +91,9 @@ public abstract class AbstractMEController extends MEControllerResource {
 		cleanUpObservations();
 		resultSet.clear();
 		setParameterValues(inputPVs);
-		this.terminationCondition = terminationCondition;
+		this.terminationCondition = ExtensionRegistry.getSingleton().getExtensionArtifact(
+				ITerminationConditionExtension.class, terminationCondition.getName());
+		this.terminationCondition.initialize(terminationCondition.getConfiguration());
 		runExperiment();
 		defineResultSet();
 		return resultSet;
@@ -107,7 +112,7 @@ public abstract class AbstractMEController extends MEControllerResource {
 	 * 
 	 * @return Returns the termination condition.
 	 */
-	protected ExperimentTerminationCondition getTerminationCondition() {
+	protected ITerminationCondition getTerminationCondition() {
 		return terminationCondition;
 	}
 
