@@ -1,6 +1,7 @@
 package org.sopeco.engine;
 
 import java.net.URI;
+import java.rmi.RemoteException;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentControlle
 import org.sopeco.engine.measurementenvironment.rmi.RmiMEConnector;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.PersistenceProviderFactory;
+import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 
 /**
  * The factory is responsible for creating a valid instance of the SoPeCo
@@ -59,16 +61,31 @@ public final class EngineFactory {
 
 		IExperimentController experimentController;
 		String meClassName = config.getMeasurementControllerClassName();
+		IMeasurementEnvironmentController meController = retrieveMEController(sessionId);
+		
+		experimentController = createExperimentController(sessionId, meController);
 
+		LOGGER.debug("Experiment controller is created.");
+
+		IExperimentSeriesManager expSeriesManager;
+		expSeriesManager = new ExperimentSeriesManager();
+
+		IEngine engine = new EngineImp(sessionId, experimentController, expSeriesManager);
+		((ExperimentSeriesManager) expSeriesManager).setEngine(engine);
+		return engine;
+	}
+	
+	
+	public IMeasurementEnvironmentController retrieveMEController(String sessionId) {
+		final IConfiguration config = Configuration.getSessionSingleton(sessionId);
+
+		String meClassName = config.getMeasurementControllerClassName();
+		IMeasurementEnvironmentController meController = null;
 		// if the measurement environment class is not set
 		if (meClassName == null) {
 			final URI meURI = config.getMeasurementControllerURI();
-			final IMeasurementEnvironmentController meController = RmiMEConnector.connectToMEController(meURI);
-
+			meController = RmiMEConnector.connectToMEController(meURI);
 			LOGGER.debug("Connected to the measurement environment controller service.");
-
-			experimentController = createExperimentController(sessionId, meController);
-
 		} else {
 			// load the given class
 			try {
@@ -76,7 +93,6 @@ public final class EngineFactory {
 				Object o = mec.newInstance();
 				if (o instanceof IMeasurementEnvironmentController) {
 					LOGGER.debug("Measurement environment controller is instantiated.");
-					experimentController = createExperimentController(sessionId, (IMeasurementEnvironmentController) o);
 				} else {
 					throw new RuntimeException("The measurement environment class must implement "
 							+ IMeasurementEnvironmentController.class.getName() + ".");
@@ -91,15 +107,7 @@ public final class EngineFactory {
 						+ e.getMessage());
 			}
 		}
-
-		LOGGER.debug("Experiment controller is created.");
-
-		IExperimentSeriesManager expSeriesManager;
-		expSeriesManager = new ExperimentSeriesManager();
-
-		IEngine engine = new EngineImp(sessionId, experimentController, expSeriesManager);
-		((ExperimentSeriesManager) expSeriesManager).setEngine(engine);
-		return engine;
+		return meController;
 	}
 
 

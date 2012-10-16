@@ -41,6 +41,8 @@ public interface IConfiguration extends ISessionAwareObject{
 	String MCH_MODE_FAIL = "fail";
 	String MCH_MODE_NEW_VERSION = "newVersion";
 
+	
+	String CONF_SCENARIO_DEFINITION_PACKAGE="sopeco.config.xml.scenarioDefinitionPackage";
 	/** Holds the path to the root folder of SoPeCo. */
 	String CONF_APP_ROOT_FOLDER = "sopeco.config.rootFolder";
 

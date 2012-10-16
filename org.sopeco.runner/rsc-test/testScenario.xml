@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario name="unitTestScenario" xmlns="http://www.sopeco.org/SoPeCoScenarioDefinitionSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.sopeco.org/SoPeCoScenarioDefinitionSchema http://www.sopeco.org/xsd/SoPeCoScenarioDefinitionSchema.xsd">
+	<measurementSpecification name="unitTestSpec">
+
+		<experimentSeries name="unitTestSeries">
+			<terminationCondition name="Number of Repetitions">
+			<config key="repetitions" value="2"/>
+			</terminationCondition>
+			
+			
+			<experimentSeriesPreparation>
+				<constantAssignment value="2" parameter="prepare.prepareParameter" />
+			</experimentSeriesPreparation>
+			
+			
+			<experimentSeriesExecution>
+				<constantAssignment value="3" parameter="test.input.inputParameter" />
+
+				<dynamicAssignment name="Linear Numeric Variation" parameter="test.input.inputParameter2">
+					<config key="min" value="1" />
+					<config key="max" value="2" />
+					<config key="step" value="1" />
+				</dynamicAssignment>
+			</experimentSeriesExecution>
+			
+			<explorationStrategy name="Full Exploration Strategy"/>
+
+		</experimentSeries>
+
+		<initializationAssignments value="1" parameter="init.initParameter" />
+	</measurementSpecification>
+
+
+</scenario>

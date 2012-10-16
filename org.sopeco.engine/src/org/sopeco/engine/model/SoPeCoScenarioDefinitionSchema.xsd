@@ -77,7 +77,7 @@
 			</element>
 		</sequence>
 		<attribute name="name" type="string" use="required"></attribute>
-		<attribute name="parameter" type="string"></attribute>
+		<attribute name="parameter" type="string" use="required"></attribute>
 
 	</complexType>
 

@@ -3,7 +3,8 @@
  */
 package org.sopeco.runner;
 
-import java.io.IOException;
+import java.net.URI;
+import java.rmi.RemoteException;
 import java.util.UUID;
 
 import org.slf4j.Logger;
@@ -13,8 +14,11 @@ import org.sopeco.config.IConfiguration;
 import org.sopeco.config.exception.ConfigurationException;
 import org.sopeco.engine.EngineFactory;
 import org.sopeco.engine.IEngine;
-import org.sopeco.model.util.EMFUtil;
+import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
+import org.sopeco.engine.measurementenvironment.rmi.RmiMEConnector;
+import org.sopeco.engine.model.ScenarioDefinitionFileReader;
 import org.sopeco.persistence.entities.ScenarioInstance;
+import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.util.Tools;
 
@@ -90,6 +94,16 @@ public class SoPeCoRunner implements Runnable {
 			}
 		}
 
+		ScenarioDefinition scenario = retrieveScenarioDefinition(config);
+
+		IEngine engine = EngineFactory.getInstance().createEngine(sessionId);
+
+		lastExecutedScenarioInstance = engine.run(scenario);
+
+		logger.info("SoPeCo run finished.");
+	}
+
+	private ScenarioDefinition retrieveScenarioDefinition(IConfiguration config) {
 		ScenarioDefinition scenario = null;
 
 		Object scenarioObj = config.getScenarioDescription();
@@ -102,38 +116,34 @@ public class SoPeCoRunner implements Runnable {
 				throw new RuntimeException(new ConfigurationException("Scenario definition is not provided."));
 			}
 
-			try {
-				if (!Tools.isAbsolutePath(fileName)) {
-					fileName = Tools.concatFileName(config.getAppRootDirectory(), fileName);
-				}
-				scenario = (ScenarioDefinition) EMFUtil.loadFromFilePath(fileName);
-
-				logger.debug("Scenario definition file loaded.");
-
-			} catch (IOException e) {
-				logger.error("Cannot load scenario definition file ({}). Reason: ({}) {}", fileName, e.getMessage());
-				logger.debug("IO Exception occured.", e);
-				return;
+			if (!Tools.isAbsolutePath(fileName)) {
+				fileName = Tools.concatFileName(config.getAppRootDirectory(), fileName);
 			}
+			MeasurementEnvironmentDefinition meDefinition;
+			try {
+				meDefinition = EngineFactory.getInstance().retrieveMEController(sessionId).getMEDefinition();
+			} catch (RemoteException e) {
+				throw new RuntimeException(e);
+			}
+			ScenarioDefinitionFileReader scenarioReader = new ScenarioDefinitionFileReader(meDefinition);
+			scenario = scenarioReader.read(fileName);
+			logger.debug("Scenario definition file loaded.");
+
 		} else {
 			if (scenarioObj instanceof ScenarioDefinition)
 				scenario = (ScenarioDefinition) scenarioObj;
 			else {
 				final String msg = "Scenario definition object is not of class " + ScenarioDefinition.class.getName()
 						+ ".";
-				// TODO do it properly
 				throw new RuntimeException(new ConfigurationException(msg));
 			}
 
 			logger.debug("Scenario definition is passed as an object.");
 		}
-
-		IEngine engine = EngineFactory.getInstance().createEngine(sessionId);
-
-		lastExecutedScenarioInstance = engine.run(scenario);
-
-		logger.info("SoPeCo run finished.");
+		return scenario;
 	}
+
+	
 
 	/**
 	 * Sets the command-line arguments before running SoPeCo.
