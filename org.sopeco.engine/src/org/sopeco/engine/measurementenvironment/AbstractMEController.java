@@ -358,7 +358,7 @@ public abstract class AbstractMEController extends MEControllerResource {
 		return null;
 	}
 
-	private void cleanUpObservations() {
+	protected void cleanUpObservations() {
 		for (ParameterDefinition observationParameter : meDefinition.getRoot().getObservationParameters()) {
 			Field obsParField = sopecoParameterFields.get(observationParameter.getFullName());
 			try {
