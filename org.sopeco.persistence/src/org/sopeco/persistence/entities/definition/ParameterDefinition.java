@@ -33,7 +33,7 @@ public class ParameterDefinition implements Serializable {
 	}
 
 	public String getType() {
-		return type;
+		return type.toUpperCase();
 	}
 
 	public void setType(String newType) {
