@@ -220,14 +220,7 @@ public class JPAPersistenceProvider extends SessionAwareObject implements IPersi
 
 		// check if query was successful
 		if (experimentSeries != null) {
-			// set persistence provider for experiment series runs and processed
-			// datasets, as these require the provider for lazy loading datasets
-			for (ExperimentSeriesRun run : experimentSeries.getExperimentSeriesRuns()) {
-				run.setPersistenceProvider(this);
-			}
-			for (ProcessedDataSet pd : experimentSeries.getProcessedDataSets()) {
-				pd.setPersistenceProvider(this);
-			}
+			setPersistenceProvider(experimentSeries.getScenarioInstance());
 
 			return experimentSeries;
 		} else {
@@ -256,16 +249,7 @@ public class JPAPersistenceProvider extends SessionAwareObject implements IPersi
 				}
 			}
 			if (resultSeries != null) {
-				// set persistence provider for experiment series runs and
-				// processed
-				// datasets, as these require the provider for lazy loading
-				// datasets
-				for (ExperimentSeriesRun run : resultSeries.getExperimentSeriesRuns()) {
-					run.setPersistenceProvider(this);
-				}
-				for (ProcessedDataSet pd : resultSeries.getProcessedDataSets()) {
-					pd.setPersistenceProvider(this);
-				}
+				setPersistenceProvider(resultSeries.getScenarioInstance());
 			}
 
 			return resultSeries;
@@ -306,12 +290,7 @@ public class JPAPersistenceProvider extends SessionAwareObject implements IPersi
 			// set persistence provider for experiment series runs and processed
 			// datasets, as these require the provider for lazy loading datasets
 			for (ExperimentSeries es : experimentSeriesWithEqualName) {
-				for (ExperimentSeriesRun run : es.getExperimentSeriesRuns()) {
-					run.setPersistenceProvider(this);
-				}
-				for (ProcessedDataSet pd : es.getProcessedDataSets()) {
-					pd.setPersistenceProvider(this);
-				}
+				setPersistenceProvider(es.getScenarioInstance());
 			}
 			return experimentSeriesWithEqualName;
 		} else {
@@ -348,7 +327,10 @@ public class JPAPersistenceProvider extends SessionAwareObject implements IPersi
 
 		// check if query was successful
 		if (experimentSeriesRun != null) {
-			experimentSeriesRun.setPersistenceProvider(this);
+			ExperimentSeries es = experimentSeriesRun.getExperimentSeries();
+			if (es != null) {
+				setPersistenceProvider(es.getScenarioInstance());
+			}
 			return experimentSeriesRun;
 		} else {
 			logger.debug(errorMsg);
@@ -412,17 +394,8 @@ public class JPAPersistenceProvider extends SessionAwareObject implements IPersi
 
 		// check if query was successful
 		if (scenarioInstances != null) {
-			// set persistence provider for experiment series runs and processed
-			// datasets, as these require the provider for lazy loading datasets
 			for (ScenarioInstance si : scenarioInstances) {
-				for (ExperimentSeries es : si.getExperimentSeriesList()) {
-					for (ExperimentSeriesRun run : es.getExperimentSeriesRuns()) {
-						run.setPersistenceProvider(this);
-					}
-					for (ProcessedDataSet pd : es.getProcessedDataSets()) {
-						pd.setPersistenceProvider(this);
-					}
-				}
+				setPersistenceProvider(si);
 			}
 			return scenarioInstances;
 		} else {
@@ -458,14 +431,7 @@ public class JPAPersistenceProvider extends SessionAwareObject implements IPersi
 			// set persistence provider for experiment series runs and processed
 			// datasets, as these require the provider for lazy loading datasets
 			for (ScenarioInstance si : scenarioInstances) {
-				for (ExperimentSeries es : si.getExperimentSeriesList()) {
-					for (ExperimentSeriesRun run : es.getExperimentSeriesRuns()) {
-						run.setPersistenceProvider(this);
-					}
-					for (ProcessedDataSet pd : es.getProcessedDataSets()) {
-						pd.setPersistenceProvider(this);
-					}
-				}
+				setPersistenceProvider(si);
 			}
 			return scenarioInstances;
 		} else {
@@ -509,16 +475,7 @@ public class JPAPersistenceProvider extends SessionAwareObject implements IPersi
 
 		// check if query was successful
 		if (scenarioInstance != null) {
-			// set persistence provider for experiment series runs and processed
-			// datasets, as these require the provider for lazy loading datasets
-			for (ExperimentSeries es : scenarioInstance.getExperimentSeriesList()) {
-				for (ExperimentSeriesRun run : es.getExperimentSeriesRuns()) {
-					run.setPersistenceProvider(this);
-				}
-				for (ProcessedDataSet pd : es.getProcessedDataSets()) {
-					pd.setPersistenceProvider(this);
-				}
-			}
+			setPersistenceProvider(scenarioInstance);
 
 			return scenarioInstance;
 		} else {
@@ -930,6 +887,24 @@ public class JPAPersistenceProvider extends SessionAwareObject implements IPersi
 		for (ProcessedDataSet pds : experimentSeries.getProcessedDataSets()) {
 			pds.removeDataSets(this);
 		}
+	}
+
+	private void setPersistenceProvider(ScenarioInstance scenarioInstance) {
+		if (scenarioInstance == null) {
+			return;
+		}
+
+		// set persistence provider for experiment series runs and processed
+		// datasets, as these require the provider for lazy loading datasets
+		for (ExperimentSeries es : scenarioInstance.getExperimentSeriesList()) {
+			for (ExperimentSeriesRun run : es.getExperimentSeriesRuns()) {
+				run.setPersistenceProvider(this);
+			}
+			for (ProcessedDataSet pd : es.getProcessedDataSets()) {
+				pd.setPersistenceProvider(this);
+			}
+		}
+
 	}
 
 }

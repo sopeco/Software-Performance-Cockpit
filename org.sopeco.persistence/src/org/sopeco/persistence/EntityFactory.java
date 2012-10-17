@@ -79,7 +79,6 @@ public final class EntityFactory {
 	 */
 	public static ExperimentSeriesRun createExperimentSeriesRun() {
 		ExperimentSeriesRun expSeriesRun = new ExperimentSeriesRun();
-
 		expSeriesRun.setTimestamp(System.nanoTime());
 		expSeriesRun.setLabel(getTimeStamp());
 		return expSeriesRun;
@@ -147,7 +146,7 @@ public final class EntityFactory {
 		ac.getConfiguration().putAll(config);
 		return ac;
 	}
-	
+
 	public static ExperimentTerminationCondition createTerminationCondition(String name, Map<String, String> config) {
 		ExperimentTerminationCondition etc = new ExperimentTerminationCondition();
 		etc.setName(name);
