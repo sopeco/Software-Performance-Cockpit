@@ -10,9 +10,17 @@ import org.sopeco.plugin.std.exploration.screening.config.ScreeningConfiguration
  */
 public class FractionalFactorialExtension extends AbstractScreeningExplorationExtension {
 
-	public FractionalFactorialExtension() {
-		this.NAME = ScreeningConfiguration.FRACTIONAL_FACTORIAL;
+	/**
+	 * The name of the provided extension artifact.
+	 */
+	public static final String NAME = ScreeningConfiguration.FRACTIONAL_FACTORIAL;
+
+	
+	@Override
+	public String getName() {
+		return NAME;
 	}
+
 	
 	@Override
 	protected void prepareConfigurationParameterMap() {

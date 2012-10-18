@@ -23,20 +23,13 @@ public abstract class AbstractScreeningExplorationExtension implements IExplorat
 	/** Holds a mapping of configuration parameters to their optional default values. */
 	protected final Map<String, String> configParams = new HashMap<String, String>();
 
-	/**
-	 * The name of the provided extension artifact.
-	 */
-	public String NAME;
+	
 
 	protected AbstractScreeningExplorationExtension() {
 		prepareConfigurationParameterMap();
 	}
 
-	@Override
-	public String getName() {
-		return NAME;
-	}
-
+	
 	@Override
 	public IExplorationStrategy createExtensionArtifact() {
 		return new BreakdownExplorationController(this);

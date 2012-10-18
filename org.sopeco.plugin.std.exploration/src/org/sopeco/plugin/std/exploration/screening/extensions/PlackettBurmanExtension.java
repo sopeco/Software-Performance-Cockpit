@@ -10,10 +10,19 @@ import org.sopeco.plugin.std.exploration.screening.config.ScreeningConfiguration
  */
 public class PlackettBurmanExtension extends AbstractScreeningExplorationExtension {
 
-	public PlackettBurmanExtension() {
-		this.NAME = ScreeningConfiguration.PLACKETT_BURMAN;
-	}
 	
+	/**
+	 * The name of the provided extension artifact.
+	 */
+	public static final String NAME = ScreeningConfiguration.FRACTIONAL_FACTORIAL;
+
+	
+	
+	@Override
+	public String getName() {
+		return NAME;
+	}
+
 	@Override
 	protected void prepareConfigurationParameterMap() {
 		

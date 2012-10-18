@@ -10,9 +10,18 @@ import org.sopeco.plugin.std.exploration.screening.config.ScreeningConfiguration
  */
 public class FullFactorialExtension extends AbstractScreeningExplorationExtension {
 
-	public FullFactorialExtension() {
-		this.NAME = ScreeningConfiguration.FULL_FACTORIAL;
+	
+	/**
+	 * The name of the provided extension artifact.
+	 */
+	public static final String NAME = ScreeningConfiguration.FULL_FACTORIAL;
+
+	
+	@Override
+	public String getName() {
+		return NAME;
 	}
+
 	
 	@Override
 	protected void prepareConfigurationParameterMap() {
