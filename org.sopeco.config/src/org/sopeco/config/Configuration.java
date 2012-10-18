@@ -46,8 +46,6 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 
 	private static Map<String, IConfiguration> sessionAwareConfigurations = new HashMap<String, IConfiguration>();
 
-	private static IConfiguration sessionUnrelatedConfig;
-
 	/** Holds the default property values. */
 	private Map<String, Object> defaultValues = new HashMap<String, Object>();
 
@@ -635,13 +633,12 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 
 	}
 
+	/**
+	 * 
+	 * @return Returns the session id of a session-unrelated configuration.
+	 */
+	public static String getGlobalSessionId() {
+		return GLOBAL_SESSION_ID;
+	}
+
 }
-
-// // -series
-// if (line.hasOption(selectedSeries.getOpt())) {
-// final String[] selectedNames = line.getOptionValues(selectedSeries.getOpt());
-// this.selectedSeries = new HashSet<String>();
-// for (String sname: selectedNames)
-// this.selectedSeries.add(sname);
-// }
-

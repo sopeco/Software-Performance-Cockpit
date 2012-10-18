@@ -40,6 +40,8 @@ public final class PersistenceConfiguration extends SessionAwareObject {
 	private static final String DEFAULT_PERSISTENCE_CONFIG_FILE_NAME = "sopeco-persistence-defaults.conf";
 	private static final String DDL_GENERATION = "sopeco.config.persistence.ddlgeneration";
 
+	private static final String DDL_GENERATION_META_DATA = "sopeco.config.persistence.meta.ddlgeneration";
+
 	private static final String META_DATA_DB = "sopeco.config.persistence.metaServer.dbName";
 	private static final String META_DATA_HOST = "sopeco.config.persistence.metaServer.host";
 	private static final String META_DATA_PORT = "sopeco.config.persistence.metaServer.port";
@@ -77,6 +79,18 @@ public final class PersistenceConfiguration extends SessionAwareObject {
 		}
 
 		return sessionSingletonInstances.get(sessionId);
+	}
+
+	/**
+	 * Returns the session-unrelated-singleton instance of the persistence
+	 * configuration.
+	 * 
+	 * 
+	 * @return Returns the session-unrelated-singleton instance of the
+	 *         persistence configuration.
+	 */
+	public static PersistenceConfiguration getSessionUnrelatedSingleton() {
+		return getSessionSingleton(Configuration.getGlobalSessionId());
 	}
 
 	private IConfiguration sopecoConfig;
@@ -273,6 +287,14 @@ public final class PersistenceConfiguration extends SessionAwareObject {
 	 */
 	public String getMetaDataDBName() {
 		return sopecoConfig.getPropertyAsStr(META_DATA_DB);
+	}
+
+	/**
+	 * 
+	 * @return Returns the standard ddl generation strategy for meta data
+	 */
+	public String getDDLGenerationStrategyForMetaData() {
+		return sopecoConfig.getPropertyAsStr(DDL_GENERATION_META_DATA);
 	}
 
 }

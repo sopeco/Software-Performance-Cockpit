@@ -2,16 +2,18 @@ package org.sopeco.persistence.entities.definition;
 
 import java.io.Serializable;
 
+import org.sopeco.util.Tools;
+
 /**
  * @author Dennis Westermann
- *
+ * 
  */
 public class ParameterDefinition implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	private static final String DEFAULT_NAMESPACE_DELIMITER = ".";
-	
+
 	protected String name = null;
 
 	protected String type = null;
@@ -33,10 +35,18 @@ public class ParameterDefinition implements Serializable {
 	}
 
 	public String getType() {
-		return type.toUpperCase();
+
+		return type;
 	}
 
 	public void setType(String newType) {
+		for (Tools.SupportedTypes supportedType : Tools.SupportedTypes.values()) {
+			if (newType.toUpperCase().equals(supportedType.toString().toUpperCase())) {
+				type = supportedType.toString();
+				return;
+			}
+		}
+
 		type = newType;
 	}
 
@@ -49,11 +59,13 @@ public class ParameterDefinition implements Serializable {
 	}
 
 	/**
-	 * Returns the full name of a parameter. The full name is a concatenation of the namespace hierarchy and the name of the parameter.
-	 * The different hierarchy levels are delimited by the default delimiter '.'.
-	 * Example: "org.sopeco.myParam".
+	 * Returns the full name of a parameter. The full name is a concatenation of
+	 * the namespace hierarchy and the name of the parameter. The different
+	 * hierarchy levels are delimited by the default delimiter '.'. Example:
+	 * "org.sopeco.myParam".
 	 * 
-	 * @return the full name (namespace + name) of the parameter where the namespaces are delimited by the default delimitter '.'
+	 * @return the full name (namespace + name) of the parameter where the
+	 *         namespaces are delimited by the default delimitter '.'
 	 */
 	public String getFullName() {
 		ParameterNamespace namespace = this.getNamespace();
@@ -62,26 +74,31 @@ public class ParameterDefinition implements Serializable {
 	}
 
 	/**
-	 * Returns the full name of a parameter. The full name is a concatenation of the namespace hierarchy and the name of the parameter.
-	 * The different hierarchy levels are delimited by the given string.
-	 * Example: "org_sopeco_myParam" for the delimiter '_'
+	 * Returns the full name of a parameter. The full name is a concatenation of
+	 * the namespace hierarchy and the name of the parameter. The different
+	 * hierarchy levels are delimited by the given string. Example:
+	 * "org_sopeco_myParam" for the delimiter '_'
 	 * 
-	 * @param namespaceDelimiter - the string that should be used for delimiting namespaces in a namespace hierarchy 
-	 * @return the full name (namespace + name) of the parameter where the namespaces are delimited by the given string
+	 * @param namespaceDelimiter
+	 *            - the string that should be used for delimiting namespaces in
+	 *            a namespace hierarchy
+	 * @return the full name (namespace + name) of the parameter where the
+	 *         namespaces are delimited by the given string
 	 */
-	public String getFullName(String namespaceDelimiter){
+	public String getFullName(String namespaceDelimiter) {
 		ParameterNamespace namespace = this.getNamespace();
 		String result = createFullNamespaceString("", namespace, namespaceDelimiter) + getName();
 		return result;
 	}
-	
-	private String createFullNamespaceString(String fullNamespace, ParameterNamespace namespace, String namespaceDelimitter){
 
-		if(namespace!=null && namespace.getName() != null && !namespace.getName().isEmpty()){
+	private String createFullNamespaceString(String fullNamespace, ParameterNamespace namespace,
+			String namespaceDelimitter) {
+
+		if (namespace != null && namespace.getName() != null && !namespace.getName().isEmpty()) {
 			fullNamespace = namespace.getName() + namespaceDelimitter + fullNamespace;
 			return createFullNamespaceString(fullNamespace, namespace.getParent(), namespaceDelimitter);
 		}
-		
+
 		return fullNamespace;
 	}
 
@@ -93,40 +110,41 @@ public class ParameterDefinition implements Serializable {
 		namespace = newNamespace;
 	}
 
-	
 	/**
-	 * @return <code>true</code> if parameter type is Integer or Double, otherwise <code>false</code>.
+	 * @return <code>true</code> if parameter type is Integer or Double,
+	 *         otherwise <code>false</code>.
 	 */
-	public boolean isNumeric(){
-		if(this.getType().trim().equalsIgnoreCase("Integer") || 
-				this.getType().trim().equalsIgnoreCase("Double")){
-				return true;
+	public boolean isNumeric() {
+		if (this.getType().trim().equalsIgnoreCase("Integer") || this.getType().trim().equalsIgnoreCase("Double")) {
+			return true;
 		} else {
 			return false;
 		}
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 
-		 if (this == o) return true;
-		 if (o == null) return false;
-			if (getClass() != o.getClass())
-				return false;
-		 ParameterDefinition obj = (ParameterDefinition) o;
-		 if(getFullName() == null || obj.getFullName() == null) return false;
-		 if(!this.getFullName().equals(obj.getFullName())){
-			 return false;
-		 }
-		 if(!this.getType().equals(obj.getType())){
-			 return false;
-		 }
-		 if(!this.getRole().equals(obj.getRole())){
-			 return false;
-		 }
-		 
-		 
-		 return true;
+		if (this == o)
+			return true;
+		if (o == null)
+			return false;
+		if (getClass() != o.getClass())
+			return false;
+		ParameterDefinition obj = (ParameterDefinition) o;
+		if (getFullName() == null || obj.getFullName() == null)
+			return false;
+		if (!this.getFullName().equals(obj.getFullName())) {
+			return false;
+		}
+		if (!this.getType().equals(obj.getType())) {
+			return false;
+		}
+		if (!this.getRole().equals(obj.getRole())) {
+			return false;
+		}
+
+		return true;
 
 	}
 
@@ -141,12 +159,10 @@ public class ParameterDefinition implements Serializable {
 	}
 
 	@Override
-    public String toString() {
+	public String toString() {
 
-       return "ParameterDefinition{" +
-	                 "name='" + this.getName() + "\' " +
-	                 "type='" + this.getType() + "\' " +
-	                 "role='" + this.getRole() + "\' " +'}';
-    }
+		return "ParameterDefinition{" + "name='" + this.getName() + "\' " + "type='" + this.getType() + "\' "
+				+ "role='" + this.getRole() + "\' " + '}';
+	}
 
-} 
+}

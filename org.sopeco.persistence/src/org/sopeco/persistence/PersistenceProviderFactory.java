@@ -15,6 +15,7 @@ import javax.persistence.PersistenceException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.config.Configuration;
 import org.sopeco.persistence.config.PersistenceConfiguration;
 import org.sopeco.persistence.config.PersistenceConfiguration.DBType;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
@@ -64,8 +65,7 @@ public class PersistenceProviderFactory {
 	}
 
 	private Map<String, IPersistenceProvider> persistenceProviderInstances;
-	private Map<String, IMetaDataPersistenceProvider> metaDataPersistenceProviderInstances;
-
+	private IMetaDataPersistenceProvider metaDataPersistenceProvider;
 	/**
 	 * Private Constructor for singleton instance.
 	 */
@@ -105,27 +105,25 @@ public class PersistenceProviderFactory {
 	 * @return Returns the session-singleton instance of the meta-data
 	 *         persistence provider.
 	 */
-	public IMetaDataPersistenceProvider getMetaDataPersistenceProvider(String sessionId) {
-		PersistenceConfiguration persistenceConfig = PersistenceConfiguration.getSessionSingleton(sessionId);
+	public IMetaDataPersistenceProvider getMetaDataPersistenceProvider() {
+		PersistenceConfiguration persistenceConfig = PersistenceConfiguration.getSessionUnrelatedSingleton();
 		if (!persistenceConfig.getDBType().equals(DBType.Server)) {
 			throw new RuntimeException("Meta data cannot be retrieved for DB type 'InMemory' !");
 		}
 
-		if (metaDataPersistenceProviderInstances == null) {
-			metaDataPersistenceProviderInstances = new HashMap<String, IMetaDataPersistenceProvider>();
-		}
-		if (metaDataPersistenceProviderInstances.get(sessionId) == null) {
-			logger.debug("Creating new meta-data peristence provider instance for session {}.", sessionId);
-			metaDataPersistenceProviderInstances.put(sessionId, createMetaDataPersistenceProvider(sessionId));
+
+		if (metaDataPersistenceProvider == null) {
+			logger.debug("Creating new meta-data peristence provider.");
+			metaDataPersistenceProvider = createMetaDataPersistenceProvider();
 		}
 
-		return metaDataPersistenceProviderInstances.get(sessionId);
+		return metaDataPersistenceProvider;
 	}
 
-	private IMetaDataPersistenceProvider createMetaDataPersistenceProvider(String sessionId) {
+	private IMetaDataPersistenceProvider createMetaDataPersistenceProvider() {
 		try {
 
-			PersistenceConfiguration persistenceConfig = PersistenceConfiguration.getSessionSingleton(sessionId);
+			PersistenceConfiguration persistenceConfig = PersistenceConfiguration.getSessionUnrelatedSingleton();
 
 			logger.debug("Create EntityManagerFactory for persistence unit {}.", META_DATA_PERSISTENCE_UNIT_VALUE);
 
@@ -134,7 +132,7 @@ public class PersistenceProviderFactory {
 			EntityManagerFactory factory = Persistence.createEntityManagerFactory(META_DATA_PERSISTENCE_UNIT_VALUE,
 					configOverrides);
 
-			return new MetaDataPersistenceProvider(sessionId, factory);
+			return new MetaDataPersistenceProvider(Configuration.getGlobalSessionId(), factory);
 		} catch (Exception e) {
 			throw new IllegalArgumentException("Could not create peristence provider for meta data!", e);
 		}
@@ -163,12 +161,11 @@ public class PersistenceProviderFactory {
 						persistenceConfig.isPasswordUsed());
 				try {
 					// check whether meta data entry is available
-					getMetaDataPersistenceProvider(sessionId).loadDatabaseInstance(dbInstance.getId());
+					getMetaDataPersistenceProvider().loadDatabaseInstance(dbInstance.getId());
 				} catch (DataNotFoundException dnfe) {
 					// entry is not available create a new one
 					logger.debug("Creating a new meta data entry for DB Instance {}", dbInstance.getId());
-
-					getMetaDataPersistenceProvider(sessionId).store(dbInstance);
+					getMetaDataPersistenceProvider().store(dbInstance);
 				} catch (PersistenceException persistenceException) {
 					// if meta database is not available show a warning,
 					// otherwise propagate the thrown exception
@@ -234,7 +231,7 @@ public class PersistenceProviderFactory {
 		Map<String, Object> configOverrides = new HashMap<String, Object>();
 		configOverrides.put(DB_DRIVER_CLASS, SERVER_DB_DRIVER_CLASS_VALUE);
 		configOverrides.put(DB_URL, persistenceConfig.getMetaDataConnectionUrl());
-		configOverrides.put(DDL_GENERATION, persistenceConfig.getDDLGenerationStrategy());
+		configOverrides.put(DDL_GENERATION, persistenceConfig.getDDLGenerationStrategyForMetaData());
 
 		return configOverrides;
 	}
