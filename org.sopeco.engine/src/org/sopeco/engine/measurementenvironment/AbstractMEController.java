@@ -375,7 +375,7 @@ public abstract class AbstractMEController extends MEControllerResource {
 				if (parameter.getRole().equals(ParameterRole.INPUT)) {
 					Field inputField = sopecoParameterFields.get(parameter.getFullName());
 
-					switch (Tools.SupportedTypes.valueOf(parameter.getType())) {
+					switch (Tools.SupportedTypes.get(parameter.getType())) {
 					case Boolean:
 						inputField.set(this, false);
 						break;

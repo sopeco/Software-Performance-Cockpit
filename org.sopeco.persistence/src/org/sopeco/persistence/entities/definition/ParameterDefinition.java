@@ -40,14 +40,7 @@ public class ParameterDefinition implements Serializable {
 	}
 
 	public void setType(String newType) {
-		for (Tools.SupportedTypes supportedType : Tools.SupportedTypes.values()) {
-			if (newType.toUpperCase().equals(supportedType.toString().toUpperCase())) {
-				type = supportedType.toString();
-				return;
-			}
-		}
-
-		type = newType;
+		type = newType.toUpperCase();
 	}
 
 	public ParameterRole getRole() {

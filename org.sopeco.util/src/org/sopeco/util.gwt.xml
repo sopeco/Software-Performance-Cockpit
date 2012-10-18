@@ -1,5 +1,0 @@
-<!-- required for gwt. Otherwise the model would have been duplicated!!! -->
-<module>
-	<inherits name='com.google.gwt.user.User'/>
-  	<source path="util" />
-</module>
