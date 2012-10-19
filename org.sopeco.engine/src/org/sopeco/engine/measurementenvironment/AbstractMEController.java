@@ -179,7 +179,7 @@ public abstract class AbstractMEController extends MEControllerResource {
 			try {
 				parameterField.set(this, pv.getValue());
 			} catch (Exception e) {
-				throw new RuntimeException("Failed setting parameter value.");
+				throw new RuntimeException("Failed setting parameter value for Parameter " + parameter.getFullName(), e);
 			}
 		}
 
