@@ -9,6 +9,8 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sopeco.config.Configuration;
 
 import com.google.gson.Gson;
@@ -26,6 +28,8 @@ public class AnalysisWrapper {
 
 	private static AnalysisWrapper instance;
 
+	private static final Logger logger = LoggerFactory.getLogger(AnalysisWrapper.class);
+	
 	public static AnalysisWrapper getDefaultWrapper() {
 		if (instance == null) {
 			instance = new AnalysisWrapper();
@@ -54,6 +58,9 @@ public class AnalysisWrapper {
 	 * @return
 	 */
 	public String executeCommandString(String command) {
+		
+		logger.debug(command);
+		
 		String jsonString = gson.toJson(command);
 
 		String result = executePOSTRequest(jsonString, baseUrl + EXECUTE_COMMAND_STRING);
@@ -69,6 +76,8 @@ public class AnalysisWrapper {
 	 */
 	public double executeCommandDouble(String command) {
 
+		logger.debug(command);
+		
 		String jsonString = gson.toJson(command);
 
 		String result = executePOSTRequest(jsonString, baseUrl + EXECUTE_COMMAND_DOUBLE);
@@ -84,6 +93,8 @@ public class AnalysisWrapper {
 	 */
 	public String[] executeCommandStringArray(String command) {
 
+		logger.debug(command);
+		
 		String jsonString = gson.toJson(command);
 
 		String result = executePOSTRequest(jsonString, baseUrl + EXECUTE_COMMAND_STRING_ARRAY);
@@ -98,6 +109,8 @@ public class AnalysisWrapper {
 	 * @return
 	 */
 	public double[] executeCommandDoubleArray(String command) {
+		logger.debug(command);
+		
 		String jsonString = gson.toJson(command);
 
 		String result = executePOSTRequest(jsonString, baseUrl + EXECUTE_COMMAND_DOUBLE_ARRAY);
@@ -151,7 +164,7 @@ public class AnalysisWrapper {
 	 */
 	private String executePOSTRequest(String input, String urlString) {
 
-		try {
+		try {  
 			boolean inputExists = false;
 			if (input != null && !input.isEmpty()) {
 				inputExists = true;
