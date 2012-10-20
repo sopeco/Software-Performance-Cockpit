@@ -14,7 +14,7 @@ public class PlackettBurmanExtension extends AbstractScreeningExplorationExtensi
 	/**
 	 * The name of the provided extension artifact.
 	 */
-	public static final String NAME = ScreeningConfiguration.FRACTIONAL_FACTORIAL;
+	public static final String NAME = ScreeningConfiguration.PLACKETT_BURMAN;
 
 	
 	

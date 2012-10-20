@@ -16,8 +16,10 @@ import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ExplorationStrategy;
 import org.sopeco.persistence.util.ParameterCollection;
 import org.sopeco.persistence.util.ParameterCollectionFactory;
+import org.sopeco.plugin.std.exploration.screening.adapter.FractionalFactorialAdapter;
 import org.sopeco.plugin.std.exploration.screening.adapter.FullFactorialAdapter;
 import org.sopeco.plugin.std.exploration.screening.adapter.IScreeningAdapter;
+import org.sopeco.plugin.std.exploration.screening.adapter.PlackettBurmanAdapter;
 import org.sopeco.plugin.std.exploration.screening.config.ScreeningConfiguration;
 
 /**
@@ -71,9 +73,9 @@ public final class ScreeningDesignExploration extends AbstractSoPeCoExtensionArt
 		if (strategyConfig.getName().equalsIgnoreCase(ScreeningConfiguration.FULL_FACTORIAL)) {
 			adapter = new FullFactorialAdapter();
 		} else if (strategyConfig.getName().equalsIgnoreCase(ScreeningConfiguration.FRACTIONAL_FACTORIAL)) {
-			adapter = new FullFactorialAdapter();
+			adapter = new FractionalFactorialAdapter();
 		} else if (strategyConfig.getName().equalsIgnoreCase(ScreeningConfiguration.PLACKETT_BURMAN)) {
-			adapter = new FullFactorialAdapter();
+			adapter = new PlackettBurmanAdapter();
 		} else {
 			throw new IllegalArgumentException("Strategy not supported: " + strategyConfig.getName());
 		}

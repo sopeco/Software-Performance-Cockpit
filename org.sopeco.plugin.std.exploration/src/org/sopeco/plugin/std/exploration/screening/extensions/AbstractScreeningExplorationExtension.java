@@ -9,7 +9,7 @@ import java.util.Map;
 
 import org.sopeco.engine.experimentseries.IExplorationStrategy;
 import org.sopeco.engine.experimentseries.IExplorationStrategyExtension;
-import org.sopeco.plugin.std.exploration.breakdown.BreakdownExplorationController;
+import org.sopeco.plugin.std.exploration.screening.ScreeningDesignExploration;
 
 /**
  * Abstract extension that provides the methods common to all screening exploration
@@ -32,7 +32,7 @@ public abstract class AbstractScreeningExplorationExtension implements IExplorat
 	
 	@Override
 	public IExplorationStrategy createExtensionArtifact() {
-		return new BreakdownExplorationController(this);
+		return new ScreeningDesignExploration(this);
 	}
 
 	/**
