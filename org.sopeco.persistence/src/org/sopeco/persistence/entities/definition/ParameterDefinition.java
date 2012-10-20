@@ -36,7 +36,7 @@ public class ParameterDefinition implements Serializable {
 
 	public String getType() {
 
-		return type;
+		return type.toUpperCase();
 	}
 
 	public void setType(String newType) {
@@ -146,8 +146,8 @@ public class ParameterDefinition implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((getFullName() == null) ? 0 : getFullName().hashCode());
-		result = prime * result + ((role == null) ? 0 : role.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		result = prime * result + ((getRole() == null) ? 0 : getRole().hashCode());
+		result = prime * result + ((getType() == null) ? 0 : getType().hashCode());
 		return result;
 	}
 
