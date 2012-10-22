@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.sopeco.engine.analysis.IPredictionFunctionStrategy;
 import org.sopeco.engine.registry.ISoPeCoExtension;
+import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.dataset.AbstractDataSetColumn;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetColumnBuilder;
@@ -94,20 +95,23 @@ public abstract class AbstractAnalysisStrategy extends AbstractRStrategy {
 				builder.addColumn(col);
 			} else {
 				List<Integer> numericValues = mapValuesToInteger(col);
-				switch (pd.getRole()) {
+				ParameterDefinition numericPD = EntityFactory.createParameterDefinition(pd.getName(), "INTEGER", pd.getRole());
+				numericPD.setNamespace(pd.getNamespace());
+				
+				switch (numericPD.getRole()) {
 				case INPUT:
-					builder.startInputColumn(pd);
+					builder.startInputColumn(numericPD);
 					builder.addInputValueList(numericValues);
 					break;
 				case OBSERVATION:
-					builder.startObservationColumn(pd);
+					builder.startObservationColumn(numericPD);
 					@SuppressWarnings("rawtypes")
 					List<ParameterValueList> obsValueList = new ArrayList<ParameterValueList>();
-					obsValueList.add(new ParameterValueList<Integer>(pd, numericValues));
+					obsValueList.add(new ParameterValueList<Integer>(numericPD, numericValues));
 					builder.addObservationValueLists(obsValueList);
 					break;
 				default:
-					throw new IllegalArgumentException("Unkown role: " + pd.getRole().name());
+					throw new IllegalArgumentException("Unkown role: " + numericPD.getRole().name());
 				}
 				builder.finishColumn();
 			}
