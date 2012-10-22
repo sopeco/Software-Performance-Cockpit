@@ -163,7 +163,7 @@ public class SystemTools {
 		}
 
 		try {
-			String tempLibDir = extractFilesFromClasspath(NATIVE_SUBFOLDER, "sopecoLibs", "native libraries");
+			String tempLibDir = extractFilesFromClasspath(NATIVE_SUBFOLDER, "sopecoLibs", "native libraries", SystemTools.class.getClassLoader());
 			
 			appendLibraryPath(tempLibDir);
 			
@@ -205,8 +205,8 @@ public class SystemTools {
 	 * 
 	 * @see #extractFilesFromClasspath(String, String, String, boolean)
 	 */
-	public static String extractFilesFromClasspath(String srcDirName, String destName, String fileType) throws IOException, URISyntaxException {
-		return extractFilesFromClasspath(srcDirName, destName, fileType, true);
+	public static String extractFilesFromClasspath(String srcDirName, String destName, String fileType, ClassLoader classLoader) throws IOException, URISyntaxException {
+		return extractFilesFromClasspath(srcDirName, destName, fileType, classLoader, true);
 	}
 
 	/**
@@ -222,11 +222,12 @@ public class SystemTools {
 	 * @throws IOException
 	 * @throws URISyntaxException
 	 */
-	public static String extractFilesFromClasspath(String srcDirName, String destName, String fileType, boolean timeStamp) throws IOException, URISyntaxException {
+	public static String extractFilesFromClasspath(String srcDirName, String destName, String fileType, ClassLoader classloader, boolean timeStamp) throws IOException, URISyntaxException {
 		
 		if (timeStamp) {
 			// remove dots and colons from timestamp as they are not allowed for windows directory names
-			String clearedTimeStamp = Tools.getTimeStamp().replace('.', '_');
+			String clearedTimeStamp = (Tools.getTimeStamp() + "-" + Thread.currentThread().getId()).replace('.', '_');
+//			String clearedTimeStamp = (Tools.getTimeStamp()).replace('.', '_');
 			clearedTimeStamp = clearedTimeStamp.replace(':', '_');
 			clearedTimeStamp = clearedTimeStamp.replace(' ', '_');
 
@@ -241,7 +242,14 @@ public class SystemTools {
 
 		logger.debug("Copying {} to {}.", fileType, targetDirName);
 
-		Enumeration<URL> urls = ClassLoader.getSystemResources(srcDirName);
+		Enumeration<URL> urls = classloader.getResources(srcDirName); // getSystemResources(srcDirName);
+
+		if (urls.hasMoreElements())
+			logger.debug("There are some urls for resource '{}' provided by the classloader.", srcDirName);
+		else
+			logger.debug("There are no urls for resource '{}' provided by the classloader.", srcDirName);
+		
+
 		while (urls.hasMoreElements()) {
 			final URL url = urls.nextElement();
 			if (fileType != null && fileType.trim().length() > 0)

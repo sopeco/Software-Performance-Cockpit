@@ -15,23 +15,32 @@ import org.sopeco.config.Configuration;
 
 import com.google.gson.Gson;
 
+/**
+ * The Analysis wrapper is used to communicate with an external R-Server.
+ * 
+ * @author Alexander Wert
+ * 
+ */
 public class AnalysisWrapper {
-	private static String BASE_URL_PROPERTY = "sopeco.analysis.wrapper.url";
-	private static String DEFAULT_BASE_URL = "http://localhost:8080/org.analysis.engine.server/rest/rwrapper/";
-	private static String EXECUTE_COMMAND_STRING = "executeCommandString";
-	private static String EXECUTE_COMMAND_DOUBLE = "executeCommandDouble";
-	private static String EXECUTE_COMMAND_STRING_ARRAY = "executeCommandStringArray";
-	private static String EXECUTE_COMMAND_DOUBLE_ARRAY = "executeCommandDoubleArray";
-	private static String INIT_VARIABLES = "initVariables";
-	private static String INIT = "init";
-	private static String SHUTDOWN = "shutdown";
+	private static final String BASE_URL_PROPERTY = "sopeco.analysis.wrapper.url";
+	private static final String DEFAULT_BASE_URL = "http://localhost:8080/org.analysis.engine.server/rest/rwrapper/";
+	private static final String EXECUTE_COMMAND_STRING = "executeCommandString";
+	private static final String EXECUTE_COMMAND_DOUBLE = "executeCommandDouble";
+	private static final String EXECUTE_COMMAND_STRING_ARRAY = "executeCommandStringArray";
+	private static final String EXECUTE_COMMAND_DOUBLE_ARRAY = "executeCommandDoubleArray";
+	private static final String INIT_VARIABLES = "initVariables";
+	private static final String INIT = "init";
+	private static final String SHUTDOWN = "shutdown";
+
 
 	private static AnalysisWrapper instance;
 
-	private static final Logger logger = LoggerFactory.getLogger(AnalysisWrapper.class);
-	
+	/**
+	 * 
+	 * @return Returns the default instance of the analysis wrapper.
+	 */
 	public static AnalysisWrapper getDefaultWrapper() {
-		if (instance == null) {
+		if (instance == null || !instance.isActive) {
 			instance = new AnalysisWrapper();
 		}
 		return instance;
@@ -39,7 +48,11 @@ public class AnalysisWrapper {
 
 	private Gson gson;
 	private String baseUrl;
+	private boolean isActive = false;
 
+	/**
+	 * Constructor for creating an AnalysisWrapper.
+	 */
 	public AnalysisWrapper() {
 		gson = new Gson();
 		baseUrl = getbaseUrl();
@@ -48,19 +61,19 @@ public class AnalysisWrapper {
 		if (!createdSuccessful) {
 			throw new RuntimeException("Failed to acquire analysisWrapper within given time frame!");
 		}
+		isActive = true;
 
 	}
 
 	/**
-	 * For R commands with String return value.
+	 * For R commands with String return value. Executes the given command and
+	 * returns a String value.
 	 * 
-	 * @param rCommand
-	 * @return
+	 * @param command
+	 *            command string to be executed by the rEngine
+	 * @return Returns the result of the given command as string
 	 */
 	public String executeCommandString(String command) {
-		
-		logger.debug(command);
-		
 		String jsonString = gson.toJson(command);
 
 		String result = executePOSTRequest(jsonString, baseUrl + EXECUTE_COMMAND_STRING);
@@ -69,15 +82,15 @@ public class AnalysisWrapper {
 	}
 
 	/**
-	 * For R commands with double/real return value.
+	 * For R commands with double return value. Executes the given command and
+	 * returns a double value.
 	 * 
-	 * @param rCommand
-	 * @return
+	 * @param command
+	 *            command string to be executed by the rEngine
+	 * @return Returns the result of the given command as double
 	 */
 	public double executeCommandDouble(String command) {
 
-		logger.debug(command);
-		
 		String jsonString = gson.toJson(command);
 
 		String result = executePOSTRequest(jsonString, baseUrl + EXECUTE_COMMAND_DOUBLE);
@@ -86,15 +99,15 @@ public class AnalysisWrapper {
 	}
 
 	/**
-	 * For R commands with String array return value.
+	 * For R commands with a return value expected as string array. Executes the
+	 * given command and returns a string array.
 	 * 
-	 * @param rCommand
-	 * @return
+	 * @param command
+	 *            command string to be executed by the rEngine
+	 * @return Returns the result of the given command as string array
 	 */
 	public String[] executeCommandStringArray(String command) {
 
-		logger.debug(command);
-		
 		String jsonString = gson.toJson(command);
 
 		String result = executePOSTRequest(jsonString, baseUrl + EXECUTE_COMMAND_STRING_ARRAY);
@@ -103,14 +116,14 @@ public class AnalysisWrapper {
 	}
 
 	/**
-	 * For R commands with double/real array return value.
+	 * For R commands with a return value expected as double array. Executes the
+	 * given command and returns a double array.
 	 * 
-	 * @param rCommand
-	 * @return
+	 * @param command
+	 *            command string to be executed by the rEngine
+	 * @return Returns the result of the given command as double array
 	 */
 	public double[] executeCommandDoubleArray(String command) {
-		logger.debug(command);
-		
 		String jsonString = gson.toJson(command);
 
 		String result = executePOSTRequest(jsonString, baseUrl + EXECUTE_COMMAND_DOUBLE_ARRAY);
@@ -119,7 +132,7 @@ public class AnalysisWrapper {
 	}
 
 	/**
-	 * Initialize Variables
+	 * Initialize Variables.
 	 * 
 	 * @param varPrefix
 	 *            prefix of each variable; e.g. 'X'
@@ -149,7 +162,7 @@ public class AnalysisWrapper {
 	 * Shuts down R.
 	 */
 	public void shutdown() {
-		instance = null;
+		isActive = false;
 		executePOSTRequest(null, baseUrl + SHUTDOWN);
 	}
 
@@ -164,7 +177,7 @@ public class AnalysisWrapper {
 	 */
 	private String executePOSTRequest(String input, String urlString) {
 
-		try {  
+		try {
 			boolean inputExists = false;
 			if (input != null && !input.isEmpty()) {
 				inputExists = true;

@@ -60,7 +60,7 @@ public final class ExtensionRegistry implements IExtensionRegistry {
 	 * 
 	 * @return Returns a singleton instance of the extension registry.
 	 */
-	public static IExtensionRegistry getSingleton() {
+	public synchronized static IExtensionRegistry getSingleton() {
 		if (singleton == null) {
 			singleton = new ExtensionRegistry();
 		}
@@ -160,7 +160,7 @@ public final class ExtensionRegistry implements IExtensionRegistry {
 		// unpack all extensions.info's separately and gathers them in the list
 
 		try {
-			String tempPluginsDir = SystemTools.extractFilesFromClasspath("plugins", "sopecoPlugins", "plugins files");
+			String tempPluginsDir = SystemTools.extractFilesFromClasspath("plugins", "sopecoPlugins", "plugins files", classLoader);
 
 			String[] infoFiles = Tools.getFileNames(tempPluginsDir, "*.info");
 			for (String infoFileName : infoFiles) {

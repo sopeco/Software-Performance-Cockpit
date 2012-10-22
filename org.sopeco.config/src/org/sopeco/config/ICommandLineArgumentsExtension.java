@@ -18,12 +18,16 @@ import org.apache.commons.cli.Option;
 public interface ICommandLineArgumentsExtension {
 
 	/**
-	 * Returns a collection of command line options provided by the extension.
+	 * @return Returns a collection of command line options provided by the
+	 *         extension.
 	 */
 	Collection<Option> getCommandLineOptions();
 
 	/**
 	 * Allows the extension to process command line options.
+	 * 
+	 * @param line
+	 *            the command line to be processed
 	 */
 	void processOptions(CommandLine line);
 }

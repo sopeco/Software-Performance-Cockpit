@@ -15,7 +15,7 @@ import org.sopeco.util.session.ISessionAwareObject;
  * @author Roozbeh Farahbod
  * 
  */
-public interface IConfiguration extends ISessionAwareObject{
+public interface IConfiguration extends ISessionAwareObject {
 
 	String ENV_SOPECO_HOME = "SOPECO_HOME";
 
@@ -32,7 +32,7 @@ public interface IConfiguration extends ISessionAwareObject{
 	String CONF_APP_NAME = "sopeco.config.applicationName";
 
 	String CONF_MAIN_CLASS = "sopeco.config.mainClass";
-	
+
 	String CONF_MEC_ACQUISITION_TIMEOUT = "sopeco.config.MECAcquisitionTimeout";
 
 	String CONF_MODEL_CHANGE_HANDLING_MODE = "sopeco.config.modelChangeHandlingMode";
@@ -41,8 +41,7 @@ public interface IConfiguration extends ISessionAwareObject{
 	String MCH_MODE_FAIL = "fail";
 	String MCH_MODE_NEW_VERSION = "newVersion";
 
-	
-	String CONF_SCENARIO_DEFINITION_PACKAGE="sopeco.config.xml.scenarioDefinitionPackage";
+	String CONF_SCENARIO_DEFINITION_PACKAGE = "sopeco.config.xml.scenarioDefinitionPackage";
 	/** Holds the path to the root folder of SoPeCo. */
 	String CONF_APP_ROOT_FOLDER = "sopeco.config.rootFolder";
 
@@ -71,6 +70,7 @@ public interface IConfiguration extends ISessionAwareObject{
 	 * 
 	 * @param key
 	 *            property key
+	 * @return Returns the configured value of the given property in SoPeCo.
 	 */
 	Object getProperty(String key);
 
@@ -85,6 +85,7 @@ public interface IConfiguration extends ISessionAwareObject{
 	 *            property key
 	 * 
 	 * @see #getProperty(String)
+	 * @return Returns the configured value of the given property as a String.
 	 */
 	String getPropertyAsStr(String key);
 
@@ -159,6 +160,8 @@ public interface IConfiguration extends ISessionAwareObject{
 	 * 
 	 * @param key
 	 *            porperty key
+	 * 
+	 * @return Returns the default value for a given property.
 	 */
 	Object getDefaultValue(String key);
 
@@ -195,6 +198,8 @@ public interface IConfiguration extends ISessionAwareObject{
 	 * @param fileName
 	 *            the name of a properties file
 	 * @throws ConfigurationException
+	 *             if initializing the configuration fails
+	 * 
 	 */
 	void loadDefaultConfiguration(String fileName) throws ConfigurationException;
 
@@ -220,6 +225,7 @@ public interface IConfiguration extends ISessionAwareObject{
 	 * @param fileName
 	 *            the name of a properties file
 	 * @throws ConfigurationException
+	 *             if initializing the configuration fails
 	 */
 	void loadDefaultConfiguration(ClassLoader classLoader, String fileName) throws ConfigurationException;
 
@@ -245,6 +251,7 @@ public interface IConfiguration extends ISessionAwareObject{
 	 * @param fileName
 	 *            the name of a properties file
 	 * @throws ConfigurationException
+	 *             if initializing the configuration fails
 	 */
 	void loadConfiguration(String fileName) throws ConfigurationException;
 
@@ -270,6 +277,7 @@ public interface IConfiguration extends ISessionAwareObject{
 	 * @param fileName
 	 *            the name of a properties file
 	 * @throws ConfigurationException
+	 *             if initializing the configuration fails
 	 */
 	void loadConfiguration(ClassLoader classLoader, String fileName) throws ConfigurationException;
 
@@ -306,9 +314,10 @@ public interface IConfiguration extends ISessionAwareObject{
 	/**
 	 * Sets the measurement controller URI.
 	 * 
-	 * @param uri
+	 * @param uriStr
 	 *            a URI as an String
 	 * @throws ConfigurationException
+	 *             if initializing the configuration fails
 	 * @see #CONF_MEASUREMENT_CONTROLLER_URI
 	 */
 	void setMeasurementControllerURI(String uriStr) throws ConfigurationException;
@@ -336,6 +345,7 @@ public interface IConfiguration extends ISessionAwareObject{
 	 * finding the root folder
 	 * 
 	 * @param mainClass
+	 *            class to be set as main class
 	 */
 	void setMainClass(Class<?> mainClass);
 
@@ -349,58 +359,59 @@ public interface IConfiguration extends ISessionAwareObject{
 	void setLoggerConfigFileName(String fileName);
 
 	/**
-	 * Returns the application root directory.
+	 * @return Returns the application root directory.
 	 */
 	String getAppRootDirectory();
 
 	/**
-	 * Returns the application's configuration directory.
+	 * @return Returns the application's configuration directory.
 	 */
 	String getAppConfDirectory();
 
 	/**
-	 * Gets the value of scenario description file name.
+	 * @return Returns the value of scenario description file name.
 	 * 
 	 * @see #CONF_SCENARIO_DESCRIPTION_FILE_NAME
 	 */
 	String getScenarioDescriptionFileName();
 
 	/**
-	 * Gets the sceanrio description as the given object.
+	 * @return returns the sceanrio description as the given object.
 	 * 
 	 * @see #CONF_SCENARIO_DESCRIPTION
 	 */
 	Object getScenarioDescription();
 
 	/**
-	 * Gets the measurement controller URI.
+	 * @return Returns the measurement controller URI.
 	 * 
 	 * @see #CONF_MEASUREMENT_CONTROLLER_URI
 	 */
 	URI getMeasurementControllerURI();
 
 	/**
-	 * Gets the measurement controller URI as a String.
+	 * @return Returns the measurement controller URI as a String.
 	 * 
 	 * @see #CONF_MEASUREMENT_CONTROLLER_URI
 	 */
 	String getMeasurementControllerURIAsStr();
 
 	/**
-	 * Gets the measurement controller class name.
+	 * @return Returns the measurement controller class name.
 	 * 
 	 * @see #CONF_MEASUREMENT_CONTROLLER_CLASS_NAME
 	 */
 	String getMeasurementControllerClassName();
 
 	/**
-	 * Gets the application name for this executable instance.
+	 * @return Returns the application name for this executable instance.
 	 */
 	String getApplicationName();
 
 	/**
-	 * Returns the main class that runs this thread. This value must have been
-	 * set by a call to {@link IConfiguration#setMainClass(Class)}.
+	 * @return Returns the main class that runs this thread. This value must
+	 *         have been set by a call to
+	 *         {@link IConfiguration#setMainClass(Class)}.
 	 */
 	Class<?> getMainClass();
 
@@ -409,6 +420,8 @@ public interface IConfiguration extends ISessionAwareObject{
 	 * 
 	 * @param fileName
 	 *            the name of the file
+	 * @throws IOException
+	 *             if exporting the configuration fails
 	 */
 	void writeConfiguration(String fileName) throws IOException;
 

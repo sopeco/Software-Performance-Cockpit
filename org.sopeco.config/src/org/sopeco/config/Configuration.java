@@ -420,6 +420,9 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		return Tools.concatFileName(getAppRootDirectory(), DEFAULT_CONFIG_FOLDER_NAME);
 	}
 
+	/**
+	 * Sets the class to be used as starting point for deriving root folder.
+	 */
 	public void setMainClass(Class<?> mainClass) {
 		setProperty(CONF_MAIN_CLASS, mainClass);
 	}
