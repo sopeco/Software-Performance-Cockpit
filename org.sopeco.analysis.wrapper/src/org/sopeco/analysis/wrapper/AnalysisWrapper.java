@@ -32,6 +32,7 @@ public class AnalysisWrapper {
 	private static final String INIT = "init";
 	private static final String SHUTDOWN = "shutdown";
 
+	private static final Logger logger = LoggerFactory.getLogger(AnalysisWrapper.class);
 
 	private static AnalysisWrapper instance;
 
@@ -74,6 +75,7 @@ public class AnalysisWrapper {
 	 * @return Returns the result of the given command as string
 	 */
 	public String executeCommandString(String command) {
+		logger.debug(command);
 		String jsonString = gson.toJson(command);
 
 		String result = executePOSTRequest(jsonString, baseUrl + EXECUTE_COMMAND_STRING);
@@ -90,6 +92,7 @@ public class AnalysisWrapper {
 	 * @return Returns the result of the given command as double
 	 */
 	public double executeCommandDouble(String command) {
+		logger.debug(command);
 
 		String jsonString = gson.toJson(command);
 
@@ -108,6 +111,8 @@ public class AnalysisWrapper {
 	 */
 	public String[] executeCommandStringArray(String command) {
 
+		logger.debug(command);
+		
 		String jsonString = gson.toJson(command);
 
 		String result = executePOSTRequest(jsonString, baseUrl + EXECUTE_COMMAND_STRING_ARRAY);
@@ -124,6 +129,8 @@ public class AnalysisWrapper {
 	 * @return Returns the result of the given command as double array
 	 */
 	public double[] executeCommandDoubleArray(String command) {
+		logger.debug(command);
+		
 		String jsonString = gson.toJson(command);
 
 		String result = executePOSTRequest(jsonString, baseUrl + EXECUTE_COMMAND_DOUBLE_ARRAY);
