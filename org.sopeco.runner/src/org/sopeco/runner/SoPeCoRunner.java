@@ -3,7 +3,6 @@
  */
 package org.sopeco.runner;
 
-import java.net.URI;
 import java.rmi.RemoteException;
 import java.util.UUID;
 
@@ -14,8 +13,6 @@ import org.sopeco.config.IConfiguration;
 import org.sopeco.config.exception.ConfigurationException;
 import org.sopeco.engine.EngineFactory;
 import org.sopeco.engine.IEngine;
-import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
-import org.sopeco.engine.measurementenvironment.rmi.RmiMEConnector;
 import org.sopeco.engine.model.ScenarioDefinitionFileReader;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
@@ -43,7 +40,10 @@ public class SoPeCoRunner implements Runnable {
 	 * session id. Session related configurations made outside will not be
 	 * propagated to the created SoPeCoRunner object, as the created object uses
 	 * an own configuration with an own session id.
+	 * 
+	 * @deprecated use {@link #SoPeCoRunner(String)} instead. 
 	 */
+	@Deprecated
 	public SoPeCoRunner() {
 		this.sessionId = UUID.randomUUID().toString();
 	}

@@ -93,6 +93,7 @@ public final class EngineFactory {
 				Object o = mec.newInstance();
 				if (o instanceof IMeasurementEnvironmentController) {
 					LOGGER.debug("Measurement environment controller is instantiated.");
+					meController = (IMeasurementEnvironmentController)o;
 				} else {
 					throw new RuntimeException("The measurement environment class must implement "
 							+ IMeasurementEnvironmentController.class.getName() + ".");
