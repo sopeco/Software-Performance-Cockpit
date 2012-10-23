@@ -7,7 +7,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
-import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.exceptions.ExperimentFailedException;
 import org.sopeco.persistence.util.ParameterCollection;
 
@@ -84,11 +83,11 @@ public abstract class MEControllerResource implements IMeasurementEnvironmentCon
 
 	@Override
 	public Collection<ParameterValueList<?>> runExperiment(String acquirerID,
-			ParameterCollection<ParameterValue<?>> inputPVs, ExperimentTerminationCondition terminationCondition)
+			ParameterCollection<ParameterValue<?>> inputPVs)
 			throws RemoteException, ExperimentFailedException {
 		checkExecutionPermission(acquirerID);
 		updateState(MEControllerState.EXPERIMENT_EXECUTION);
-		return runExperiment(inputPVs, terminationCondition);
+		return runExperiment(inputPVs);
 	}
 
 	@Override
@@ -112,8 +111,7 @@ public abstract class MEControllerResource implements IMeasurementEnvironmentCon
 
 	protected abstract void prepareExperimentSeries(ParameterCollection<ParameterValue<?>> preparationPVs);
 
-	protected abstract Collection<ParameterValueList<?>> runExperiment(ParameterCollection<ParameterValue<?>> inputPVs,
-			ExperimentTerminationCondition terminationCondition) throws ExperimentFailedException;
+	protected abstract Collection<ParameterValueList<?>> runExperiment(ParameterCollection<ParameterValue<?>> inputPVs) throws ExperimentFailedException;
 
 	protected abstract void finalizeExperimentSeries();
 

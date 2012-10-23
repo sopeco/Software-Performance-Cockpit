@@ -9,7 +9,6 @@ import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.DynamicValueAssignment;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
-import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.ExplorationStrategy;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
@@ -156,21 +155,6 @@ public class ScenarioDefinitionBuilder {
 		expSeriesDef.setName(name);
 		this.currentMeasurementSpecification.getExperimentSeriesDefinitions().add(expSeriesDef);
 		this.currentExperimentSeriesDefintition = expSeriesDef;
-	}
-
-	/**
-	 * Creates a new {@link ExperimentTerminationCondition} with the given
-	 * properties and adds it to the last created
-	 * {@link ExperimentSeriesDefinition}.
-	 * 
-	 * @param name
-	 *            the name of the termination condition strategy to create
-	 * @param configuration
-	 *            the configuration of the termination condition to create
-	 */
-	public void createExperimentTerminationCondition(String name, Map<String, String> configuration) {
-		ExperimentTerminationCondition nor = EntityFactory.createTerminationCondition(name, configuration);
-		this.currentExperimentSeriesDefintition.setExperimentTerminationCondition(nor);
 	}
 
 	/**

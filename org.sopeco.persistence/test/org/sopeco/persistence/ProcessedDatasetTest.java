@@ -124,9 +124,6 @@ public class ProcessedDatasetTest {
 
 	private void createESD(ScenarioDefinitionBuilder builder) {
 		builder.createExperimentSeriesDefinition(EXPERIMENT_SERIES);
-		Map<String, String> terminationConfig = new HashMap<String, String>();
-		terminationConfig.put("repetitions", "1");
-		builder.createExperimentTerminationCondition("Number Of Repetitions", terminationConfig);
 
 		builder.createExplorationStrategy("Full Exploration Strategy", Collections.EMPTY_MAP);
 	}

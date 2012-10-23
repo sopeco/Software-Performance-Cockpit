@@ -21,9 +21,6 @@ public class ModelRaedingTest {
 	private static final String EXP_SERIES_NAME = "unitTestSeries";
 	private static final String INIT_PARAMETER_NAME = "init.initParameter";
 	private static final String PREPARE_PARAMETER_NAME = "prepare.prepareParameter";
-	private static final String TERMINATION_CONDITION = "Number of Repetitions";
-	private static final String TERMINATION_CONDITION_KEY = "repetitions";
-	private static final String TERMINATION_CONDITION_VALUE = "2";
 	private static final String EXPLORATION_STRATEGY = "Full Exploration Strategy";
 
 	@Test
@@ -52,11 +49,8 @@ public class ModelRaedingTest {
 
 		ExperimentSeriesDefinition esd = scenarioDefinition.getExperimentSeriesDefinition(EXP_SERIES_NAME);
 		assertNotNull(esd);
-		assertEquals(esd.getExperimentTerminationCondition().getName(), TERMINATION_CONDITION);
-		assertEquals(esd.getExperimentTerminationCondition().getConfiguration().get(TERMINATION_CONDITION_KEY),
-				TERMINATION_CONDITION_VALUE);
 
-		assertEquals(esd.getPreperationAssignments().size(), 1);
+		assertEquals(esd.getPreperationAssignments().size(), 2);
 		assertEquals(esd.getPreperationAssignments().get(0).getParameter().getFullName(), PREPARE_PARAMETER_NAME);
 		assertEquals(esd.getPreperationAssignments().get(0).getValue(), "2");
 

@@ -15,7 +15,6 @@ import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
-import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.util.ParameterCollection;
 import org.sopeco.persistence.util.ParameterCollectionFactory;
 import org.sopeco.util.Tools;
@@ -70,7 +69,7 @@ public class FullExplorationStrategy extends AbstractSoPeCoExtensionArtifact imp
 	@Override
 	public void runExperimentSeries(ExperimentSeriesRun expSeriesRun, List<IParameterVariation> parameterVariations) {
 		initialiseExplorationStrategy(parameterVariations);
-		executeExperimentSeries(expSeriesRun.getExperimentSeries().getExperimentSeriesDefinition().getExperimentTerminationCondition());
+		executeExperimentSeries();
 	}
 
 	public ParameterCollection<ParameterValue<?>> getCurrentParameterValues() {
@@ -98,7 +97,7 @@ public class FullExplorationStrategy extends AbstractSoPeCoExtensionArtifact imp
 		
 	}
 
-	private void executeExperimentSeries(ExperimentTerminationCondition terminationCondition) {
+	private void executeExperimentSeries() {
 
 		// List InputParameter' ParameterValues for the runs
 		ParameterCollection<ParameterValue<?>> inputParameterValues = getCurrentParameterValues();
@@ -109,7 +108,7 @@ public class FullExplorationStrategy extends AbstractSoPeCoExtensionArtifact imp
 			
 			logger.debug("Executing experiment run {}.", count++);
 			
-			expController.runExperiment(ParameterCollectionFactory.createParameterValueCollection(parameterValues), terminationCondition);
+			expController.runExperiment(ParameterCollectionFactory.createParameterValueCollection(parameterValues));
 			
 			inputParameterValues = ParameterCollectionFactory.createParameterValueCollection(getNextParameterValues());
 		}

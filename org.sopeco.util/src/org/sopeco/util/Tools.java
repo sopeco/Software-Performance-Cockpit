@@ -19,7 +19,9 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
@@ -277,7 +279,7 @@ public class Tools {
 	 * 
 	 * @param pattern
 	 *            filename pattern
-	 * @return array of file names
+	 * @return an array of file names; if there is no such file, it returns an empty array.
 	 */
 	public static String[] getFileNames(String baseDir, String pattern) {
 		DirectoryScanner scanner = new DirectoryScanner();
@@ -293,11 +295,22 @@ public class Tools {
 	}
 
 	/**
+	 * Returns a list of files that their names match the given pattern.
+	 * 
+	 * @param pattern
+	 *            filename pattern
+	 * @return an array list of file names; if there is no such file, it returns an empty list.
+	 */
+	public static List<String> getFileNamesAsList(String baseDir, String pattern) {
+		return new ArrayList<String>(Arrays.asList(getFileNames(baseDir, pattern)));
+	}
+
+	/**
 	 * Returns a list of directories that their names match the given pattern.
 	 * 
 	 * @param pattern
 	 *            filename pattern
-	 * @return array of file names
+	 * @return an array of directory names; if there is no such directory, it returns an empty array.
 	 */
 	public static String[] getDirNames(String baseDir, String pattern) {
 		DirectoryScanner scanner = new DirectoryScanner();
@@ -310,6 +323,17 @@ public class Tools {
 			return new String[] {};
 		else
 			return result;
+	}
+
+	/**
+	 * Returns a list of directories that their names match the given pattern.
+	 * 
+	 * @param pattern
+	 *            filename pattern
+	 * @return an array list of directory names; if there is no such directory, it returns an empty list.
+	 */
+	public static List<String> getDirNamesAsList(String baseDir, String pattern) {
+		return new ArrayList<String>(Arrays.asList(getDirNames(baseDir, pattern)));
 	}
 
 	/**

@@ -23,8 +23,6 @@ public class ExperimentSeriesDefinition implements Serializable {
 
 	protected List<ParameterValueAssignment> experimentAssignments;
 
-	protected ExperimentTerminationCondition experimentTerminationCondition;
-
 	protected List<ConstantValueAssignment> preperationAssignments;
 
 	protected String name = null;
@@ -50,14 +48,6 @@ public class ExperimentSeriesDefinition implements Serializable {
 		return experimentAssignments;
 	}
 
-	public ExperimentTerminationCondition getExperimentTerminationCondition() {
-		return experimentTerminationCondition;
-	}
-
-	public void setExperimentTerminationCondition(ExperimentTerminationCondition newExperimentTerminationCondition) {
-		experimentTerminationCondition = newExperimentTerminationCondition;
-	}
-
 	public List<ConstantValueAssignment> getPreperationAssignments() {
 		if (preperationAssignments == null) {
 			preperationAssignments = new ArrayList<ConstantValueAssignment>();
@@ -79,7 +69,6 @@ public class ExperimentSeriesDefinition implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((experimentAssignments == null|| experimentAssignments.isEmpty()) ? 0 : experimentAssignments.hashCode());
-		result = prime * result + ((experimentTerminationCondition == null) ? 0 : experimentTerminationCondition.hashCode());
 		result = prime * result + ((explorationStrategy == null) ? 0 : explorationStrategy.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((preperationAssignments == null|| preperationAssignments.isEmpty()) ? 0 : preperationAssignments.hashCode());
@@ -104,11 +93,6 @@ public class ExperimentSeriesDefinition implements Serializable {
 			if (other.experimentAssignments != null && !other.experimentAssignments.isEmpty())
 				return false;
 		} else if (!experimentAssignments.equals(other.experimentAssignments))
-			return false;
-		if (experimentTerminationCondition == null) {
-			if (other.experimentTerminationCondition != null)
-				return false;
-		} else if (!experimentTerminationCondition.equals(other.experimentTerminationCondition))
 			return false;
 		if (explorationStrategy == null) {
 			if (other.explorationStrategy != null)

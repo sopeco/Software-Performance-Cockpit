@@ -20,7 +20,6 @@ import org.sopeco.engine.model.xmlentities.XConstantValueAssignment;
 import org.sopeco.engine.model.xmlentities.XDynamicValueAssignment;
 import org.sopeco.engine.model.xmlentities.XExperimentSeriesDefinition;
 import org.sopeco.engine.model.xmlentities.XExplorationStrategy;
-import org.sopeco.engine.model.xmlentities.XExtensibleElement;
 import org.sopeco.engine.model.xmlentities.XMeasurementSpecification;
 import org.sopeco.engine.model.xmlentities.XScenarioDefinition;
 import org.sopeco.persistence.EntityFactory;
@@ -28,7 +27,6 @@ import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.DynamicValueAssignment;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
-import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.ExplorationStrategy;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
@@ -110,8 +108,7 @@ public class ScenarioDefinitionFileReader {
 	}
 
 	private ExperimentSeriesDefinition convert(XExperimentSeriesDefinition xSeries) {
-		ExperimentTerminationCondition etc = convertTerminationCondition(xSeries.getTerminationCondition());
-		ExperimentSeriesDefinition esd = EntityFactory.createExperimentSeriesDefinition(xSeries.getName(), etc);
+		ExperimentSeriesDefinition esd = EntityFactory.createExperimentSeriesDefinition(xSeries.getName());
 		esd.setExplorationStrategy(convertExplorationStrategy(xSeries.getExplorationStrategy()));
 
 		if (xSeries.getExperimentSeriesPreparation() != null) {
@@ -167,15 +164,6 @@ public class ScenarioDefinitionFileReader {
 		}
 
 		return analysisConfiguration;
-	}
-
-	private ExperimentTerminationCondition convertTerminationCondition(XExtensibleElement xTerminationCondition) {
-		Map<String, String> config = new HashMap<String, String>();
-		for (XConfigurationNode xConfigNode : xTerminationCondition.getConfig()) {
-			config.put(xConfigNode.getKey(), xConfigNode.getValue());
-		}
-
-		return EntityFactory.createTerminationCondition(xTerminationCondition.getName(), config);
 	}
 
 	private ConstantValueAssignment convert(XConstantValueAssignment xCVA) {

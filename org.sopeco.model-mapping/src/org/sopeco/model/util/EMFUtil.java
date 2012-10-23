@@ -2,10 +2,8 @@ package org.sopeco.model.util;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.compare.util.ModelUtils;
@@ -24,12 +22,9 @@ import org.sopeco.model.configuration.environment.ParameterRole;
 import org.sopeco.model.configuration.measurements.ConstantValueAssignment;
 import org.sopeco.model.configuration.measurements.DynamicValueAssignment;
 import org.sopeco.model.configuration.measurements.ExperimentSeriesDefinition;
-import org.sopeco.model.configuration.measurements.ExperimentTerminationCondition;
 import org.sopeco.model.configuration.measurements.ExplorationStrategy;
 import org.sopeco.model.configuration.measurements.MeasurementSpecification;
-import org.sopeco.model.configuration.measurements.NumberOfRepetitions;
 import org.sopeco.model.configuration.measurements.ParameterValueAssignment;
-import org.sopeco.model.configuration.measurements.TimeOut;
 import org.sopeco.persistence.EntityFactory;
 
 /**
@@ -184,8 +179,7 @@ public class EMFUtil {
 			ExperimentSeriesDefinition emfExpSeriesDef = (ExperimentSeriesDefinition) emfExpSeriesDefObj;
 
 			org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition pojoExpSeriesDef = EntityFactory
-					.createExperimentSeriesDefinition(emfExpSeriesDef.getName(),
-							convertExperimentTerminationCondition(emfExpSeriesDef.getExperimentTerminationCondition()));
+					.createExperimentSeriesDefinition(emfExpSeriesDef.getName());
 
 			pojoExpSeriesDef.setExplorationStrategy(convertExplorationStrategy(emfExpSeriesDef));
 
@@ -297,23 +291,6 @@ public class EMFUtil {
 			pojoAssignments.add(pojoCVA);
 		}
 		return pojoAssignments;
-	}
-
-	private static org.sopeco.persistence.entities.definition.ExperimentTerminationCondition convertExperimentTerminationCondition(
-			ExperimentTerminationCondition emfTerminationCondition) {
-		if (emfTerminationCondition instanceof TimeOut) {
-			Map<String, String> terminationConfig = new HashMap<String, String>();
-			terminationConfig.put("timeout", String.valueOf(((TimeOut) emfTerminationCondition).getMaxDuration()));
-			return EntityFactory.createTerminationCondition("Timeout", terminationConfig);
-		} else if (emfTerminationCondition instanceof NumberOfRepetitions) {
-			Map<String, String> terminationConfig = new HashMap<String, String>();
-			terminationConfig.put("repetitions", String.valueOf(((NumberOfRepetitions) emfTerminationCondition)
-					.getNumberOfRepetitions()));
-			return EntityFactory.createTerminationCondition("Number Of Repetitions", terminationConfig);
-			
-		}
-		throw new IllegalArgumentException("Unknown experiment termination condition: "
-				+ emfTerminationCondition.getClass().getName());
 	}
 
 	private static List<org.sopeco.persistence.entities.definition.ParameterNamespace> convertChildren(

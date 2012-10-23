@@ -22,14 +22,12 @@ import org.sopeco.engine.model.xmlentities.XConstantValueAssignment;
 import org.sopeco.engine.model.xmlentities.XDynamicValueAssignment;
 import org.sopeco.engine.model.xmlentities.XExperimentSeriesDefinition;
 import org.sopeco.engine.model.xmlentities.XExplorationStrategy;
-import org.sopeco.engine.model.xmlentities.XExtensibleElement;
 import org.sopeco.engine.model.xmlentities.XMeasurementSpecification;
 import org.sopeco.engine.model.xmlentities.XScenarioDefinition;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.DynamicValueAssignment;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
-import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.ExplorationStrategy;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
@@ -108,7 +106,6 @@ public class ScenarioDefinitionFileWriter {
 	private XExperimentSeriesDefinition convert(ExperimentSeriesDefinition esd) {
 		XExperimentSeriesDefinition xESD = new XExperimentSeriesDefinition();
 		xESD.setName(esd.getName());
-		xESD.setTerminationCondition(convert(esd.getExperimentTerminationCondition()));
 		xESD.setExplorationStrategy(convert(esd.getExplorationStrategy()));
 
 		for (ConstantValueAssignment cva : esd.getPreperationAssignments()) {
@@ -170,13 +167,6 @@ public class ScenarioDefinitionFileWriter {
 		}
 
 		return xAnalysisConfig;
-	}
-
-	private XExtensibleElement convert(ExperimentTerminationCondition experimentTerminationCondition) {
-		XExtensibleElement xTermCondition = new XExtensibleElement();
-		xTermCondition.setName(experimentTerminationCondition.getName());
-		xTermCondition.getConfig().addAll(convert(experimentTerminationCondition.getConfiguration()));
-		return xTermCondition;
 	}
 
 	private List<XConfigurationNode> convert(Map<String, String> config) {

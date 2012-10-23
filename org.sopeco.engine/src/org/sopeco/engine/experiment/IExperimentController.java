@@ -3,7 +3,6 @@ package org.sopeco.engine.experiment;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
-import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.exceptions.ExperimentFailedException;
 import org.sopeco.persistence.util.ParameterCollection;
@@ -41,7 +40,7 @@ public interface IExperimentController extends ISessionAwareObject {
 	/**
 	 * Prepares the experiment controller for one single experiment series. This
 	 * is called before subsequent calls to
-	 * {@link #runExperiment(ParameterCollection, ExperimentTerminationCondition)}
+	 * {@link #runExperiment(ParameterCollection)}
 	 * .
 	 * 
 	 * @param experimentSeriesRun
@@ -49,7 +48,7 @@ public interface IExperimentController extends ISessionAwareObject {
 	 * @param preparationPVs
 	 *            preparation arguments
 	 */
-	void prepareExperimentSeries(ExperimentSeriesRun experimentSeriesRun,
+	public void prepareExperimentSeries(ExperimentSeriesRun experimentSeriesRun, 
 			ParameterCollection<ParameterValue<?>> preparationPVs);
 
 	/**
@@ -58,12 +57,8 @@ public interface IExperimentController extends ISessionAwareObject {
 	 * 
 	 * @param inputPVs
 	 *            a collection of parameter values
-	 * @param terminationCondition
-	 *            the termination condition specifies when an experiment should
-	 *            be terminated
 	 */
-	void runExperiment(ParameterCollection<ParameterValue<?>> inputPVs,
-			ExperimentTerminationCondition terminationCondition);
+	void runExperiment(ParameterCollection<ParameterValue<?>> inputPVs);
 
 	/**
 	 * Finalizes the experiment; a proxy method to the measurement environment

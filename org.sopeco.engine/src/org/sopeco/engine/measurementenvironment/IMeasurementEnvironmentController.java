@@ -6,7 +6,6 @@ import java.util.Collection;
 
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
-import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.exceptions.ExperimentFailedException;
 import org.sopeco.persistence.util.ParameterCollection;
@@ -62,8 +61,6 @@ public interface IMeasurementEnvironmentController extends Remote {
 	 *            identifier of the acquirer holding the MEController
 	 * @param inputPVs
 	 *            a collection of input value assignments
-	 * @param terminationCondition
-	 *            a termination condition
 	 * 
 	 * @return a collection of parameter value lists that includes one parameter
 	 *         value list for every observation parameter
@@ -74,8 +71,7 @@ public interface IMeasurementEnvironmentController extends Remote {
 	 *             acquirerID does not match the id of the actual holder of the
 	 *             MEController
 	 */
-	Collection<ParameterValueList<?>> runExperiment(String acquirerID, ParameterCollection<ParameterValue<?>> inputPVs,
-			ExperimentTerminationCondition terminationCondition) throws RemoteException, ExperimentFailedException;
+	Collection<ParameterValueList<?>> runExperiment(String acquirerID, ParameterCollection<ParameterValue<?>> inputPVs) throws RemoteException, ExperimentFailedException;
 
 	/**
 	 * Finalizes the measurement environment.

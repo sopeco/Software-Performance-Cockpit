@@ -75,7 +75,6 @@ public class ScenarioDefinitionBuilderTest {
 		
 		ExperimentSeriesDefinition testExpSeries1 = scenarioDefinition.getExperimentSeriesDefinition("TestExpSeries1");
 		assertNotNull(testExpSeries1);
-		assertNotNull(testExpSeries1.getExperimentTerminationCondition());
 		assertEquals(1, testExpSeries1.getPreperationAssignments().size());
 		assertNotNull(testExpSeries1.getPreperationAssignments().get(0));
 		assertEquals(2, testExpSeries1.getExperimentAssignments().size());
@@ -88,7 +87,6 @@ public class ScenarioDefinitionBuilderTest {
 	
 		ExperimentSeriesDefinition testExpSeries2 = scenarioDefinition.getExperimentSeriesDefinition("TestExpSeries2");
 		assertNotNull(testExpSeries2);
-		assertNotNull(testExpSeries2.getExperimentTerminationCondition());
 		assertEquals(2, testExpSeries2.getExperimentAssignments().size());
 		assertNotNull(testExpSeries2.getExperimentAssignments().get(0));
 		assertNotNull(testExpSeries2.getExplorationStrategy());
@@ -104,9 +102,6 @@ public class ScenarioDefinitionBuilderTest {
 		builder.createConstantValueAssignment(AssignmentType.Initialization, builder.getScenarioDefinition().getParameterDefinition("testns2.testparam2-1"), "1");
 		
 		builder.createExperimentSeriesDefinition("TestExpSeries1");
-		Map<String, String> terminationConfig = new HashMap<String, String>();
-		terminationConfig.put("repetitions", "1");
-		builder.createExperimentTerminationCondition("Number Of Repetitions", terminationConfig);
 		builder.createConstantValueAssignment(AssignmentType.Preparation, builder.getScenarioDefinition().getParameterDefinition("testns1.testns1-2.testparam1-2-1"), "1");
 		builder.createDynamicValueAssignment(AssignmentType.Experiment, "Linear Numeric", builder.getScenarioDefinition().getParameterDefinition("testns1.testns1-1.testparam1-1-1"), Collections.EMPTY_MAP);
 		builder.createDynamicValueAssignment(AssignmentType.Experiment, "Linear Numeric", builder.getScenarioDefinition().getParameterDefinition("testns1.testns1-1.testparam1-1-2"), Collections.EMPTY_MAP);
@@ -122,9 +117,6 @@ public class ScenarioDefinitionBuilderTest {
 		
 		
 		builder.createExperimentSeriesDefinition("TestExpSeries2");
-		Map<String, String> terminationConfigTimeout = new HashMap<String, String>();
-		terminationConfigTimeout.put("timeout", "1000");
-		builder.createExperimentTerminationCondition("Timeout", terminationConfigTimeout);
 		builder.createDynamicValueAssignment(AssignmentType.Experiment, "Linear Numeric", builder.getScenarioDefinition().getParameterDefinition("testns1.testns1-1.testparam1-1-1"), Collections.EMPTY_MAP);
 		builder.createDynamicValueAssignment(AssignmentType.Experiment, "Linear Numeric", builder.getScenarioDefinition().getParameterDefinition("testns1.testns1-1.testparam1-1-2"), Collections.EMPTY_MAP);
 		builder.createExplorationStrategy("Full Exploration", Collections.EMPTY_MAP);		

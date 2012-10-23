@@ -9,7 +9,6 @@ import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
-import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.PersistenceProviderFactory;
 import org.sopeco.persistence.dataset.DataSetAggregated;
@@ -17,7 +16,6 @@ import org.sopeco.persistence.dataset.DataSetRowBuilder;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
-import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.exceptions.ExperimentFailedException;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
@@ -120,13 +118,7 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 	}
 
 	@Override
-	public void runExperiment(ParameterCollection<ParameterValue<?>> inputPVs,
-			ExperimentTerminationCondition terminationCondition) {
-		if (terminationCondition == null) {
-			throw new IllegalArgumentException("TerminationCondition must be set (not null).");
-		}
-		
-
+	public void runExperiment(ParameterCollection<ParameterValue<?>> inputPVs) {
 		boolean experimentWasSuccessful = false;
 
 		try {
@@ -135,7 +127,7 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 			currentExperimentSeriesRun = persistenceProvider.loadExperimentSeriesRun(currentExperimentSeriesRun
 					.getPrimaryKey());
 
-			experimentWasSuccessful = runExperimentOnME(meController, inputPVs, terminationCondition);
+			experimentWasSuccessful = runExperimentOnME(meController, inputPVs);
 
 			if (experimentWasSuccessful) {
 				currentExperimentSeriesRun.appendSuccessfulResults(successfulDataSet);
@@ -185,12 +177,12 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 	}
 
 	/**
-	 * Runs the experiment defined by the input parameter-value list and the
-	 * termination condition, on the given measurement environment controller,
+	 * Runs the experiment defined by the input parameter-value list 
+	 * on the given measurement environment controller,
 	 * and aggregates the results into an instance of {@link DataSetAggregated}.
 	 */
 	private boolean runExperimentOnME(IMeasurementEnvironmentController meController,
-			ParameterCollection<ParameterValue<?>> inputPVs, ExperimentTerminationCondition terminationCondition) {
+			ParameterCollection<ParameterValue<?>> inputPVs) {
 
 		try {
 
@@ -240,8 +232,7 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 			if (runExperimentOnME) {
 				try {
 					LOGGER.debug("Starting experiment on measurement environment...");
-					observations = meController.runExperiment(getSessionId(), inputParamCollection,
-							terminationCondition);
+					observations = meController.runExperiment(getSessionId(), inputParamCollection);
 					experimentSuccessful = true;
 					LOGGER.debug("Experiment finished successfully on measurement environment.");
 				} catch (ExperimentFailedException e) {
@@ -328,4 +319,5 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 		}
 
 	}
+
 }

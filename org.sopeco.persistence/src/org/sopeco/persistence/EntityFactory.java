@@ -13,7 +13,6 @@ import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.DynamicValueAssignment;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
-import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.ExplorationStrategy;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
@@ -123,11 +122,9 @@ public final class EntityFactory {
 		return ms;
 	}
 
-	public static ExperimentSeriesDefinition createExperimentSeriesDefinition(String name,
-			ExperimentTerminationCondition terminationCondition) {
+	public static ExperimentSeriesDefinition createExperimentSeriesDefinition(String name) {
 		ExperimentSeriesDefinition esd = new ExperimentSeriesDefinition();
 		esd.setName(name);
-		esd.setExperimentTerminationCondition(terminationCondition);
 		return esd;
 	}
 
@@ -145,15 +142,6 @@ public final class EntityFactory {
 		ac.setName(name);
 		ac.getConfiguration().putAll(config);
 		return ac;
-	}
-
-	public static ExperimentTerminationCondition createTerminationCondition(String name, Map<String, String> config) {
-		ExperimentTerminationCondition etc = new ExperimentTerminationCondition();
-		etc.setName(name);
-		if (config != null) {
-			etc.getConfiguration().putAll(config);
-		}
-		return etc;
 	}
 
 	public static ConstantValueAssignment createConstantValueAssignment(final ParameterDefinition parameter,

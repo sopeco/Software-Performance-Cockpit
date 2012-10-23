@@ -11,13 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.sopeco.engine.experimentseries.ITerminationCondition;
-import org.sopeco.engine.experimentseries.ITerminationConditionExtension;
-import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
-import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
@@ -48,10 +44,7 @@ public abstract class AbstractMEController extends MEControllerResource {
 	 * concrete MEController
 	 */
 	private final Map<String, Field> sopecoParameterFields;
-	/**
-	 * Termination condition, passed during experiment execution
-	 */
-	private ITerminationCondition terminationCondition;
+
 	/**
 	 * A set of parameter value lists containing all observation values which
 	 * should be returned after experiment run execution
@@ -86,14 +79,10 @@ public abstract class AbstractMEController extends MEControllerResource {
 	}
 
 	@Override
-	protected Collection<ParameterValueList<?>> runExperiment(ParameterCollection<ParameterValue<?>> inputPVs,
-			ExperimentTerminationCondition terminationCondition) throws ExperimentFailedException {
+	protected Collection<ParameterValueList<?>> runExperiment(ParameterCollection<ParameterValue<?>> inputPVs) throws ExperimentFailedException {
 		cleanUpObservations();
 		resultSet.clear();
 		setParameterValues(inputPVs);
-		this.terminationCondition = ExtensionRegistry.getSingleton().getExtensionArtifact(
-				ITerminationConditionExtension.class, terminationCondition.getName());
-		this.terminationCondition.initialize(terminationCondition.getConfiguration());
 		runExperiment();
 		defineResultSet();
 		return resultSet;
@@ -101,19 +90,10 @@ public abstract class AbstractMEController extends MEControllerResource {
 
 	@Override
 	protected void cleanUpMEController() {
-		terminationCondition = null;
 		resultSet.clear();
 		cleanUpInpuValues();
 		cleanUpObservations();
 
-	}
-
-	/**
-	 * 
-	 * @return Returns the termination condition.
-	 */
-	protected ITerminationCondition getTerminationCondition() {
-		return terminationCondition;
 	}
 
 	protected void addParameterObservationsToResult(ParameterValueList<?> pvl) {

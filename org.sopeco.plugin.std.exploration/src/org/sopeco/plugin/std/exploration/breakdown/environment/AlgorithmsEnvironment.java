@@ -174,8 +174,7 @@ public class AlgorithmsEnvironment {
 
 		ParameterCollection<ParameterValue<?>> realPositionList = ParameterCollectionFactory.createParameterValueCollection(this.getRealPosition(position));
 		ParameterCollection<ParameterValue<?>> newRealPositionList = ParameterCollectionFactory.createParameterValueCollection(realPositionList);
-		this.experimentController.runExperiment(newRealPositionList, this.expSeriesRun.getExperimentSeries().getExperimentSeriesDefinition()
-				.getExperimentTerminationCondition());
+		this.experimentController.runExperiment(newRealPositionList);
 
 		// TODO check failed results
 		DataSetAggregated measuredData = this.experimentController.getLastSuccessfulExperimentResults();

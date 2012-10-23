@@ -12,9 +12,7 @@ import org.sopeco.model.configuration.environment.ParameterDefinition;
 import org.sopeco.model.configuration.environment.ParameterNamespace;
 import org.sopeco.model.configuration.environment.ParameterRole;
 import org.sopeco.model.configuration.measurements.DynamicValueAssignment;
-import org.sopeco.model.configuration.measurements.ExperimentTerminationCondition;
 import org.sopeco.model.configuration.measurements.MeasurementsFactory;
-import org.sopeco.model.configuration.measurements.NumberOfRepetitions;
 
 
 public class ConfigurationBuilder {
@@ -25,8 +23,6 @@ public class ConfigurationBuilder {
 	
 	ParameterDefinition currentParameter;
 
-	private ExperimentTerminationCondition terminationCondition;
-	
 	public ConfigurationBuilder(String scenarioName){
 		scenarioDefinition = ConfigurationFactory.eINSTANCE.createScenarioDefinition();
 		scenarioDefinition.setName(scenarioName);
@@ -74,16 +70,6 @@ public class ConfigurationBuilder {
 
 	public ParameterDefinition getCurrentParameter() {
 		return currentParameter;
-	}
-
-	public ExperimentTerminationCondition getTerminationCondition() {
-		return terminationCondition;
-	}
-
-	public void createNumberOfRunsCondition(int numberOfRepetitions) {
-		NumberOfRepetitions nor = MeasurementsFactory.eINSTANCE.createNumberOfRepetitions();
-		nor.setNumberOfRepetitions(numberOfRepetitions);
-		terminationCondition = nor;
 	}
 
 }

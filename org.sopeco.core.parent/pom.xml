@@ -27,7 +27,6 @@
 		<module>../org.sopeco.plugin.std.analysis</module>
 		<module>../org.sopeco.plugin.std.constantassignment</module>
 		<module>../org.sopeco.plugin.std.processing</module>
-		<module>../org.sopeco.plugin.std.termination</module>
 		<module>../org.sopeco.runner</module>
 		<module>../org.sopeco.analysis.wrapper</module>
 		<module>../org.sopeco.hyperic.sigar</module>

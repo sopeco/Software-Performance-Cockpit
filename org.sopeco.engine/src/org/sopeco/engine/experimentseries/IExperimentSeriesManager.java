@@ -8,8 +8,7 @@ import org.sopeco.persistence.entities.ExperimentSeries;
  * 
  * For that purpose it creates VariationStrategies for InputParameters, creates
  * and selects ExplorationStrategy plugins, can create Analysis- and
- * ValidationStrategies and runs the ExplorationStrategy (which gets
- * TerminationCondition).
+ * ValidationStrategies and runs the ExplorationStrategy.
  * 
  * @author Jens Happe, Roozbeh Farahbod
  * 

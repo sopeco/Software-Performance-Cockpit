@@ -108,8 +108,7 @@ public final class ScreeningDesignExploration extends AbstractSoPeCoExtensionArt
 					.getParameterValuesByRun(i));
 			ParameterCollection<ParameterValue<?>> paramValueCollection = ParameterCollectionFactory.createParameterValueCollection(valuesOfRun);
 			
-			experimentController.runExperiment(paramValueCollection, expSeriesRun.getExperimentSeries().getExperimentSeriesDefinition()
-					.getExperimentTerminationCondition());
+			experimentController.runExperiment(paramValueCollection);
 		}
 	}
 
