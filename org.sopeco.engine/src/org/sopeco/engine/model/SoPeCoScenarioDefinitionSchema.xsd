@@ -3,7 +3,7 @@
 	targetNamespace="http://www.sopeco.org/SoPeCoScenarioDefinitionSchema"
 	xmlns:tns="http://www.sopeco.org/SoPeCoScenarioDefinitionSchema"
 	elementFormDefault="qualified">
-	
+
 	<element name="scenario" type="tns:ScenarioDefinition"></element>
 
 	<complexType name="ScenarioDefinition">
@@ -32,6 +32,9 @@
 			<element name="explorationStrategy" type="tns:ExplorationStrategy"
 				maxOccurs="1" minOccurs="1">
 			</element>
+			<element name="terminationCondition" type="tns:ExtensibleElement"
+				maxOccurs="unbounded" minOccurs="0">
+			</element>
 			<element name="experimentSeriesPreparation" maxOccurs="1"
 				minOccurs="0">
 				<complexType>
@@ -42,7 +45,8 @@
 					</sequence>
 				</complexType>
 			</element>
-			<element name="experimentSeriesExecution" maxOccurs="1" minOccurs="1">
+			<element name="experimentSeriesExecution" maxOccurs="1"
+				minOccurs="1">
 				<complexType>
 					<sequence>
 						<element name="constantAssignment" type="tns:ConstantValueAssignment"

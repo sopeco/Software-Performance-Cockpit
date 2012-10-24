@@ -20,6 +20,7 @@ import org.sopeco.engine.model.xmlentities.XConstantValueAssignment;
 import org.sopeco.engine.model.xmlentities.XDynamicValueAssignment;
 import org.sopeco.engine.model.xmlentities.XExperimentSeriesDefinition;
 import org.sopeco.engine.model.xmlentities.XExplorationStrategy;
+import org.sopeco.engine.model.xmlentities.XExtensibleElement;
 import org.sopeco.engine.model.xmlentities.XMeasurementSpecification;
 import org.sopeco.engine.model.xmlentities.XScenarioDefinition;
 import org.sopeco.persistence.EntityFactory;
@@ -32,6 +33,7 @@ import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefiniti
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 
 /**
  * The {@link ScenarioDefinitionFileReader} is responsible for reading and
@@ -109,6 +111,10 @@ public class ScenarioDefinitionFileReader {
 
 	private ExperimentSeriesDefinition convert(XExperimentSeriesDefinition xSeries) {
 		ExperimentSeriesDefinition esd = EntityFactory.createExperimentSeriesDefinition(xSeries.getName());
+		for (XExtensibleElement ee: xSeries.getTerminationConditions()) {
+			ExperimentTerminationCondition etc = convertTerminationCondition(ee);
+			esd.addTerminationCondition(etc);
+		}
 		esd.setExplorationStrategy(convertExplorationStrategy(xSeries.getExplorationStrategy()));
 
 		if (xSeries.getExperimentSeriesPreparation() != null) {
@@ -127,6 +133,14 @@ public class ScenarioDefinitionFileReader {
 		}
 
 		return esd;
+	}
+
+	private ExperimentTerminationCondition convertTerminationCondition(XExtensibleElement xTerminationCondition) {
+		Map<String, String> config = new HashMap<String, String>();
+		for (XConfigurationNode xConfigNode : xTerminationCondition.getConfig()) {
+			config.put(xConfigNode.getKey(), xConfigNode.getValue());
+		}
+		return EntityFactory.createTerminationCondition(xTerminationCondition.getName(), config);
 	}
 
 	private ExplorationStrategy convertExplorationStrategy(XExplorationStrategy xExplorationStrategy) {

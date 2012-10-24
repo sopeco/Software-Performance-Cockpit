@@ -70,8 +70,7 @@ public class XExperimentSeriesDefinition {
 
     @XmlElement(required = true)
     protected XExplorationStrategy explorationStrategy;
-    @XmlElement(required = true)
-    protected XExtensibleElement terminationCondition;
+    protected List<XExtensibleElement> terminationConditions;
     protected XExperimentSeriesDefinition.ExperimentSeriesPreparation experimentSeriesPreparation;
     @XmlElement(required = true)
     protected XExperimentSeriesDefinition.ExperimentSeriesExecution experimentSeriesExecution;
@@ -110,20 +109,11 @@ public class XExperimentSeriesDefinition {
      *     {@link XExtensibleElement }
      *     
      */
-    public XExtensibleElement getTerminationCondition() {
-        return terminationCondition;
-    }
-
-    /**
-     * Sets the value of the terminationCondition property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XExtensibleElement }
-     *     
-     */
-    public void setTerminationCondition(XExtensibleElement value) {
-        this.terminationCondition = value;
+    public List<XExtensibleElement> getTerminationConditions() {
+    	if (terminationConditions == null) {
+    		terminationConditions = new ArrayList<XExtensibleElement>();
+    	}
+        return terminationConditions;
     }
 
     /**

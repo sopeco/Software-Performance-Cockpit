@@ -22,6 +22,7 @@ import org.sopeco.engine.model.xmlentities.XConstantValueAssignment;
 import org.sopeco.engine.model.xmlentities.XDynamicValueAssignment;
 import org.sopeco.engine.model.xmlentities.XExperimentSeriesDefinition;
 import org.sopeco.engine.model.xmlentities.XExplorationStrategy;
+import org.sopeco.engine.model.xmlentities.XExtensibleElement;
 import org.sopeco.engine.model.xmlentities.XMeasurementSpecification;
 import org.sopeco.engine.model.xmlentities.XScenarioDefinition;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
@@ -33,6 +34,7 @@ import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterValueAssignment;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 
 /**
  * The {@link ScenarioDefinitionFileWriter} is responsible for writing an XML
@@ -106,6 +108,9 @@ public class ScenarioDefinitionFileWriter {
 	private XExperimentSeriesDefinition convert(ExperimentSeriesDefinition esd) {
 		XExperimentSeriesDefinition xESD = new XExperimentSeriesDefinition();
 		xESD.setName(esd.getName());
+		for (ExperimentTerminationCondition tc: esd.getTerminationConditions()) {
+			xESD.getTerminationConditions().add(convert(tc));
+		}
 		xESD.setExplorationStrategy(convert(esd.getExplorationStrategy()));
 
 		for (ConstantValueAssignment cva : esd.getPreperationAssignments()) {
@@ -140,6 +145,13 @@ public class ScenarioDefinitionFileWriter {
 		}
 
 		return xESD;
+	}
+
+	private XExtensibleElement convert(ExperimentTerminationCondition experimentTerminationCondition) {
+		XExtensibleElement xTermCondition = new XExtensibleElement();
+		xTermCondition.setName(experimentTerminationCondition.getName());
+		xTermCondition.getConfig().addAll(convert(experimentTerminationCondition.getParametersValues()));
+		return xTermCondition;
 	}
 
 	private XExplorationStrategy convert(ExplorationStrategy explorationStrategy) {

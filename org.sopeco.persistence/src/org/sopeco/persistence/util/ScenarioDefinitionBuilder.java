@@ -16,6 +16,7 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 
 /**
  * Builder to create SoPeCo Scenario Definitions from code instead of the EMF
@@ -157,6 +158,21 @@ public class ScenarioDefinitionBuilder {
 		this.currentExperimentSeriesDefintition = expSeriesDef;
 	}
 
+	/**
+	 * Creates a new {@link ExperimentTerminationCondition} with the given
+	 * properties and adds it to the last created
+	 * {@link ExperimentSeriesDefinition}.
+	 * 
+	 * @param name
+	 *            the name of the termination condition strategy to create
+	 * @param configuration
+	 *            the configuration of the termination condition to create
+	 */
+	public void createExperimentTerminationCondition(String name, Map<String, String> configuration) {
+		ExperimentTerminationCondition nor = EntityFactory.createTerminationCondition(name, configuration);
+		this.currentExperimentSeriesDefintition.addTerminationCondition(nor);
+	}
+	
 	/**
 	 * Creates a new {@link DynamicValueAssignment} with the given properties
 	 * and adds it to the experiment assignment list of the last created

@@ -2,11 +2,14 @@ package org.sopeco.engine.measurementenvironment;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
+import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.exceptions.ExperimentFailedException;
 import org.sopeco.persistence.util.ParameterCollection;
 
@@ -28,7 +31,7 @@ public abstract class MEControllerResource implements IMeasurementEnvironmentCon
 	/**
 	 * Constructor. Initial state is MEControllerState.AVAILABLE.
 	 */
-	public MEControllerResource() {
+	protected MEControllerResource() {
 		semaphore = new Semaphore(1, true);
 		updateState(MEControllerState.AVAILABLE);
 	}
@@ -74,11 +77,11 @@ public abstract class MEControllerResource implements IMeasurementEnvironmentCon
 	}
 
 	@Override
-	public void prepareExperimentSeries(String acquirerID, ParameterCollection<ParameterValue<?>> preparationPVs)
+	public void prepareExperimentSeries(String acquirerID, ParameterCollection<ParameterValue<?>> preparationPVs, Set<ExperimentTerminationCondition> terminationConditions)
 			throws RemoteException {
 		checkExecutionPermission(acquirerID);
 		updateState(MEControllerState.SERIES_PREPARATION);
-		prepareExperimentSeries(preparationPVs);
+		prepareExperimentSeries(preparationPVs, terminationConditions);
 	}
 
 	@Override
@@ -109,7 +112,7 @@ public abstract class MEControllerResource implements IMeasurementEnvironmentCon
 
 	protected abstract void initialize(ParameterCollection<ParameterValue<?>> initializationPVs);
 
-	protected abstract void prepareExperimentSeries(ParameterCollection<ParameterValue<?>> preparationPVs);
+	protected abstract void prepareExperimentSeries(ParameterCollection<ParameterValue<?>> preparationPVs, Set<ExperimentTerminationCondition> terminationConditions);
 
 	protected abstract Collection<ParameterValueList<?>> runExperiment(ParameterCollection<ParameterValue<?>> inputPVs) throws ExperimentFailedException;
 

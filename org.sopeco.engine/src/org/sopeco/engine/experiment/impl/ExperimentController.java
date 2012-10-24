@@ -2,6 +2,8 @@ package org.sopeco.engine.experiment.impl;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +19,7 @@ import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
+import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.exceptions.ExperimentFailedException;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.persistence.util.ParameterCollection;
@@ -105,7 +108,8 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 			this.currentExperimentSeriesRun = experimentSeriesRun;
 			this.preparationPVs = preparationPVs;
 
-			meController.prepareExperimentSeries(getSessionId(), preparationPVs);
+			Set<ExperimentTerminationCondition> terminationConditions = currentExperimentSeriesRun.getExperimentSeries().getExperimentSeriesDefinition().getTerminationConditions();
+			meController.prepareExperimentSeries(getSessionId(), preparationPVs, terminationConditions);
 
 			// ParameterCollection<ParameterDefinition> observationParams =
 			// ParameterCollectionFactory

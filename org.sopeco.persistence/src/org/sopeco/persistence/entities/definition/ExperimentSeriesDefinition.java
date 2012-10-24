@@ -8,7 +8,9 @@ package org.sopeco.persistence.entities.definition;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -24,6 +26,8 @@ public class ExperimentSeriesDefinition implements Serializable {
 	protected List<ParameterValueAssignment> experimentAssignments;
 
 	protected List<ConstantValueAssignment> preperationAssignments;
+	
+	protected Set<ExperimentTerminationCondition> terminationConditions = new HashSet<ExperimentTerminationCondition>();
 
 	protected String name = null;
 	
@@ -33,6 +37,10 @@ public class ExperimentSeriesDefinition implements Serializable {
 		super();
 	}
 
+	public Set<ExperimentTerminationCondition> getTerminationConditions() {
+		return terminationConditions;
+	}
+	
 	public ExplorationStrategy getExplorationStrategy() {
 		return explorationStrategy;
 	}
@@ -108,21 +116,16 @@ public class ExperimentSeriesDefinition implements Serializable {
 		return true;
 	}
 	
-	
-
 	public long getVersion() {
 		return version;
 	}
-
-
-
 
 
 	public void setVersion(long version) {
 		this.version = version;
 	}
 
-	
-	
-	
+	public void addTerminationCondition(ExperimentTerminationCondition tc) {
+		terminationConditions.add(tc);
+	}
 } 

@@ -20,6 +20,7 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 
 /**
  * The factory is used to create new instances of the SoPeCo persistence
@@ -68,6 +69,22 @@ public final class EntityFactory {
 		expSeries.setVersion(expSeriesDefinition.getVersion());
 		return expSeries;
 	}
+
+	/**
+	 * Creates a new termination condition given the configuration map.
+	 * 
+	 * @param name the name of the condition
+	 * @param config map of param names to values
+	 * @return an instance of {@link ExperimentTerminationCondition}
+	 */
+	public static ExperimentTerminationCondition createTerminationCondition(String name, Map<String, String> config) {
+		ExperimentTerminationCondition etc = new ExperimentTerminationCondition(name, "");
+		if (config != null) {
+			etc.getParametersValues().putAll(config);
+		}
+		return etc;
+	}
+
 
 	/**
 	 * Creates a new instance of the {@link ExperimentSeriesRun} entity. Sets

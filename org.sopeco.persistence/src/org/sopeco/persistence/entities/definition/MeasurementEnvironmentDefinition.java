@@ -1,15 +1,34 @@
 package org.sopeco.persistence.entities.definition;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Holds the experiment definition information provided by the measurement environment.
+ * 
+ * @author Dennis Westermann
+ *
+ */
 public class MeasurementEnvironmentDefinition implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	protected ParameterNamespace root;
+	
+	protected List<ExperimentTerminationCondition> supportedTerminationConditions = new ArrayList<ExperimentTerminationCondition>();
+
 
 	public MeasurementEnvironmentDefinition() {
 		super();
+	}
+	
+	public List<ExperimentTerminationCondition> getSupportedTerminationConditions() {
+		return supportedTerminationConditions;
+	}
+	
+	public void setSupportedTerminationConditions(List<ExperimentTerminationCondition> supportedTerminationConditions){
+		this.supportedTerminationConditions = supportedTerminationConditions;
 	}
 
 	public ParameterNamespace getRoot() {

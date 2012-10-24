@@ -3,10 +3,13 @@ package org.sopeco.engine.measurementenvironment;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
+import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.exceptions.ExperimentFailedException;
 import org.sopeco.persistence.util.ParameterCollection;
 
@@ -45,12 +48,14 @@ public interface IMeasurementEnvironmentController extends Remote {
 	 *            identifier of the acquirer holding the MEController
 	 * @param preparationPVs
 	 *            a collection of constant value assignments
+	 * @param terminationConditions
+	 *				a collection of termination conditions set by the scenario definition
 	 * @throws RemoteException
 	 *             throws this exception if remote communication fails or if
 	 *             acquirerID does not match the id of the actual holder of the
 	 *             MEController
 	 */
-	void prepareExperimentSeries(String acquirerID, ParameterCollection<ParameterValue<?>> preparationPVs)
+	void prepareExperimentSeries(String acquirerID, ParameterCollection<ParameterValue<?>> preparationPVs, Set<ExperimentTerminationCondition> terminationConditions)
 			throws RemoteException;
 
 	/**

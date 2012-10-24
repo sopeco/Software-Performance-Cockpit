@@ -7,9 +7,11 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.dataset.ParameterValue;
@@ -18,6 +20,7 @@ import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefiniti
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 import org.sopeco.persistence.entities.definition.ParameterRole;
+import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.exceptions.ExperimentFailedException;
 import org.sopeco.persistence.util.ParameterCollection;
 import org.sopeco.util.Tools;
@@ -31,10 +34,13 @@ import org.sopeco.util.Tools;
  */
 
 public abstract class AbstractMEController extends MEControllerResource {
+	private static final String TC_REPETITIONS_PARAM_NAME = "repetitions";
+	private static final String TC_NUMBER_OF_REPETITIONS_NAME = "Number of Repetitions";
 	/**
 	 * namespace used per default for the root namespace.
 	 */
 	private static final String DEFAULT_ROOT_NAMESPACE = "";
+	private static Integer DEFAULT_NUMBER_OF_REPS = 1;
 	/**
 	 * MEDefinition instance specified by the specific MEcontroller.
 	 */
@@ -51,6 +57,11 @@ public abstract class AbstractMEController extends MEControllerResource {
 	 */
 	private List<ParameterValueList<?>> resultSet;
 
+	/** 
+	 * The set of termination conditions that are configured by the user.
+	 */
+	protected Set<ExperimentTerminationCondition> configuredTerminationConditions;
+	
 	/**
 	 * This Constructor is responsible for creating the MEDefinition by
 	 * interpreting the attribute annotations.
@@ -59,8 +70,25 @@ public abstract class AbstractMEController extends MEControllerResource {
 		sopecoParameterFields = new HashMap<String, Field>();
 		meDefinition = createMEDefinition();
 		resultSet = new ArrayList<ParameterValueList<?>>();
+		configuredTerminationConditions = new HashSet<ExperimentTerminationCondition>();
 	}
 
+	/**
+	 * Adds a list of termination conditions to the ME Controller definition. 
+	 * NOTE: This method must only be called in the constructor of the ME Controller, 
+	 * given that the constructor of the super class ({@link AbstractMEController}) is called.
+	 *  
+	 * @param conditions an array of {@link ExperimentTerminationCondition}
+	 */
+	protected void addSupportedTerminationConditions(ExperimentTerminationCondition... conditions) {
+		if (meDefinition == null) 
+			throw new RuntimeException("Adding supported termination conditions must be called from the ME Controller constructor.");
+		
+		for (ExperimentTerminationCondition tc: conditions) {
+			meDefinition.getSupportedTerminationConditions().add(tc);
+		}
+	}
+	
 	@Override
 	public synchronized MeasurementEnvironmentDefinition getMEDefinition() throws RemoteException {
 		return meDefinition;
@@ -73,8 +101,9 @@ public abstract class AbstractMEController extends MEControllerResource {
 	}
 
 	@Override
-	protected void prepareExperimentSeries(ParameterCollection<ParameterValue<?>> preparationPVs) {
+	protected void prepareExperimentSeries(ParameterCollection<ParameterValue<?>> preparationPVs, Set<ExperimentTerminationCondition> terminationConditions) {
 		setParameterValues(preparationPVs);
+		configuredTerminationConditions = terminationConditions;
 		prepareExperimentSeries();
 	}
 
@@ -199,13 +228,13 @@ public abstract class AbstractMEController extends MEControllerResource {
 									+ newParameter.getFullName(), e);
 						}
 					}
-				}
+				} 
 
 			}
 			clazz = clazz.getSuperclass();
 		}
-		return meDef;
 
+		return meDef;
 	}
 
 	private String getParameterNamespace(Field field) {
@@ -409,4 +438,47 @@ public abstract class AbstractMEController extends MEControllerResource {
 	 */
 	protected abstract void finalizeExperimentSeries();
 
+	protected Set<ExperimentTerminationCondition> getConfiguredTerminationConditions() {
+		return configuredTerminationConditions;
+	}
+	
+	/**
+	 * If a number of repetitions termination condition is defined by the scenario, 
+	 * it returns the set value; otherwise returns the default value of {@value AbstractMEController#DEFAULT_NUMBER_OF_REPS}.
+	 * 
+	 * @return the set number of repetitions or its default value
+	 */
+	public Integer getNumberOfRepetitions() {
+		ExperimentTerminationCondition tc = findTerminationCondition(TC_NUMBER_OF_REPETITIONS_NAME);
+		if (tc != null) {
+			return Integer.valueOf(tc.getParamValue(TC_REPETITIONS_PARAM_NAME));
+		} else
+			return DEFAULT_NUMBER_OF_REPS;
+	}
+
+	/**
+	 * Finds a given termination condition by its name.
+	 * 
+	 * @param tcName name of the termination condition
+	 * @return the found TC, or null if it is not found.
+	 */
+	private ExperimentTerminationCondition findTerminationCondition(String tcName) {
+		for (ExperimentTerminationCondition tc: configuredTerminationConditions) {
+			if (tc.getName().equals(tcName)) 
+				return tc;
+		}
+		
+		return null;
+	}
+
+	/**
+	 * For convenience, provides a predefined definition of a Number of Repetitions termination condition.
+	 * 
+	 * @return a new definition of Number of Repetitions termination condition
+	 */
+	public static ExperimentTerminationCondition createNumberOfRepetitionsTC() {
+		final ExperimentTerminationCondition tc = new ExperimentTerminationCondition(TC_NUMBER_OF_REPETITIONS_NAME, "Sets the number of repetitions for every experiment.");
+		tc.addParameter(TC_REPETITIONS_PARAM_NAME, DEFAULT_NUMBER_OF_REPS.toString());
+		return tc;
+	}
 }
