@@ -51,6 +51,9 @@ public class DummyFactory {
 		builder.createMeasurementSpecification("DummyMeasurementSpecification");
 		
 		builder.createExperimentSeriesDefinition("Dummy0");
+		Map<String, String> terminationConfig = new HashMap<String, String>();
+		terminationConfig.put("repetitions", "4");
+		builder.createExperimentTerminationCondition("Number Of Repetitions", terminationConfig);
 		builder.createDynamicValueAssignment(AssignmentType.Experiment, "Linear Numeric Variation", dummyInputParam, Collections.EMPTY_MAP);
 		builder.createExplorationStrategy("Full Exploration Strategy", Collections.EMPTY_MAP);	
 		builder.createAnalysisConfiguration("MARS", Collections.EMPTY_MAP);
@@ -59,6 +62,7 @@ public class DummyFactory {
 		
 		builder.createExperimentSeriesDefinition("Dummy1");
 
+		builder.createExperimentTerminationCondition("Number Of Repetitions", terminationConfig);
 		builder.createDynamicValueAssignment(AssignmentType.Experiment, "Linear Numeric Variation", dummyInputParam, Collections.EMPTY_MAP);
 		builder.createExplorationStrategy("Full Exploration Strategy", Collections.EMPTY_MAP);	
 		builder.createAnalysisConfiguration("MARS", Collections.EMPTY_MAP);

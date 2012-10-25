@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.sopeco.engine.measurementenvironment.AbstractMEController;
 import org.sopeco.engine.measurementenvironment.InputParameter;
 import org.sopeco.engine.measurementenvironment.ObservationParameter;
+import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.util.Tools;
@@ -27,8 +28,6 @@ public class DummyMEController extends AbstractMEController {
 	private int initParameter;
 	@InputParameter(namespace = "prepare")
 	private int prepareParameter;
-	@InputParameter(namespace = "prepare")
-	private int repetitions = 1;
 	@InputParameter(namespace = "test.input")
 	private int inputParameter;
 	@InputParameter(namespace = "test.input")
@@ -77,7 +76,7 @@ public class DummyMEController extends AbstractMEController {
 		LOGGER.debug("Run experiment: ");
 		LOGGER.debug("Initialize measurement environment: inputParameter = {}", inputParameter);
 
-		for (int i = 0; i < repetitions; i++) {
+		for (int i = 0; i < getNumberOfRepetitions(); i++) {
 			LOGGER.debug("Running repetition {}.", i + 1);
 			observationParameterOne.addValue(createRandomValue(observationParameterOne.getParameter()));
 			observationParameterTwo.addValue(createRandomValue(observationParameterTwo.getParameter()));

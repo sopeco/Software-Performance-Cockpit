@@ -4,10 +4,13 @@
 	<measurementSpecification name="unitTestSpec">
 
 		<experimentSeries name="unitTestSeries">
-		
+			<terminationCondition name="Number of Repetitions">
+			<config key="repetitions" value="2"/>
+			</terminationCondition>
+			
+			
 			<experimentSeriesPreparation>
 				<constantAssignment value="2" parameter="prepare.prepareParameter" />
-				<constantAssignment value="2" parameter="prepare.repetitions" />
 			</experimentSeriesPreparation>
 			
 			
@@ -27,5 +30,6 @@
 
 		<initializationAssignments value="1" parameter="init.initParameter" />
 	</measurementSpecification>
+
 
 </scenario>
