@@ -70,7 +70,7 @@ public class XExperimentSeriesDefinition {
 
     @XmlElement(required = true)
     protected XExplorationStrategy explorationStrategy;
-    protected List<XExtensibleElement> terminationConditions;
+    protected XExperimentTerminationCondition terminationConditions;
     protected XExperimentSeriesDefinition.ExperimentSeriesPreparation experimentSeriesPreparation;
     @XmlElement(required = true)
     protected XExperimentSeriesDefinition.ExperimentSeriesExecution experimentSeriesExecution;
@@ -101,20 +101,7 @@ public class XExperimentSeriesDefinition {
         this.explorationStrategy = value;
     }
 
-    /**
-     * Gets the value of the terminationCondition property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XExtensibleElement }
-     *     
-     */
-    public List<XExtensibleElement> getTerminationConditions() {
-    	if (terminationConditions == null) {
-    		terminationConditions = new ArrayList<XExtensibleElement>();
-    	}
-        return terminationConditions;
-    }
+
 
     /**
      * Gets the value of the experimentSeriesPreparation property.
@@ -189,7 +176,16 @@ public class XExperimentSeriesDefinition {
     }
 
 
-    /**
+    public XExperimentTerminationCondition getTerminationCondition() {
+		return terminationConditions;
+	}
+
+	public void setTerminationCondition(XExperimentTerminationCondition terminationCondition) {
+		this.terminationConditions = terminationCondition;
+	}
+
+
+	/**
      * <p>Java class for anonymous complex type.
      * 
      * <p>The following schema fragment specifies the expected content contained within this class.

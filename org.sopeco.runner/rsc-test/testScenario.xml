@@ -4,16 +4,19 @@
 	<measurementSpecification name="unitTestSpec">
 
 		<experimentSeries name="unitTestSeries">
-			<terminationCondition name="Number of Repetitions">
-			<config key="repetitions" value="2"/>
-			</terminationCondition>
-			
-			
+
+
+			<terminationConditions>
+				<condition name="Number of Repetitions">
+					<config key="repetitions" value="2" />
+				</condition>
+			</terminationConditions>
+
 			<experimentSeriesPreparation>
 				<constantAssignment value="2" parameter="prepare.prepareParameter" />
 			</experimentSeriesPreparation>
-			
-			
+
+
 			<experimentSeriesExecution>
 				<constantAssignment value="3" parameter="test.input.inputParameter" />
 
@@ -23,8 +26,8 @@
 					<config key="step" value="1" />
 				</dynamicAssignment>
 			</experimentSeriesExecution>
-			
-			<explorationStrategy name="Full Exploration Strategy"/>
+
+			<explorationStrategy name="Full Exploration Strategy" />
 
 		</experimentSeries>
 

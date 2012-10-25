@@ -28,12 +28,12 @@ import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ConstantValueAssignment;
 import org.sopeco.persistence.entities.definition.DynamicValueAssignment;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
+import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.ExplorationStrategy;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
-import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 
 /**
  * The {@link ScenarioDefinitionFileReader} is responsible for reading and
@@ -73,68 +73,104 @@ public class ScenarioDefinitionFileReader {
 			JAXBContext jc = JAXBContext.newInstance(Configuration.getSessionUnrelatedSingleton().getPropertyAsStr(
 					IConfiguration.CONF_SCENARIO_DEFINITION_PACKAGE));
 			Unmarshaller u = jc.createUnmarshaller();
-			
-			
+
 			sd = ((JAXBElement<XScenarioDefinition>) u.unmarshal(new FileInputStream(pathToFile))).getValue();
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException("Could not find scenario definition xml file.", e);
 		} catch (JAXBException e) {
 			throw new RuntimeException(e);
 		}
-		return convert(sd);
+		ScenarioDefinition scenarioDefinition = convertScenarioDefinition(sd);
+		scenarioDefinition.setMeasurementEnvironmentDefinition(meDefinition);
+		return scenarioDefinition;
 
 	}
 
-	private ScenarioDefinition convert(XScenarioDefinition xScenDef) {
+	/**
+	 * Converts the xml representation of an scneario definition to a
+	 * {@link ScenarioDefinition} object.
+	 * 
+	 * @param xScenDef
+	 *            xml representation of an scneario definition
+	 * @return {@link ScenarioDefinition} object
+	 */
+	private ScenarioDefinition convertScenarioDefinition(XScenarioDefinition xScenDef) {
 		ScenarioDefinition scenarioDefinition = EntityFactory.createScenarioDefinition(xScenDef.getName());
 
 		for (XMeasurementSpecification xMesSpec : xScenDef.getMeasurementSpecification()) {
-			scenarioDefinition.getMeasurementSpecifications().add(convert(xMesSpec));
+			scenarioDefinition.getMeasurementSpecifications().add(convertMeasurementSpecification(xMesSpec));
 		}
 
 		return scenarioDefinition;
 	}
 
-	private MeasurementSpecification convert(XMeasurementSpecification xMesSpec) {
+	/**
+	 * Converts the xml representation of an measurement specification to a
+	 * {@link MeasurementSpecification} object.
+	 * 
+	 * @param xMesSpec
+	 *            xml representation of an measurement specification
+	 * @return {@link MeasurementSpecification} objec
+	 */
+	private MeasurementSpecification convertMeasurementSpecification(XMeasurementSpecification xMesSpec) {
 		MeasurementSpecification mesSpec = EntityFactory.createMeasurementSpecification(xMesSpec.getName());
 
 		for (XConstantValueAssignment xCVA : xMesSpec.getInitializationAssignments()) {
-			mesSpec.getInitializationAssignemts().add(convert(xCVA));
+			mesSpec.getInitializationAssignemts().add(convertConstantValueAssignment(xCVA));
 		}
 
 		for (XExperimentSeriesDefinition xSeries : xMesSpec.getExperimentSeries()) {
-			mesSpec.getExperimentSeriesDefinitions().add(convert(xSeries));
+			mesSpec.getExperimentSeriesDefinitions().add(convertExperimentSeriesDefinition(xSeries));
 		}
 
 		return mesSpec;
 	}
 
-	private ExperimentSeriesDefinition convert(XExperimentSeriesDefinition xSeries) {
+	/**
+	 * Converts the xml representation of an experiment series definition to a
+	 * {@link ExperimentSeriesDefinition} object.
+	 * 
+	 * @param xSeries
+	 *            xml representation of an experiment series definition
+	 * @return {@link ExperimentSeriesDefinition} object
+	 */
+	private ExperimentSeriesDefinition convertExperimentSeriesDefinition(XExperimentSeriesDefinition xSeries) {
 		ExperimentSeriesDefinition esd = EntityFactory.createExperimentSeriesDefinition(xSeries.getName());
-		for (XExtensibleElement ee: xSeries.getTerminationConditions()) {
-			ExperimentTerminationCondition etc = convertTerminationCondition(ee);
-			esd.addTerminationCondition(etc);
+		if (xSeries.getTerminationCondition() != null && xSeries.getTerminationCondition().getConditions() != null) {
+			for (XExtensibleElement ee : xSeries.getTerminationCondition().getConditions()) {
+				ExperimentTerminationCondition etc = convertTerminationCondition(ee);
+				esd.addTerminationCondition(etc);
+			}
 		}
+
 		esd.setExplorationStrategy(convertExplorationStrategy(xSeries.getExplorationStrategy()));
 
 		if (xSeries.getExperimentSeriesPreparation() != null) {
 			for (XConstantValueAssignment xCVA : xSeries.getExperimentSeriesPreparation().getConstantAssignment()) {
-				esd.getPreperationAssignments().add(convert(xCVA));
+				esd.getPreperationAssignments().add(convertConstantValueAssignment(xCVA));
 			}
 		}
 		if (xSeries.getExperimentSeriesExecution() != null) {
 			for (XConstantValueAssignment xCVA : xSeries.getExperimentSeriesExecution().getConstantAssignment()) {
-				esd.getExperimentAssignments().add(convert(xCVA));
+				esd.getExperimentAssignments().add(convertConstantValueAssignment(xCVA));
 			}
 
 			for (XDynamicValueAssignment xDVA : xSeries.getExperimentSeriesExecution().getDynamicAssignment()) {
-				esd.getExperimentAssignments().add(convert(xDVA));
+				esd.getExperimentAssignments().add(convertDynamicValueAssignment(xDVA));
 			}
 		}
 
 		return esd;
 	}
 
+	/**
+	 * Converts the xml representation of a termination condition to a
+	 * {@link ExperimentTerminationCondition} object.
+	 * 
+	 * @param xTerminationCondition
+	 *            xml representation of a termination condition
+	 * @return {@link ExperimentTerminationCondition} object
+	 */
 	private ExperimentTerminationCondition convertTerminationCondition(XExtensibleElement xTerminationCondition) {
 		Map<String, String> config = new HashMap<String, String>();
 		for (XConfigurationNode xConfigNode : xTerminationCondition.getConfig()) {
@@ -143,6 +179,14 @@ public class ScenarioDefinitionFileReader {
 		return EntityFactory.createTerminationCondition(xTerminationCondition.getName(), config);
 	}
 
+	/**
+	 * Converts the xml representation of an exploration strategy to a
+	 * {@link ExplorationStrategy} object.
+	 * 
+	 * @param xExplorationStrategy
+	 *            xml representation of an exploration strategy
+	 * @return {@link ExplorationStrategy} object
+	 */
 	private ExplorationStrategy convertExplorationStrategy(XExplorationStrategy xExplorationStrategy) {
 		Map<String, String> config = new HashMap<String, String>();
 		for (XConfigurationNode xConfigNode : xExplorationStrategy.getConfig()) {
@@ -152,13 +196,21 @@ public class ScenarioDefinitionFileReader {
 				config);
 
 		for (XAnalysisConfiguration xAnalysisConfig : xExplorationStrategy.getAnalysisConfig()) {
-			explStrategy.getAnalysisConfigurations().add(convert(xAnalysisConfig));
+			explStrategy.getAnalysisConfigurations().add(convertAnalysisConfiguration(xAnalysisConfig));
 		}
 
 		return explStrategy;
 	}
 
-	private AnalysisConfiguration convert(XAnalysisConfiguration xAnalysisConfig) {
+	/**
+	 * Converts the xml representation of an analysis strategy to a
+	 * {@link AnalysisConfiguration} object.
+	 * 
+	 * @param xAnalysisConfig
+	 *            xml representation of an analysis strategy
+	 * @return {@link AnalysisConfiguration} object
+	 */
+	private AnalysisConfiguration convertAnalysisConfiguration(XAnalysisConfiguration xAnalysisConfig) {
 
 		Map<String, String> xConfig = new HashMap<String, String>();
 		for (XConfigurationNode xNode : xAnalysisConfig.getConfig()) {
@@ -180,12 +232,28 @@ public class ScenarioDefinitionFileReader {
 		return analysisConfiguration;
 	}
 
-	private ConstantValueAssignment convert(XConstantValueAssignment xCVA) {
+	/**
+	 * Converts the xml representation of a constant value assignment strategy
+	 * to a {@link ConstantValueAssignment} object.
+	 * 
+	 * @param xCVA
+	 *            xml representation of a constant value assignment strategy
+	 * @return {@link ConstantValueAssignment} object
+	 */
+	private ConstantValueAssignment convertConstantValueAssignment(XConstantValueAssignment xCVA) {
 		ParameterDefinition parameter = findParameter(xCVA.getParameter());
 		return EntityFactory.createConstantValueAssignment(parameter, xCVA.getValue());
 	}
 
-	private DynamicValueAssignment convert(XDynamicValueAssignment xDVA) {
+	/**
+	 * Converts the xml representation of a dynamic value assignment strategy to
+	 * a {@link DynamicValueAssignment} object.
+	 * 
+	 * @param xDVA
+	 *            xml representation of a dynamic value assignment strategy
+	 * @return {@link DynamicValueAssignment} object
+	 */
+	private DynamicValueAssignment convertDynamicValueAssignment(XDynamicValueAssignment xDVA) {
 		ParameterDefinition parameter = findParameter(xDVA.getParameter());
 		Map<String, String> config = new HashMap<String, String>();
 		for (XConfigurationNode xConfigNode : xDVA.getConfig()) {

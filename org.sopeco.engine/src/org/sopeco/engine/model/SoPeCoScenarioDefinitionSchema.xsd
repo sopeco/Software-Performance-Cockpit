@@ -32,8 +32,8 @@
 			<element name="explorationStrategy" type="tns:ExplorationStrategy"
 				maxOccurs="1" minOccurs="1">
 			</element>
-			<element name="terminationCondition" type="tns:ExtensibleElement"
-				maxOccurs="unbounded" minOccurs="0">
+			<element name="terminationConditions" type="tns:ExperimentTerminationCondition" maxOccurs="1"
+				minOccurs="0">
 			</element>
 			<element name="experimentSeriesPreparation" maxOccurs="1"
 				minOccurs="0">
@@ -123,4 +123,10 @@
 	</complexType>
 
 
+
+	<complexType name="ExperimentTerminationCondition">
+		<sequence>
+			<element name="condition" type="tns:ExtensibleElement" maxOccurs="unbounded" minOccurs="0"></element>
+		</sequence>
+	</complexType>
 </schema>
