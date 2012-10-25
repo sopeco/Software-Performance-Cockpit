@@ -16,11 +16,11 @@ import java.util.Set;
 import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
+import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 import org.sopeco.persistence.entities.definition.ParameterRole;
-import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.exceptions.ExperimentFailedException;
 import org.sopeco.persistence.util.ParameterCollection;
 import org.sopeco.util.Tools;
@@ -34,13 +34,10 @@ import org.sopeco.util.Tools;
  */
 
 public abstract class AbstractMEController extends MEControllerResource {
-	private static final String TC_REPETITIONS_PARAM_NAME = "repetitions";
-	private static final String TC_NUMBER_OF_REPETITIONS_NAME = "Number of Repetitions";
 	/**
 	 * namespace used per default for the root namespace.
 	 */
 	private static final String DEFAULT_ROOT_NAMESPACE = "";
-	private static Integer DEFAULT_NUMBER_OF_REPS = 1;
 	/**
 	 * MEDefinition instance specified by the specific MEcontroller.
 	 */
@@ -447,38 +444,11 @@ public abstract class AbstractMEController extends MEControllerResource {
 	 * it returns the set value; otherwise returns the default value of {@value AbstractMEController#DEFAULT_NUMBER_OF_REPS}.
 	 * 
 	 * @return the set number of repetitions or its default value
+	 * 
+	 * @see ExperimentTerminationCondition#getNumberOfRepetitions(Collection)
 	 */
 	public Integer getNumberOfRepetitions() {
-		ExperimentTerminationCondition tc = findTerminationCondition(TC_NUMBER_OF_REPETITIONS_NAME);
-		if (tc != null) {
-			return Integer.valueOf(tc.getParamValue(TC_REPETITIONS_PARAM_NAME));
-		} else
-			return DEFAULT_NUMBER_OF_REPS;
+		return ExperimentTerminationCondition.getNumberOfRepetitions(configuredTerminationConditions);
 	}
 
-	/**
-	 * Finds a given termination condition by its name.
-	 * 
-	 * @param tcName name of the termination condition
-	 * @return the found TC, or null if it is not found.
-	 */
-	private ExperimentTerminationCondition findTerminationCondition(String tcName) {
-		for (ExperimentTerminationCondition tc: configuredTerminationConditions) {
-			if (tc.getName().equals(tcName)) 
-				return tc;
-		}
-		
-		return null;
-	}
-
-	/**
-	 * For convenience, provides a predefined definition of a Number of Repetitions termination condition.
-	 * 
-	 * @return a new definition of Number of Repetitions termination condition
-	 */
-	public static ExperimentTerminationCondition createNumberOfRepetitionsTC() {
-		final ExperimentTerminationCondition tc = new ExperimentTerminationCondition(TC_NUMBER_OF_REPETITIONS_NAME, "Sets the number of repetitions for every experiment.");
-		tc.addParameter(TC_REPETITIONS_PARAM_NAME, DEFAULT_NUMBER_OF_REPS.toString());
-		return tc;
-	}
 }
