@@ -32,14 +32,14 @@
 
 	<repositories>
 		<repository>
-			<id>LPE Repository</id>
-			<name>LPE Repository-releases</name>
-			<url>http://deqkal276.qkal.sap.corp:8080/artifactory/ext-release-local</url>
+			<id>LPE Releases</id>
+			<name>LPE-releases</name>
+			<url>http://deqkal276.qkal.sap.corp:8080/artifactory/sopeco-release-local</url>
 		</repository>
 
 		<repository>
-			<id>LPE</id>
-			<name>LPE-releases</name>
+			<id>LPE Snapshots</id>
+			<name>LPE-snapshots</name>
 			<url>http://deqkal276.qkal.sap.corp:8080/artifactory/sopeco-snapshot-local</url>
 		</repository>
 
@@ -47,6 +47,12 @@
 			<id>remote-repos</id>
 			<name>Remote Repositories</name>
 			<url>http://deqkal276.qkal.sap.corp:8080/artifactory/remote-repos</url>
+		</repository>
+
+		<repository>
+			<id>LPE Repository</id>
+			<name>LPE Repository-releases</name>
+			<url>http://deqkal276.qkal.sap.corp:8080/artifactory/ext-release-local</url>
 		</repository>
 	</repositories>
 
