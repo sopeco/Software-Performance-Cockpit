@@ -16,7 +16,7 @@ public class ExperimentTerminationCondition implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 
-	public static final String TC_NUMBER_OF_REPETITIONS_NAME = "Number of Repetitions";
+	public static final String TC_NUMBER_OF_REPETITIONS_NAME = "Number Of Repetitions";
 	public static final String PARAM_REPETITIONS_NAME = "repetitions";
 	public static final Integer DEFAULT_NUMBER_OF_REPS = 1;
 
@@ -130,7 +130,7 @@ public class ExperimentTerminationCondition implements Serializable{
 	 */
 	public static ExperimentTerminationCondition findTerminationCondition(String tcName, Collection<ExperimentTerminationCondition> terminationConditions) {
 		for (ExperimentTerminationCondition tc: terminationConditions) {
-			if (tc.getName().equals(tcName)) 
+			if (tc.getName().equalsIgnoreCase(tcName)) 
 				return tc;
 		}
 		
