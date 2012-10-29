@@ -44,9 +44,16 @@ public abstract class AbstractMEController extends MEControllerResource {
 	private final MeasurementEnvironmentDefinition meDefinition;
 	/**
 	 * Mapping from full qualified parameter names to fields (attributes) of the
-	 * concrete MEController
+	 * concrete MEController (all fields including those not explicitely set for this experiment run)
 	 */
 	private final Map<String, Field> sopecoParameterFields;
+	
+	/**
+	 * Mapping from full qualified parameter names to fields (attributes) of the
+	 * concrete MEController (only those fields that have been explicitly set for this run by the user)
+	 */
+	private final Map<String, Field> currentRunSopecoParameterFields;
+
 
 	/**
 	 * A set of parameter value lists containing all observation values which
@@ -65,6 +72,7 @@ public abstract class AbstractMEController extends MEControllerResource {
 	 */
 	public AbstractMEController() {
 		sopecoParameterFields = new HashMap<String, Field>();
+		currentRunSopecoParameterFields = new HashMap<String, Field>();
 		meDefinition = createMEDefinition();
 		resultSet = new ArrayList<ParameterValueList<?>>();
 		configuredTerminationConditions = new HashSet<ExperimentTerminationCondition>();
@@ -146,6 +154,25 @@ public abstract class AbstractMEController extends MEControllerResource {
 	}
 
 	/**
+	 * Returns the values for those input parameters that have been explicitly set by the user for this run..
+	 * 
+	 * @return values for all input parameters
+	 */
+	protected Map<String, Object> getCurrentRunInputValues() {
+		Map<String, Object> result = new HashMap<String, Object>();
+		try {
+			for (Entry<String, Field> entry : currentRunSopecoParameterFields.entrySet()) {
+				if (entry.getValue().isAnnotationPresent(InputParameter.class)) {
+					result.put(entry.getKey(), entry.getValue().get(this));
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to read value from input parameter!");
+		}
+		return result;
+	}
+	
+	/**
 	 * Returns the values for all input parameters within the given namespace.
 	 * 
 	 * @param namespace
@@ -175,6 +202,8 @@ public abstract class AbstractMEController extends MEControllerResource {
 	 *            set of input parameter values
 	 */
 	private void setParameterValues(ParameterCollection<ParameterValue<?>> parameterValues) {
+		
+		currentRunSopecoParameterFields.clear();
 		for (ParameterValue pv : parameterValues) {
 			ParameterDefinition parameter = pv.getParameter();
 			Field parameterField = sopecoParameterFields.get(parameter.getFullName());
@@ -187,6 +216,8 @@ public abstract class AbstractMEController extends MEControllerResource {
 			} catch (Exception e) {
 				throw new RuntimeException("Failed setting parameter value for Parameter " + parameter.getFullName(), e);
 			}
+			
+			currentRunSopecoParameterFields.put(parameter.getFullName(), parameterField);
 		}
 
 	}
