@@ -13,7 +13,7 @@ import org.sopeco.config.IConfiguration;
 import org.sopeco.config.exception.ConfigurationException;
 import org.sopeco.engine.EngineFactory;
 import org.sopeco.engine.IEngine;
-import org.sopeco.engine.model.ScenarioDefinitionFileReader;
+import org.sopeco.engine.model.ScenarioDefinitionReader;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
@@ -125,8 +125,8 @@ public class SoPeCoRunner implements Runnable {
 			} catch (RemoteException e) {
 				throw new RuntimeException(e);
 			}
-			ScenarioDefinitionFileReader scenarioReader = new ScenarioDefinitionFileReader(meDefinition);
-			scenario = scenarioReader.read(fileName);
+			ScenarioDefinitionReader scenarioReader = new ScenarioDefinitionReader(meDefinition);
+			scenario = scenarioReader.readFromFile(fileName);
 			logger.debug("Scenario definition file loaded.");
 
 		} else {

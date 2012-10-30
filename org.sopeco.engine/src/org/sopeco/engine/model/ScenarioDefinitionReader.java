@@ -1,7 +1,9 @@
 package org.sopeco.engine.model;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,26 +38,64 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
 /**
- * The {@link ScenarioDefinitionFileReader} is responsible for reading and
- * parsing an XML-File representation of the scenario definition.
+ * The {@link ScenarioDefinitionReader} is responsible for reading and parsing
+ * an XML-File representation of the scenario definition.
  * 
  * @author Alexander Wert
  * 
  */
-public class ScenarioDefinitionFileReader {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioDefinitionFileReader.class);
+public class ScenarioDefinitionReader {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioDefinitionReader.class);
 	private MeasurementEnvironmentDefinition meDefinition;
 
 	/**
-	 * Constructor of the {@link ScenarioDefinitionFileReader}.
+	 * Constructor of the {@link ScenarioDefinitionReader}.
 	 * 
 	 * @param meDefinition
 	 *            The passed measurement environment definition instance will be
 	 *            used for resolution of parameter names to
 	 *            {@link ParameterDefinition} instances.
 	 */
-	public ScenarioDefinitionFileReader(MeasurementEnvironmentDefinition meDefinition) {
+	public ScenarioDefinitionReader(MeasurementEnvironmentDefinition meDefinition) {
 		this.meDefinition = meDefinition;
+	}
+
+	/**
+	 * Reads from specified {@link reader} and returns a complete
+	 * {@link ScenarioDefinition} instance.
+	 * 
+	 * @param reader
+	 *            reader to read the xml representation of the scenario
+	 *            definition from
+	 * @return Returns a {@link ScenarioDefinition} instance.
+	 */
+	public ScenarioDefinition readFromReader(Reader reader) {
+		XScenarioDefinition sd = null;
+		try {
+			JAXBContext jc = JAXBContext.newInstance(Configuration.getSessionUnrelatedSingleton().getPropertyAsStr(
+					IConfiguration.CONF_SCENARIO_DEFINITION_PACKAGE));
+			Unmarshaller u = jc.createUnmarshaller();
+
+			sd = ((JAXBElement<XScenarioDefinition>) u.unmarshal(reader)).getValue();
+		} catch (JAXBException e) {
+			throw new RuntimeException(e);
+		}
+		ScenarioDefinition scenarioDefinition = convertScenarioDefinition(sd);
+		scenarioDefinition.setMeasurementEnvironmentDefinition(meDefinition);
+		return scenarioDefinition;
+	}
+
+	/**
+	 * Reads the string specified by the given {@link xmlString} parameter and
+	 * returns a complete {@link ScenarioDefinition} instance.
+	 * 
+	 * @param xmlString
+	 *            XML string representation of the scenario definition
+	 * @return Returns a {@link ScenarioDefinition} instance.
+	 */
+	public ScenarioDefinition readFromString(String xmlString) {
+		StringReader stringReader = new StringReader(xmlString);
+		return readFromReader(stringReader);
 	}
 
 	/**
@@ -66,24 +106,14 @@ public class ScenarioDefinitionFileReader {
 	 *            absolute path to the XML file
 	 * @return Returns a {@link ScenarioDefinition} instance.
 	 */
-	public ScenarioDefinition read(String pathToFile) {
+	public ScenarioDefinition readFromFile(String pathToFile) {
 		LOGGER.debug("Reading scenario definition from file: {}", pathToFile);
-		XScenarioDefinition sd = null;
 		try {
-			JAXBContext jc = JAXBContext.newInstance(Configuration.getSessionUnrelatedSingleton().getPropertyAsStr(
-					IConfiguration.CONF_SCENARIO_DEFINITION_PACKAGE));
-			Unmarshaller u = jc.createUnmarshaller();
-
-			sd = ((JAXBElement<XScenarioDefinition>) u.unmarshal(new FileInputStream(pathToFile))).getValue();
+			FileReader fileReader = new FileReader(pathToFile);
+			return readFromReader(fileReader);
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException("Could not find scenario definition xml file.", e);
-		} catch (JAXBException e) {
-			throw new RuntimeException(e);
 		}
-		ScenarioDefinition scenarioDefinition = convertScenarioDefinition(sd);
-		scenarioDefinition.setMeasurementEnvironmentDefinition(meDefinition);
-		return scenarioDefinition;
-
 	}
 
 	/**

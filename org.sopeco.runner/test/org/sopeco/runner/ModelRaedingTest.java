@@ -9,8 +9,8 @@ import java.net.URL;
 import java.rmi.RemoteException;
 
 import org.junit.Test;
-import org.sopeco.engine.model.ScenarioDefinitionFileReader;
-import org.sopeco.engine.model.ScenarioDefinitionFileWriter;
+import org.sopeco.engine.model.ScenarioDefinitionReader;
+import org.sopeco.engine.model.ScenarioDefinitionWriter;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
@@ -40,10 +40,10 @@ public class ModelRaedingTest {
 			fail(e.getMessage());
 		}
 
-		ScenarioDefinitionFileReader reader = new ScenarioDefinitionFileReader(meDefinition);
+		ScenarioDefinitionReader reader = new ScenarioDefinitionReader(meDefinition);
 
 		URL url = this.getClass().getResource("/testScenario.xml");
-		ScenarioDefinition scenarioDefinition = reader.read(url.getFile());
+		ScenarioDefinition scenarioDefinition = reader.readFromFile(url.getFile());
 
 		assertEquals(scenarioDefinition.getScenarioName(), SCENARIO_NAME);
 		assertEquals(scenarioDefinition.getMeasurementSpecifications().size(), 1);
@@ -80,13 +80,13 @@ public class ModelRaedingTest {
 		ScenarioDefinition scenario = DummyModelBuilder.getReferenceScenariodefinition();
 		MeasurementEnvironmentDefinition meDefinition = scenario.getMeasurementEnvironmentDefinition();
 
-		ScenarioDefinitionFileWriter writer = new ScenarioDefinitionFileWriter();
+		ScenarioDefinitionWriter writer = new ScenarioDefinitionWriter();
 
 		String filePath = tempDir + (tempDir.endsWith("/") ? "" : "/") + "tempScenarioDefinition.xml";
-		writer.writeScenarioDefinition(scenario, filePath);
+		writer.writeToFile(scenario, filePath);
 
-		ScenarioDefinitionFileReader reader = new ScenarioDefinitionFileReader(meDefinition);
-		ScenarioDefinition loadedScenario = reader.read(filePath);
+		ScenarioDefinitionReader reader = new ScenarioDefinitionReader(meDefinition);
+		ScenarioDefinition loadedScenario = reader.readFromFile(filePath);
 		assertEquals(scenario, loadedScenario);
 
 	}

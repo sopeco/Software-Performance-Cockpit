@@ -1,6 +1,9 @@
 package org.sopeco.engine.model;
 
 import java.io.FileWriter;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,14 +40,56 @@ import org.sopeco.persistence.entities.definition.ParameterValueAssignment;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
 /**
- * The {@link ScenarioDefinitionFileWriter} is responsible for writing an XML
+ * The {@link ScenarioDefinitionWriter} is responsible for writing an XML
  * representation of a scenario definition to a file..
  * 
  * @author Alexander Wert
  * 
  */
-public class ScenarioDefinitionFileWriter {
-	private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioDefinitionFileReader.class);
+public class ScenarioDefinitionWriter {
+	private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioDefinitionReader.class);
+
+	/**
+	 * Converts the given {@link ScenarioDefinition} to an XML string
+	 * representation.
+	 * 
+	 * @param scenarioDefinition
+	 *            scenario definition to be stored
+	 * @return Returns an XML string representation of the scenario definition
+	 */
+	public String convertToXMLString(ScenarioDefinition scenarioDefinition) {
+		StringWriter writer = new StringWriter();
+		writeToWriter(scenarioDefinition, writer);
+		return writer.toString();
+	}
+
+	/**
+	 * Converts the given {@link ScenarioDefinition} to an XML representation
+	 * and writes the XML string to the writer specified by the parameter
+	 * {@link writer}.
+	 * 
+	 * @param scenarioDefinition
+	 *            scenario definition to be stored
+	 * @param writer
+	 *            writer where to write the XMl representation
+	 */
+	public void writeToWriter(ScenarioDefinition scenarioDefinition, Writer writer) {
+		XScenarioDefinition xScenarioDefinition = convertScenarioDefinition(scenarioDefinition);
+
+		JAXBContext jc;
+		try {
+			jc = JAXBContext.newInstance(Configuration.getSessionUnrelatedSingleton().getPropertyAsStr(
+					IConfiguration.CONF_SCENARIO_DEFINITION_PACKAGE));
+			Marshaller m = jc.createMarshaller();
+			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+
+			JAXBElement<XScenarioDefinition> jaxbElement = new JAXBElement<XScenarioDefinition>(
+					ObjectFactory.SCENARIO_QNAME, XScenarioDefinition.class, xScenarioDefinition);
+			m.marshal(jaxbElement, writer);
+		} catch (Exception e) {
+			throw new RuntimeException("Failed writing scenario definition to the writer!", e);
+		}
+	}
 
 	/**
 	 * Converts the given {@link ScenarioDefinition} to an XML representation
@@ -57,23 +102,14 @@ public class ScenarioDefinitionFileWriter {
 	 *            absolute path to the file in which the scenario definition
 	 *            should be stored
 	 */
-	public void writeScenarioDefinition(ScenarioDefinition scenarioDefinition, String pathToFile) {
+	public void writeToFile(ScenarioDefinition scenarioDefinition, String pathToFile) {
 		LOGGER.debug("Writing scenario definition {} to file: {}", scenarioDefinition.getScenarioName(), pathToFile);
-
-		XScenarioDefinition xScenarioDefinition = convertScenarioDefinition(scenarioDefinition);
-
-		JAXBContext jc;
+		FileWriter fileWriter;
 		try {
-			jc = JAXBContext.newInstance(Configuration.getSessionUnrelatedSingleton().getPropertyAsStr(
-					IConfiguration.CONF_SCENARIO_DEFINITION_PACKAGE));
-			Marshaller m = jc.createMarshaller();
-			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-			FileWriter fileWriter = new FileWriter(pathToFile);
-			JAXBElement<XScenarioDefinition> jaxbElement = new JAXBElement<XScenarioDefinition>(
-					ObjectFactory.SCENARIO_QNAME, XScenarioDefinition.class, xScenarioDefinition);
-			m.marshal(jaxbElement, fileWriter);
-		} catch (Exception e) {
-			throw new RuntimeException("Failed writing scenario definition to file!", e);
+			fileWriter = new FileWriter(pathToFile);
+			writeToWriter(scenarioDefinition, fileWriter);
+		} catch (IOException e) {
+			throw new RuntimeException("Failed writing scenario definition to the writer!", e);
 		}
 
 	}
