@@ -16,12 +16,15 @@
       <property name="scope" value="package"/>
     </module>
     <module name="JavadocVariable">
+      <property name="excludeScope" value="private"/>
       <property name="scope" value="package"/>
     </module>
     <module name="JavadocStyle">
       <property name="scope" value="package"/>
     </module>
-    <module name="ConstantName"/>
+    <module name="ConstantName">
+      <property name="applyToPrivate" value="false"/>
+    </module>
     <module name="LocalFinalVariableName"/>
     <module name="LocalVariableName"/>
     <module name="MemberName"/>
@@ -58,7 +61,6 @@
       <property name="severity" value="ignore"/>
       <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
     </module>
-    <module name="DoubleCheckedLocking"/>
     <module name="EmptyStatement"/>
     <module name="EqualsHashCode"/>
     <module name="HiddenField">
@@ -81,7 +83,10 @@
     <module name="FinalClass"/>
     <module name="HideUtilityClassConstructor"/>
     <module name="InterfaceIsType"/>
-    <module name="VisibilityModifier"/>
+    <module name="VisibilityModifier">
+      <property name="severity" value="ignore"/>
+      <metadata name="net.sf.eclipsecs.core.lastEnabledSeverity" value="inherit"/>
+    </module>
     <module name="ArrayTypeStyle"/>
     <module name="FinalParameters">
       <property name="severity" value="ignore"/>
