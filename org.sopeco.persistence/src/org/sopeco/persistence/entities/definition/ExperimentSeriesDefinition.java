@@ -12,13 +12,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-
 /**
  * @author Dennis Westermann
- *
+ * 
  */
 public class ExperimentSeriesDefinition implements Serializable {
-	
+
 	private static final long serialVersionUID = 1L;
 
 	protected ExplorationStrategy explorationStrategy;
@@ -26,11 +25,11 @@ public class ExperimentSeriesDefinition implements Serializable {
 	protected List<ParameterValueAssignment> experimentAssignments;
 
 	protected List<ConstantValueAssignment> preperationAssignments;
-	
+
 	protected Set<ExperimentTerminationCondition> terminationConditions = new HashSet<ExperimentTerminationCondition>();
 
 	protected String name = null;
-	
+
 	private long version = 0;
 
 	public ExperimentSeriesDefinition() {
@@ -40,7 +39,7 @@ public class ExperimentSeriesDefinition implements Serializable {
 	public Set<ExperimentTerminationCondition> getTerminationConditions() {
 		return terminationConditions;
 	}
-	
+
 	public ExplorationStrategy getExplorationStrategy() {
 		return explorationStrategy;
 	}
@@ -71,15 +70,27 @@ public class ExperimentSeriesDefinition implements Serializable {
 		name = newName;
 	}
 
-	
+	public long getVersion() {
+		return version;
+	}
+
+	public void setVersion(long version) {
+		this.version = version;
+	}
+
+	public void addTerminationCondition(ExperimentTerminationCondition tc) {
+		terminationConditions.add(tc);
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((experimentAssignments == null|| experimentAssignments.isEmpty()) ? 0 : experimentAssignments.hashCode());
+		result = prime * result + ((experimentAssignments == null) ? 0 : experimentAssignments.hashCode());
 		result = prime * result + ((explorationStrategy == null) ? 0 : explorationStrategy.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((preperationAssignments == null|| preperationAssignments.isEmpty()) ? 0 : preperationAssignments.hashCode());
+		result = prime * result + ((preperationAssignments == null) ? 0 : preperationAssignments.hashCode());
+		result = prime * result + ((terminationConditions == null) ? 0 : terminationConditions.hashCode());
 		return result;
 	}
 
@@ -92,40 +103,32 @@ public class ExperimentSeriesDefinition implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		ExperimentSeriesDefinition other = (ExperimentSeriesDefinition) obj;
-		if (name == null) {
-			if (other.name != null)
+		if (getExperimentAssignments() == null) {
+			if (other.getExperimentAssignments() != null)
 				return false;
-		} else if (!name.equals(other.name))
+		} else if (!getExperimentAssignments().equals(other.getExperimentAssignments()))
 			return false;
-		if (experimentAssignments == null || experimentAssignments.isEmpty()) {
-			if (other.experimentAssignments != null && !other.experimentAssignments.isEmpty())
+		if (getExplorationStrategy() == null) {
+			if (other.getExplorationStrategy() != null)
 				return false;
-		} else if (!experimentAssignments.equals(other.experimentAssignments))
+		} else if (!getExplorationStrategy().equals(other.getExplorationStrategy()))
 			return false;
-		if (explorationStrategy == null) {
-			if (other.explorationStrategy != null)
+		if (getName() == null) {
+			if (other.getName() != null)
 				return false;
-		} else if (!explorationStrategy.equals(other.explorationStrategy))
+		} else if (!getName().equals(other.getName()))
 			return false;
-		
-		if (preperationAssignments == null || preperationAssignments.isEmpty()) {
-			if (other.preperationAssignments != null && !other.preperationAssignments.isEmpty())
+		if (getPreperationAssignments() == null) {
+			if (other.getPreperationAssignments() != null)
 				return false;
-		} else if (!preperationAssignments.equals(other.preperationAssignments))
+		} else if (!getPreperationAssignments().equals(other.getPreperationAssignments()))
+			return false;
+		if (getTerminationConditions() == null) {
+			if (other.getTerminationConditions() != null)
+				return false;
+		} else if (!getTerminationConditions().equals(other.getTerminationConditions()))
 			return false;
 		return true;
 	}
-	
-	public long getVersion() {
-		return version;
-	}
 
-
-	public void setVersion(long version) {
-		this.version = version;
-	}
-
-	public void addTerminationCondition(ExperimentTerminationCondition tc) {
-		terminationConditions.add(tc);
-	}
-} 
+}

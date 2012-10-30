@@ -158,4 +158,41 @@ public class ExperimentTerminationCondition implements Serializable{
 			return DEFAULT_NUMBER_OF_REPS;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((paramDefaultValues == null) ? 0 : paramDefaultValues.hashCode());
+		result = prime * result + ((paramValues == null) ? 0 : paramValues.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ExperimentTerminationCondition other = (ExperimentTerminationCondition) obj;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (paramDefaultValues == null) {
+			if (other.paramDefaultValues != null)
+				return false;
+		} else if (!paramDefaultValues.equals(other.paramDefaultValues))
+			return false;
+		if (paramValues == null) {
+			if (other.paramValues != null)
+				return false;
+		} else if (!paramValues.equals(other.paramValues))
+			return false;
+		return true;
+	}
+
 }
