@@ -37,6 +37,13 @@ public class ExperimentTerminationCondition implements Serializable{
 	protected final Map<String, String> paramValues = new HashMap<String, String>();
 
 	/**
+	 * Standard constructor required for serialization.
+	 */
+	public ExperimentTerminationCondition(){
+		super();
+	}
+	
+	/**
 	 * Creates a termination condition supported by the measurement environment.
 	 * 
 	 * @param name
