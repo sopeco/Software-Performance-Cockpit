@@ -31,10 +31,10 @@ public class ExperimentTerminationCondition implements Serializable{
 	private String description;
 	
 	/** Holds a mapping of configuration parameters to their optional default values. */
-	protected final Map<String, String> paramDefaultValues = new HashMap<String, String>();
+	protected Map<String, String> paramDefaultValues = new HashMap<String, String>();
 	
 	/** Holds a mapping of configuration parameters to their configured values. */
-	protected final Map<String, String> paramValues = new HashMap<String, String>();
+	protected Map<String, String> paramValues = new HashMap<String, String>();
 
 	/**
 	 * Standard constructor required for serialization.
