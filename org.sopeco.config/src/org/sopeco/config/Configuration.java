@@ -40,7 +40,9 @@ import ch.qos.logback.core.joran.spi.JoranException;
  */
 public final class Configuration extends SessionAwareObject implements IConfiguration {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Configuration.class);
+	private static final long serialVersionUID = 1L;
+
+	private static final Logger logger = LoggerFactory.getLogger(Configuration.class);
 
 	private static final String GLOBAL_SESSION_ID = "globalSessionId";
 
@@ -60,7 +62,7 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	private Configuration(Class<?> mainClass, String sessionId) {
 		super(sessionId);
 		try {
-			LOGGER.info("Initializing SoPeCo configuration module{}.", (mainClass == null ? "" : " with main class "
+			logger.info("Initializing SoPeCo configuration module{}.", (mainClass == null ? "" : " with main class "
 					+ mainClass.getName() + ""));
 			setDefaultValues(mainClass);
 		} catch (ConfigurationException e) {
@@ -229,6 +231,9 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		Option logVerbosity = OptionBuilder.withArgName("level").hasArg()
 				.withDescription("logging verbosity level (overrides log config)").create("lv");
 
+		// option: set home folder	
+		Option homePathOption = OptionBuilder.withArgName("path").hasArg().withDescription("Path to SoPeCo home folder").create("home");
+
 		// Option selectedSeries = OptionBuilder.withArgName("series")
 		// .withValueSeparator(',')
 		// .hasArg()
@@ -245,6 +250,7 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		options.addOptionGroup(meGroup);
 		options.addOption(logconfig);
 		options.addOption(modelChangeHandling);
+		options.addOption(homePathOption);
 		// options.addOption(logVerbosity);
 
 		CommandLineParser parser = new GnuParser();
@@ -306,6 +312,11 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 			// TODO it may not be possible
 		}
 
+		// -home 
+		if (line.hasOption(homePathOption.getOpt())) {
+			final String homePath = line.getOptionValue(homePathOption.getOpt());
+			setAppRootDirectory(homePath);
+		}
 	}
 
 	/**
@@ -356,7 +367,7 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		try {
 			setProperty(CONF_MEASUREMENT_CONTROLLER_URI, new URI(uri));
 		} catch (URISyntaxException e) {
-			LOGGER.error("Could not parse the URI {}. Error: {}", uri, e.getMessage());
+			logger.error("Could not parse the URI {}. Error: {}", uri, e.getMessage());
 			throw new ConfigurationException(e);
 		}
 	}
@@ -410,9 +421,17 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 			if (result == null) {
 				result = Tools.getRootFolder(getMainClass());
 			}
-			setProperty(CONF_APP_ROOT_FOLDER, result);
+			setAppRootDirectory(result);
 		}
 		return result;
+	}
+
+	@Override
+	public void setAppRootDirectory(String rootDir) {
+		final File f = new File(rootDir);
+		final String fullPath = f.getAbsolutePath();
+		setProperty(CONF_APP_ROOT_FOLDER, fullPath);
+		logger.info("SoPeCo home folder is set to '{}'.", Tools.concatFileName(fullPath, IConfiguration.DEFAULT_CONFIG_FOLDER_NAME));
 	}
 
 	@Override
@@ -454,7 +473,7 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		if (fileName != null) {
 			LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 			try {
-				LOGGER.debug("Configuring logback using '{}'...", fileName);
+				logger.debug("Configuring logback using '{}'...", fileName);
 
 				JoranConfigurator configurator = new JoranConfigurator();
 				configurator.setContext(lc);
@@ -466,16 +485,16 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 				configurator
 						.doConfigure(findConfigFileAsInputStream(ClassLoader.getSystemClassLoader(), null, fileName));
 			} catch (JoranException je) {
-				LOGGER.warn(
+				logger.warn(
 						"Failed loading the logback configuration file. Using default configuration. Error message: {}",
 						je.getMessage());
 			} catch (FileNotFoundException e) {
-				LOGGER.warn(
+				logger.warn(
 						"Failed loading the logback configuration file. Configuration file cannot be opened. ('{}')",
 						fileName);
 			}
 
-			LOGGER.debug("Logback configured.");
+			logger.debug("Logback configured.");
 		}
 	}
 
@@ -483,7 +502,7 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	public void writeConfiguration(String fileName) throws IOException {
 		Properties props = new Properties();
 
-		LOGGER.debug("Writing configuration file to {}...", fileName);
+		logger.debug("Writing configuration file to {}...", fileName);
 
 		for (Entry<String, Object> e : defaultValues.entrySet()) {
 			copyConfigItem(e, props);
@@ -495,14 +514,14 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 
 		props.store(new FileOutputStream(fileName), "SoPeCo Configuration");
 
-		LOGGER.debug("Configuration file written to {}.", fileName);
+		logger.debug("Configuration file written to {}.", fileName);
 	}
 
 	private void copyConfigItem(Entry<String, Object> e, Properties destination) {
 		if (e.getValue() instanceof Number || e.getValue() instanceof Boolean || e.getValue() instanceof String) {
 			destination.setProperty(e.getKey(), e.getValue().toString());
 		} else {
-			LOGGER.debug("Skipping configuration item '{}'.", e.getKey());
+			logger.debug("Skipping configuration item '{}'.", e.getKey());
 		}
 
 	}
@@ -536,11 +555,11 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		try {
 			in = findConfigFileAsInputStream(classLoader, DEFAULT_CONFIG_FOLDER_NAME, fileName);
 		} catch (FileNotFoundException e) {
-			LOGGER.warn("Exception caught: {}", e);
+			logger.warn("Exception caught: {}", e);
 		}
 
 		if (in == null) {
-			LOGGER.warn("Cannot load configuration file '{}'.", fileName);
+			logger.warn("Cannot load configuration file '{}'.", fileName);
 		} else {
 			loadConfigFromStream(dest, in);
 			applyConfiguration();

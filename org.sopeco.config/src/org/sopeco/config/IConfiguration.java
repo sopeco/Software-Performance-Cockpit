@@ -364,6 +364,13 @@ public interface IConfiguration extends ISessionAwareObject {
 	String getAppRootDirectory();
 
 	/**
+	 * Sets the application root directory to the given folder.
+	 * 
+	 * @param rootDir path to a folder
+	 */
+	void setAppRootDirectory(String rootDir);
+	
+	/**
 	 * @return Returns the application's configuration directory.
 	 */
 	String getAppConfDirectory();
