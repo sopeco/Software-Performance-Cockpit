@@ -54,6 +54,8 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	/** Holds the configured property values. */
 	private Map<String, Object> properties = new HashMap<String, Object>();
 
+	private Object lastLogbackConfigurationFileName = "";
+
 	private static final int HELP_FORMATTER_WIDTH = 120;
 
 	/*
@@ -62,7 +64,7 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	private Configuration(Class<?> mainClass, String sessionId) {
 		super(sessionId);
 		try {
-			logger.info("Initializing SoPeCo configuration module{}.", (mainClass == null ? "" : " with main class "
+			logger.debug("Initializing SoPeCo configuration module{}.", (mainClass == null ? "" : " with main class "
 					+ mainClass.getName() + ""));
 			setDefaultValues(mainClass);
 		} catch (ConfigurationException e) {
@@ -281,7 +283,9 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		}
 
 		// -sd
-		setScenarioDescriptionFileName(line.getOptionValue(scenarioDef.getOpt()));
+		if (line.hasOption(scenarioDef.getOpt())) {
+			setScenarioDescriptionFileName(line.getOptionValue(scenarioDef.getOpt()));
+		}
 
 		// -config
 		if (line.hasOption(config.getOpt())) {
@@ -470,7 +474,7 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		// $ java -Dlogback.configurationFile=/path/to/config.xml ...
 
 		String fileName = getPropertyAsStr(CONF_LOGGER_CONFIG_FILE_NAME);
-		if (fileName != null) {
+		if (fileName != null && !fileName.equals(lastLogbackConfigurationFileName)) {
 			LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 			try {
 				logger.debug("Configuring logback using '{}'...", fileName);
@@ -494,6 +498,7 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 						fileName);
 			}
 
+			lastLogbackConfigurationFileName = fileName;
 			logger.debug("Logback configured.");
 		}
 	}
@@ -561,6 +566,7 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		if (in == null) {
 			logger.warn("Cannot load configuration file '{}'.", fileName);
 		} else {
+			logger.info("Loading configuration from file '{}'.", fileName);
 			loadConfigFromStream(dest, in);
 			applyConfiguration();
 		}
