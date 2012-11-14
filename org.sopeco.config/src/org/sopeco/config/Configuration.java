@@ -435,7 +435,8 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		final File f = new File(rootDir);
 		final String fullPath = f.getAbsolutePath();
 		setProperty(CONF_APP_ROOT_FOLDER, fullPath);
-		logger.info("SoPeCo home folder is set to '{}'.", Tools.concatFileName(fullPath, IConfiguration.DEFAULT_CONFIG_FOLDER_NAME));
+		logger.info("SoPeCo home folder is set to '{}'.", fullPath);
+		logger.info("SoPeCo config folder is set to '{}'.", Tools.concatFileName(fullPath, IConfiguration.DEFAULT_CONFIG_FOLDER_NAME));
 	}
 
 	@Override
