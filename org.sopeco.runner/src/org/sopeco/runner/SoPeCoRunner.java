@@ -4,7 +4,6 @@
 package org.sopeco.runner;
 
 import java.rmi.RemoteException;
-import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +13,12 @@ import org.sopeco.config.exception.ConfigurationException;
 import org.sopeco.engine.EngineFactory;
 import org.sopeco.engine.IEngine;
 import org.sopeco.engine.model.ScenarioDefinitionReader;
+import org.sopeco.persistence.entities.ExperimentSeries;
+import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.util.Tools;
 
 /**
@@ -31,22 +33,13 @@ public class SoPeCoRunner implements Runnable {
 
 	protected String[] args = null;
 
+	/** Holds the last executed scenario instance. */
 	protected ScenarioInstance lastExecutedScenarioInstance = null;
 
+	/** Holds the last instance of SoPeCo lastEngine that was used by this runner. */
+	private IEngine lastEngine = null;
+	
 	private String sessionId;
-
-	/**
-	 * Use this constructor with caution! This constructor creates an own
-	 * session id. Session related configurations made outside will not be
-	 * propagated to the created SoPeCoRunner object, as the created object uses
-	 * an own configuration with an own session id.
-	 * 
-	 * @deprecated use {@link #SoPeCoRunner(String)} instead. 
-	 */
-	@Deprecated
-	public SoPeCoRunner() {
-		this.sessionId = UUID.randomUUID().toString();
-	}
 
 	/**
 	 * Use this constructor to provide a session id.
@@ -57,22 +50,6 @@ public class SoPeCoRunner implements Runnable {
 	 */
 	public SoPeCoRunner(String sessionId) {
 		this.sessionId = sessionId;
-	}
-
-	/**
-	 * Runs SoPeCo with the given command-line arguments.
-	 * 
-	 * @param args
-	 *            command-line arguments
-	 * 
-	 * @see #setArguments(String[])
-	 * @see #run()
-	 */
-	public static void main(String[] args) {
-		final SoPeCoRunner runner = new SoPeCoRunner();
-
-		runner.setArguments(args);
-		runner.run();
 	}
 
 	/**
@@ -96,9 +73,9 @@ public class SoPeCoRunner implements Runnable {
 
 		ScenarioDefinition scenario = retrieveScenarioDefinition(config);
 
-		IEngine engine = EngineFactory.getInstance().createEngine(sessionId);
+		lastEngine = EngineFactory.getInstance().createEngine(sessionId);
 
-		lastExecutedScenarioInstance = engine.run(scenario);
+		lastExecutedScenarioInstance = lastEngine.run(scenario);
 
 		logger.info("SoPeCo run finished.");
 	}
@@ -143,7 +120,31 @@ public class SoPeCoRunner implements Runnable {
 		return scenario;
 	}
 
-	
+	/**
+	 * Removes the experiment series runs of the previously run scenario. 
+	 * If this method is called before any "run", it does nothing.
+	 */
+	public void deleteLastExperimentSeriesRuns() {
+		logger.debug("Deleting last experiment series runs...");
+
+		if (lastExecutedScenarioInstance != null) {
+			for (ExperimentSeries es: lastExecutedScenarioInstance.getExperimentSeriesList()) {
+				ExperimentSeriesRun esr = es.getLatestExperimentSeriesRun();
+				
+				if (esr != null) {
+					try {
+						lastEngine.getPersistenceProvider().remove(esr);
+					} catch (DataNotFoundException e) {
+						logger.warn("Cannot remove experiment series run '{}'. Experiment series run not found.", esr.getLabel());
+					}
+				}
+			}
+
+			logger.debug("Deleting last experiment series runs... done.");
+		} else {
+			logger.warn("Deleting last experiment series runs... Nothing to do.");
+		}
+	}
 
 	/**
 	 * Sets the command-line arguments before running SoPeCo.

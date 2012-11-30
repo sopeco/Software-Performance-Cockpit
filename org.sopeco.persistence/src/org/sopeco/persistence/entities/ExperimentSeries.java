@@ -157,14 +157,19 @@ public class ExperimentSeries implements Serializable {
 
 	/**
 	 * 
-	 * @return the latest experiment series run that has been executed
+	 * @return the latest experiment series run that has been executed, or null 
+	 * if there is no such run.
 	 */
 	public ExperimentSeriesRun getLatestExperimentSeriesRun() {
-		// sorts the list of experiment runs descending based on their
-		// timestamps
-		Collections.sort(this.getExperimentSeriesRuns());
-
-		return this.getExperimentSeriesRuns().get(0);
+		if (this.getExperimentSeriesRuns().size() > 0) {
+			// sorts the list of experiment runs descending based on their
+			// timestamps
+			Collections.sort(this.getExperimentSeriesRuns());
+	
+			return this.getExperimentSeriesRuns().get(0);
+		} else {
+			return null;
+		}
 	}
 
 	/*

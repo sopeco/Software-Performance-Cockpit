@@ -202,11 +202,15 @@ public class PersistenceProviderFactory {
 
 		switch (persistenceConfig.getDBType()) {
 		case InMemory:
+			logger.info("Persistence layer is using in-memory databse.");
+
 			configOverrides.put(DB_DRIVER_CLASS, MEM_DB_DRIVER_CLASS_VALUE);
 			configOverrides.put(DB_URL, MEM_DB_URL_VALUE);
 			break;
 
 		case Server:
+			logger.info("Persistence layer is using server {}.", persistenceConfig.getServerUrl());
+			
 			configOverrides.put(DB_DRIVER_CLASS, SERVER_DB_DRIVER_CLASS_VALUE);
 			configOverrides.put(DB_URL, persistenceConfig.getServerUrl());
 			if (persistenceConfig.isPasswordUsed()) {

@@ -208,14 +208,14 @@ public final class PersistenceConfiguration extends SessionAwareObject {
 	 * @return the type of database to be used
 	 */
 	public DBType getDBType() {
-		String value = (String) sopecoConfig.getProperty(DB_TYPE);
+		String value = ((String) sopecoConfig.getProperty(DB_TYPE)).trim();
 		if (value.equalsIgnoreCase(DBType.InMemory.name())) {
 			return DBType.InMemory;
 		} else if (value.equalsIgnoreCase(DBType.Server.name())) {
 			return DBType.Server;
 		}
 
-		throw new IllegalArgumentException("Illegal value for property sopeco.config.persistence.dbtype: " + value);
+		throw new IllegalArgumentException("Illegal value for property " + DB_TYPE + ": " + value);
 	}
 
 	/**

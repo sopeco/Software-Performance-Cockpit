@@ -475,7 +475,8 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		// $ java -Dlogback.configurationFile=/path/to/config.xml ...
 
 		String fileName = getPropertyAsStr(CONF_LOGGER_CONFIG_FILE_NAME);
-		if (fileName != null && !fileName.equals(lastLogbackConfigurationFileName)) {
+		// if (fileName != null) && !fileName.equals(lastLogbackConfigurationFileName)) {  // This was a bad idea.
+		if (fileName != null) { 
 			LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 			try {
 				logger.debug("Configuring logback using '{}'...", fileName);
