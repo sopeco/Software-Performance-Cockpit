@@ -667,4 +667,14 @@ public class Tools {
 		return a * stdDev / Math.sqrt(sampleSize);
 	}
 
+	/**
+	 * Checks if the given string value is empty or null.
+	 * 
+	 * @param str a string value
+	 * @return <code>true</code> if the given value is either <code>null</code> or empty; <code>false</code> otherwise.
+	 */
+	public static boolean isEmptyOrNullString(String str) {
+		return (str == null || str.isEmpty());
+	}
+
 }
