@@ -78,7 +78,10 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	 * used, if the configuration settings are really unrelated to any session!
 	 * 
 	 * @return Returns a session-unrelated instance of the configuration.
+	 * @deprecated This method should not be used. If session id is not relevant in your use-case, 
+	 * 			use {@link #getSessionSingleton(String)} with an auto generated session id such as {@link Tools#getUniqueTimeStamp()}. 
 	 */
+	@Deprecated
 	public static IConfiguration getSessionUnrelatedSingleton() {
 		return getSessionSingleton(null, GLOBAL_SESSION_ID);
 	}
@@ -92,7 +95,11 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	 * @param mainClass
 	 *            the class whose class loader should be used for configuration
 	 * @return Returns a session-unrelated instance of the configuration.
+	 * 
+	 * @deprecated This method should not be used. If session id is not relevant in your use-case, 
+	 * 			use {@link #getSessionSingleton(String)} with an auto generated session id such as {@link Tools#getUniqueTimeStamp()}.
 	 */
+	@Deprecated
 	public static IConfiguration getSessionUnrelatedSingleton(Class<?> mainClass) {
 		return getSessionSingleton(mainClass, GLOBAL_SESSION_ID);
 	}
@@ -664,7 +671,6 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	}
 
 	/**
-	 * 
 	 * @return Returns the session id of a session-unrelated configuration.
 	 */
 	public static String getGlobalSessionId() {

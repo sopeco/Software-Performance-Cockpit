@@ -533,6 +533,16 @@ public class Tools {
 	}
 
 	/**
+	 * Returns a time stamp that is unique to the given machine, using
+	 * {@link System#nanoTime()}. 
+	 * 
+	 * @return a time stamp that is unique to the given machine 
+	 */
+	public static String getUniqueTimeStamp() {
+		return getTimeStamp() + "-" + System.nanoTime();
+	}
+	
+	/**
 	 * Adds a sequence of the given character to the beginning of the given
 	 * string until it reaches the given length.
 	 * 
