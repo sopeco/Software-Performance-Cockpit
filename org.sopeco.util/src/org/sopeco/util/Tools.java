@@ -21,13 +21,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.StringTokenizer;
 
 import org.apache.commons.math3.distribution.TDistribution;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.apache.tools.ant.DirectoryScanner;
 import org.slf4j.Logger;
@@ -687,4 +687,60 @@ public class Tools {
 		return (str == null || str.isEmpty());
 	}
 
+	/**
+	 * Filters outliers from the given set of values using the 1.5*IQR method.
+	 * 
+	 * @param values a list of numeric values
+	 * @return a filtered set of the input values without the outliers
+	 * 
+	 * @see #filterOutliersUsingIQR(List, double)
+	 */
+	public static List<Double> filterOutliersUsingIQR(List<Double> values) {
+		return filterOutliersUsingIQR(values, 1.5);
+	}
+
+	/**
+	 * Filters outliers from the given set of values using the Inner Quartile range.
+	 * 
+	 * @param values a list of numeric values
+	 * @param iqrFactor factor multiplied by the IQR
+	 * @return a filtered set of the input values without the outliers
+	 * 
+	 * @see #filterOutliersUsingIQR(double[], double)
+	 */
+	public static List<Double> filterOutliersUsingIQR(List<Double> values, double iqrFactor) {
+		double[] dValues = new double[values.size()];
+		for (int i=0; i < values.size(); i++) {
+			dValues[i] = values.get(i);
+		}
+		
+		return filterOutliersUsingIQR(dValues, iqrFactor);
+	}
+	
+	/**
+	 * Filters outliers from the given set of values using the Inner Quartile range.
+	 * 
+	 * @param values a list of numeric values
+	 * @param iqrFactor factor multiplied by the IQR
+	 * @return a filtered set of the input values without the outliers
+	 */
+	public static List<Double> filterOutliersUsingIQR(double[] values, double iqrFactor) {
+		DescriptiveStatistics ds = new DescriptiveStatistics(values);
+		
+		double firstQuartile = ds.getPercentile(25);
+		double thirdQuartile = ds.getPercentile(75);
+		double iqr = thirdQuartile - firstQuartile;
+		double lowerRange = firstQuartile - iqrFactor * iqr;
+		double higherRange = thirdQuartile + iqrFactor * iqr;
+		
+		List<Double> results = new ArrayList<Double>();
+		
+		for (Double value: values) {
+			if (value <= higherRange && value >= lowerRange) {
+				results.add(value);
+			}
+		}
+		
+		return results;
+	}
 }
