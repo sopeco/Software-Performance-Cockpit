@@ -36,6 +36,7 @@ import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefiniti
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.util.session.SessionAwareObject;
 
 /**
  * The {@link ScenarioDefinitionReader} is responsible for reading and parsing
@@ -44,7 +45,7 @@ import org.sopeco.persistence.entities.definition.ScenarioDefinition;
  * @author Alexander Wert
  * 
  */
-public class ScenarioDefinitionReader {
+public class ScenarioDefinitionReader extends SessionAwareObject {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioDefinitionReader.class);
 	private MeasurementEnvironmentDefinition meDefinition;
 
@@ -56,7 +57,8 @@ public class ScenarioDefinitionReader {
 	 *            used for resolution of parameter names to
 	 *            {@link ParameterDefinition} instances.
 	 */
-	public ScenarioDefinitionReader(MeasurementEnvironmentDefinition meDefinition) {
+	public ScenarioDefinitionReader(MeasurementEnvironmentDefinition meDefinition, String sessionId) {
+		super(sessionId);
 		this.meDefinition = meDefinition;
 	}
 
@@ -72,7 +74,7 @@ public class ScenarioDefinitionReader {
 	public ScenarioDefinition readFromReader(Reader reader) {
 		XScenarioDefinition sd = null;
 		try {
-			JAXBContext jc = JAXBContext.newInstance(Configuration.getSessionUnrelatedSingleton().getPropertyAsStr(
+			JAXBContext jc = JAXBContext.newInstance(Configuration.getSessionSingleton(getSessionId()).getPropertyAsStr(
 					IConfiguration.CONF_SCENARIO_DEFINITION_PACKAGE));
 			Unmarshaller u = jc.createUnmarshaller();
 

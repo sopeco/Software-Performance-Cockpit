@@ -38,6 +38,7 @@ import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterValueAssignment;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.util.session.SessionAwareObject;
 
 /**
  * The {@link ScenarioDefinitionWriter} is responsible for writing an XML
@@ -46,8 +47,20 @@ import org.sopeco.persistence.entities.definition.ScenarioDefinition;
  * @author Alexander Wert
  * 
  */
-public class ScenarioDefinitionWriter {
+public class ScenarioDefinitionWriter extends SessionAwareObject {
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(ScenarioDefinitionReader.class);
+
+	/**
+	 * Creates a new writer with the given session id. 
+	 * 
+	 * @param sessionId a session id
+	 * 
+	 * @see SessionAwareObject
+	 */
+	public ScenarioDefinitionWriter(String sessionId) {
+		super(sessionId);
+	}
 
 	/**
 	 * Converts the given {@link ScenarioDefinition} to an XML string
@@ -78,7 +91,7 @@ public class ScenarioDefinitionWriter {
 
 		JAXBContext jc;
 		try {
-			jc = JAXBContext.newInstance(Configuration.getSessionUnrelatedSingleton().getPropertyAsStr(
+			jc = JAXBContext.newInstance(Configuration.getSessionSingleton(getSessionId()).getPropertyAsStr(
 					IConfiguration.CONF_SCENARIO_DEFINITION_PACKAGE));
 			Marshaller m = jc.createMarshaller();
 			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);

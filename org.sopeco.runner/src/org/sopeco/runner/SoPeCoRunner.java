@@ -20,6 +20,7 @@ import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefiniti
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.util.Tools;
+import org.sopeco.util.session.SessionAwareObject;
 
 /**
  * The main runner class of SoPeCo.
@@ -27,7 +28,7 @@ import org.sopeco.util.Tools;
  * @author Roozbeh Farahbod
  * 
  */
-public class SoPeCoRunner implements Runnable {
+public class SoPeCoRunner extends SessionAwareObject implements Runnable {
 
 	protected static final Logger logger = LoggerFactory.getLogger(SoPeCoRunner.class);
 
@@ -39,8 +40,6 @@ public class SoPeCoRunner implements Runnable {
 	/** Holds the last instance of SoPeCo lastEngine that was used by this runner. */
 	private IEngine lastEngine = null;
 	
-	private String sessionId;
-
 	/**
 	 * Use this constructor to provide a session id.
 	 * 
@@ -49,7 +48,7 @@ public class SoPeCoRunner implements Runnable {
 	 *            for this runner and all it triggered subprocesses.
 	 */
 	public SoPeCoRunner(String sessionId) {
-		this.sessionId = sessionId;
+		super(sessionId);
 	}
 
 	/**
@@ -60,7 +59,7 @@ public class SoPeCoRunner implements Runnable {
 	@Override
 	public synchronized void run() {
 		lastExecutedScenarioInstance = null;
-		IConfiguration config = Configuration.getSessionSingleton(sessionId);
+		IConfiguration config = Configuration.getSessionSingleton(getSessionId());
 
 		// if the user has set any command-line arguments
 		if (args != null) {
@@ -73,7 +72,7 @@ public class SoPeCoRunner implements Runnable {
 
 		ScenarioDefinition scenario = retrieveScenarioDefinition(config);
 
-		lastEngine = EngineFactory.getInstance().createEngine(sessionId);
+		lastEngine = EngineFactory.getInstance().createEngine(getSessionId());
 
 		lastExecutedScenarioInstance = lastEngine.run(scenario);
 
@@ -98,11 +97,11 @@ public class SoPeCoRunner implements Runnable {
 			}
 			MeasurementEnvironmentDefinition meDefinition;
 			try {
-				meDefinition = EngineFactory.getInstance().retrieveMEController(sessionId).getMEDefinition();
+				meDefinition = EngineFactory.getInstance().retrieveMEController(getSessionId()).getMEDefinition();
 			} catch (RemoteException e) {
 				throw new RuntimeException(e);
 			}
-			ScenarioDefinitionReader scenarioReader = new ScenarioDefinitionReader(meDefinition);
+			ScenarioDefinitionReader scenarioReader = new ScenarioDefinitionReader(meDefinition, getSessionId());
 			scenario = scenarioReader.readFromFile(fileName);
 			logger.debug("Scenario definition file loaded.");
 

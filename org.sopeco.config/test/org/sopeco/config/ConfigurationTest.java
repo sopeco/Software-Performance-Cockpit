@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.sopeco.config.exception.ConfigurationException;
+import org.sopeco.util.Tools;
 
 public class ConfigurationTest {
 
@@ -14,7 +15,7 @@ public class ConfigurationTest {
 
 	@Test
 	public void test() {
-		IConfiguration config = Configuration.getSessionUnrelatedSingleton();
+		IConfiguration config = Configuration.getSessionSingleton(Tools.getUniqueTimeStamp());
 		config.setAppRootDirectory("rsc/diffRoot");
 		try {
 			config.loadDefaultConfiguration("sopeco-defaults.conf");

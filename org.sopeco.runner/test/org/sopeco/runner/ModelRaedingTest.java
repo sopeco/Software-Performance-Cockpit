@@ -9,6 +9,8 @@ import java.net.URL;
 import java.rmi.RemoteException;
 
 import org.junit.Test;
+import org.sopeco.config.Configuration;
+import org.sopeco.config.IConfiguration;
 import org.sopeco.engine.model.ScenarioDefinitionReader;
 import org.sopeco.engine.model.ScenarioDefinitionWriter;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
@@ -16,6 +18,7 @@ import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
+import org.sopeco.util.Tools;
 
 public class ModelRaedingTest {
 
@@ -40,7 +43,9 @@ public class ModelRaedingTest {
 			fail(e.getMessage());
 		}
 
-		ScenarioDefinitionReader reader = new ScenarioDefinitionReader(meDefinition);
+		IConfiguration config = Configuration.getSessionSingleton(Tools.getUniqueTimeStamp()); 
+		
+		ScenarioDefinitionReader reader = new ScenarioDefinitionReader(meDefinition, config.getSessionId());
 
 		URL url = this.getClass().getResource("/testScenario.xml");
 		ScenarioDefinition scenarioDefinition = reader.readFromFile(url.getFile());
@@ -72,6 +77,8 @@ public class ModelRaedingTest {
 
 	@Test
 	public void testWriteAndRead() {
+		IConfiguration config = Configuration.getSessionSingleton(Tools.getUniqueTimeStamp()); 
+		
 		String tempDir = System.getProperty("java.io.tmpdir");
 		tempDir = tempDir.replace("\\", "/");
 		assertNotNull(tempDir);
@@ -80,12 +87,12 @@ public class ModelRaedingTest {
 		ScenarioDefinition scenario = DummyModelBuilder.getReferenceScenariodefinition();
 		MeasurementEnvironmentDefinition meDefinition = scenario.getMeasurementEnvironmentDefinition();
 
-		ScenarioDefinitionWriter writer = new ScenarioDefinitionWriter();
+		ScenarioDefinitionWriter writer = new ScenarioDefinitionWriter(config.getSessionId());
 
 		String filePath = tempDir + (tempDir.endsWith("/") ? "" : "/") + "tempScenarioDefinition.xml";
 		writer.writeToFile(scenario, filePath);
 
-		ScenarioDefinitionReader reader = new ScenarioDefinitionReader(meDefinition);
+		ScenarioDefinitionReader reader = new ScenarioDefinitionReader(meDefinition, config.getSessionId());
 		ScenarioDefinition loadedScenario = reader.readFromFile(filePath);
 		assertEquals(scenario, loadedScenario);
 
