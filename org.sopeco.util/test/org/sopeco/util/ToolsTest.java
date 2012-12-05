@@ -2,6 +2,7 @@ package org.sopeco.util;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Before;
@@ -19,15 +20,15 @@ public class ToolsTest {
 
 	@Test
 	public void testOutlierRemoval() {
-		double[] values01 = new double[] {140, 101, 100, 95, 104, 105, 102.5};
+		Double[] values01 = new Double[] {140d, 101d, 100d, 95d, 104d, 105d, 102.5};
 
-		List<Double> results = Tools.filterOutliersUsingIQR(values01, 1.5);
+		List<Double> results = Tools.filterOutliersUsingIQR(Arrays.asList(values01));
 
 		assertEquals(values01.length - 1, results.size());
 
-		double[] values02 = new double[] {-5, 1, 5, 2, 10, 3, 4, 4.5, 20, -15};
+		Double[] values02 = new Double[] {-5d, 1d, 5d, 2d, 10d, 3d, 4d, 4.5, 20d, -15d};
 
-		results = Tools.filterOutliersUsingIQR(values02, 1.5);
+		results = Tools.filterOutliersUsingIQR(Arrays.asList(values02));
 
 		assertEquals(values02.length - 2, results.size());
 

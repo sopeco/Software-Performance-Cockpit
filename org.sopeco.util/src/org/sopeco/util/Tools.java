@@ -24,14 +24,15 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.apache.commons.math3.distribution.TDistribution;
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.apache.tools.ant.DirectoryScanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.util.stats.IQROutlierDetector;
 
 /**
  * A collection of auxiliary helper methods.
@@ -46,6 +47,8 @@ public class Tools {
 
 	private static Logger logger = LoggerFactory.getLogger(Tools.class);
 
+	protected static IQROutlierDetector iqrOutlierDetector = null;
+	
 	public enum SupportedTypes {
 		Double, Integer, String, Boolean;
 
@@ -693,54 +696,31 @@ public class Tools {
 	 * @param values a list of numeric values
 	 * @return a filtered set of the input values without the outliers
 	 * 
-	 * @see #filterOutliersUsingIQR(List, double)
+	 * @see IQROutlierDetector#filterOutliers(List)
 	 */
 	public static List<Double> filterOutliersUsingIQR(List<Double> values) {
-		return filterOutliersUsingIQR(values, 1.5);
+		return getDefaultIQROutlierDetector().filterOutliers(values);
 	}
 
 	/**
-	 * Filters outliers from the given set of values using the Inner Quartile range.
+	 * Marks the outliers in the given list of values using the 1.5*IQR method.
 	 * 
-	 * @param values a list of numeric values
-	 * @param iqrFactor factor multiplied by the IQR
-	 * @return a filtered set of the input values without the outliers
+	 * @param values a list of numeric data
+	 * @return  a map from values to a Boolean flag which indicates if a value is an outlier (<code>true</code>) or not (<code>false</code>).
 	 * 
-	 * @see #filterOutliersUsingIQR(double[], double)
+	 * @see IQROutlierDetector#markOutliersUsingIQR(List)
 	 */
-	public static List<Double> filterOutliersUsingIQR(List<Double> values, double iqrFactor) {
-		double[] dValues = new double[values.size()];
-		for (int i=0; i < values.size(); i++) {
-			dValues[i] = values.get(i);
-		}
-		
-		return filterOutliersUsingIQR(dValues, iqrFactor);
+	public static Map<Double, Boolean> markOutliersUsingIQR(List<Double> values) {
+		return getDefaultIQROutlierDetector().markOutliersUsingIQR(values);
 	}
 	
 	/**
-	 * Filters outliers from the given set of values using the Inner Quartile range.
-	 * 
-	 * @param values a list of numeric values
-	 * @param iqrFactor factor multiplied by the IQR
-	 * @return a filtered set of the input values without the outliers
+	 * @return the default IQR outlier detector for this class
 	 */
-	public static List<Double> filterOutliersUsingIQR(double[] values, double iqrFactor) {
-		DescriptiveStatistics ds = new DescriptiveStatistics(values);
-		
-		double firstQuartile = ds.getPercentile(25);
-		double thirdQuartile = ds.getPercentile(75);
-		double iqr = thirdQuartile - firstQuartile;
-		double lowerRange = firstQuartile - iqrFactor * iqr;
-		double higherRange = thirdQuartile + iqrFactor * iqr;
-		
-		List<Double> results = new ArrayList<Double>();
-		
-		for (Double value: values) {
-			if (value <= higherRange && value >= lowerRange) {
-				results.add(value);
-			}
+	public static IQROutlierDetector getDefaultIQROutlierDetector() {
+		if (iqrOutlierDetector == null) {
+			iqrOutlierDetector = new IQROutlierDetector();
 		}
-		
-		return results;
+		return iqrOutlierDetector;
 	}
 }
