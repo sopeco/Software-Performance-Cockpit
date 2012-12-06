@@ -12,6 +12,7 @@ import java.util.Map.Entry;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.util.Tools;
+import org.sopeco.util.Tools.SupportedTypes;
 
 /**
  * A SimpleDataSet is a column-based storage for data. It contains the values
@@ -306,10 +307,11 @@ public class SimpleDataSet implements Iterable<SimpleDataSetRow>, Serializable {
 	 * Creates a CSV style representation of the content of this dataset with the tab character as the separator.
 	 * 
 	 * @return a list of String values, each representing one line. The first line is the header.
-	 * @see #convertToCSV(String)
+	 * @deprecated use {@link #convertToCSV(boolean)} instead.
 	 */
+	@Deprecated
 	public List<String> convertToCSV() {
-		return convertToCSV("\t");
+		return convertToCSV("\t", false);
 	}
 	
 	/**
@@ -317,8 +319,35 @@ public class SimpleDataSet implements Iterable<SimpleDataSetRow>, Serializable {
 	 * 
 	 * @param separator the separator to use between values
 	 * @return a list of String values, each representing one line. The first line is the header.
+	 * 
+	 * @deprecated use {@link #convertToCSV(String, boolean)} instead.
 	 */
+	@Deprecated
 	public List<String> convertToCSV(String separator) {
+		return convertToCSV(separator, false);
+	}
+
+	/**
+	 * Creates a CSV style representation of the content of this dataset with the tab character as the separator.
+	 * If <code>quotations</code> is set, String values are put in quote.
+	 *
+	 * @param quotations if set, String values are put in quote
+	 * @return a list of String values, each representing one line. The first line is the header.
+	 * @see #convertToCSV(String)
+	 */
+	public List<String> convertToCSV(boolean quotations) {
+		return convertToCSV("\t", quotations);
+	}
+	
+	/**
+	 * Creates a CSV style representation of the content of this dataset.
+	 * If <code>quotations</code> is set, String values are put in quote.
+	 *
+	 * @param separator the separator to use between values
+	 * @param quotations if set, String values are put in quote
+	 * @return a list of String values, each representing one line. The first line is the header.
+	 */
+	public List<String> convertToCSV(String separator, boolean quotations) {
 		List<String> result = new ArrayList<String>();
 
 		if (size <= 0) {
@@ -337,7 +366,14 @@ public class SimpleDataSet implements Iterable<SimpleDataSetRow>, Serializable {
 				}
 
 				for (ParameterValue<?> val : row.getRowValues()) {
-					line += val.getValue() + separator;
+					String cellValue = val.getValueAsString();
+					if (quotations) {
+						final String type = val.getParameter().getType();
+						if (type != null && type.equalsIgnoreCase(String.class.getSimpleName())) {
+							cellValue = "\"" + cellValue + "\"";
+						}
+					}
+					line += cellValue + separator;
 				}
 				
 				result.add(line);
@@ -346,7 +382,7 @@ public class SimpleDataSet implements Iterable<SimpleDataSetRow>, Serializable {
 
 		return result;
 	}
-	
+
 	protected void addColumn(SimpleDataSetColumn<?> col) {
 		columnMap.put(col.getParameter(), col);
 		parameterIndexes.put(parameterIndexes.size(), col.getParameter());

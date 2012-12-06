@@ -126,6 +126,8 @@ public class Tools {
 				result.add(line);
 		} while (line != null);
 
+		reader.close();
+		
 		return result;
 	}
 
@@ -144,6 +146,8 @@ public class Tools {
 				result.add(line);
 		} while (line != null);
 
+		reader.close();
+		
 		return result;
 	}
 

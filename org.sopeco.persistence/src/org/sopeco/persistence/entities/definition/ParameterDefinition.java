@@ -2,10 +2,11 @@ package org.sopeco.persistence.entities.definition;
 
 import java.io.Serializable;
 
-import org.sopeco.util.Tools;
+import org.sopeco.util.Tools.SupportedTypes;
 
 /**
  * @author Dennis Westermann
+ * @author Roozbeh Farahbod
  * 
  */
 public class ParameterDefinition implements Serializable {
@@ -35,7 +36,6 @@ public class ParameterDefinition implements Serializable {
 	}
 
 	public String getType() {
-
 		return type.toUpperCase();
 	}
 

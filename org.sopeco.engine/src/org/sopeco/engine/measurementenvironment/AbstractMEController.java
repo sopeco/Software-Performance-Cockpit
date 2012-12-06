@@ -30,6 +30,7 @@ import org.sopeco.util.Tools;
  * measurement environment controller jobs.
  * 
  * @author Alexander Wert
+ * @author Roozbeh Farahbod
  * 
  */
 
@@ -230,42 +231,56 @@ public abstract class AbstractMEController extends MEControllerResource {
 		MeasurementEnvironmentDefinition meDef = EntityFactory.createMeasurementEnvironmentDefinition();
 		meDef.setRoot(EntityFactory.createNamespace(DEFAULT_ROOT_NAMESPACE));
 
+		for (Field field: getAllParameterFields()) {
+			field.setAccessible(true);
+			ParameterRole role = getParameterRole(field);
+			String name = getParameterName(field);
+			String type = getParameterType(field);
+			String namespace = getParameterNamespace(field);
+
+			ParameterDefinition newParameter = addParameterToMEDefinition(name, namespace, role, type,
+					meDef.getRoot());
+
+			sopecoParameterFields.put(newParameter.getFullName(), field);
+
+			// for all observation parameters: create the parameter
+			// value list
+			if (role.equals(ParameterRole.OBSERVATION)) {
+				try {
+					field.set(this, new ParameterValueList(newParameter));
+				} catch (Exception e) {
+					throw new RuntimeException("Failed creating ParametervalueList for parameter "
+							+ newParameter.getFullName(), e);
+				}
+			}
+		} 
+
+		return meDef;
+	}
+
+	/**
+	 * Returns the list of fields that define input parameter and observation parameters.
+	 *  
+	 * @return list of input/observation parameter fields
+	 */
+	protected List<Field> getAllParameterFields() {
+		List<Field> fields = new ArrayList<Field>();
+		
 		Class clazz = this.getClass();
 		while (!clazz.equals(AbstractMEController.class)) {
 			for (Field field : clazz.getDeclaredFields()) {
 				if (field.isAnnotationPresent(InputParameter.class)
 						|| field.isAnnotationPresent(ObservationParameter.class)) {
-					field.setAccessible(true);
-					ParameterRole role = getParameterRole(field);
-					String name = getParameterName(field);
-					String type = getParameterType(field);
-					String namespace = getParameterNamespace(field);
-
-					ParameterDefinition newParameter = addParameterToMEDefinition(name, namespace, role, type,
-							meDef.getRoot());
-
-					sopecoParameterFields.put(newParameter.getFullName(), field);
-
-					// for all observation parameters: create the parameter
-					// value list
-					if (role.equals(ParameterRole.OBSERVATION)) {
-						try {
-							field.set(this, new ParameterValueList(newParameter));
-						} catch (Exception e) {
-							throw new RuntimeException("Failed creating ParametervalueList for parameter "
-									+ newParameter.getFullName(), e);
-						}
-					}
-				} 
-
+					fields.add(field);
+				}
 			}
 			clazz = clazz.getSuperclass();
 		}
-
-		return meDef;
+		
+		return fields;
 	}
-
-	private String getParameterNamespace(Field field) {
+	
+	protected String getParameterNamespace(Field field) {
 		if (field.isAnnotationPresent(InputParameter.class)) {
 			return field.getAnnotation(InputParameter.class).namespace();
 		} else if (field.isAnnotationPresent(ObservationParameter.class)) {
@@ -274,7 +289,7 @@ public abstract class AbstractMEController extends MEControllerResource {
 		throw new RuntimeException("Unsupported parameter role.");
 	}
 
-	private ParameterRole getParameterRole(Field field) {
+	protected ParameterRole getParameterRole(Field field) {
 		if (field.isAnnotationPresent(InputParameter.class)) {
 			return ParameterRole.INPUT;
 		} else if (field.isAnnotationPresent(ObservationParameter.class)) {
@@ -283,7 +298,7 @@ public abstract class AbstractMEController extends MEControllerResource {
 		throw new RuntimeException("Unsupported parameter role.");
 	}
 
-	private String getParameterName(Field field) {
+	protected String getParameterName(Field field) {
 		if (field.isAnnotationPresent(InputParameter.class)) {
 			InputParameter spcAnn = field.getAnnotation(InputParameter.class);
 
@@ -304,7 +319,7 @@ public abstract class AbstractMEController extends MEControllerResource {
 		throw new RuntimeException("Unsupported parameter role.");
 	}
 
-	private String getParameterType(Field field) {
+	protected String getParameterType(Field field) {
 		if (field.isAnnotationPresent(InputParameter.class)) {
 			return interpreteType(field.getType());
 		} else if (field.isAnnotationPresent(ObservationParameter.class)) {
