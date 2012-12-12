@@ -1,0 +1,10 @@
+package org.sopeco.engine.status;
+
+/**
+ * 
+ * @author Marius Oehler
+ * 
+ */
+public enum EventType {
+	ACQUIRE_MEC, ACQUIRE_MEC_FAILED, ERROR, EXECUTE_EXPERIMENTRUN, FINALIZE_EXPERIMENTSERIES, INIT_MEC, MEASUREMENT_FINISHED, PREPARE_EXPERIMENTSERIES, RELEASE_MEC
+}

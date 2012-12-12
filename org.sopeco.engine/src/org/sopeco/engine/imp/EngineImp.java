@@ -12,6 +12,8 @@ import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.experimentseries.IExperimentSeriesManager;
 import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.engine.registry.IExtensionRegistry;
+import org.sopeco.engine.status.EventType;
+import org.sopeco.engine.status.StatusBroker;
 import org.sopeco.engine.util.EngineTools;
 import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.IPersistenceProvider;
@@ -80,6 +82,18 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 	@Override
 	public ScenarioInstance run(ScenarioDefinition scenario) {
 		ScenarioInstance scenarioInstance;
+
+		boolean sendigStatusMessages = Configuration.getSessionSingleton(getSessionId()).getPropertyAsBoolean(
+				IConfiguration.SENDING_STATUS_MESSAGES, false);
+		String generatedToken = null;
+		if (sendigStatusMessages) {
+			String controllerUrl = Configuration.getSessionSingleton(getSessionId()).getPropertyAsStr(
+					IConfiguration.CONF_MEASUREMENT_CONTROLLER_URI);
+			generatedToken = StatusBroker.get().createToken(getSessionId(), controllerUrl);
+			Configuration.getSessionSingleton(getSessionId()).setProperty(IConfiguration.STATUS_MESSAGES_TOKEN,
+					generatedToken);
+		}
+
 		try {
 
 			scenarioInstance = persistenceProvider.loadScenarioInstance(scenario.getScenarioName(), getConfiguration()
@@ -97,6 +111,17 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 			persistenceProvider.store(scenarioInstance);
 			LOGGER.debug("Created new ScenarioInstance {}", scenarioInstance);
 		}
+
+		boolean sendingStatusMessages = Configuration.getSessionSingleton(getSessionId()).getPropertyAsBoolean(
+				IConfiguration.SENDING_STATUS_MESSAGES, false);
+		try {
+			if (sendingStatusMessages) {
+				StatusBroker.startHttpServer();
+			}
+		} catch (Exception e) {
+			LOGGER.error(e.getLocalizedMessage());
+		}
+
 		experimentController.acquireMEController();
 		try {
 			for (MeasurementSpecification measSpec : scenario.getMeasurementSpecifications()) {
@@ -124,6 +149,17 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 		} catch (Exception e) {
 			experimentController.releaseMEController();
 			throw new RuntimeException(e);
+		}
+
+		if (sendingStatusMessages) {
+			StatusBroker.get().getManager(generatedToken).newStatus(EventType.MEASUREMENT_FINISHED);
+		}
+		try {
+			if (sendingStatusMessages) {
+				StatusBroker.stopHttpServer();
+			}
+		} catch (Exception e) {
+			LOGGER.error(e.getLocalizedMessage());
 		}
 
 		try {

@@ -2,7 +2,6 @@ package org.sopeco.engine.experiment.impl;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -11,6 +10,8 @@ import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
+import org.sopeco.engine.status.InitializePackage;
+import org.sopeco.engine.status.StatusBroker;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.PersistenceProviderFactory;
 import org.sopeco.persistence.dataset.DataSetAggregated;
@@ -18,8 +19,8 @@ import org.sopeco.persistence.dataset.DataSetRowBuilder;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
-import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
+import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.exceptions.ExperimentFailedException;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 import org.sopeco.persistence.util.ParameterCollection;
@@ -108,7 +109,8 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 			this.currentExperimentSeriesRun = experimentSeriesRun;
 			this.preparationPVs = preparationPVs;
 
-			Set<ExperimentTerminationCondition> terminationConditions = currentExperimentSeriesRun.getExperimentSeries().getExperimentSeriesDefinition().getTerminationConditions();
+			Set<ExperimentTerminationCondition> terminationConditions = currentExperimentSeriesRun
+					.getExperimentSeries().getExperimentSeriesDefinition().getTerminationConditions();
 			meController.prepareExperimentSeries(getSessionId(), preparationPVs, terminationConditions);
 
 			// ParameterCollection<ParameterDefinition> observationParams =
@@ -181,9 +183,9 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 	}
 
 	/**
-	 * Runs the experiment defined by the input parameter-value list 
-	 * on the given measurement environment controller,
-	 * and aggregates the results into an instance of {@link DataSetAggregated}.
+	 * Runs the experiment defined by the input parameter-value list on the
+	 * given measurement environment controller, and aggregates the results into
+	 * an instance of {@link DataSetAggregated}.
 	 */
 	private boolean runExperimentOnME(IMeasurementEnvironmentController meController,
 			ParameterCollection<ParameterValue<?>> inputPVs) {
@@ -302,8 +304,13 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 	public void acquireMEController() {
 		long timeout = Configuration.getSessionSingleton(getSessionId()).getPropertyAsLong(
 				IConfiguration.CONF_MEC_ACQUISITION_TIMEOUT, 0);
+
+		String token = Configuration.getSessionSingleton(getSessionId()).getPropertyAsStr(
+				IConfiguration.STATUS_MESSAGES_TOKEN);
+		InitializePackage initializePackage = StatusBroker.get().getInitializePackage(token);
+
 		try {
-			boolean acquired = meController.acquireMEController(getSessionId(), timeout);
+			boolean acquired = meController.acquireMEController(getSessionId(), timeout, initializePackage);
 			if (!acquired) {
 				throw new RuntimeException(
 						"MEController in use. Were not able to acquire the controller within a time frame of "

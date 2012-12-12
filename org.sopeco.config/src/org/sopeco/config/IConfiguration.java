@@ -59,7 +59,10 @@ public interface IConfiguration extends ISessionAwareObject {
 	String DEFAULT_CONFIG_FILE_NAME = "sopeco-defaults.conf";
 
 	String DIR_SEPARATOR = ":";
-
+	
+	String SENDING_STATUS_MESSAGES = "sopeco.config.sendingStatusMessages";
+	String STATUS_MESSAGES_TOKEN = "sopeco.config.status.token";
+	
 	/**
 	 * Returns the configured value of the given property in SoPeCo.
 	 * 

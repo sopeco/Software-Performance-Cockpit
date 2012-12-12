@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import org.sopeco.engine.status.InitializePackage;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
@@ -129,6 +130,8 @@ public interface IMeasurementEnvironmentController extends Remote {
 	 *             remote exception is thrown
 	 */
 	boolean acquireMEController(String acquirerID, long timeout) throws RemoteException;
+	
+	boolean acquireMEController(String acquirerID, long timeout, InitializePackage initializePackage) throws RemoteException;
 
 	/**
 	 * This method releases the MEController for the given acquirerID. As soon
