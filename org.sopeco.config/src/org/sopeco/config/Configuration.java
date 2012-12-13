@@ -595,7 +595,8 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		try {
 			in = findConfigFileAsInputStream(classLoader, DEFAULT_CONFIG_FOLDER_NAME, fileName);
 		} catch (FileNotFoundException e) {
-			logger.warn("Exception caught: {}", e);
+			logger.warn("Cannof find configuration file '{}'.", fileName);
+			return;
 		}
 
 		if (in == null) {
