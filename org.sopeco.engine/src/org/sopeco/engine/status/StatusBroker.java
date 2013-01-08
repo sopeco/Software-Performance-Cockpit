@@ -15,6 +15,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 
 import com.sun.jersey.api.container.httpserver.HttpServerFactory;
+import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.net.httpserver.HttpServer;
 
 /**
@@ -49,7 +50,8 @@ public class StatusBroker {
 	public static void startHttpServer() {
 		try {
 			if (server == null) {
-				server = HttpServerFactory.create("http://localhost:8088/rest");
+				PackagesResourceConfig rescConfig = new PackagesResourceConfig("org.sopeco.engine.status");
+				server = HttpServerFactory.create("http://localhost:8088/rest", rescConfig);
 				server.start();
 			}
 			httpServerCount++;
