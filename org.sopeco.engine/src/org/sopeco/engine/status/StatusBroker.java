@@ -26,6 +26,7 @@ import com.sun.net.httpserver.HttpServer;
 public class StatusBroker {
 
 	private static HttpServer server;
+	private static int httpServerCount = 0;
 	private static StatusBroker singleton;
 
 	private static final long TIMEOUT_MS = 1000;
@@ -47,8 +48,11 @@ public class StatusBroker {
 	 */
 	public static void startHttpServer() {
 		try {
-			server = HttpServerFactory.create("http://localhost:8088/rest");
-			server.start();
+			if (server == null) {
+				server = HttpServerFactory.create("http://localhost:8088/rest");
+				server.start();
+			}
+			httpServerCount++;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -58,9 +62,12 @@ public class StatusBroker {
 	 * Stops the HttpServer.
 	 */
 	public static void stopHttpServer() {
-		if (server != null) {
-			server.stop(0);
-			server = null;
+		synchronized (server) {
+			httpServerCount--;
+			if (server != null && httpServerCount <= 0) {
+				server.stop(0);
+				server = null;
+			}
 		}
 	}
 

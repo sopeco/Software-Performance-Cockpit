@@ -59,10 +59,10 @@ public interface IConfiguration extends ISessionAwareObject {
 	String DEFAULT_CONFIG_FILE_NAME = "sopeco-defaults.conf";
 
 	String DIR_SEPARATOR = ":";
-	
+
 	String SENDING_STATUS_MESSAGES = "sopeco.config.sendingStatusMessages";
 	String STATUS_MESSAGES_TOKEN = "sopeco.config.status.token";
-	
+
 	/**
 	 * Returns the configured value of the given property in SoPeCo.
 	 * 
@@ -177,7 +177,8 @@ public interface IConfiguration extends ISessionAwareObject {
 	 * @throws ConfigurationException
 	 *             if there is any problem with command line arguments
 	 */
-	void processCommandLineArguments(String[] args) throws ConfigurationException;
+	void processCommandLineArguments(String[] args)
+			throws ConfigurationException;
 
 	/**
 	 * Loads default configurations from a file name. If the file name is not an
@@ -204,7 +205,8 @@ public interface IConfiguration extends ISessionAwareObject {
 	 *             if initializing the configuration fails
 	 * 
 	 */
-	void loadDefaultConfiguration(String fileName) throws ConfigurationException;
+	void loadDefaultConfiguration(String fileName)
+			throws ConfigurationException;
 
 	/**
 	 * Loads default configurations from a file name. If the file name is not an
@@ -230,7 +232,8 @@ public interface IConfiguration extends ISessionAwareObject {
 	 * @throws ConfigurationException
 	 *             if initializing the configuration fails
 	 */
-	void loadDefaultConfiguration(ClassLoader classLoader, String fileName) throws ConfigurationException;
+	void loadDefaultConfiguration(ClassLoader classLoader, String fileName)
+			throws ConfigurationException;
 
 	/**
 	 * Loads user-level configurations from a file name. If the file name is not
@@ -282,7 +285,8 @@ public interface IConfiguration extends ISessionAwareObject {
 	 * @throws ConfigurationException
 	 *             if initializing the configuration fails
 	 */
-	void loadConfiguration(ClassLoader classLoader, String fileName) throws ConfigurationException;
+	void loadConfiguration(ClassLoader classLoader, String fileName)
+			throws ConfigurationException;
 
 	/**
 	 * Performs any post processing of configuration settings that may be
@@ -323,7 +327,8 @@ public interface IConfiguration extends ISessionAwareObject {
 	 *             if initializing the configuration fails
 	 * @see #CONF_MEASUREMENT_CONTROLLER_URI
 	 */
-	void setMeasurementControllerURI(String uriStr) throws ConfigurationException;
+	void setMeasurementControllerURI(String uriStr)
+			throws ConfigurationException;
 
 	/**
 	 * Sets the measurement controller class name. This also sets the
@@ -369,10 +374,11 @@ public interface IConfiguration extends ISessionAwareObject {
 	/**
 	 * Sets the application root directory to the given folder.
 	 * 
-	 * @param rootDir path to a folder
+	 * @param rootDir
+	 *            path to a folder
 	 */
 	void setAppRootDirectory(String rootDir);
-	
+
 	/**
 	 * @return Returns the application's configuration directory.
 	 */
@@ -435,4 +441,5 @@ public interface IConfiguration extends ISessionAwareObject {
 	 */
 	void writeConfiguration(String fileName) throws IOException;
 
+	void overwrite(Configuration configuration);
 }

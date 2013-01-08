@@ -38,11 +38,13 @@ import ch.qos.logback.core.joran.spi.JoranException;
  * @author Roozbeh Farahbod
  * 
  */
-public final class Configuration extends SessionAwareObject implements IConfiguration {
+public final class Configuration extends SessionAwareObject implements
+		IConfiguration {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final Logger logger = LoggerFactory.getLogger(Configuration.class);
+	private static final Logger logger = LoggerFactory
+			.getLogger(Configuration.class);
 
 	private static final String GLOBAL_SESSION_ID = "globalSessionId";
 
@@ -64,8 +66,10 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	private Configuration(Class<?> mainClass, String sessionId) {
 		super(sessionId);
 		try {
-			logger.debug("Initializing SoPeCo configuration module{}.", (mainClass == null ? "" : " with main class "
-					+ mainClass.getName() + ""));
+			logger.debug(
+					"Initializing SoPeCo configuration module{}.",
+					(mainClass == null ? "" : " with main class "
+							+ mainClass.getName() + ""));
 			setDefaultValues(mainClass);
 		} catch (ConfigurationException e) {
 			throw new RuntimeException(e);
@@ -78,8 +82,10 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	 * used, if the configuration settings are really unrelated to any session!
 	 * 
 	 * @return Returns a session-unrelated instance of the configuration.
-	 * @deprecated This method should not be used. If session id is not relevant in your use-case, 
-	 * 			use {@link #getSessionSingleton(String)} with an auto generated session id such as {@link Tools#getUniqueTimeStamp()}. 
+	 * @deprecated This method should not be used. If session id is not relevant
+	 *             in your use-case, use {@link #getSessionSingleton(String)}
+	 *             with an auto generated session id such as
+	 *             {@link Tools#getUniqueTimeStamp()}.
 	 */
 	@Deprecated
 	public static IConfiguration getSessionUnrelatedSingleton() {
@@ -96,8 +102,10 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	 *            the class whose class loader should be used for configuration
 	 * @return Returns a session-unrelated instance of the configuration.
 	 * 
-	 * @deprecated This method should not be used. If session id is not relevant in your use-case, 
-	 * 			use {@link #getSessionSingleton(String)} with an auto generated session id such as {@link Tools#getUniqueTimeStamp()}.
+	 * @deprecated This method should not be used. If session id is not relevant
+	 *             in your use-case, use {@link #getSessionSingleton(String)}
+	 *             with an auto generated session id such as
+	 *             {@link Tools#getUniqueTimeStamp()}.
 	 */
 	@Deprecated
 	public static IConfiguration getSessionUnrelatedSingleton(Class<?> mainClass) {
@@ -133,9 +141,11 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	 *         the given main class.
 	 * @see #setMainClass(Class)
 	 */
-	public static IConfiguration getSessionSingleton(Class<?> mainClass, String sessionId) {
+	public static IConfiguration getSessionSingleton(Class<?> mainClass,
+			String sessionId) {
 		if (!sessionAwareConfigurations.containsKey(sessionId)) {
-			sessionAwareConfigurations.put(sessionId, new Configuration(mainClass, sessionId));
+			sessionAwareConfigurations.put(sessionId, new Configuration(
+					mainClass, sessionId));
 		}
 
 		return sessionAwareConfigurations.get(sessionId);
@@ -172,7 +182,8 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		if (value == null) {
 			return defaultValue;
 		} else {
-			return Tools.strEqualName("true", value.trim()) || Tools.strEqualName("yes", value.trim());
+			return Tools.strEqualName("true", value.trim())
+					|| Tools.strEqualName("yes", value.trim());
 		}
 
 	}
@@ -208,40 +219,57 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	}
 
 	@Override
-	public void processCommandLineArguments(String[] args) throws ConfigurationException {
+	public void processCommandLineArguments(String[] args)
+			throws ConfigurationException {
 		Options options = new Options();
 
 		// option: help
 		Option help = new Option("help", "print this message");
 
 		// option: sopeco config file
-		Option config = OptionBuilder.withArgName("file").hasArg().withDescription("sopeco configuration file")
-				.create("config");
+		Option config = OptionBuilder.withArgName("file").hasArg()
+				.withDescription("sopeco configuration file").create("config");
 
 		// option: logger config file
-		Option logconfig = OptionBuilder.withArgName("file").hasArg().withDescription("the logback configuration file")
+		Option logconfig = OptionBuilder.withArgName("file").hasArg()
+				.withDescription("the logback configuration file")
 				.create("logconfig");
 
 		// option: ME URI
-		Option meURI = OptionBuilder.withArgName("URI").hasArg()
-				.withDescription("URI of the measurement environment controller service").create("uri");
+		Option meURI = OptionBuilder
+				.withArgName("URI")
+				.hasArg()
+				.withDescription(
+						"URI of the measurement environment controller service")
+				.create("uri");
 
 		// option: ME Class
-		Option meClass = OptionBuilder.withArgName("class").hasArg()
-				.withDescription("classname of the measurement environment controller").create("meClass");
+		Option meClass = OptionBuilder
+				.withArgName("class")
+				.hasArg()
+				.withDescription(
+						"classname of the measurement environment controller")
+				.create("meClass");
 
 		// option: scenario definition
-		Option scenarioDef = OptionBuilder.withArgName("file").hasArg().withDescription("scenario definition file")
-				.create("sd");
-		Option modelChangeHandling = OptionBuilder.withArgName("mchMode").hasArg()
-				.withDescription("mode describing how to handle model changes").create("mch");
+		Option scenarioDef = OptionBuilder.withArgName("file").hasArg()
+				.withDescription("scenario definition file").create("sd");
+		Option modelChangeHandling = OptionBuilder.withArgName("mchMode")
+				.hasArg()
+				.withDescription("mode describing how to handle model changes")
+				.create("mch");
 
 		// option
-		Option logVerbosity = OptionBuilder.withArgName("level").hasArg()
-				.withDescription("logging verbosity level (overrides log config)").create("lv");
+		Option logVerbosity = OptionBuilder
+				.withArgName("level")
+				.hasArg()
+				.withDescription(
+						"logging verbosity level (overrides log config)")
+				.create("lv");
 
-		// option: set home folder	
-		Option homePathOption = OptionBuilder.withArgName("path").hasArg().withDescription("Path to SoPeCo home folder").create("home");
+		// option: set home folder
+		Option homePathOption = OptionBuilder.withArgName("path").hasArg()
+				.withDescription("Path to SoPeCo home folder").create("home");
 
 		// Option selectedSeries = OptionBuilder.withArgName("series")
 		// .withValueSeparator(',')
@@ -285,13 +313,15 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		}
 
 		if (line.hasOption(modelChangeHandling.getOpt())) {
-			final String mchMode = line.getOptionValue(modelChangeHandling.getOpt());
+			final String mchMode = line.getOptionValue(modelChangeHandling
+					.getOpt());
 			setProperty(CONF_MODEL_CHANGE_HANDLING_MODE, mchMode);
 		}
 
 		// -sd
 		if (line.hasOption(scenarioDef.getOpt())) {
-			setScenarioDescriptionFileName(line.getOptionValue(scenarioDef.getOpt()));
+			setScenarioDescriptionFileName(line.getOptionValue(scenarioDef
+					.getOpt()));
 		}
 
 		// -config
@@ -323,9 +353,10 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 			// TODO it may not be possible
 		}
 
-		// -home 
+		// -home
 		if (line.hasOption(homePathOption.getOpt())) {
-			final String homePath = line.getOptionValue(homePathOption.getOpt());
+			final String homePath = line
+					.getOptionValue(homePathOption.getOpt());
 			setAppRootDirectory(homePath);
 		}
 	}
@@ -335,7 +366,8 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	 * 
 	 * @throws ConfigurationException
 	 */
-	private void setDefaultValues(Class<?> mainClass) throws ConfigurationException {
+	private void setDefaultValues(Class<?> mainClass)
+			throws ConfigurationException {
 		if (mainClass != null) {
 			defaultValues.put(CONF_MAIN_CLASS, mainClass);
 		}
@@ -374,11 +406,13 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	}
 
 	@Override
-	public void setMeasurementControllerURI(String uri) throws ConfigurationException {
+	public void setMeasurementControllerURI(String uri)
+			throws ConfigurationException {
 		try {
 			setProperty(CONF_MEASUREMENT_CONTROLLER_URI, new URI(uri));
 		} catch (URISyntaxException e) {
-			logger.error("Could not parse the URI {}. Error: {}", uri, e.getMessage());
+			logger.error("Could not parse the URI {}. Error: {}", uri,
+					e.getMessage());
 			throw new ConfigurationException(e);
 		}
 	}
@@ -443,12 +477,15 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		final String fullPath = f.getAbsolutePath();
 		setProperty(CONF_APP_ROOT_FOLDER, fullPath);
 		logger.info("SoPeCo home folder is set to '{}'.", fullPath);
-		logger.info("SoPeCo config folder is set to '{}'.", Tools.concatFileName(fullPath, IConfiguration.DEFAULT_CONFIG_FOLDER_NAME));
+		logger.info("SoPeCo config folder is set to '{}'.", Tools
+				.concatFileName(fullPath,
+						IConfiguration.DEFAULT_CONFIG_FOLDER_NAME));
 	}
 
 	@Override
 	public String getAppConfDirectory() {
-		return Tools.concatFileName(getAppRootDirectory(), DEFAULT_CONFIG_FOLDER_NAME);
+		return Tools.concatFileName(getAppRootDirectory(),
+				DEFAULT_CONFIG_FOLDER_NAME);
 	}
 
 	/**
@@ -482,9 +519,12 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		// $ java -Dlogback.configurationFile=/path/to/config.xml ...
 
 		String fileName = getPropertyAsStr(CONF_LOGGER_CONFIG_FILE_NAME);
-		// if (fileName != null) && !fileName.equals(lastLogbackConfigurationFileName)) {  // This was a bad idea.
-		if (fileName != null) { 
-			LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+		// if (fileName != null) &&
+		// !fileName.equals(lastLogbackConfigurationFileName)) { // This was a
+		// bad idea.
+		if (fileName != null) {
+			LoggerContext lc = (LoggerContext) LoggerFactory
+					.getILoggerFactory();
 			try {
 				logger.debug("Configuring logback using '{}'...", fileName);
 
@@ -495,8 +535,8 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 				// rules
 				lc.reset();
 
-				configurator
-						.doConfigure(findConfigFileAsInputStream(ClassLoader.getSystemClassLoader(), null, fileName));
+				configurator.doConfigure(findConfigFileAsInputStream(
+						ClassLoader.getSystemClassLoader(), null, fileName));
 			} catch (JoranException je) {
 				logger.warn(
 						"Failed loading the logback configuration file. Using default configuration. Error message: {}",
@@ -532,7 +572,8 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	}
 
 	private void copyConfigItem(Entry<String, Object> e, Properties destination) {
-		if (e.getValue() instanceof Number || e.getValue() instanceof Boolean || e.getValue() instanceof String) {
+		if (e.getValue() instanceof Number || e.getValue() instanceof Boolean
+				|| e.getValue() instanceof String) {
 			destination.setProperty(e.getKey(), e.getValue().toString());
 		} else {
 			logger.debug("Skipping configuration item '{}'.", e.getKey());
@@ -541,33 +582,41 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	}
 
 	@Override
-	public void loadDefaultConfiguration(String fileName) throws ConfigurationException {
-		loadConfiguration(defaultValues, this.getClass().getClassLoader(), fileName);
+	public void loadDefaultConfiguration(String fileName)
+			throws ConfigurationException {
+		loadConfiguration(defaultValues, this.getClass().getClassLoader(),
+				fileName);
 	}
 
 	@Override
-	public void loadDefaultConfiguration(ClassLoader classLoader, String fileName) throws ConfigurationException {
+	public void loadDefaultConfiguration(ClassLoader classLoader,
+			String fileName) throws ConfigurationException {
 		loadConfiguration(defaultValues, classLoader, fileName);
 	}
 
 	@Override
-	public void loadConfiguration(String fileName) throws ConfigurationException {
-		loadConfiguration(properties, this.getClass().getClassLoader(), fileName);
+	public void loadConfiguration(String fileName)
+			throws ConfigurationException {
+		loadConfiguration(properties, this.getClass().getClassLoader(),
+				fileName);
 	}
 
 	@Override
-	public void loadConfiguration(ClassLoader classLoader, String fileName) throws ConfigurationException {
+	public void loadConfiguration(ClassLoader classLoader, String fileName)
+			throws ConfigurationException {
 		loadConfiguration(properties, classLoader, fileName);
 	}
 
 	/**
 	 * Loads configuration into a configuration map.
 	 */
-	private void loadConfiguration(Map<String, Object> dest, ClassLoader classLoader, String fileName)
+	private void loadConfiguration(Map<String, Object> dest,
+			ClassLoader classLoader, String fileName)
 			throws ConfigurationException {
 		InputStream in = null;
 		try {
-			in = findConfigFileAsInputStream(classLoader, DEFAULT_CONFIG_FOLDER_NAME, fileName);
+			in = findConfigFileAsInputStream(classLoader,
+					DEFAULT_CONFIG_FOLDER_NAME, fileName);
 		} catch (FileNotFoundException e) {
 			logger.warn("Exception caught: {}", e);
 		}
@@ -588,12 +637,15 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	 * @param stream
 	 *            the input stream
 	 */
-	private void loadConfigFromStream(Map<String, Object> dest, InputStream stream) throws ConfigurationException {
+	private void loadConfigFromStream(Map<String, Object> dest,
+			InputStream stream) throws ConfigurationException {
 		Properties prop = new Properties();
 		try {
 			prop.load(stream);
 		} catch (IOException e) {
-			throw new ConfigurationException("Could not load configuration. (Reason: " + e.getMessage() + ")", e);
+			throw new ConfigurationException(
+					"Could not load configuration. (Reason: " + e.getMessage()
+							+ ")", e);
 		}
 		for (Entry<Object, Object> entry : prop.entrySet()) {
 			if (dest == properties) {
@@ -619,8 +671,8 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	 * 
 	 * @throws FileNotFoundException
 	 */
-	private InputStream findConfigFileAsInputStream(ClassLoader classLoader, String container, String fileName)
-			throws FileNotFoundException {
+	private InputStream findConfigFileAsInputStream(ClassLoader classLoader,
+			String container, String fileName) throws FileNotFoundException {
 
 		String pathToFile = fileName;
 
@@ -649,7 +701,8 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		fileName = fileName.replace(File.separatorChar, '/');
 
 		// 3.2 Try the container directory in the classpath
-		pathToFile = (container == null || container.length() == 0) ? fileName : (container + "/" + fileName);
+		pathToFile = (container == null || container.length() == 0) ? fileName
+				: (container + "/" + fileName);
 
 		InputStream inStream = classLoader.getResourceAsStream(pathToFile);
 		if (inStream == null) {
@@ -675,6 +728,18 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	 */
 	public static String getGlobalSessionId() {
 		return GLOBAL_SESSION_ID;
+	}
+
+	/**
+	 * Overrides the values of this configuration with those of the given
+	 * configuration.
+	 * 
+	 * @param configuration
+	 *            with the new values
+	 */
+	public void overwrite(Configuration configuration) {
+		defaultValues = configuration.defaultValues;
+		properties = configuration.properties;
 	}
 
 }

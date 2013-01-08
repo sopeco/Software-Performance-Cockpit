@@ -9,6 +9,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 
 /**
+ * This class is used by the MEController to send the StatusMessages to SoPeCo.
  * 
  * @author Marius Oehler
  * 
@@ -21,11 +22,21 @@ public class StatusSender {
 	private long hostLastReachable = 0;
 	private static final long HOST_TIMEOUT_LIMIT = 2 * 60 * 1000;
 
+	/**
+	 * Constructor. Needs a InitializePackage object, which contains the URL of
+	 * SoPeCo, where the StatusMessages will be send to.
+	 * 
+	 * @param pInitializePackage
+	 */
 	public StatusSender(InitializePackage pInitializePackage) {
 		initializePackage = pInitializePackage;
 	}
 
-	private boolean sendMessage() {
+	/**
+	 * 
+	 * @return
+	 */
+	private boolean ableToSendMessages() {
 		if (initializePackage == null) {
 			LOGGER.debug("Skip sending status message. No initialize package.");
 			return false;
@@ -38,7 +49,7 @@ public class StatusSender {
 	}
 
 	public void next(EventType eventType) {
-		if (!sendMessage()) {
+		if (!ableToSendMessages()) {
 			return;
 		}
 		StatusMessage statusMessage = new StatusMessage();
@@ -49,7 +60,7 @@ public class StatusSender {
 	}
 
 	public void next(EventType eventType, IStatusInfo statusInfo) {
-		if (!sendMessage()) {
+		if (!ableToSendMessages()) {
 			return;
 		}
 		StatusMessage statusMessage = new StatusMessage();
@@ -60,7 +71,7 @@ public class StatusSender {
 	}
 
 	public void next(EventType eventType, Throwable throwable) {
-		if (!sendMessage()) {
+		if (!ableToSendMessages()) {
 			return;
 		}
 		ErrorInfo errorInfo = new ErrorInfo();
@@ -74,7 +85,7 @@ public class StatusSender {
 	}
 
 	public void next(StatusMessage statusMessage) {
-		if (!sendMessage()) {
+		if (!ableToSendMessages()) {
 			return;
 		}
 		try {
