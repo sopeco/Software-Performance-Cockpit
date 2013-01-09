@@ -1,7 +1,5 @@
 package org.sopeco.engine.status;
 
-import java.io.Serializable;
-
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -10,7 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * 
  */
 @XmlRootElement
-public class ErrorInfo implements IStatusInfo, Serializable {
+public class ErrorInfo implements IStatusInfo {
 
 	/**
 	 * 

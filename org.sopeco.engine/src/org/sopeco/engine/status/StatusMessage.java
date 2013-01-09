@@ -21,7 +21,15 @@ public class StatusMessage implements Serializable {
 
 	private EventType eventType;
 	private IStatusInfo statusInfo;
+	private long time;
 	private String token;
+
+	/**
+	 * Constructor. It sets the current system time to the time field.
+	 */
+	public StatusMessage() {
+		time = System.currentTimeMillis();
+	}
 
 	/**
 	 * @return the eventType
@@ -35,6 +43,13 @@ public class StatusMessage implements Serializable {
 	 */
 	public IStatusInfo getStatusInfo() {
 		return statusInfo;
+	}
+
+	/**
+	 * @return the time
+	 */
+	public long getTime() {
+		return time;
 	}
 
 	/**
@@ -58,6 +73,14 @@ public class StatusMessage implements Serializable {
 	 */
 	public void setStatusInfo(IStatusInfo pStatusInfo) {
 		statusInfo = pStatusInfo;
+	}
+
+	/**
+	 * @param pTime
+	 *            the time to set
+	 */
+	public void setTime(long pTime) {
+		time = pTime;
 	}
 
 	/**

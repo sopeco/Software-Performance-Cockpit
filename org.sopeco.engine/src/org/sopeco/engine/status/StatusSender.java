@@ -14,21 +14,55 @@ import com.sun.jersey.api.client.WebResource;
  * @author Marius Oehler
  * 
  */
-public class StatusSender {
+public final class StatusSender {
+
+	private static StatusSender sender;
+
+	/**
+	 * Returns the current StatusSender.<br>
+	 * Note: Before it can be used, it have to be initialized with an
+	 * InitializePackage.
+	 * 
+	 * @return the sender
+	 */
+	public static StatusSender get() {
+		if (sender == null) {
+			sender = new StatusSender();
+		}
+		return sender;
+	}
+
+	/**
+	 * Returns a temporary StatusSender with the given InitializePackage.
+	 * 
+	 * @param pInitializePackage
+	 * @return
+	 */
+	public static StatusSender get(InitializePackage pInitializePackage) {
+		StatusSender tempSender = new StatusSender();
+		tempSender.init(pInitializePackage);
+		return tempSender;
+	}
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(StatusSender.class);
 	private static final String REST_NAME = "statusService";
-	private InitializePackage initializePackage;
+	private InitializePackage initializePackage = null;
 	private long hostLastReachable = 0;
 	private static final long HOST_TIMEOUT_LIMIT = 2 * 60 * 1000;
 
 	/**
-	 * Constructor. Needs a InitializePackage object, which contains the URL of
-	 * SoPeCo, where the StatusMessages will be send to.
+	 * Constructor.
+	 */
+	private StatusSender() {
+	}
+
+	/**
+	 * Needs a InitializePackage object, which contains the URL of SoPeCo, where
+	 * the StatusMessages will be send to.
 	 * 
 	 * @param pInitializePackage
 	 */
-	public StatusSender(InitializePackage pInitializePackage) {
+	public void init(InitializePackage pInitializePackage) {
 		initializePackage = pInitializePackage;
 	}
 

@@ -29,7 +29,7 @@ public abstract class MEControllerResource implements IMeasurementEnvironmentCon
 	private final Semaphore semaphore;
 	private MEControllerState currentState;
 	private String assignedTo;
-	private StatusSender statusSender;
+	//private StatusSender statusSender;
 
 	/**
 	 * Constructor. Initial state is MEControllerState.AVAILABLE.
@@ -47,9 +47,8 @@ public abstract class MEControllerResource implements IMeasurementEnvironmentCon
 	@Override
 	public boolean acquireMEController(String acquirerID, long timeout, InitializePackage initializePackage)
 			throws RemoteException {
-		StatusSender nextStatusSender = new StatusSender(initializePackage);
 		try {
-			nextStatusSender.next(EventType.ACQUIRE_MEC);
+			StatusSender.get(initializePackage).next(EventType.ACQUIRE_MEC);
 			boolean acquired = semaphore.tryAcquire(timeout, TimeUnit.SECONDS);
 
 			synchronized (this) {
@@ -57,11 +56,11 @@ public abstract class MEControllerResource implements IMeasurementEnvironmentCon
 					assignedTo = acquirerID;
 				}
 				updateState(MEControllerState.IN_USE);
-				statusSender = nextStatusSender;
+				StatusSender.get().init(initializePackage);
 				return acquired;
 			}
 		} catch (InterruptedException e) {
-			nextStatusSender.next(EventType.ACQUIRE_MEC_FAILED, e);
+			StatusSender.get(initializePackage).next(EventType.ACQUIRE_MEC_FAILED, e);
 			throw new RuntimeException(e);
 		}
 
@@ -69,7 +68,7 @@ public abstract class MEControllerResource implements IMeasurementEnvironmentCon
 
 	@Override
 	public synchronized void releaseMEController(String acquirerID) throws RemoteException {
-		statusSender.next(EventType.RELEASE_MEC);
+		StatusSender.get().next(EventType.RELEASE_MEC);
 		if (acquirerID.equals(assignedTo)) {
 			cleanUpMEController();
 			semaphore.release();
@@ -84,7 +83,7 @@ public abstract class MEControllerResource implements IMeasurementEnvironmentCon
 	@Override
 	public void initialize(String acquirerID, ParameterCollection<ParameterValue<?>> initializationPVs)
 			throws RemoteException {
-		statusSender.next(EventType.INIT_MEC);
+		StatusSender.get().next(EventType.INIT_MEC);
 		checkExecutionPermission(acquirerID);
 		updateState(MEControllerState.INITIALIZATION);
 		initialize(initializationPVs);
@@ -93,7 +92,7 @@ public abstract class MEControllerResource implements IMeasurementEnvironmentCon
 	@Override
 	public void prepareExperimentSeries(String acquirerID, ParameterCollection<ParameterValue<?>> preparationPVs,
 			Set<ExperimentTerminationCondition> terminationConditions) throws RemoteException {
-		statusSender.next(EventType.PREPARE_EXPERIMENTSERIES);
+		StatusSender.get().next(EventType.PREPARE_EXPERIMENTSERIES);
 		checkExecutionPermission(acquirerID);
 		updateState(MEControllerState.SERIES_PREPARATION);
 		prepareExperimentSeries(preparationPVs, terminationConditions);
@@ -102,7 +101,7 @@ public abstract class MEControllerResource implements IMeasurementEnvironmentCon
 	@Override
 	public Collection<ParameterValueList<?>> runExperiment(String acquirerID,
 			ParameterCollection<ParameterValue<?>> inputPVs) throws RemoteException, ExperimentFailedException {
-		statusSender.next(EventType.EXECUTE_EXPERIMENTRUN);
+		StatusSender.get().next(EventType.EXECUTE_EXPERIMENTRUN);
 		checkExecutionPermission(acquirerID);
 		updateState(MEControllerState.EXPERIMENT_EXECUTION);
 		return runExperiment(inputPVs);
@@ -110,7 +109,7 @@ public abstract class MEControllerResource implements IMeasurementEnvironmentCon
 
 	@Override
 	public void finalizeExperimentSeries(String acquirerID) throws RemoteException {
-		statusSender.next(EventType.FINALIZE_EXPERIMENTSERIES);
+		StatusSender.get().next(EventType.FINALIZE_EXPERIMENTSERIES);
 		checkExecutionPermission(acquirerID);
 		updateState(MEControllerState.FINALIZING_SERIES);
 		finalizeExperimentSeries();
