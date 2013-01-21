@@ -2,16 +2,11 @@ package org.sopeco.engine.status;
 
 import java.io.Serializable;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
 /**
- * Container class. A object of this class contains all necessary information
- * about the controller status.
  * 
  * @author Marius Oehler
  * 
  */
-@XmlRootElement
 public class StatusMessage implements Serializable {
 
 	/**
@@ -19,16 +14,14 @@ public class StatusMessage implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	private long timestamp;
 	private EventType eventType;
-	private IStatusInfo statusInfo;
-	private long time;
-	private String token;
 
-	/**
-	 * Constructor. It sets the current system time to the time field.
-	 */
+	private String description;
+	private IStatusInfo statusInfo;
+
 	public StatusMessage() {
-		time = System.currentTimeMillis();
+		timestamp = System.currentTimeMillis();
 	}
 
 	/**
@@ -45,18 +38,21 @@ public class StatusMessage implements Serializable {
 		return statusInfo;
 	}
 
-	/**
-	 * @return the time
-	 */
-	public long getTime() {
-		return time;
+
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String pDescription) {
+		this.description = pDescription;
 	}
 
 	/**
-	 * @return the token
+	 * @return the timestamp
 	 */
-	public String getToken() {
-		return token;
+	public long getTimestamp() {
+		return timestamp;
 	}
 
 	/**
@@ -76,19 +72,11 @@ public class StatusMessage implements Serializable {
 	}
 
 	/**
-	 * @param pTime
-	 *            the time to set
+	 * @param pTimestamp
+	 *            the timestamp to set
 	 */
-	public void setTime(long pTime) {
-		time = pTime;
-	}
-
-	/**
-	 * @param pToken
-	 *            the token to set
-	 */
-	public void setToken(String pToken) {
-		token = pToken;
+	public void setTimestamp(long pTimestamp) {
+		timestamp = pTimestamp;
 	}
 
 }

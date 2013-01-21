@@ -3,46 +3,40 @@ package org.sopeco.engine.status;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 
  * @author Marius Oehler
  * 
  */
 public class StatusManager {
-	private String controllerUrl;
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(StatusManager.class);
+
 	private int lastFetchedStatus = -1;
-	private long lastPackageReceivedTime;
-	private List<StatusMessage> statusMessages;
+	private List<StatusMessage> statusList;
+
+	private String controllerURL;
+
+	private List<IStatusListener> statusListenerList;
 
 	/**
 	 * Constructor.
-	 * 
-	 * @param pControllerUrl
-	 *            URL of the controller.
 	 */
-	public StatusManager(String pControllerUrl) {
-		controllerUrl = pControllerUrl;
-		statusMessages = new ArrayList<StatusMessage>();
-		lastPackageReceivedTime = System.currentTimeMillis();
+	public StatusManager(String pControllerURL) {
+		statusList = new ArrayList<StatusMessage>();
+		controllerURL = pControllerURL;
+		statusListenerList = new ArrayList<IStatusListener>();
 	}
 
-	/**
-	 * Returns the controllerUrl.
-	 */
-	public String getControllerUrl() {
-		return controllerUrl;
+	public void addStatusListener(IStatusListener listener) {
+		statusListenerList.add(listener);
 	}
 
-	/**
-	 * Returns the latest {@link StatusMessage}.
-	 * 
-	 * @return StatusMessage
-	 */
-	public StatusMessage getCurrentStatus() {
-		if (statusMessages.isEmpty()) {
-			return null;
-		}
-		return statusMessages.get(statusMessages.size() - 1);
+	public void removeStatusListener(IStatusListener listener) {
+		statusListenerList.remove(listener);
 	}
 
 	/**
@@ -52,7 +46,24 @@ public class StatusManager {
 	 * @return
 	 */
 	public long getLastPackageReceivedTime() {
-		return lastPackageReceivedTime;
+		StatusMessage message = getLatestStatus();
+		if (message == null) {
+			return -1;
+		} else {
+			return message.getTimestamp();
+		}
+	}
+
+	/**
+	 * Returns the latest {@link StatusMessage}.
+	 * 
+	 * @return StatusMessage
+	 */
+	public StatusMessage getLatestStatus() {
+		if (statusList.isEmpty()) {
+			return null;
+		}
+		return statusList.get(statusList.size() - 1);
 	}
 
 	/**
@@ -62,7 +73,25 @@ public class StatusManager {
 	 * @return
 	 */
 	public synchronized boolean hasNext() {
-		return lastFetchedStatus + 1 < statusMessages.size();
+		return lastFetchedStatus + 1 < statusList.size();
+	}
+
+	public void newStatus(EventType eventType, Throwable throwable) {
+		ErrorInfo info = new ErrorInfo();
+		info.setThrowable(throwable);
+
+		StatusMessage message = new StatusMessage();
+		message.setEventType(eventType);
+		message.setStatusInfo(info);
+
+		newStatus(message);
+	}
+
+	public void newStatus(EventType eventType) {
+		StatusMessage message = new StatusMessage();
+		message.setEventType(eventType);
+		
+		newStatus(message);
 	}
 
 	/**
@@ -71,15 +100,12 @@ public class StatusManager {
 	 * @param statusMessage
 	 */
 	public void newStatus(StatusMessage statusMessage) {
-		System.out.println("new message of '" + controllerUrl + "': " + statusMessage.getEventType());
-		lastPackageReceivedTime = System.currentTimeMillis();
-		statusMessages.add(statusMessage);
-	}
+		LOGGER.debug("New Status on '{}': {}", controllerURL, statusMessage.getEventType());
+		statusList.add(statusMessage);
 
-	public void newStatus(EventType eventType) {
-		StatusMessage message = new StatusMessage();
-		message.setEventType(eventType);
-		newStatus(message);
+		for (IStatusListener listener : new ArrayList<IStatusListener>(statusListenerList)) {
+			listener.onNewStatus(statusMessage);
+		}
 	}
 
 	/**
@@ -88,11 +114,10 @@ public class StatusManager {
 	 * @return
 	 */
 	public synchronized StatusMessage next() {
-		if (lastFetchedStatus + 1 < statusMessages.size()) {
+		if (lastFetchedStatus + 1 < statusList.size()) {
 			lastFetchedStatus++;
-			return statusMessages.get(lastFetchedStatus);
+			return statusList.get(lastFetchedStatus);
 		}
 		return null;
 	}
-
 }

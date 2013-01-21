@@ -1,29 +1,3 @@
-/**
- * Copyright (c) 2013 SAP
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *     * Redistributions of source code must retain the above copyright
- *       notice, this list of conditions and the following disclaimer.
- *     * Redistributions in binary form must reproduce the above copyright
- *       notice, this list of conditions and the following disclaimer in the
- *       documentation and/or other materials provided with the distribution.
- *     * Neither the name of the SAP nor the
- *       names of its contributors may be used to endorse or promote products
- *       derived from this software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL SAP BE LIABLE FOR ANY
- * DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- * ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 package org.sopeco.engine.experiment.impl;
 
 import java.rmi.RemoteException;
@@ -36,7 +10,7 @@ import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
-import org.sopeco.engine.status.InitializePackage;
+import org.sopeco.engine.status.EventType;
 import org.sopeco.engine.status.StatusBroker;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.PersistenceProviderFactory;
@@ -107,6 +81,8 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 
 		try {
 
+			StatusBroker.getManagerViaSessionID(getSessionId()).newStatus(EventType.INIT_MEC);
+
 			this.meDefinition = meDefinition;
 
 			this.initializationPVs = initializationPVs;
@@ -132,6 +108,8 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 
 		try {
 
+			StatusBroker.getManagerViaSessionID(getSessionId()).newStatus(EventType.PREPARE_EXPERIMENTSERIES);
+
 			this.currentExperimentSeriesRun = experimentSeriesRun;
 			this.preparationPVs = preparationPVs;
 
@@ -154,6 +132,9 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 		boolean experimentWasSuccessful = false;
 
 		try {
+
+			StatusBroker.getManagerViaSessionID(getSessionId()).newStatus(EventType.EXECUTE_EXPERIMENTRUN);
+
 			// update experiment series run instance with latest database
 			// content
 			currentExperimentSeriesRun = persistenceProvider.loadExperimentSeriesRun(currentExperimentSeriesRun
@@ -200,6 +181,8 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 	@Override
 	public void finalizeExperimentSeries() {
 		try {
+
+			StatusBroker.getManagerViaSessionID(getSessionId()).newStatus(EventType.FINALIZE_EXPERIMENTSERIES);
 
 			meController.finalizeExperimentSeries(getSessionId());
 
@@ -311,9 +294,15 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 			return experimentSuccessful;
 
 		} catch (RemoteException e) {
-			throw new RuntimeException("RemoteException.", e);
-		}
+			StatusBroker.getManagerViaSessionID(getSessionId()).newStatus(EventType.EXECUTION_FAILED, e);
 
+			throw new RuntimeException("RemoteException.", e);
+		} catch (Exception e) {
+			StatusBroker.getManagerViaSessionID(getSessionId()).newStatus(EventType.EXECUTION_FAILED, e);
+
+			LOGGER.error("Exception was thrown. Reason: {}", e.getMessage());
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -331,18 +320,22 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 		long timeout = Configuration.getSessionSingleton(getSessionId()).getPropertyAsLong(
 				IConfiguration.CONF_MEC_ACQUISITION_TIMEOUT, 0);
 
-		String token = Configuration.getSessionSingleton(getSessionId()).getPropertyAsStr(
-				IConfiguration.STATUS_MESSAGES_TOKEN);
-		InitializePackage initializePackage = StatusBroker.get().getInitializePackage(token);
+		StatusBroker.getManagerViaSessionID(getSessionId()).newStatus(EventType.ACQUIRE_MEC);
 
 		try {
-			boolean acquired = meController.acquireMEController(getSessionId(), timeout, initializePackage);
+			boolean acquired = meController.acquireMEController(getSessionId(), timeout);
 			if (!acquired) {
+
+				StatusBroker.getManagerViaSessionID(getSessionId()).newStatus(EventType.ACQUIRE_MEC_FAILED);
+
 				throw new RuntimeException(
 						"MEController in use. Were not able to acquire the controller within a time frame of "
 								+ timeout + " seconds");
 			}
 		} catch (RemoteException e) {
+
+			StatusBroker.getManagerViaSessionID(getSessionId()).newStatus(EventType.ACQUIRE_MEC_FAILED);
+
 			throw new RuntimeException("RemoteException.", e);
 		}
 	}
@@ -350,11 +343,15 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 	@Override
 	public void releaseMEController() {
 		try {
+
+			StatusBroker.getManagerViaSessionID(getSessionId()).newStatus(EventType.RELEASE_MEC);
+
 			meController.releaseMEController(getSessionId());
+
+			StatusBroker.getManagerViaSessionID(getSessionId()).newStatus(EventType.MEASUREMENT_FINISHED);
 		} catch (RemoteException e) {
 			throw new RuntimeException("RemoteException.", e);
 		}
-
 	}
 
 }
