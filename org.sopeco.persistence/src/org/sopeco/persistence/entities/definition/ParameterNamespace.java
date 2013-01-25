@@ -27,6 +27,7 @@
 package org.sopeco.persistence.entities.definition;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,11 +42,11 @@ public class ParameterNamespace implements Serializable {
 
 	public static final String DEFAULT_NAMESPACE_DELIMITER = ".";
 
-	protected List<ParameterNamespace> children;
+	protected List<ParameterNamespace> children = new ArrayList<ParameterNamespace>();
 
 	protected String name = null;
 
-	protected List<ParameterDefinition> parameters;
+	protected List<ParameterDefinition> parameters = new ArrayList<ParameterDefinition>();
 
 	protected ParameterNamespace parent;
 
@@ -96,7 +97,8 @@ public class ParameterNamespace implements Serializable {
 		return createFullNamespaceString("", this, DEFAULT_NAMESPACE_DELIMITER);
 	}
 
-	private String createFullNamespaceString(String fullNamespace, ParameterNamespace namespace, String namespaceDelimitter) {
+	private String createFullNamespaceString(String fullNamespace, ParameterNamespace namespace,
+			String namespaceDelimitter) {
 
 		if (namespace != null && !namespace.getName().isEmpty()) {
 			fullNamespace = namespace.getName() + namespaceDelimitter + fullNamespace;
@@ -156,7 +158,8 @@ public class ParameterNamespace implements Serializable {
 	 *            - the collection in which the observation parameters should be
 	 *            stored (must not be null)
 	 */
-	private static void collectObservationParameters(ParameterNamespace namespace, Collection<ParameterDefinition> observationParameterList) {
+	private static void collectObservationParameters(ParameterNamespace namespace,
+			Collection<ParameterDefinition> observationParameterList) {
 
 		for (ParameterDefinition parameter : namespace.getParameters()) {
 			if (parameter.getRole().equals(ParameterRole.OBSERVATION)) {
@@ -209,7 +212,7 @@ public class ParameterNamespace implements Serializable {
 		int result = 1;
 		result = prime * result + ((children == null) ? 0 : children.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((parameters == null|| parameters.isEmpty()) ? 0 : parameters.hashCode());
+		result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
 		return result;
 	}
 
@@ -222,8 +225,8 @@ public class ParameterNamespace implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		ParameterNamespace other = (ParameterNamespace) obj;
-		if (children == null || children.isEmpty()) {
-			if (other.children != null && !other.children.isEmpty())
+		if (children == null) {
+			if (other.children != null)
 				return false;
 		} else if (!children.equals(other.children))
 			return false;
@@ -232,13 +235,12 @@ public class ParameterNamespace implements Serializable {
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (parameters == null || parameters.isEmpty()) {
-			if (other.parameters != null && !other.parameters.isEmpty())
+		if (parameters == null) {
+			if (other.parameters != null)
 				return false;
 		} else if (!parameters.equals(other.parameters))
 			return false;
 		return true;
 	}
-	
 
 }

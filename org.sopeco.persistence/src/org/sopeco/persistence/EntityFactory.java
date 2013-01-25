@@ -92,7 +92,6 @@ public final class EntityFactory {
 		ExperimentSeries expSeries = new ExperimentSeries();
 		expSeries.setName(expSeriesDefinition.getName());
 		expSeries.setExperimentSeriesDefinition(expSeriesDefinition);
-		expSeries.setVersion(expSeriesDefinition.getVersion());
 		return expSeries;
 	}
 

@@ -78,8 +78,7 @@ public class ProcessedDataSet implements Serializable {
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
 	@JoinColumns({ @JoinColumn(name = "scenarioInstanceName", referencedColumnName = "scenarioInstanceName"),
 			@JoinColumn(name = "measurementEnvironmentUrl", referencedColumnName = "measurementEnvironmentUrl"),
-			@JoinColumn(name = "experimentSeriesName", referencedColumnName = "name"),
-			@JoinColumn(name = "experimentSeriesVersion", referencedColumnName = "version") })
+			@JoinColumn(name = "experimentSeriesName", referencedColumnName = "name")})
 	private ExperimentSeries experimentSeries;
 
 	/**

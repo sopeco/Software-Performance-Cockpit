@@ -42,15 +42,15 @@ public class ExperimentSeriesDefinition implements Serializable {
 
 	protected ExplorationStrategy explorationStrategy;
 
-	protected List<ParameterValueAssignment> experimentAssignments;
+	protected List<ParameterValueAssignment> experimentAssignments=new ArrayList<ParameterValueAssignment>();;
 
-	protected List<ConstantValueAssignment> preperationAssignments;
+	protected List<ConstantValueAssignment> preperationAssignments=new ArrayList<ConstantValueAssignment>();;
 
 	protected Set<ExperimentTerminationCondition> terminationConditions = new HashSet<ExperimentTerminationCondition>();
 
 	protected String name = null;
 
-	private long version = 0;
+
 
 	public ExperimentSeriesDefinition() {
 		super();
@@ -90,13 +90,7 @@ public class ExperimentSeriesDefinition implements Serializable {
 		name = newName;
 	}
 
-	public long getVersion() {
-		return version;
-	}
 
-	public void setVersion(long version) {
-		this.version = version;
-	}
 
 	public void addTerminationCondition(ExperimentTerminationCondition tc) {
 		terminationConditions.add(tc);
@@ -123,32 +117,34 @@ public class ExperimentSeriesDefinition implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		ExperimentSeriesDefinition other = (ExperimentSeriesDefinition) obj;
-		if (getExperimentAssignments() == null) {
-			if (other.getExperimentAssignments() != null)
+		if (experimentAssignments == null) {
+			if (other.experimentAssignments != null)
 				return false;
-		} else if (!getExperimentAssignments().equals(other.getExperimentAssignments()))
+		} else if (!experimentAssignments.equals(other.experimentAssignments))
 			return false;
-		if (getExplorationStrategy() == null) {
-			if (other.getExplorationStrategy() != null)
+		if (explorationStrategy == null) {
+			if (other.explorationStrategy != null)
 				return false;
-		} else if (!getExplorationStrategy().equals(other.getExplorationStrategy()))
+		} else if (!explorationStrategy.equals(other.explorationStrategy))
 			return false;
-		if (getName() == null) {
-			if (other.getName() != null)
+		if (name == null) {
+			if (other.name != null)
 				return false;
-		} else if (!getName().equals(other.getName()))
+		} else if (!name.equals(other.name))
 			return false;
-		if (getPreperationAssignments() == null) {
-			if (other.getPreperationAssignments() != null)
+		if (preperationAssignments == null) {
+			if (other.preperationAssignments != null)
 				return false;
-		} else if (!getPreperationAssignments().equals(other.getPreperationAssignments()))
+		} else if (!preperationAssignments.equals(other.preperationAssignments))
 			return false;
-		if (getTerminationConditions() == null) {
-			if (other.getTerminationConditions() != null)
+		if (terminationConditions == null) {
+			if (other.terminationConditions != null)
 				return false;
-		} else if (!getTerminationConditions().equals(other.getTerminationConditions()))
+		} else if (!terminationConditions.equals(other.terminationConditions))
 			return false;
 		return true;
 	}
+
+
 
 }

@@ -37,7 +37,7 @@ public class DynamicValueAssignment extends ParameterValueAssignment {
 
 	private static final long serialVersionUID = 1L;
 
-	protected HashMap<String, String> configuration;
+	protected HashMap<String, String> configuration= new HashMap<String, String>();
 
 	protected String name = null;
 

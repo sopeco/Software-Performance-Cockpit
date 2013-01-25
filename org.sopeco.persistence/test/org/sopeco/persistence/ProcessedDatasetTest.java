@@ -125,7 +125,6 @@ public class ProcessedDatasetTest {
 	private ExperimentSeries createExpSeries(ScenarioInstance si) {
 		ExperimentSeries es = new ExperimentSeries();
 		es.setScenarioInstance(si);
-		es.setVersion(0L);
 		es.setName(EXPERIMENT_SERIES);
 		es.setExperimentSeriesDefinition(si.getScenarioDefinition().getExperimentSeriesDefinition(EXPERIMENT_SERIES));
 		return es;

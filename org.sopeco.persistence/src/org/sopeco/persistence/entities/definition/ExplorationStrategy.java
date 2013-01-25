@@ -37,7 +37,7 @@ public class ExplorationStrategy extends ExtensibleElement {
 
 	private static final long serialVersionUID = 1L;
 
-	protected List<AnalysisConfiguration> analysisConfigurations;
+	protected List<AnalysisConfiguration> analysisConfigurations = new ArrayList<AnalysisConfiguration>();
 
 	public ExplorationStrategy() {
 		super();

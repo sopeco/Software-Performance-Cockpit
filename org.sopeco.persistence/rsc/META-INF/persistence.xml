@@ -37,6 +37,8 @@
 		<class>org.sopeco.persistence.entities.ExperimentSeriesRun</class>
 		<class>org.sopeco.persistence.dataset.DataSetAggregated</class>
 		<class>org.sopeco.persistence.entities.ProcessedDataSet</class>
+		<class>org.sopeco.persistence.entities.ArchiveEntry</class>
+		<class>org.sopeco.persistence.entities.ArchivedScenarioDefinition</class>
 		<class>org.sopeco.persistence.entities.analysis.AnalysisResultStorageContainer</class>
 		<class>org.sopeco.persistence.entities.definition.ScenarioDefinition</class>
 		<properties>

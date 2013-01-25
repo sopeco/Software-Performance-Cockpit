@@ -44,7 +44,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
-import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.dataset.DataSetAppender;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
@@ -96,13 +95,7 @@ public class ExperimentSeries implements Serializable {
 		this.primaryKey.setName(name);
 	}
 
-	public Long getVersion() {
-		return this.primaryKey.getVersion();
-	}
 
-	public void setVersion(Long version) {
-		this.primaryKey.setVersion(version);
-	}
 
 	public ScenarioInstance getScenarioInstance() {
 		return scenarioInstance;

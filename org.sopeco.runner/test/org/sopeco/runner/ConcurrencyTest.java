@@ -58,8 +58,8 @@ public class ConcurrencyTest {
 	public static void startMEController() {
 		try {
 			// use this project folder as root.
-			Configuration.getSessionSingleton(NewVersionTest.class, SESSION_ID_1);
-			Configuration.getSessionSingleton(NewVersionTest.class, SESSION_ID_2);
+			Configuration.getSessionSingleton(ConcurrencyTest.class, SESSION_ID_1);
+			Configuration.getSessionSingleton(ConcurrencyTest.class, SESSION_ID_2);
 			meController = new DummyMEController();
 			URI meURI = URI.create(ME_URI);
 
@@ -75,9 +75,9 @@ public class ConcurrencyTest {
 
 	@BeforeClass
 	public static void initialize() {
-		Configuration.getSessionSingleton(NewVersionTest.class, SESSION_ID_1).setProperty(
+		Configuration.getSessionSingleton(ConcurrencyTest.class, SESSION_ID_1).setProperty(
 				"sopeco.config.persistence.dbtype", "InMemory");
-		Configuration.getSessionSingleton(NewVersionTest.class, SESSION_ID_2).setProperty(
+		Configuration.getSessionSingleton(ConcurrencyTest.class, SESSION_ID_2).setProperty(
 				"sopeco.config.persistence.dbtype", "InMemory");
 
 	}
@@ -91,7 +91,7 @@ public class ConcurrencyTest {
 			public void run() {
 				try {
 					ScenarioDefinition scenarioDefinition = DummyModelBuilder.getReferenceScenariodefinition();
-					IConfiguration config = Configuration.getSessionSingleton(NewVersionTest.class, SESSION_ID_1);
+					IConfiguration config = Configuration.getSessionSingleton(ConcurrencyTest.class, SESSION_ID_1);
 					try {
 						config.setMeasurementControllerURI(ME_URI);
 					} catch (ConfigurationException e) {
@@ -102,8 +102,13 @@ public class ConcurrencyTest {
 					IEngine engine = EngineFactory.getInstance().createEngine(SESSION_ID_1);
 					engine.run(scenarioDefinition);
 				} catch (Exception e) {
-					if (e.getMessage().contains("MEController in use")) {
-						exceptionThrown = true;
+					Throwable error = e;
+					while(error != null){
+						if (error.getMessage().contains("MEController in use")) {
+							exceptionThrown = true;
+							break;
+						}
+						error = error.getCause();
 					}
 
 				}
@@ -117,7 +122,7 @@ public class ConcurrencyTest {
 			public void run() {
 				try {
 					ScenarioDefinition scenarioDefinition = DummyModelBuilder.getAnotherScenariodefinition();
-					IConfiguration config = Configuration.getSessionSingleton(NewVersionTest.class, SESSION_ID_2);
+					IConfiguration config = Configuration.getSessionSingleton(ConcurrencyTest.class, SESSION_ID_2);
 					try {
 						config.setMeasurementControllerURI(ME_URI);
 					} catch (ConfigurationException e) {
@@ -128,8 +133,13 @@ public class ConcurrencyTest {
 					IEngine engine = EngineFactory.getInstance().createEngine(SESSION_ID_2);
 					engine.run(scenarioDefinition);
 				} catch (Exception e) {
-					if (e.getMessage().contains("MEController in use")) {
-						exceptionThrown = true;
+					Throwable error = e;
+					while(error != null){
+						if (error.getMessage().contains("MEController in use")) {
+							exceptionThrown = true;
+							break;
+						}
+						error = error.getCause();
 					}
 				}
 

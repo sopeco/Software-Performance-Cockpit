@@ -29,6 +29,8 @@
  */
 package org.sopeco.engine;
 
+import java.util.Collection;
+
 import org.sopeco.config.IConfiguration;
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.experimentseries.IExperimentSeriesManager;
@@ -95,5 +97,15 @@ public interface IEngine extends ISessionAwareObject {
 	 *            a scenario definition
 	 * @return a scenario instance
 	 */
-	ScenarioInstance run(ScenarioDefinition scenario);
+	ScenarioInstance run(ScenarioDefinition scenarioDefinition);
+	
+	/**
+	 * Runs the scenario; i.e., runs the measurements defined in the scenario
+	 * against the target system.
+	 * 
+	 * @param scenario
+	 *            a scenario definition
+	 * @return a scenario instance
+	 */
+	ScenarioInstance run(ScenarioDefinition scenarioDefinition, Collection<String> experimentSeries);
 }

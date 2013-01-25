@@ -29,6 +29,8 @@
  */
 package org.sopeco.engine.imp;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,13 +42,16 @@ import org.sopeco.config.IConfiguration;
 import org.sopeco.engine.IEngine;
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.experimentseries.IExperimentSeriesManager;
+import org.sopeco.engine.model.ScenarioDefinitionWriter;
 import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.engine.registry.IExtensionRegistry;
 import org.sopeco.engine.util.EngineTools;
 import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.PersistenceProviderFactory;
+import org.sopeco.persistence.entities.ArchiveEntry;
 import org.sopeco.persistence.entities.ExperimentSeries;
+import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
@@ -108,69 +113,42 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 	}
 
 	@Override
-	public ScenarioInstance run(ScenarioDefinition scenario) {
-		ScenarioInstance scenarioInstance;
+	public ScenarioInstance run(ScenarioDefinition scenarioDefinition) {
+		List<String> experimentSeriesNames = new ArrayList<String>();
 
-		try {
-
-			scenarioInstance = persistenceProvider.loadScenarioInstance(scenario.getScenarioName(), getConfiguration()
-					.getMeasurementControllerURIAsStr());
-			LOGGER.debug("Loaded ScenarioInstance {} from database", scenarioInstance);
-			LOGGER.debug("Compare Scenario definition defined in the specification with the one loaded from database");
-
-			scenarioInstance = mergeScenarioDefinitions(scenarioInstance, getConfiguration()
-					.getMeasurementControllerURIAsStr(), scenario);
-			persistenceProvider.store(scenarioInstance);
-
-		} catch (DataNotFoundException e) {
-			scenarioInstance = EntityFactory.createScenarioInstance(scenario, getConfiguration()
-					.getMeasurementControllerURIAsStr());
-			persistenceProvider.store(scenarioInstance);
-			LOGGER.debug("Created new ScenarioInstance {}", scenarioInstance);
+		for (ExperimentSeriesDefinition esd : scenarioDefinition.getAllExperimentSeriesDefinitions()) {
+			experimentSeriesNames.add(esd.getName());
 		}
 
-		@SuppressWarnings("unchecked")
-		Map<String, List<String>> filterObject = (Map<String, List<String>>) Configuration.getSessionSingleton(
-				getSessionId()).getProperty(IConfiguration.EXECUTION_EXPERIMENT_FILTER);
-		if (filterObject == null) {
-			filterObject = new HashMap<String, List<String>>();
+		return run(scenarioDefinition, experimentSeriesNames);
+
+	}
+
+	@Override
+	public ScenarioInstance run(ScenarioDefinition scenarioDefinition, Collection<String> experimentSeriesNames) {
+		if (experimentSeriesNames == null || experimentSeriesNames.isEmpty()) {
+			throw new RuntimeException("List of experiment series names is empty or null!");
 		}
+		ScenarioInstance scenarioInstance = retrieveScenarioInstance(scenarioDefinition);
 
-		experimentController.acquireMEController();
-		try {
-			for (MeasurementSpecification measSpec : scenario.getMeasurementSpecifications()) {
+		scenarioInstance.getScenarioDefinition().getAllExperimentSeriesDefinitions();
+		Map<MeasurementSpecification, List<ExperimentSeriesDefinition>> experimentSeries = new HashMap<MeasurementSpecification, List<ExperimentSeriesDefinition>>();
 
-				experimentController.initialize(
-						EngineTools.getConstantParameterValues(measSpec.getInitializationAssignemts()),
-						scenario.getMeasurementEnvironmentDefinition());
-
-				// loop over all the experiment series in the specs
-				for (ExperimentSeriesDefinition esd : measSpec.getExperimentSeriesDefinitions()) {
-
-					// skip experiment if the filter contains it
-					if (filterObject.containsKey(measSpec.getName()) && filterObject.get(measSpec.getName()) != null
-							&& filterObject.get(measSpec.getName()).contains(esd.getName())) {
-						continue;
+		for (MeasurementSpecification ms : scenarioDefinition.getMeasurementSpecifications()) {
+			List<ExperimentSeriesDefinition> currentExpSeriesList = new ArrayList<ExperimentSeriesDefinition>();
+			for (ExperimentSeriesDefinition esd : ms.getExperimentSeriesDefinitions()) {
+				for (String expSeriesName : experimentSeriesNames) {
+					if (esd.getName().equals(expSeriesName)) {
+						currentExpSeriesList.add(esd);
 					}
-
-					ExperimentSeries series = scenarioInstance.getExperimentSeries(esd.getName(), esd.getVersion());
-					if (series == null) {
-						series = EntityFactory.createExperimentSeries(esd);
-						scenarioInstance.getExperimentSeriesList().add(series);
-						series.setScenarioInstance(scenarioInstance);
-
-						persistenceProvider.store(series);
-					}
-
-					experimentSeriesManager.runExperimentSeries(series);
 				}
 			}
-			experimentController.releaseMEController();
-		} catch (Exception e) {
-			// TODO check whether expcontroller null...
-			experimentController.releaseMEController();
-			throw new RuntimeException(e);
+			if (!currentExpSeriesList.isEmpty()) {
+				experimentSeries.put(ms, currentExpSeriesList);
+			}
 		}
+
+		runExperimentSeries(scenarioInstance, experimentSeries);
 
 		try {
 			ScenarioInstance loadedScenario = persistenceProvider
@@ -180,51 +158,7 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 			LOGGER.error("Cannot load the scenario from the persistnce provider. Something is seriously gone wrong.");
 			throw new RuntimeException("Something went wrong");
 		}
-	}
 
-	/**
-	 * Checks whether the scneario definition contained in the passed scenario
-	 * instance contains the passed scenario definition. If the passed scenario
-	 * definition contains additional elements, these are merged into the
-	 * existing scenario definition
-	 * 
-	 * @param scenarioInstance
-	 *            Existing scenario definition to be extended
-	 * @param scenarioDefinition
-	 *            new scenario definition to compare with
-	 * @throws DataNotFoundException
-	 */
-	private ScenarioInstance mergeScenarioDefinitions(ScenarioInstance scenarioInstance,
-			String measurementEnvironmentUrl, ScenarioDefinition scenarioDefinition) throws DataNotFoundException {
-
-		if (!scenarioInstance.getScenarioDefinition().containsAllElementsOf(scenarioDefinition)) {
-
-			String modelChangeHandlingMode = (String) configuration
-					.getProperty(IConfiguration.CONF_MODEL_CHANGE_HANDLING_MODE);
-			String detailMessage = "";
-			if (modelChangeHandlingMode.equals(IConfiguration.MCH_MODE_FAIL)) {
-				throw new RuntimeException(
-						"Scenario definition has been changed! The option 'fail' is used for model change handling mode. "
-								+ "Use another mode (newVersion or overwrite), "
-								+ "rename the new scenario definition id or delete the old scenario definition (with the same id) from the database!");
-			} else if (modelChangeHandlingMode.equals(IConfiguration.MCH_MODE_OVERWRITE)) {
-				persistenceProvider.remove(scenarioInstance);
-				scenarioInstance = EntityFactory.createScenarioInstance(scenarioDefinition, measurementEnvironmentUrl);
-				detailMessage = "Model Change Handling Mode: 'overwrite'. Existing scenario instance is overwritten. Old data is lost!";
-				return scenarioInstance;
-			} else if (modelChangeHandlingMode.equals(IConfiguration.MCH_MODE_OVERWRITE_KEEP_RESULTS)) {
-				scenarioInstance.setScenarioDefinition(scenarioDefinition);
-				detailMessage = "Model Change Handling Mode: 'overwrite keep results'. Existing scenario definition is overwritten. "
-						+ "Old model data is lost, however results are kept!";
-				return scenarioInstance;
-			} else {
-				scenarioInstance.extendScenarioInstance(scenarioDefinition);
-				detailMessage = "Model Change Handling Mode: 'newVersion'. Existing scenario instance is extended!";
-				return scenarioInstance;
-			}
-
-		}
-		return scenarioInstance;
 	}
 
 	@Override
@@ -241,5 +175,69 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 	public IPersistenceProvider getPersistenceProvider() {
 		return persistenceProvider;
 	}
+
+	private ScenarioInstance retrieveScenarioInstance(ScenarioDefinition scenarioDefinition) {
+		ScenarioInstance scenarioInstance = null;
+
+		try {
+
+			scenarioInstance = persistenceProvider.loadScenarioInstance(scenarioDefinition.getScenarioName(),
+					getConfiguration().getMeasurementControllerURIAsStr());
+			LOGGER.debug("Loaded ScenarioInstance {} from database", scenarioInstance);
+			LOGGER.debug("Compare Scenario definition defined in the specification with the one loaded from database");
+
+		} catch (DataNotFoundException e) {
+			scenarioInstance = createNewScenarioInstance(scenarioDefinition);
+		}
+		if (scenarioInstance == null) {
+			throw new RuntimeException("Failed to retrieve scenario instance!");
+		}
+		return scenarioInstance;
+	}
+
+	private ScenarioInstance createNewScenarioInstance(ScenarioDefinition scenarioDefinition) {
+		ScenarioInstance scenarioInstance = EntityFactory.createScenarioInstance(scenarioDefinition, getConfiguration()
+				.getMeasurementControllerURIAsStr());
+		persistenceProvider.store(scenarioInstance);
+		LOGGER.debug("Created new ScenarioInstance {}", scenarioInstance);
+		return scenarioInstance;
+	}
+
+	private void runExperimentSeries(ScenarioInstance scenarioInstance,
+			Map<MeasurementSpecification, List<ExperimentSeriesDefinition>> experimentSeries) {
+		boolean mecAcquired = false;
+		try {
+			experimentController.acquireMEController();
+			mecAcquired = true;
+
+			for (MeasurementSpecification measSpec : experimentSeries.keySet()) {
+				experimentController.initialize(
+						EngineTools.getConstantParameterValues(measSpec.getInitializationAssignemts()),
+						scenarioInstance.getScenarioDefinition().getMeasurementEnvironmentDefinition());
+
+				for (ExperimentSeriesDefinition esd : experimentSeries.get(measSpec)) {
+					ExperimentSeries series = scenarioInstance.getExperimentSeries(esd.getName());
+					if (series == null) {
+						series = EntityFactory.createExperimentSeries(esd);
+						scenarioInstance.getExperimentSeriesList().add(series);
+						series.setScenarioInstance(scenarioInstance);
+
+						persistenceProvider.store(series);
+					}
+
+					experimentSeriesManager.runExperimentSeries(series);
+				}
+			}
+
+		} catch (Exception e) {
+			throw new RuntimeException("Failed executing experiments!", e);
+		} finally {
+			if (mecAcquired) {
+				experimentController.releaseMEController();
+			}
+		}
+	}
+
+	
 
 }

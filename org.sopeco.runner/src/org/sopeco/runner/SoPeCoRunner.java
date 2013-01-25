@@ -30,6 +30,9 @@
 package org.sopeco.runner;
 
 import java.rmi.RemoteException;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +69,8 @@ public class SoPeCoRunner extends SessionAwareObject implements Runnable {
 	/** Holds the last instance of SoPeCo lastEngine that was used by this runner. */
 	private IEngine lastEngine = null;
 	
+	private Map<String, Object> executionProperties = null;
+	
 	/**
 	 * Use this constructor to provide a session id.
 	 * 
@@ -75,6 +80,11 @@ public class SoPeCoRunner extends SessionAwareObject implements Runnable {
 	 */
 	public SoPeCoRunner(String sessionId) {
 		super(sessionId);
+	}
+	
+	public SoPeCoRunner(String sessionId, Map<String, Object> executionProperties) {
+		super(sessionId);
+		this.executionProperties = executionProperties;
 	}
 
 	/**
@@ -86,7 +96,7 @@ public class SoPeCoRunner extends SessionAwareObject implements Runnable {
 	public synchronized void run() {
 		lastExecutedScenarioInstance = null;
 		IConfiguration config = Configuration.getSessionSingleton(getSessionId());
-
+		config.overwrite(executionProperties);
 		// if the user has set any command-line arguments
 		if (args != null) {
 			try {
@@ -96,14 +106,18 @@ public class SoPeCoRunner extends SessionAwareObject implements Runnable {
 			}
 		}
 
-		ScenarioDefinition scenario = retrieveScenarioDefinition(config);
-
+		ScenarioDefinition scenario= retrieveScenarioDefinition(config);
+		
 		lastEngine = EngineFactory.getInstance().createEngine(getSessionId());
 
 		lastExecutedScenarioInstance = lastEngine.run(scenario);
 
+		executionProperties = null;
 		logger.info("SoPeCo run finished.");
+		
 	}
+	
+	
 
 	private ScenarioDefinition retrieveScenarioDefinition(IConfiguration config) {
 		ScenarioDefinition scenario = null;

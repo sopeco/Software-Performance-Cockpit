@@ -141,47 +141,44 @@ public class ParameterDefinition implements Serializable {
 		}
 	}
 
-	@Override
-	public boolean equals(Object o) {
 
-		if (this == o)
-			return true;
-		if (o == null)
-			return false;
-		if (getClass() != o.getClass())
-			return false;
-		ParameterDefinition obj = (ParameterDefinition) o;
-		if (getFullName() == null || obj.getFullName() == null)
-			return false;
-		if (!this.getFullName().equals(obj.getFullName())) {
-			return false;
-		}
-		if (!this.getType().equals(obj.getType())) {
-			return false;
-		}
-		if (!this.getRole().equals(obj.getRole())) {
-			return false;
-		}
-
-		return true;
-
-	}
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((getFullName() == null) ? 0 : getFullName().hashCode());
-		result = prime * result + ((getRole() == null) ? 0 : getRole().hashCode());
-		result = prime * result + ((getType() == null) ? 0 : getType().hashCode());
-		return result;
-	}
 
 	@Override
 	public String toString() {
 
 		return "ParameterDefinition{" + "name='" + this.getName() + "\' " + "type='" + this.getType() + "\' "
 				+ "role='" + this.getRole() + "\' " + '}';
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((role == null) ? 0 : role.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ParameterDefinition other = (ParameterDefinition) obj;
+		
+		
+		
+		
+		if (getFullName() == null) {
+			if (other.getFullName() != null)
+				return false;
+		} else if (!getFullName().equals(other.getFullName()))
+			return false;
+		return true;
 	}
 
 }

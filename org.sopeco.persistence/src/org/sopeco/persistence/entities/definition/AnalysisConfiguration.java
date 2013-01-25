@@ -42,10 +42,10 @@ public class AnalysisConfiguration extends ExtensibleElement {
 	}
 
 
-	private List<ParameterDefinition> dependentParameters;
+	private List<ParameterDefinition> dependentParameters= new ArrayList<ParameterDefinition>();
 
 
-	private List<ParameterDefinition> independentParameters;
+	private List<ParameterDefinition> independentParameters= new ArrayList<ParameterDefinition>();
 
 	public List<ParameterDefinition> getDependentParameters() {
 		if (dependentParameters == null) {

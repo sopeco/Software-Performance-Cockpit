@@ -36,28 +36,27 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * @author Dennis Westermann, Jens Happe
  * 
  */
-@NamedQueries({ @NamedQuery(name = "findAllScenarioDefinitions", query = "SELECT o FROM ScenarioDefinition o")})
+@NamedQueries({ @NamedQuery(name = "findAllScenarioDefinitions", query = "SELECT o FROM ScenarioDefinition o") })
 @Entity
 public class ScenarioDefinition implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name= "name")
+	@Column(name = "name")
 	protected String scenarioName = null;
 
 	@Lob
-	@Column(name= "measurementEnvironmentDefinition")
+	@Column(name = "measurementEnvironmentDefinition")
 	protected MeasurementEnvironmentDefinition measurementEnvironmentDefinition;
 
 	@Lob
-	@Column(name= "measurementSpecification")
+	@Column(name = "measurementSpecification")
 	protected List<MeasurementSpecification> measurementSpecifications = new ArrayList<MeasurementSpecification>();
 
 	public ScenarioDefinition() {
@@ -100,57 +99,31 @@ public class ScenarioDefinition implements Serializable {
 	public ExperimentSeriesDefinition getExperimentSeriesDefinition(String name) {
 		for (MeasurementSpecification measSpec : this.measurementSpecifications) {
 			for (ExperimentSeriesDefinition esd : measSpec.getExperimentSeriesDefinitions()) {
-				if (esd.getName().equals(name))
+				if (esd.getName().equals(name)) {
 					return esd;
+				}
+
 			}
 		}
 		return null;
 	}
 
 	/**
-	 * Looks for the experiment series definition with the given name in the
-	 * given measurement specification
+	 * Returns all {@link ExperimentSeriesDefinition} objects belonging to that
+	 * scenarioDefinition.
 	 * 
-	 * @param name
-	 *            - the name of the requested experiment series definition
-	 * @param measurementSpecificationName
-	 *            - the name of the measurement specification where to look for
-	 *            the series definition
-	 * @return the {@link ExperimentSeriesDefinition} instance with the given
-	 *         name specified in the given measurement specification;
-	 *         <code>null</code> if no {@link ExperimentSeriesDefinition} could
-	 *         be found
-	 */
-	public ExperimentSeriesDefinition getExperimentSeriesDefinition(String name, String measurementSpecificationName) {
-		MeasurementSpecification measSpec = this.getMeasurementSpecification(measurementSpecificationName);
-
-		for (ExperimentSeriesDefinition esd : measSpec.getExperimentSeriesDefinitions()) {
-			if (esd.getName().equals(name))
-				return esd;
-		}
-
-		return null;
-	}
-
-	/**
-	 * Looks for all experiment series definitions with the given name.
 	 * 
-	 * @param name
-	 *            - the name of the requested experiment series definition
-	 * @return all {@link ExperimentSeriesDefinition} instances with the given
-	 *         name; <code>null</code> if no {@link ExperimentSeriesDefinition}
-	 *         could be found
+	 * @return all {@link ExperimentSeriesDefinition} instances
 	 */
-	public List<ExperimentSeriesDefinition> getAllExperimentSeriesDefinitions(String name) {
-		List<ExperimentSeriesDefinition> experimentSeriesDefinitions = new ArrayList<ExperimentSeriesDefinition>();
+	public List<ExperimentSeriesDefinition> getAllExperimentSeriesDefinitions() {
+		List<ExperimentSeriesDefinition> expSeries = new ArrayList<ExperimentSeriesDefinition>();
 
 		for (MeasurementSpecification measSpec : this.measurementSpecifications) {
 			for (ExperimentSeriesDefinition esd : measSpec.getExperimentSeriesDefinitions()) {
-				if (esd.getName().equals(name))
-					experimentSeriesDefinitions.add(esd);
+				expSeries.add(esd);
 			}
 		}
-		return experimentSeriesDefinitions;
+		return expSeries;
 	}
 
 	/**
@@ -184,7 +157,8 @@ public class ScenarioDefinition implements Serializable {
 	 */
 	public ParameterDefinition getParameterDefinition(String fullName) {
 
-		List<ParameterDefinition> listOfAllParameters = this.getMeasurementEnvironmentDefinition().getRoot().getAllParameters();
+		List<ParameterDefinition> listOfAllParameters = this.getMeasurementEnvironmentDefinition().getRoot()
+				.getAllParameters();
 
 		for (ParameterDefinition parameterDefinition : listOfAllParameters) {
 			if (parameterDefinition.getFullName().equals(fullName)) {
@@ -209,8 +183,9 @@ public class ScenarioDefinition implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((measurementEnvironmentDefinition == null) ? 0 : measurementEnvironmentDefinition.hashCode());
-		result = prime * result + ((measurementSpecifications == null || measurementSpecifications.isEmpty()) ? 0 : measurementSpecifications.hashCode());
+		result = prime * result
+				+ ((measurementEnvironmentDefinition == null) ? 0 : measurementEnvironmentDefinition.hashCode());
+		result = prime * result + ((measurementSpecifications == null) ? 0 : measurementSpecifications.hashCode());
 		result = prime * result + ((scenarioName == null) ? 0 : scenarioName.hashCode());
 		return result;
 	}
@@ -229,8 +204,8 @@ public class ScenarioDefinition implements Serializable {
 				return false;
 		} else if (!measurementEnvironmentDefinition.equals(other.measurementEnvironmentDefinition))
 			return false;
-		if (measurementSpecifications == null || measurementSpecifications.isEmpty()) {
-			if (other.measurementSpecifications != null && !other.measurementSpecifications.isEmpty())
+		if (measurementSpecifications == null) {
+			if (other.measurementSpecifications != null)
 				return false;
 		} else if (!measurementSpecifications.equals(other.measurementSpecifications))
 			return false;
@@ -240,58 +215,6 @@ public class ScenarioDefinition implements Serializable {
 		} else if (!scenarioName.equals(other.scenarioName))
 			return false;
 		return true;
-	}
-
-	/**
-	 * Checks whether this instnace of scenarioDefinition contains all elements
-	 * the passed scenarioDefinition comprises
-	 * 
-	 * @param other
-	 * @return
-	 */
-	public boolean containsAllElementsOf(ScenarioDefinition other) {
-		for (MeasurementSpecification measSpecOther : other.getMeasurementSpecifications()) {
-			boolean found = false;
-			for (MeasurementSpecification measSpecThis : this.getMeasurementSpecifications()) {
-				if (measSpecThis.getName().equals(measSpecOther.getName())) {
-					found = true;
-					if (!measSpecThis.containsAllElementsOf(measSpecOther)) {
-						return false;
-					}
-					break;
-				}
-			}
-			if (!found) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * Extends this scenario definition by all additional experiment series in
-	 * the given scenario definition
-	 * 
-	 * @param other
-	 * @return
-	 */
-	public List<ExperimentSeriesDefinition> extendBy(ScenarioDefinition other) {
-		List<ExperimentSeriesDefinition> addedESDList = new ArrayList<ExperimentSeriesDefinition>();
-		for (MeasurementSpecification measSpecOther : other.getMeasurementSpecifications()) {
-			boolean found = false;
-			for (MeasurementSpecification measSpecThis : this.getMeasurementSpecifications()) {
-				if (measSpecThis.getName().equals(measSpecOther.getName())) {
-					found = true;
-					addedESDList.addAll(measSpecThis.extendBy(measSpecOther));
-					break;
-				}
-			}
-			if (!found) {
-				this.measurementSpecifications.add(measSpecOther);
-				addedESDList.addAll(measSpecOther.getExperimentSeriesDefinitions());
-			}
-		}
-		return addedESDList;
 	}
 
 }

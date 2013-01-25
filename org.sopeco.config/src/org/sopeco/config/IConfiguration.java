@@ -31,6 +31,8 @@ package org.sopeco.config;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Map;
+import java.util.Properties;
 
 import org.sopeco.config.exception.ConfigurationException;
 import org.sopeco.util.session.ISessionAwareObject;
@@ -60,17 +62,15 @@ public interface IConfiguration extends ISessionAwareObject {
 	String CONF_MAIN_CLASS = "sopeco.config.mainClass";
 
 	String CONF_MEC_ACQUISITION_TIMEOUT = "sopeco.config.MECAcquisitionTimeout";
-	
-	String CONF_MODEL_CHANGE_HANDLING_MODE = "sopeco.config.modelChangeHandlingMode";
-	String MCH_MODE_OVERWRITE = "overwrite";
-	String MCH_MODE_OVERWRITE_KEEP_RESULTS = "overwriteKeepResults";
-	String MCH_MODE_FAIL = "fail";
-	String MCH_MODE_NEW_VERSION = "newVersion";
+
+	String CONF_DEFINITION_CHANGE_HANDLING_MODE = "sopeco.config.definitionChangeHandlingMode";
+	String DCHM_ARCHIVE = "archive";
+	String DCHM_DISCARD = "discard";
 
 	String CONF_SCENARIO_DEFINITION_PACKAGE = "sopeco.config.xml.scenarioDefinitionPackage";
 	/** Holds the path to the root folder of SoPeCo. */
 	String CONF_APP_ROOT_FOLDER = "sopeco.config.rootFolder";
-
+	String CONF_EXPERIMENT_EXECUTION_SELECTION = "sopeco.engine.experimentExecutionSelection";
 	/**
 	 * Holds the path to the plugins folder, relative to the root folder of
 	 * SoPeCo.
@@ -86,8 +86,7 @@ public interface IConfiguration extends ISessionAwareObject {
 
 	String DIR_SEPARATOR = ":";
 
-	String EXECUTION_EXPERIMENT_FILTER = "sopeco.config.executionExperimentFilter";
-
+	Map<String, Object> getProperties();
 	/**
 	 * Returns the configured value of the given property in SoPeCo.
 	 * 
@@ -202,8 +201,7 @@ public interface IConfiguration extends ISessionAwareObject {
 	 * @throws ConfigurationException
 	 *             if there is any problem with command line arguments
 	 */
-	void processCommandLineArguments(String[] args)
-			throws ConfigurationException;
+	void processCommandLineArguments(String[] args) throws ConfigurationException;
 
 	/**
 	 * Loads default configurations from a file name. If the file name is not an
@@ -230,8 +228,7 @@ public interface IConfiguration extends ISessionAwareObject {
 	 *             if initializing the configuration fails
 	 * 
 	 */
-	void loadDefaultConfiguration(String fileName)
-			throws ConfigurationException;
+	void loadDefaultConfiguration(String fileName) throws ConfigurationException;
 
 	/**
 	 * Loads default configurations from a file name. If the file name is not an
@@ -257,8 +254,7 @@ public interface IConfiguration extends ISessionAwareObject {
 	 * @throws ConfigurationException
 	 *             if initializing the configuration fails
 	 */
-	void loadDefaultConfiguration(ClassLoader classLoader, String fileName)
-			throws ConfigurationException;
+	void loadDefaultConfiguration(ClassLoader classLoader, String fileName) throws ConfigurationException;
 
 	/**
 	 * Loads user-level configurations from a file name. If the file name is not
@@ -310,8 +306,7 @@ public interface IConfiguration extends ISessionAwareObject {
 	 * @throws ConfigurationException
 	 *             if initializing the configuration fails
 	 */
-	void loadConfiguration(ClassLoader classLoader, String fileName)
-			throws ConfigurationException;
+	void loadConfiguration(ClassLoader classLoader, String fileName) throws ConfigurationException;
 
 	/**
 	 * Performs any post processing of configuration settings that may be
@@ -352,8 +347,7 @@ public interface IConfiguration extends ISessionAwareObject {
 	 *             if initializing the configuration fails
 	 * @see #CONF_MEASUREMENT_CONTROLLER_URI
 	 */
-	void setMeasurementControllerURI(String uriStr)
-			throws ConfigurationException;
+	void setMeasurementControllerURI(String uriStr) throws ConfigurationException;
 
 	/**
 	 * Sets the measurement controller class name. This also sets the
@@ -466,5 +460,22 @@ public interface IConfiguration extends ISessionAwareObject {
 	 */
 	void writeConfiguration(String fileName) throws IOException;
 
-	void overwrite(Configuration configuration);
+	/**
+	 * Overrides the values of this configuration with those of the given
+	 * configuration.
+	 * 
+	 * @param configuration
+	 *            with the new values
+	 */
+	 void overwrite(IConfiguration configuration);
+
+	
+	/**
+	 * Overrides the custom values of this configuration with those of the given
+	 * properties object.
+	 * 
+	 * @param properties
+	 *            with the new values
+	 */
+	 void overwrite(Map<String, Object> properties);
 }

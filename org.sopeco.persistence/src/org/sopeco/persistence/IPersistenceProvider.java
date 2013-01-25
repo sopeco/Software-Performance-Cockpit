@@ -29,6 +29,7 @@ package org.sopeco.persistence;
 import java.util.List;
 
 import org.sopeco.persistence.dataset.DataSetAggregated;
+import org.sopeco.persistence.entities.ArchiveEntry;
 import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ProcessedDataSet;
@@ -61,6 +62,8 @@ public interface IPersistenceProvider {
 	void store(String resultId, IStorableAnalysisResult analysisResult);
 
 	void store(DataSetAggregated dataSet);
+	
+	void store(ArchiveEntry archiveEntry);
 
 	/* read */
 	List<ScenarioInstance> loadScenarioInstances(String scenarioName) throws DataNotFoundException;
@@ -79,12 +82,6 @@ public interface IPersistenceProvider {
 	ExperimentSeries loadExperimentSeries(String experimentSeriesName, String scenarioInstanceName,
 			String measurementEnvironmentUrl) throws DataNotFoundException;
 
-	ExperimentSeries loadExperimentSeries(String experimentSeriesName, Long version, String scenarioInstanceName,
-			String measurementEnvironmentUrl) throws DataNotFoundException;
-
-	List<ExperimentSeries> loadAllExperimentSeries(String experimentSeriesName, String scenarioInstanceName,
-			String measurementEnvironmentUrl) throws DataNotFoundException;
-
 	ExperimentSeries loadExperimentSeries(ExperimentSeriesPK primaryKey) throws DataNotFoundException;
 
 	ExperimentSeriesRun loadExperimentSeriesRun(Long timestamp) throws DataNotFoundException;
@@ -92,6 +89,12 @@ public interface IPersistenceProvider {
 	IStorableAnalysisResult loadAnalysisResult(String resultId) throws DataNotFoundException;
 
 	DataSetAggregated loadDataSet(String dataSetId) throws DataNotFoundException;
+	
+	List<ArchiveEntry> loadAllArchiveEntries()throws DataNotFoundException;
+	 List<ArchiveEntry> loadArchiveEntries(String scenarioName) throws DataNotFoundException;
+	 List<ArchiveEntry> loadArchiveEntries(String scenarioName, String meControllerUrl) throws DataNotFoundException;
+	 List<ArchiveEntry> loadArchiveEntries(String scenarioName, String meControllerUrl, String experimentSeriesName) throws DataNotFoundException;
+	 List<ArchiveEntry> loadArchiveEntriesByLabel(String label) throws DataNotFoundException;
 
 	/* delete */
 	void remove(ExperimentSeriesRun experimentSeriesRun) throws DataNotFoundException;
@@ -102,10 +105,14 @@ public interface IPersistenceProvider {
 
 	void remove(ScenarioInstance scenarioInstance) throws DataNotFoundException;
 
+	void removeScenarioInstanceKeepResults(ScenarioInstance scenarioInstance) throws DataNotFoundException;
+	
 	void remove(ScenarioDefinition scenarioDefinition) throws DataNotFoundException;
 	
 	void remove(String analysisResultId) throws DataNotFoundException;
 
 	void remove(DataSetAggregated dataSet) throws DataNotFoundException;
+	
+	void remove(ArchiveEntry archiveEntry) throws DataNotFoundException;
 
 }

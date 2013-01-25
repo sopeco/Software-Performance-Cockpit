@@ -46,9 +46,6 @@ public class ExperimentSeriesPK implements Serializable {
 	@Column(name = "name")
 	private String name;
 
-	@Column(name = "version")
-	private Long version;
-
 	@Column(name = "scenarioInstanceName", nullable = false, insertable = false, updatable = false)
 	private String scenarioInstanceName;
 
@@ -59,10 +56,9 @@ public class ExperimentSeriesPK implements Serializable {
 
 	}
 
-	public ExperimentSeriesPK(String name, Long version, String scenarioInstanceName, String measurementEnvironmentUrl) {
+	public ExperimentSeriesPK(String name, String scenarioInstanceName, String measurementEnvironmentUrl) {
 		super();
 		this.name = name;
-		this.version = version;
 		this.scenarioInstanceName = scenarioInstanceName;
 		this.measurementEnvironmentUrl = measurementEnvironmentUrl;
 	}
@@ -73,14 +69,6 @@ public class ExperimentSeriesPK implements Serializable {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public Long getVersion() {
-		return version;
-	}
-
-	public void setVersion(Long version) {
-		this.version = version;
 	}
 
 	public String getMeasurementEnvironmentUrl() {
@@ -108,13 +96,11 @@ public class ExperimentSeriesPK implements Serializable {
 			return false;
 
 		ExperimentSeriesPK obj = (ExperimentSeriesPK) o;
-		if (name == null || version == null || measurementEnvironmentUrl == null || scenarioInstanceName == null
-				|| obj.name == null || obj.version == null || obj.measurementEnvironmentUrl == null
-				|| obj.scenarioInstanceName == null)
+		if (name == null || measurementEnvironmentUrl == null || scenarioInstanceName == null || obj.name == null
+				|| obj.measurementEnvironmentUrl == null || obj.scenarioInstanceName == null)
 			return false;
 
-		if (!name.equals(obj.name) || !version.equals(obj.version)
-				|| !measurementEnvironmentUrl.equals(obj.measurementEnvironmentUrl)
+		if (!name.equals(obj.name) || !measurementEnvironmentUrl.equals(obj.measurementEnvironmentUrl)
 				|| !scenarioInstanceName.equals(obj.scenarioInstanceName))
 			return false;
 
@@ -124,8 +110,8 @@ public class ExperimentSeriesPK implements Serializable {
 
 	@Override
 	public int hashCode() {
-		if (name != null && version != null && measurementEnvironmentUrl != null) {
-			String hashString = name + version + measurementEnvironmentUrl + scenarioInstanceName;
+		if (name != null && measurementEnvironmentUrl != null) {
+			String hashString = name + measurementEnvironmentUrl + scenarioInstanceName;
 			return hashString.hashCode();
 		} else {
 			return 0;
@@ -134,9 +120,7 @@ public class ExperimentSeriesPK implements Serializable {
 
 	@Override
 	public String toString() {
-
-		return "ExperimentSeriesPK{" + "name='" + name + "\' " + "version='"
-				+ version + "\' " + "measurementEnvironmentUrl='"
+		return "ExperimentSeriesPK{" + "name='" + name + "\' " + "measurementEnvironmentUrl='"
 				+ measurementEnvironmentUrl + "\' " + "scenarioInstanceName='" + scenarioInstanceName + "\'" + '}';
 	}
 

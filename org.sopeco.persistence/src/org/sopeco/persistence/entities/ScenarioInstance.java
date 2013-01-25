@@ -130,50 +130,8 @@ public class ScenarioInstance implements Serializable {
 	 *         version); <code>null</code> if no series with that name exists
 	 */
 	public ExperimentSeries getExperimentSeries(String name) {
-		ExperimentSeries resultSeries = null;
 		for (ExperimentSeries series : getExperimentSeriesList()) {
 			if (series.getName().equals(name)) {
-				if (resultSeries == null) {
-					resultSeries = series;
-				} else if (resultSeries.getVersion() < series.getVersion()) {
-					resultSeries = series;
-				}
-			}
-		}
-
-		return resultSeries;
-	}
-
-	/**
-	 * @param name
-	 *            the name of the experiment series that is included in this
-	 *            scenario instance
-	 * @return the list of experiment series with the given name (i.e. the
-	 *         different versions of the experiment series); <code>null</code>
-	 *         if no series with that name exists
-	 */
-	public List<ExperimentSeries> getAllExperimentSeriesVersions(String name) {
-		List<ExperimentSeries> resultList = new ArrayList<ExperimentSeries>();
-		for (ExperimentSeries series : getExperimentSeriesList()) {
-			if (series.getName().equals(name)) {
-				resultList.add(series);
-			}
-			return resultList;
-		}
-
-		return null;
-	}
-
-	/**
-	 * @param name
-	 *            the name of the experiment series that is included in this
-	 *            scenario instance
-	 * @return the experiment series instance with the given name;
-	 *         <code>null</code> if no series with that name exists
-	 */
-	public ExperimentSeries getExperimentSeries(String name, Long version) {
-		for (ExperimentSeries series : getExperimentSeriesList()) {
-			if (series.getName().equals(name) && series.getVersion().equals(version)) {
 				return series;
 			}
 		}
@@ -183,17 +141,10 @@ public class ScenarioInstance implements Serializable {
 
 
 
-	public void extendScenarioInstance(ScenarioDefinition otherSD) {
-		List<ExperimentSeriesDefinition> esdList = this.getScenarioDefinition().extendBy(otherSD);
-		// Why? Introduced a bug! TODO: Discuss
-		// for (ExperimentSeriesDefinition esd : esdList) {
-		// ExperimentSeries expSeries =
-		// EntityFactory.createExperimentSeries(esd);
-		// expSeries.setScenarioInstance(this);
-		// this.getExperimentSeriesList().add(expSeries);
-		//
-		// }
-	}
+
+
+
+
 
 	/*
 	 * Overrides

@@ -35,6 +35,8 @@ import javax.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.persistence.dataset.DataSetAggregated;
+import org.sopeco.persistence.dataset.DataSetRowBuilder;
+import org.sopeco.persistence.entities.ArchiveEntry;
 import org.sopeco.persistence.entities.ExperimentSeries;
 import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ProcessedDataSet;
@@ -219,106 +221,26 @@ public class JPAPersistenceProvider extends SessionAwareObject implements IPersi
 	}
 
 	@Override
-	public ExperimentSeries loadExperimentSeries(String experimentSeriesName, Long version,
-			String scenarioInstanceName, String measurementEnvironmentUrl) throws DataNotFoundException {
-		ExperimentSeries experimentSeries = null;
-		String errorMsg = "Could not find experiment series for scenario instance { " + scenarioInstanceName + ", "
-				+ measurementEnvironmentUrl + " series name " + experimentSeriesName + " and series version " + version
-				+ ".";
-
-		EntityManager em = emf.createEntityManager();
-		try {
-			// em.getTransaction().begin();
-
-			experimentSeries = em.find(ExperimentSeries.class, new ExperimentSeriesPK(experimentSeriesName, version,
-					scenarioInstanceName, measurementEnvironmentUrl));
-			// em.getTransaction().commit();
-		} catch (Exception e) {
-
-			logger.error(errorMsg);
-			throw new DataNotFoundException(errorMsg, e);
-		} finally {
-			// if (em.getTransaction().isActive()) {
-			// em.getTransaction().rollback();
-			// }
-			em.close();
-		}
-
-		// check if query was successful
-		if (experimentSeries != null) {
-			setPersistenceProvider(experimentSeries.getScenarioInstance());
-
-			return experimentSeries;
-		} else {
-			logger.debug(errorMsg);
-			throw new DataNotFoundException(errorMsg);
-		}
-
-	}
-
-	@Override
 	public ExperimentSeries loadExperimentSeries(String experimentSeriesName, String scenarioInstanceName,
 			String measurementEnvironmentUrl) throws DataNotFoundException {
-		List<ExperimentSeries> experimentSeriesWithEqualName = this.loadAllExperimentSeries(experimentSeriesName,
-				scenarioInstanceName, measurementEnvironmentUrl);
-
-		String errorMsg = "Could not find an experiment series with name " + experimentSeriesName
-				+ " in scenario instance " + scenarioInstanceName + ".";
-
-		ExperimentSeries resultSeries = null;
-		if (experimentSeriesWithEqualName != null) {
-			for (ExperimentSeries series : experimentSeriesWithEqualName) {
-				if (resultSeries == null) {
-					resultSeries = series;
-				} else if (resultSeries.getVersion() < series.getVersion()) {
-					resultSeries = series;
-				}
-			}
-			if (resultSeries != null) {
-				setPersistenceProvider(resultSeries.getScenarioInstance());
-			}
-
-			return resultSeries;
-		}
-
-		logger.debug(errorMsg);
-		throw new DataNotFoundException(errorMsg);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public List<ExperimentSeries> loadAllExperimentSeries(String experimentSeriesName, String scenarioInstanceName,
-			String measurementEnvironmentUrl) throws DataNotFoundException {
-
-		List<ExperimentSeries> experimentSeriesWithEqualName;
+		ExperimentSeries resultSeries;
 		String errorMsg = "Could not find an experiment series with name " + experimentSeriesName
 				+ " in scenario instance " + scenarioInstanceName + ".";
 
 		EntityManager em = emf.createEntityManager();
-
 		try {
-			Query query = em.createNamedQuery("findExperimentSeriesByName");
-			query.setParameter("name", experimentSeriesName);
-			query.setParameter("scenarioInstanceName", scenarioInstanceName);
-			query.setParameter("measurementEnvironmentUrl", measurementEnvironmentUrl);
-			experimentSeriesWithEqualName = query.getResultList();
-
+			resultSeries = em.find(ExperimentSeries.class, new ExperimentSeriesPK(experimentSeriesName,
+					scenarioInstanceName, measurementEnvironmentUrl));
 		} catch (Exception e) {
-
 			logger.error(errorMsg);
 			throw new DataNotFoundException(errorMsg, e);
 		} finally {
 			em.close();
 		}
 
-		// check if query was successful
-		if (experimentSeriesWithEqualName != null) {
-			// set persistence provider for experiment series runs and processed
-			// datasets, as these require the provider for lazy loading datasets
-			for (ExperimentSeries es : experimentSeriesWithEqualName) {
-				setPersistenceProvider(es.getScenarioInstance());
-			}
-			return experimentSeriesWithEqualName;
+		if (resultSeries != null) {
+			setPersistenceProvider(resultSeries.getScenarioInstance());
+			return resultSeries;
 		} else {
 			logger.debug(errorMsg);
 			throw new DataNotFoundException(errorMsg);
@@ -929,6 +851,230 @@ public class JPAPersistenceProvider extends SessionAwareObject implements IPersi
 			for (ProcessedDataSet pd : es.getProcessedDataSets()) {
 				pd.setPersistenceProvider(this);
 			}
+		}
+
+	}
+
+	@Override
+	public void store(ArchiveEntry archiveEntry) {
+		EntityManager em = emf.createEntityManager();
+		try {
+			// experimentSeriesRun.increaseVersion();
+			em.getTransaction().begin();
+			em.merge(archiveEntry);
+			em.getTransaction().commit();
+
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
+	}
+
+	@Override
+	public List<ArchiveEntry> loadAllArchiveEntries() throws DataNotFoundException {
+		List<ArchiveEntry> archiveEntries;
+		String errorMsg = "Could not find a scenario instance in the database.";
+
+		EntityManager em = emf.createEntityManager();
+
+		try {
+
+			Query query = em.createNamedQuery("findAllArchiveEntries");
+			archiveEntries = query.getResultList();
+
+		} catch (Exception e) {
+
+			logger.error(errorMsg);
+			throw new DataNotFoundException(errorMsg, e);
+		} finally {
+			em.close();
+		}
+		if (archiveEntries != null) {
+			for (ArchiveEntry entry : archiveEntries) {
+				entry.setPersistenceProvider(this);
+			}
+		}
+		return archiveEntries;
+	}
+
+	@Override
+	public void remove(ArchiveEntry archiveEntry) throws DataNotFoundException {
+		String errorMsg = "Could not remove archive entry " + archiveEntry.toString();
+
+		DataSetRowBuilder builder = new DataSetRowBuilder();
+		remove(builder.createDataSet(archiveEntry.getDataSetId()));
+		
+		EntityManager em = emf.createEntityManager();
+		try {
+
+			em.getTransaction().begin();
+
+			// load entity to make it "managed"
+			archiveEntry = em.find(ArchiveEntry.class, archiveEntry.getPrimaryKey());
+
+			em.remove(archiveEntry);
+
+			em.getTransaction().commit();
+
+		} catch (Exception e) {
+
+			logger.error(errorMsg);
+			throw new DataNotFoundException(errorMsg, e);
+
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
+		}
+
+	}
+
+	@Override
+	public List<ArchiveEntry> loadArchiveEntries(String scenarioName) throws DataNotFoundException {
+		List<ArchiveEntry> archiveEntries;
+		String errorMsg = "Could not find an archive entry in the database.";
+
+		EntityManager em = emf.createEntityManager();
+
+		try {
+
+			Query query = em.createNamedQuery("findArchiveEntriesByScenarioName");
+			query.setParameter("scenarioName", scenarioName);
+			archiveEntries = query.getResultList();
+
+		} catch (Exception e) {
+
+			logger.error(errorMsg);
+			throw new DataNotFoundException(errorMsg, e);
+		} finally {
+			em.close();
+		}
+
+		if (archiveEntries != null) {
+			for (ArchiveEntry entry : archiveEntries) {
+				entry.setPersistenceProvider(this);
+			}
+		}
+
+		return archiveEntries;
+	}
+
+	@Override
+	public List<ArchiveEntry> loadArchiveEntries(String scenarioName, String meControllerUrl)
+			throws DataNotFoundException {
+		List<ArchiveEntry> archiveEntries;
+		String errorMsg = "Could not find an archive entry in the database.";
+
+		EntityManager em = emf.createEntityManager();
+
+		try {
+
+			Query query = em.createNamedQuery("findArchiveEntriesByScenarioInstance");
+			query.setParameter("scenarioName", scenarioName);
+			query.setParameter("meControllerUrl", meControllerUrl);
+			archiveEntries = query.getResultList();
+
+		} catch (Exception e) {
+
+			logger.error(errorMsg);
+			throw new DataNotFoundException(errorMsg, e);
+		} finally {
+			em.close();
+		}
+		if (archiveEntries != null) {
+			for (ArchiveEntry entry : archiveEntries) {
+				entry.setPersistenceProvider(this);
+			}
+		}
+		return archiveEntries;
+	}
+
+	@Override
+	public List<ArchiveEntry> loadArchiveEntries(String scenarioName, String meControllerUrl,
+			String experimentSeriesName) throws DataNotFoundException {
+		List<ArchiveEntry> archiveEntries;
+		String errorMsg = "Could not find an archive entry in the database.";
+
+		EntityManager em = emf.createEntityManager();
+
+		try {
+
+			Query query = em.createNamedQuery("findArchiveEntriesByExpSeries");
+			query.setParameter("scenarioName", scenarioName);
+			query.setParameter("meControllerUrl", meControllerUrl);
+			query.setParameter("experimentSeriesName", experimentSeriesName);
+			archiveEntries = query.getResultList();
+
+		} catch (Exception e) {
+
+			logger.error(errorMsg);
+			throw new DataNotFoundException(errorMsg, e);
+		} finally {
+			em.close();
+		}
+		if (archiveEntries != null) {
+			for (ArchiveEntry entry : archiveEntries) {
+				entry.setPersistenceProvider(this);
+			}
+		}
+		return archiveEntries;
+	}
+
+	@Override
+	public List<ArchiveEntry> loadArchiveEntriesByLabel(String label) throws DataNotFoundException {
+		List<ArchiveEntry> archiveEntries;
+		String errorMsg = "Could not find an archive entry in the database.";
+
+		EntityManager em = emf.createEntityManager();
+
+		try {
+
+			Query query = em.createNamedQuery("findArchiveEntriesByLabel");
+			query.setParameter("label", label);
+			archiveEntries = query.getResultList();
+
+		} catch (Exception e) {
+
+			logger.error(errorMsg);
+			throw new DataNotFoundException(errorMsg, e);
+		} finally {
+			em.close();
+		}
+		if (archiveEntries != null) {
+			for (ArchiveEntry entry : archiveEntries) {
+				entry.setPersistenceProvider(this);
+			}
+		}
+		return archiveEntries;
+	}
+
+	@Override
+	public void removeScenarioInstanceKeepResults(ScenarioInstance scenarioInstance) throws DataNotFoundException {
+		String errorMsg = "Could not remove scenario instance " + scenarioInstance.toString();
+
+		EntityManager em = emf.createEntityManager();
+		try {
+
+			em.getTransaction().begin();
+
+			// load entity to make it "managed"
+			scenarioInstance = em.find(ScenarioInstance.class, scenarioInstance.getPrimaryKey());
+
+			em.remove(scenarioInstance);
+
+			em.getTransaction().commit();
+		} catch (Exception e) {
+
+			throw new DataNotFoundException(errorMsg, e);
+
+		} finally {
+			if (em.getTransaction().isActive()) {
+				em.getTransaction().rollback();
+			}
+			em.close();
 		}
 
 	}
