@@ -32,6 +32,8 @@ import java.util.Set;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import org.sopeco.engine.measurementenvironment.status.StatusProvider;
+import org.sopeco.engine.status.ProgressInfo;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
@@ -53,6 +55,9 @@ public abstract class MEControllerResource implements IMeasurementEnvironmentCon
 	private MEControllerState currentState;
 	private String assignedTo;
 
+	/** The StatusProvider to send information of the experiment execution. */
+	private StatusProvider statusProvider;
+
 	/**
 	 * Constructor. Initial state is MEControllerState.AVAILABLE.
 	 */
@@ -70,6 +75,7 @@ public abstract class MEControllerResource implements IMeasurementEnvironmentCon
 				if (acquired) {
 					assignedTo = acquirerID;
 				}
+				statusProvider = StatusProvider.getProvider(this);
 				updateState(MEControllerState.IN_USE);
 				return acquired;
 			}
@@ -161,4 +167,28 @@ public abstract class MEControllerResource implements IMeasurementEnvironmentCon
 		}
 	}
 
+	/**
+	 * Sends a message/information to SoPeCo.
+	 * 
+	 * @param information
+	 */
+	protected void sendInformation(String information) {
+		if (statusProvider == null) {
+			return;
+		}
+		statusProvider.sendInformation(information);
+	}
+
+	/**
+	 * Sends a ProgressInfo package with a description to SoPeCo.
+	 * 
+	 * @param description
+	 * @param progressInfo
+	 */
+	protected void sendProgressInfo(String description, ProgressInfo progressInfo) {
+		if (statusProvider == null) {
+			return;
+		}
+		statusProvider.sendProgressInfo(description, progressInfo);
+	}
 }

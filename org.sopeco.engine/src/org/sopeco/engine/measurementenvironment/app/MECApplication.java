@@ -64,8 +64,8 @@ public final class MECApplication {
 	}
 
 	public static String nameOfMEC(IMeasurementEnvironmentController controller) {
-		for (String key : singleton.meControllerMap.keySet()) {
-			if (controller == singleton.meControllerMap.get(key)) {
+		for (String key : get().meControllerMap.keySet()) {
+			if (controller == get().meControllerMap.get(key)) {
 				return key;
 			}
 		}

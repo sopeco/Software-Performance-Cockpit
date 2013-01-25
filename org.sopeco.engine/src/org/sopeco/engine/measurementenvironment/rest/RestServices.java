@@ -187,12 +187,8 @@ public class RestServices {
 
 		try {
 			@SuppressWarnings("unchecked")
-			// ParameterCollection<ParameterValue<?>> paraCollection =
-			// data.getAttachment(ParameterCollection.class);
 			ParameterCollection<ParameterValue<?>> paraCollection = data.getA(ParameterCollection.class);
 			@SuppressWarnings("unchecked")
-			// Set<ExperimentTerminationCondition> terminationConditions =
-			// data.getSecondAttachment(Set.class);
 			Set<ExperimentTerminationCondition> terminationConditions = data.getB(ParameterCollection.class);
 
 			MECApplication.get().getMEController(controllerName)
@@ -230,12 +226,4 @@ public class RestServices {
 		return Response.noContent().build();
 	}
 
-	@GET
-	@Path("{controllerName}/test")
-	@Produces(MediaType.APPLICATION_XML)
-	public TransferPackage test(@PathParam("controllerName") String controllerName) throws RemoteException {
-		LOGGER.debug("test");
-
-		return new TransferPackage("Test 1", 55, new String[] { "345", "asd" });
-	}
 }

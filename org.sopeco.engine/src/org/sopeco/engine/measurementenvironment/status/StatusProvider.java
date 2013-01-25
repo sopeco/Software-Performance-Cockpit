@@ -35,6 +35,7 @@ import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentControlle
 import org.sopeco.engine.measurementenvironment.app.MECApplication;
 import org.sopeco.engine.status.EventType;
 import org.sopeco.engine.status.IStatusInfo;
+import org.sopeco.engine.status.ProgressInfo;
 import org.sopeco.engine.status.StatusMessage;
 
 /**
@@ -48,6 +49,9 @@ public final class StatusProvider {
 
 	public static StatusProvider getProvider(IMeasurementEnvironmentController controller) {
 		String controllerName = MECApplication.nameOfMEC(controller);
+		if (controllerName == null) {
+			return null;
+		}
 		return getProvider(controllerName);
 	}
 
@@ -68,15 +72,23 @@ public final class StatusProvider {
 		statusList = new ArrayList<StatusMessage>();
 	}
 
-	public void nextStatus(String description) {
-		nextStatus(description, null);
+	public void sendInformation(String information) {
+		nextStatus(EventType.INFORMATION, information, null);
 	}
 
-	public void nextStatus(String description, IStatusInfo statusInfo) {
+	public void sendProgressInfo(String description, ProgressInfo progressInfo) {
+		nextStatus(EventType.INFORMATION, description, progressInfo);
+	}
+
+	// public void nextStatus(String description) {
+	// nextStatus(description, null);
+	// }
+
+	private void nextStatus(EventType eventType, String description, IStatusInfo statusInfo) {
 		StatusMessage status = new StatusMessage();
 		status.setDescription(description);
 		status.setStatusInfo(statusInfo);
-		status.setEventType(EventType.EXPERIMENT_EXECUTION);
+		status.setEventType(eventType);
 
 		statusList.add(status);
 	}
