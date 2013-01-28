@@ -51,10 +51,15 @@ import org.slf4j.LoggerFactory;
  * <li> Get the results by calling {@link #getResults()}. </li>
  * </ol>
  * 
+ * @param <IN> the type of input jobs
+ * @param <OUT> the type of output results
+ * 
  * @author Roozbeh Farahbod
  *
  */
 public abstract class ConcurrentJobProcessor<IN, OUT> implements Runnable {
+
+	private static final int JOB_CHECK_CYCLE_DELAY = 50;
 
 	private static final String DEFAULT_CONCURRENT_PROCESSOR_NAME = "Concurrent Processor";
 
@@ -99,7 +104,7 @@ public abstract class ConcurrentJobProcessor<IN, OUT> implements Runnable {
 			}
 			
 			try {
-				Thread.sleep(50);
+				Thread.sleep(JOB_CHECK_CYCLE_DELAY);
 			} catch (InterruptedException e) {
 				return;
 			}
@@ -151,7 +156,7 @@ public abstract class ConcurrentJobProcessor<IN, OUT> implements Runnable {
 		stop();
 		while (!isDone()) {
 			try {
-				Thread.sleep(50);
+				Thread.sleep(JOB_CHECK_CYCLE_DELAY);
 			} catch (InterruptedException e) {
 				logger.error("Wait loop was interrupted. Error: {}", e.getMessage());
 				return;
@@ -174,11 +179,12 @@ public abstract class ConcurrentJobProcessor<IN, OUT> implements Runnable {
 	 * @return a job from the todo list
 	 */
 	protected synchronized IN readNext() {
-		if (index  < jobs.size()) {
+		if (index < jobs.size()) {
 			logger.debug("Reading the next {} in the queue...", inputObjectName);
 			return jobs.get(index++);
-		} else
+		} else {
 			return null;
+		}
 	}
 
 	public String getInputObjectName() {
