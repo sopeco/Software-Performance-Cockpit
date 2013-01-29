@@ -29,8 +29,10 @@ package org.sopeco.engine.measurementenvironment;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
+import org.sopeco.engine.status.StatusMessage;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
@@ -186,4 +188,7 @@ public interface IMeasurementEnvironmentController extends Remote {
 	 *             remote exception is thrown
 	 */
 	int getQueueLength() throws RemoteException;
+	
+	
+	List<StatusMessage> fetchStatusMessages() throws RemoteException;
 }

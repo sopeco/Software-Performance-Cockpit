@@ -179,6 +179,8 @@ public class RestMECWrapper implements IMeasurementEnvironmentController {
 			throw (RemoteException) result;
 		} else if (result instanceof ExperimentFailedException) {
 			throw new ExperimentFailedException(((Exception) result).getMessage());
+		} else if (result instanceof RuntimeException) {
+			throw (RuntimeException) result;
 		} else if (result instanceof Exception) {
 			throw new RuntimeException(((Exception) result).getMessage());
 		}
@@ -239,4 +241,9 @@ public class RestMECWrapper implements IMeasurementEnvironmentController {
 		return request("queueLength").getA(Integer.class);
 	}
 
+	@Override
+	public List<StatusMessage> fetchStatusMessages() {
+		// TODO
+		return null;
+	}
 }

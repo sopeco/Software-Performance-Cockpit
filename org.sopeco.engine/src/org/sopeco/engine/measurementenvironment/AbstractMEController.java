@@ -39,6 +39,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.sopeco.engine.measurementenvironment.status.StatusProvider;
+import org.sopeco.engine.status.StatusMessage;
 import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.ParameterValueList;
@@ -71,16 +73,17 @@ public abstract class AbstractMEController extends MEControllerResource {
 	private final MeasurementEnvironmentDefinition meDefinition;
 	/**
 	 * Mapping from full qualified parameter names to fields (attributes) of the
-	 * concrete MEController (all fields including those not explicitely set for this experiment run)
+	 * concrete MEController (all fields including those not explicitely set for
+	 * this experiment run)
 	 */
 	private final Map<String, Field> sopecoParameterFields;
-	
+
 	/**
 	 * Mapping from full qualified parameter names to fields (attributes) of the
-	 * concrete MEController (only those fields that have been explicitly set for this run by the user)
+	 * concrete MEController (only those fields that have been explicitly set
+	 * for this run by the user)
 	 */
 	private final Map<String, Field> currentRunSopecoParameterFields;
-
 
 	/**
 	 * A set of parameter value lists containing all observation values which
@@ -88,11 +91,11 @@ public abstract class AbstractMEController extends MEControllerResource {
 	 */
 	private List<ParameterValueList<?>> resultSet;
 
-	/** 
+	/**
 	 * The set of termination conditions that are configured by the user.
 	 */
 	protected Set<ExperimentTerminationCondition> configuredTerminationConditions;
-	
+
 	/**
 	 * This Constructor is responsible for creating the MEDefinition by
 	 * interpreting the attribute annotations.
@@ -106,21 +109,24 @@ public abstract class AbstractMEController extends MEControllerResource {
 	}
 
 	/**
-	 * Adds a list of termination conditions to the ME Controller definition. 
-	 * NOTE: This method must only be called in the constructor of the ME Controller, 
-	 * given that the constructor of the super class ({@link AbstractMEController}) is called.
-	 *  
-	 * @param conditions an array of {@link ExperimentTerminationCondition}
+	 * Adds a list of termination conditions to the ME Controller definition.
+	 * NOTE: This method must only be called in the constructor of the ME
+	 * Controller, given that the constructor of the super class (
+	 * {@link AbstractMEController}) is called.
+	 * 
+	 * @param conditions
+	 *            an array of {@link ExperimentTerminationCondition}
 	 */
 	protected void addSupportedTerminationConditions(ExperimentTerminationCondition... conditions) {
-		if (meDefinition == null) 
-			throw new RuntimeException("Adding supported termination conditions must be called from the ME Controller constructor.");
-		
-		for (ExperimentTerminationCondition tc: conditions) {
+		if (meDefinition == null)
+			throw new RuntimeException(
+					"Adding supported termination conditions must be called from the ME Controller constructor.");
+
+		for (ExperimentTerminationCondition tc : conditions) {
 			meDefinition.getSupportedTerminationConditions().add(tc);
 		}
 	}
-	
+
 	@Override
 	public synchronized MeasurementEnvironmentDefinition getMEDefinition() throws RemoteException {
 		return meDefinition;
@@ -133,14 +139,16 @@ public abstract class AbstractMEController extends MEControllerResource {
 	}
 
 	@Override
-	protected void prepareExperimentSeries(ParameterCollection<ParameterValue<?>> preparationPVs, Set<ExperimentTerminationCondition> terminationConditions) {
+	protected void prepareExperimentSeries(ParameterCollection<ParameterValue<?>> preparationPVs,
+			Set<ExperimentTerminationCondition> terminationConditions) {
 		setParameterValues(preparationPVs);
 		configuredTerminationConditions = terminationConditions;
 		prepareExperimentSeries();
 	}
 
 	@Override
-	protected Collection<ParameterValueList<?>> runExperiment(ParameterCollection<ParameterValue<?>> inputPVs) throws ExperimentFailedException {
+	protected Collection<ParameterValueList<?>> runExperiment(ParameterCollection<ParameterValue<?>> inputPVs)
+			throws ExperimentFailedException {
 		cleanUpObservations();
 		resultSet.clear();
 		setParameterValues(inputPVs);
@@ -181,7 +189,8 @@ public abstract class AbstractMEController extends MEControllerResource {
 	}
 
 	/**
-	 * Returns the values for those input parameters that have been explicitly set by the user for this run..
+	 * Returns the values for those input parameters that have been explicitly
+	 * set by the user for this run..
 	 * 
 	 * @return values for all input parameters
 	 */
@@ -198,7 +207,7 @@ public abstract class AbstractMEController extends MEControllerResource {
 		}
 		return result;
 	}
-	
+
 	/**
 	 * Returns the values for all input parameters within the given namespace.
 	 * 
@@ -229,7 +238,7 @@ public abstract class AbstractMEController extends MEControllerResource {
 	 *            set of input parameter values
 	 */
 	private void setParameterValues(ParameterCollection<ParameterValue<?>> parameterValues) {
-		
+
 		currentRunSopecoParameterFields.clear();
 		for (ParameterValue pv : parameterValues) {
 			ParameterDefinition parameter = pv.getParameter();
@@ -243,7 +252,7 @@ public abstract class AbstractMEController extends MEControllerResource {
 			} catch (Exception e) {
 				throw new RuntimeException("Failed setting parameter value for Parameter " + parameter.getFullName(), e);
 			}
-			
+
 			currentRunSopecoParameterFields.put(parameter.getFullName(), parameterField);
 		}
 
@@ -257,15 +266,14 @@ public abstract class AbstractMEController extends MEControllerResource {
 		MeasurementEnvironmentDefinition meDef = EntityFactory.createMeasurementEnvironmentDefinition();
 		meDef.setRoot(EntityFactory.createNamespace(DEFAULT_ROOT_NAMESPACE));
 
-		for (Field field: getAllParameterFields()) {
+		for (Field field : getAllParameterFields()) {
 			field.setAccessible(true);
 			ParameterRole role = getParameterRole(field);
 			String name = getParameterName(field);
 			String type = getParameterType(field);
 			String namespace = getParameterNamespace(field);
 
-			ParameterDefinition newParameter = addParameterToMEDefinition(name, namespace, role, type,
-					meDef.getRoot());
+			ParameterDefinition newParameter = addParameterToMEDefinition(name, namespace, role, type, meDef.getRoot());
 
 			sopecoParameterFields.put(newParameter.getFullName(), field);
 
@@ -279,19 +287,20 @@ public abstract class AbstractMEController extends MEControllerResource {
 							+ newParameter.getFullName(), e);
 				}
 			}
-		} 
+		}
 
 		return meDef;
 	}
 
 	/**
-	 * Returns the list of fields that define input parameter and observation parameters.
-	 *  
+	 * Returns the list of fields that define input parameter and observation
+	 * parameters.
+	 * 
 	 * @return list of input/observation parameter fields
 	 */
 	protected List<Field> getAllParameterFields() {
 		List<Field> fields = new ArrayList<Field>();
-		
+
 		Class clazz = this.getClass();
 		while (!clazz.equals(AbstractMEController.class)) {
 			for (Field field : clazz.getDeclaredFields()) {
@@ -302,10 +311,10 @@ public abstract class AbstractMEController extends MEControllerResource {
 			}
 			clazz = clazz.getSuperclass();
 		}
-		
+
 		return fields;
 	}
-	
+
 	protected String getParameterNamespace(Field field) {
 		if (field.isAnnotationPresent(InputParameter.class)) {
 			return field.getAnnotation(InputParameter.class).namespace();
@@ -366,17 +375,18 @@ public abstract class AbstractMEController extends MEControllerResource {
 	 * string representation used for SoPeCo Parameter types. Throws a runtime
 	 * exception if the given type is not supported.
 	 * 
-	 * @param type a given type
+	 * @param type
+	 *            a given type
 	 */
 	private String interpreteType(Type type) {
 		if (type instanceof Class) {
-			Tools.SupportedTypes sType = Tools.SupportedTypes.get(((Class)type).getSimpleName());
-		
+			Tools.SupportedTypes sType = Tools.SupportedTypes.get(((Class) type).getSimpleName());
+
 			if (sType != null) {
 				return sType.toString();
 			}
 		}
-		
+
 		// else
 		throw new RuntimeException("Unsupported parameter type for input parameter! "
 				+ "Supported values are Integer, Double, Boolean or String");
@@ -510,10 +520,11 @@ public abstract class AbstractMEController extends MEControllerResource {
 	protected Set<ExperimentTerminationCondition> getConfiguredTerminationConditions() {
 		return configuredTerminationConditions;
 	}
-	
+
 	/**
-	 * If a number of repetitions termination condition is defined by the scenario, 
-	 * it returns the set value; otherwise returns the default value of {@value AbstractMEController#DEFAULT_NUMBER_OF_REPS}.
+	 * If a number of repetitions termination condition is defined by the
+	 * scenario, it returns the set value; otherwise returns the default value
+	 * of {@value AbstractMEController#DEFAULT_NUMBER_OF_REPS}.
 	 * 
 	 * @return the set number of repetitions or its default value
 	 * 
@@ -523,4 +534,12 @@ public abstract class AbstractMEController extends MEControllerResource {
 		return ExperimentTerminationCondition.getNumberOfRepetitions(configuredTerminationConditions);
 	}
 
+	@Override
+	public List<StatusMessage> fetchStatusMessages() {
+		List<StatusMessage> result = StatusProvider.getProvider(this).getNotFetched();
+		if (result == null) {
+			result = new ArrayList<StatusMessage>();
+		}
+		return result;
+	}
 }

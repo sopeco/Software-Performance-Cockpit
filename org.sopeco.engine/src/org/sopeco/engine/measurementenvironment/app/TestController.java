@@ -1,49 +1,68 @@
 package org.sopeco.engine.measurementenvironment.app;
 
+import java.util.List;
 
 import org.sopeco.engine.measurementenvironment.AbstractMEController;
 import org.sopeco.engine.measurementenvironment.InputParameter;
+import org.sopeco.engine.status.StatusMessage;
 import org.sopeco.persistence.entities.exceptions.ExperimentFailedException;
 
-public class TestController extends AbstractMEController{
+public class TestController extends AbstractMEController {
 
-	@InputParameter
-	int abc;
-	
+	@InputParameter(namespace="test")
+	int abc = 0;
+
 	@Override
 	protected void defineResultSet() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	protected void initialize() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	protected void prepareExperimentSeries() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	protected void runExperiment() throws ExperimentFailedException {
-		// TODO Auto-generated method stub
-		
+
+		for (int i = 0; i < abc; i++) {
+
+			try {
+
+				sendInformation("started");
+
+				Thread.sleep(2500);
+
+				sendInformation("1");
+				sendInformation("2");
+
+				Thread.sleep(2500);
+
+				sendInformation("ending");
+
+			} catch (Exception e) {
+			}
+
+		}
 	}
 
 	@Override
 	protected void finalizeExperimentSeries() {
-		// TODO Auto-generated method stub
-		
 	}
-	
+
 	public static void main(String[] args) {
 		MECApplication mecapp = MECApplication.get();
 		mecapp.addMeasurementController("ABC", new TestController());
 		mecapp.startREST(1300);
+		mecapp.startRMI();
 	}
 
 }

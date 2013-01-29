@@ -325,7 +325,7 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 			throw new RuntimeException("RemoteException.", e);
 		} catch (Exception e) {
 			StatusBroker.getManagerViaSessionID(getSessionId()).newStatus(EventType.EXECUTION_FAILED, e);
-e.printStackTrace();
+			
 			LOGGER.error("Exception was thrown. Reason: {}", e.getMessage());
 			throw new RuntimeException(e);
 		}

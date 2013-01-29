@@ -29,6 +29,8 @@ package org.sopeco.analysis.wrapper;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import java.net.ConnectException;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,24 +39,41 @@ public class WrapperTest {
 
 	private AnalysisWrapper wrapper;
 
+	private boolean skipUnitTest = false;
+	
 	@Before
 	public void initAnalysisWrapper() {
-		wrapper = new AnalysisWrapper();
+		try {
+			wrapper = new AnalysisWrapper();
+		} catch (Exception e) {
+			System.err.println("Can't connect to R server. Unit test will be skipped.");
+			skipUnitTest = true;
+		}
+		
 	}
 
 	@After
 	public void shutdownAnalysisWrapper() {
+		if (skipUnitTest) {
+			return;
+		}
 		wrapper.shutdown();
 	}
-
+	
 	@Test
 	public void testExecuteCommandString() {
+		if (skipUnitTest) {
+			return;
+		}
 		String result = wrapper.executeCommandString("2+3");
 		assertEquals("5.0", result);
 	}
 
 	@Test
 	public void testExecuteCommandStringArray() {
+		if (skipUnitTest) {
+			return;
+		}
 		wrapper.executeCommandString("a <- c(\"x\",\"y\",\"z\")");
 		String[] result = wrapper.executeCommandStringArray("a");
 		assertEquals("x", result[0]);
@@ -64,12 +83,18 @@ public class WrapperTest {
 
 	@Test
 	public void testExecuteCommandDouble() {
+		if (skipUnitTest) {
+			return;
+		}
 		double result = wrapper.executeCommandDouble("2.5+3.5");
 		assertTrue(6.0 == result);
 	}
 
 	@Test
 	public void testExecuteCommandDoubleArray() {
+		if (skipUnitTest) {
+			return;
+		}
 		wrapper.executeCommandString("a <- c(2,3,4,5)");
 		double[] result = wrapper.executeCommandDoubleArray("a");
 		assertTrue(2.0 == result[0]);
@@ -80,6 +105,9 @@ public class WrapperTest {
 
 	@Test
 	public void testInitVariables() {
+		if (skipUnitTest) {
+			return;
+		}
 		wrapper.initVariables("x", new double[] { 0, 1, 2 });
 		assertEquals(0.0, wrapper.executeCommandDouble("x0"), 0.001);
 		assertEquals(1.0, wrapper.executeCommandDouble("x1"), 0.001);
@@ -88,6 +116,9 @@ public class WrapperTest {
 
 	@Test
 	public void testMultipleWrapperInstances() {
+		if (skipUnitTest) {
+			return;
+		}
 		wrapper.shutdown();
 		Calculator c1 = new Calculator(1, 2);
 		Calculator c2 = new Calculator(10, 20);
@@ -103,8 +134,7 @@ public class WrapperTest {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
-		
+
 		assertEquals(1.0, c1.getResult(), 0.0001);
 		assertEquals(2.0, c1.getResult2(), 0.0001);
 		assertEquals(10.0, c2.getResult(), 0.0001);
