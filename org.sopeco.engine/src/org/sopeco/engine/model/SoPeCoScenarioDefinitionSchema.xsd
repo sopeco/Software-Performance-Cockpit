@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+    Copyright (c) 2013 SAP
+    All rights reserved.
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+        * Redistributions of source code must retain the above copyright
+          notice, this list of conditions and the following disclaimer.
+        * Redistributions in binary form must reproduce the above copyright
+          notice, this list of conditions and the following disclaimer in the
+          documentation and/or other materials provided with the distribution.
+        * Neither the name of the SAP nor the
+          names of its contributors may be used to endorse or promote products
+          derived from this software without specific prior written permission.
+
+    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+    ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+    WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+    DISCLAIMED. IN NO EVENT SHALL SAP BE LIABLE FOR ANY
+    DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+    (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+    LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+    ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+    (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.sopeco.org/SoPeCoScenarioDefinitionSchema"
+	xmlns:tns="http://www.sopeco.org/SoPeCoScenarioDefinitionSchema"
+	elementFormDefault="qualified">
+
+	<element name="scenario" type="tns:ScenarioDefinition"></element>
+
+	<complexType name="ScenarioDefinition">
+		<sequence maxOccurs="unbounded" minOccurs="0">
+			<element name="measurementSpecification" type="tns:MeasurementSpecification"
+				maxOccurs="unbounded" minOccurs="1"></element>
+		</sequence>
+		<attribute name="name" type="string" use="required"></attribute>
+	</complexType>
+
+
+	<complexType name="MeasurementSpecification">
+		<sequence>
+			<element name="experimentSeries" type="tns:ExperimentSeriesDefinition"
+				maxOccurs="unbounded" minOccurs="1">
+			</element>
+			<element name="initializationAssignments" type="tns:ConstantValueAssignment"
+				maxOccurs="unbounded" minOccurs="0">
+			</element>
+		</sequence>
+		<attribute name="name" type="string" use="required"></attribute>
+	</complexType>
+
+	<complexType name="ExperimentSeriesDefinition">
+		<all>
+			<element name="explorationStrategy" type="tns:ExplorationStrategy"
+				maxOccurs="1" minOccurs="1">
+			</element>
+			<element name="terminationConditions" type="tns:ExperimentTerminationCondition" maxOccurs="1"
+				minOccurs="0">
+			</element>
+			<element name="experimentSeriesPreparation" maxOccurs="1"
+				minOccurs="0">
+				<complexType>
+					<sequence>
+						<element name="constantAssignment" type="tns:ConstantValueAssignment"
+							maxOccurs="unbounded" minOccurs="0">
+						</element>
+					</sequence>
+				</complexType>
+			</element>
+			<element name="experimentSeriesExecution" maxOccurs="1"
+				minOccurs="1">
+				<complexType>
+					<sequence>
+						<element name="constantAssignment" type="tns:ConstantValueAssignment"
+							maxOccurs="unbounded" minOccurs="0">
+						</element>
+						<element name="dynamicAssignment" type="tns:DynamicValueAssignment"
+							maxOccurs="unbounded" minOccurs="0">
+						</element>
+					</sequence>
+				</complexType>
+			</element>
+		</all>
+		<attribute name="name" type="string" use="required"></attribute>
+	</complexType>
+
+
+
+	<complexType name="ConstantValueAssignment">
+		<attribute name="parameter" type="string" use="required"></attribute>
+		<attribute name="value" type="string" use="required"></attribute>
+	</complexType>
+
+
+	<complexType name="DynamicValueAssignment">
+
+		<sequence>
+			<element name="config" type="tns:ConfigurationNode"
+				maxOccurs="unbounded" minOccurs="0">
+			</element>
+		</sequence>
+		<attribute name="name" type="string" use="required"></attribute>
+		<attribute name="parameter" type="string" use="required"></attribute>
+
+	</complexType>
+
+
+	<complexType name="ConfigurationNode">
+		<attribute name="key" type="string" use="required"></attribute>
+		<attribute name="value" type="string" use="required"></attribute>
+	</complexType>
+
+	<complexType name="ExtensibleElement">
+		<sequence>
+			<element name="config" type="tns:ConfigurationNode"
+				maxOccurs="unbounded" minOccurs="0">
+			</element>
+		</sequence>
+		<attribute name="name" type="string" use="required"></attribute>
+	</complexType>
+
+	<complexType name="AnalysisConfiguration">
+		<complexContent>
+			<extension base="tns:ExtensibleElement">
+				<sequence>
+					<element name="dependentParameter" type="string" maxOccurs="unbounded"
+						minOccurs="0">
+					</element>
+					<element name="independentParameter" type="string"
+						maxOccurs="unbounded" minOccurs="0"></element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="ExplorationStrategy">
+		<complexContent>
+			<extension base="tns:ExtensibleElement">
+				<sequence>
+					<element name="analysisConfig" type="tns:AnalysisConfiguration"
+						maxOccurs="unbounded" minOccurs="0"></element>
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+
+
+	<complexType name="ExperimentTerminationCondition">
+		<sequence>
+			<element name="condition" type="tns:ExtensibleElement" maxOccurs="unbounded" minOccurs="0"></element>
+		</sequence>
+	</complexType>
+</schema>

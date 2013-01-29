@@ -1,0 +1,35 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>org.sopeco.analysis.wrapper</artifactId>
+	<packaging>jar</packaging>
+	<name>SoPeCo Analysis Wrapper</name>
+
+	<parent>
+		<artifactId>org.sopeco.core.parent</artifactId>
+		<groupId>org.sopeco.core</groupId>
+		<version>5.0.2-SNAPSHOT</version>
+		<relativePath>../org.sopeco.core.parent</relativePath>
+	</parent>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.sopeco.core</groupId>
+			<artifactId>org.sopeco.config</artifactId>
+			<version>5.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sopeco.core</groupId>
+			<artifactId>org.sopeco.persistence</artifactId>
+			<version>5.0.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sopeco.core</groupId>
+			<artifactId>org.sopeco.engine</artifactId>
+			<version>5.0.2-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+
+
+</project>
