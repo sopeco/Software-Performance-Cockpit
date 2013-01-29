@@ -1,0 +1,5 @@
+org.sopeco.plugin.std.constantassignment.BooleanConstantValueAssignmentExtension
+org.sopeco.plugin.std.constantassignment.IntegerConstantValueAssignmentExtension
+org.sopeco.plugin.std.constantassignment.DoubleConstantValueAssignmentExtension
+org.sopeco.plugin.std.constantassignment.StringConstantValueAssignmentExtension
+

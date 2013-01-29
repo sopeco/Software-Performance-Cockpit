@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.sopeco.core</groupId>
+	<artifactId>org.sopeco.core.parent</artifactId>
+	<version>5.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>Software Performance Cockpit - Core</name>
+
+	<modules>
+		<module>../org.sopeco.util</module>
+		<module>../org.sopeco.config</module>
+		<module>../org.sopeco.persistence</module>
+		<module>../org.sopeco.engine</module>
+		<module>../org.sopeco.core</module>
+		<!-- <module>../org.sopeco.core.test</module> -->
+		<module>../org.sopeco.plugin.std.parametervariation</module>
+		<!-- <module>../org.sopeco.sdq.rwrapper</module> -->
+		<module>../org.sopeco.plugin.std.exploration</module>
+		<module>../org.sopeco.plugin.std.analysis</module>
+		<module>../org.sopeco.plugin.std.constantassignment</module>
+		<module>../org.sopeco.plugin.std.processing</module>
+		<module>../org.sopeco.runner</module>
+		<module>../org.sopeco.analysis.wrapper</module>
+		<module>../org.sopeco.hyperic.sigar</module>
+	</modules>
+
+	<!-- http://deqkal276.qkal.sap.corp:8080/artifactory/sopeco-snapshot-local -->
+	<repositories>
+		<repository>
+			<id>LPE Releases</id>
+			<name>LPE-releases</name>
+			<url>http://i43vm-saas.ipd.uka.de:8081/artifactory/sopeco-release-local</url>
+		</repository>
+
+		<repository>
+			<id>LPE Snapshots</id>
+			<name>LPE-snapshots</name>
+			<url>http://i43vm-saas.ipd.uka.de:8081/artifactory/sopeco-snapshot-local</url>
+		</repository>
+
+		<repository>
+			<id>remote-repos</id>
+			<name>Remote Repositories</name>
+			<url>http://i43vm-saas.ipd.uka.de:8081/artifactory/remote-repos</url>
+		</repository>
+
+		<repository>
+			<id>LPE Repository</id>
+			<name>LPE Repository-releases</name>
+			<url>http://i43vm-saas.ipd.uka.de:8081/artifactory/ext-release-local</url>
+		</repository>
+	</repositories>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.10</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>com.springsource.ch.qos.logback.core</artifactId>
+			<version>0.9.28</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>com.springsource.ch.qos.logback.classic</artifactId>
+			<version>0.9.28</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>com.springsource.slf4j.api</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>ant</groupId>
+			<artifactId>ant</artifactId>
+			<version>1.7.0</version>
+		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.hyperic</groupId> -->
+		<!-- <artifactId>sigar</artifactId> -->
+		<!-- <version>1.6.4</version> -->
+
+		<!-- </dependency> -->
+		<dependency>
+			<groupId>org.eclipse.persistence</groupId>
+			<artifactId>org.eclipse.persistence.jpa</artifactId>
+			<version>2.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derby</artifactId>
+			<version>10.8.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>
+  			com.springsource.org.apache.commons.csv
+  		</artifactId>
+			<version>1.0.0.BUILD-20080106</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.persistence</groupId>
+			<artifactId>com.springsource.javax.persistence</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.derby</groupId>
+			<artifactId>derbyclient</artifactId>
+			<version>10.8.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.2.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>
+				com.springsource.org.apache.commons.cli
+			</artifactId>
+			<version>1.2.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-bundle</artifactId>
+			<version>1.9</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>jsr311-api</artifactId>
+			<version>1.1.1</version>
+		</dependency>
+		<dependency>
+			<groupId>asm</groupId>
+			<artifactId>asm</artifactId>
+			<version>3.3.1</version>
+		</dependency>
+
+
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.5.1</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.9.1</version>
+				<configuration>
+					<configLocation>checkstyle-sopeco.config.xml</configLocation>
+				</configuration>
+			</plugin>
+
+
+			<plugin>
+				<groupId>com.mycila.maven-license-plugin</groupId>
+				<artifactId>maven-license-plugin</artifactId>
+
+				<configuration>
+					<header>${basedir}/license-header.txt</header>
+					<mapping>
+						<conf>SCRIPT_STYLE</conf>
+						<xml>XML_STYLE</xml>
+					</mapping>
+					<properties>
+						<year>2013</year>
+						<organization>SAP</organization>
+						<copyrightHolder>SAP</copyrightHolder>
+					</properties>
+					
+					<useDefaultExcludes>true</useDefaultExcludes>
+                
+				</configuration>
+			</plugin>
+
+		</plugins>
+
+		<sourceDirectory>src</sourceDirectory>
+		<testSourceDirectory>test</testSourceDirectory>
+		<resources>
+			<resource>
+				<directory>rsc</directory>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>rsc</directory>
+			</testResource>
+		</testResources>
+	</build>
+</project>

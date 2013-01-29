@@ -1,0 +1,9 @@
+if [ -z $1 ] 
+then
+	echo "Usage: tagNewVersion ver-VERSION"
+	echo "Example: tagNewVersion ver-3.0.2"
+else
+	git tag -a $1 -m "Creating a $1 release"	
+	git push ssh://git.wdf.sap.corp:29418/SPC/sopeco.core.git tags/$1
+fi
+
