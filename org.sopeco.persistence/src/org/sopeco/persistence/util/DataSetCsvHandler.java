@@ -30,13 +30,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.csv.CSVStrategy;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.dataset.SimpleDataSet;
 import org.sopeco.persistence.dataset.SimpleDataSetColumn;
 import org.sopeco.persistence.dataset.SimpleDataSetRow;
+
+import au.com.bytecode.opencsv.CSVWriter;
 
 /**
  * 
@@ -57,10 +59,8 @@ public class DataSetCsvHandler {
 	 */
 	private char decimalDelimiter;
 
-	/**
-	 * Strategy for storing CSV files.
-	 */
-	private CSVStrategy strategy;
+	private char valueSeparator;
+	private char commentSeparator;
 
 	/**
 	 * Constructor.
@@ -72,8 +72,7 @@ public class DataSetCsvHandler {
 	 * @param hasColumnNames
 	 *            Column names are to be stored in the file.
 	 */
-	public DataSetCsvHandler(char valueSeparator, char commentSeparator,
-			boolean hasColumnNames) {
+	public DataSetCsvHandler(char valueSeparator, char commentSeparator, boolean hasColumnNames) {
 		this(valueSeparator, commentSeparator, '.', hasColumnNames);
 	}
 
@@ -90,9 +89,9 @@ public class DataSetCsvHandler {
 	 * @param hasColumnNames
 	 *            Column names are to be stored in the file.
 	 */
-	public DataSetCsvHandler(char valueSeparator, char commentSeparator,
-			char decimalDelimiter, boolean hasColumnNames) {
-		strategy = new CSVStrategy(valueSeparator, '%', commentSeparator);
+	public DataSetCsvHandler(char valueSeparator, char commentSeparator, char decimalDelimiter, boolean hasColumnNames) {
+		this.valueSeparator=valueSeparator;
+		this.commentSeparator=commentSeparator;
 		this.hasColumnNames = hasColumnNames;
 		this.decimalDelimiter = decimalDelimiter;
 	}
@@ -108,8 +107,7 @@ public class DataSetCsvHandler {
 	 *             Thrown if the file cannot be written.
 	 */
 	@SuppressWarnings("unchecked")
-	public void store(SimpleDataSet dataset, String fileName)
-			throws IOException {
+	public void store(SimpleDataSet dataset, String fileName) throws IOException {
 		FileWriter fileWriter = new FileWriter(fileName);
 		writeCSV(dataset, fileWriter);
 		fileWriter.close();
@@ -136,28 +134,33 @@ public class DataSetCsvHandler {
 	 * Converts the the passed {@link SimpleDataSet} to a CSV stream and writes
 	 * the stream to the passed writer.
 	 */
-	private void writeCSV(SimpleDataSet dataset, Writer writer)
-			throws IOException {
-		CSVPrinter printer = new CSVPrinter(writer);
-		printer.setStrategy(strategy);
+	private void writeCSV(SimpleDataSet dataset, Writer writer) throws IOException {
+		CSVWriter csvWriter = new CSVWriter(writer,valueSeparator,commentSeparator);
+		
 
 		if (hasColumnNames) {
+	
+			List<String> headers = new ArrayList<String>();
 			for (SimpleDataSetColumn column : dataset.getColumns()) {
-				printer.print(column.getParameter().getName());
+				headers.add(column.getParameter().getName());
 			}
-			printer.println();
+
+			csvWriter.writeNext(headers.toArray(new String [0]));
 		}
 
+		List<String> values = new ArrayList<String>();
 		for (SimpleDataSetRow row : dataset) {
+			
 			for (ParameterValue pv : row.getRowValues()) {
 				if (decimalDelimiter != '.' && pv.getValue() instanceof Double) {
-					printer.print(pv.getValue().toString()
-							.replace('.', decimalDelimiter));
+					values.add(pv.getValue().toString().replace('.', decimalDelimiter));
+				
 				} else {
-					printer.print(pv.getValue().toString());
+					values.add(pv.getValue().toString());
 				}
 			}
-			printer.println();
+			csvWriter.writeNext(values.toArray(new String[0]));
+			values.clear();
 		}
 
 	}
