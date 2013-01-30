@@ -1,0 +1,8 @@
+org.sopeco.plugin.std.exploration.full.FullExplorationStrategyExtension
+org.sopeco.plugin.std.exploration.breakdown.extensions.RandomBreakdownExtension
+org.sopeco.plugin.std.exploration.breakdown.extensions.EquidistantBreakdownExtension
+org.sopeco.plugin.std.exploration.breakdown.extensions.AdaptiveRandomBreakdownExtension
+org.sopeco.plugin.std.exploration.breakdown.extensions.AdaptiveEquidistantBreakdownExtension
+org.sopeco.plugin.std.exploration.screening.extensions.PlackettBurmanExtension
+org.sopeco.plugin.std.exploration.screening.extensions.FullFactorialExtension
+org.sopeco.plugin.std.exploration.screening.extensions.FractionalFactorialExtension

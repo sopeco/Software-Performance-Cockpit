@@ -1,0 +1,8 @@
+if [ -z $1 ] 
+then
+	echo "usage: updatVersion VERSION"
+else
+	pushd ../org.sopeco.core.parent
+	mvn versions:set -DnewVersion=$1
+	popd
+fi
