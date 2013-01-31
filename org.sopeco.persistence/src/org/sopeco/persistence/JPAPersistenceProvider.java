@@ -78,6 +78,11 @@ public class JPAPersistenceProvider extends SessionAwareObject implements IPersi
 	}
 
 	@Override
+	public void closeProvider() {
+		emf.close();
+	}
+	
+	@Override
 	public void store(ExperimentSeriesRun experimentSeriesRun) {
 
 		experimentSeriesRun.storeDataSets(this); // required due to decoupling
