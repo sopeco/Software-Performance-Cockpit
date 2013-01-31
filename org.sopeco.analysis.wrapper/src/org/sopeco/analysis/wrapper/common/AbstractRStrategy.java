@@ -114,4 +114,6 @@ public abstract class AbstractRStrategy extends AbstractSoPeCoExtensionArtifact 
 		data = new RDataSet(dataset);
 		data.loadDataSetInR(analysisWrapper);
 	}
+	
+	abstract public void releaseAnalysisResources();
 }

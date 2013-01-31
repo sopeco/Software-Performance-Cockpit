@@ -37,6 +37,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -69,6 +71,8 @@ public class PredictionFunctionAnalysisStrategyTest {
 	private AnalysisConfiguration analysisConfiguration;
 	private static ScenarioDefinition scenarioDefinition;
 	private DataSetAggregated dataset;
+	private volatile int numOfTests = 0;
+	private final int NUMBER_OF_TEST_METHODS = 2;
 	
 	private static boolean skipUnitTest = false;
 	
@@ -116,6 +120,13 @@ public class PredictionFunctionAnalysisStrategyTest {
 		scenarioDefinition = loadScenarioDefinition();
 	}
 
+	@After
+	public void cleanUp(){
+		if(numOfTests == NUMBER_OF_TEST_METHODS){
+			this.strategy.releaseAnalysisResources();
+		}
+		
+	}
 
 	@Test
 	public void testAnalysis() {
@@ -148,7 +159,7 @@ public class PredictionFunctionAnalysisStrategyTest {
 			
 
 			System.out.println(result.getFunctionAsString());
-
+			numOfTests++;
 	}
 	
 	@Test
@@ -161,7 +172,7 @@ public class PredictionFunctionAnalysisStrategyTest {
 		this.analysisConfiguration.getIndependentParameters().add(scenarioDefinition.getParameterDefinition("default.DummyInput"));
 		
 		this.testAnalysis();
-
+		numOfTests++;
 	}
 	
 	
