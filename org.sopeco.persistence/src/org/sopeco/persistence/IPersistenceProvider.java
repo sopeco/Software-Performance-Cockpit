@@ -48,6 +48,9 @@ import org.sopeco.persistence.exceptions.DataNotFoundException;
  */
 public interface IPersistenceProvider {
 
+	/* for cleanup */
+	void closeProvider();
+	
 	/* create, update */
 	void store(ExperimentSeriesRun experimentSeriesRun);
 
