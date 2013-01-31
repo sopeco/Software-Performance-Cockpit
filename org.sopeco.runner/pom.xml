@@ -10,7 +10,7 @@
 	<parent>
 		<artifactId>org.sopeco.core.parent</artifactId>
 		<groupId>org.sopeco.core</groupId>
-		<version>5.0.1</version>
+		<version>5.0.2-SNAPSHOT</version>
 		<relativePath>../org.sopeco.core.parent</relativePath>
 	</parent>
 
@@ -18,34 +18,34 @@
 		<dependency>
 			<groupId>org.sopeco.core</groupId>
 			<artifactId>org.sopeco.core</artifactId>
-			<version>5.0.1</version>
+			<version>5.0.2-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.sopeco.core</groupId>
 			<artifactId>org.sopeco.plugin.std.parametervariation</artifactId>
-			<version>5.0.1</version>
+			<version>5.0.2-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.sopeco.core</groupId>
 			<artifactId>org.sopeco.plugin.std.exploration</artifactId>
-			<version>5.0.1</version>
+			<version>5.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.sopeco.core</groupId>
 			<artifactId>org.sopeco.plugin.std.analysis</artifactId>
-			<version>5.0.1</version>
+			<version>5.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.sopeco.core</groupId>
 			<artifactId>org.sopeco.plugin.std.constantassignment</artifactId>
-			<version>5.0.1</version>
+			<version>5.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.sopeco.core</groupId>
 			<artifactId>org.sopeco.plugin.std.processing</artifactId>
-			<version>5.0.1</version>
+			<version>5.0.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
