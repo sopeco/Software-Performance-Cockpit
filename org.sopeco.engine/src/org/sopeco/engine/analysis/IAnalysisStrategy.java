@@ -61,4 +61,9 @@ public interface IAnalysisStrategy extends ISoPeCoExtensionArtifact {
 	 *         supported by this strategy, otherwise returns <code>false</code>
 	 */
 	boolean supports(AnalysisConfiguration config);
+	
+	/**
+	 * Release resources required for analysis
+	 */
+	void releaseAnalysisResources();
 }

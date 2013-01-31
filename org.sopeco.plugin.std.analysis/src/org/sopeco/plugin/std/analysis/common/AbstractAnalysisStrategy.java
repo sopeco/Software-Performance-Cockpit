@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.sopeco.analysis.wrapper.AnalysisWrapper;
 import org.sopeco.analysis.wrapper.common.AbstractRStrategy;
 import org.sopeco.engine.analysis.IPredictionFunctionStrategy;
@@ -54,17 +56,14 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
  * 
  */
 public abstract class AbstractAnalysisStrategy extends AbstractRStrategy {
-	protected final AnalysisWrapper analysisWrapper;
+	Logger logger = LoggerFactory.getLogger(AbstractAnalysisStrategy.class);
+	protected AnalysisWrapper analysisWrapper;
+
 	public AbstractAnalysisStrategy(ISoPeCoExtension<?> provider) {
 		super(provider);
 		analysisWrapper = new AnalysisWrapper();
 	}
 
-	@Override
-	protected void finalize() throws Throwable {
-		analysisWrapper.shutdown();
-		super.finalize();
-	}
 	protected ParameterDefinition dependentParameterDefintion;
 	protected List<ParameterDefinition> independentParameterDefinitions;
 
@@ -129,9 +128,10 @@ public abstract class AbstractAnalysisStrategy extends AbstractRStrategy {
 				builder.addColumn(col);
 			} else {
 				List<Integer> numericValues = mapValuesToInteger(col);
-				ParameterDefinition numericPD = EntityFactory.createParameterDefinition(pd.getName(), "INTEGER", pd.getRole());
+				ParameterDefinition numericPD = EntityFactory.createParameterDefinition(pd.getName(), "INTEGER",
+						pd.getRole());
 				numericPD.setNamespace(pd.getNamespace());
-				
+
 				switch (numericPD.getRole()) {
 				case INPUT:
 					builder.startInputColumn(numericPD);
@@ -231,6 +231,13 @@ public abstract class AbstractAnalysisStrategy extends AbstractRStrategy {
 
 	public boolean supports(AnalysisConfiguration strategyConf) {
 		return strategyConf.getName().equalsIgnoreCase(getProvider().getName());
+	}
+
+	public void releaseAnalysisResources() {
+		if (analysisWrapper != null) {
+			analysisWrapper.shutdown();
+			analysisWrapper = null;
+		}
 	}
 
 }
