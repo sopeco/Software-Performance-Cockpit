@@ -60,22 +60,9 @@ public class AnalysisWrapper {
 
 	private static final Logger logger = LoggerFactory.getLogger(AnalysisWrapper.class);
 
-	private static AnalysisWrapper instance;
-
-	/**
-	 * 
-	 * @return Returns the default instance of the analysis wrapper.
-	 */
-	public static AnalysisWrapper getDefaultWrapper() {
-		if (instance == null || !instance.isActive) {
-			instance = new AnalysisWrapper();
-		}
-		return instance;
-	}
-
 	private Gson gson;
 	private String baseUrl;
-	private boolean isActive = false;
+	private final String wrapperId;
 
 	/**
 	 * Constructor for creating an AnalysisWrapper.
@@ -84,11 +71,7 @@ public class AnalysisWrapper {
 		gson = new Gson();
 		baseUrl = getbaseUrl();
 		String result = executePOSTRequest(null, baseUrl + INIT);
-		boolean createdSuccessful = gson.fromJson(result, boolean.class);
-		if (!createdSuccessful) {
-			throw new RuntimeException("Failed to acquire analysisWrapper within given time frame!");
-		}
-		isActive = true;
+		wrapperId = gson.fromJson(result, String.class);
 
 	}
 
@@ -102,7 +85,10 @@ public class AnalysisWrapper {
 	 */
 	public String executeCommandString(String command) {
 		logger.debug(command);
-		String jsonString = gson.toJson(command);
+		String[] stringVector = new String[2];
+		stringVector[0] = gson.toJson(wrapperId);
+		stringVector[1] = gson.toJson(command);
+		String jsonString = gson.toJson(stringVector);
 
 		String result = executePOSTRequest(jsonString, baseUrl + EXECUTE_COMMAND_STRING);
 
@@ -120,11 +106,14 @@ public class AnalysisWrapper {
 	public double executeCommandDouble(String command) {
 		logger.debug(command);
 
-		String jsonString = gson.toJson(command);
+		String[] stringVector = new String[2];
+		stringVector[0] = gson.toJson(wrapperId);
+		stringVector[1] = gson.toJson(command);
+		String jsonString = gson.toJson(stringVector);
 
 		String result = executePOSTRequest(jsonString, baseUrl + EXECUTE_COMMAND_DOUBLE);
-
-		return gson.fromJson(result, double.class);
+		String stringResult = gson.fromJson(result, String.class);
+		return Double.parseDouble(stringResult);
 	}
 
 	/**
@@ -138,8 +127,11 @@ public class AnalysisWrapper {
 	public String[] executeCommandStringArray(String command) {
 
 		logger.debug(command);
-		
-		String jsonString = gson.toJson(command);
+
+		String[] stringVector = new String[2];
+		stringVector[0] = gson.toJson(wrapperId);
+		stringVector[1] = gson.toJson(command);
+		String jsonString = gson.toJson(stringVector);
 
 		String result = executePOSTRequest(jsonString, baseUrl + EXECUTE_COMMAND_STRING_ARRAY);
 
@@ -156,9 +148,11 @@ public class AnalysisWrapper {
 	 */
 	public double[] executeCommandDoubleArray(String command) {
 		logger.debug(command);
-		
-		String jsonString = gson.toJson(command);
 
+		String[] stringVector = new String[2];
+		stringVector[0] = gson.toJson(wrapperId);
+		stringVector[1] = gson.toJson(command);
+		String jsonString = gson.toJson(stringVector);
 		String result = executePOSTRequest(jsonString, baseUrl + EXECUTE_COMMAND_DOUBLE_ARRAY);
 
 		return gson.fromJson(result, double[].class);
@@ -174,12 +168,10 @@ public class AnalysisWrapper {
 	 */
 	public void initVariables(String varPrefix, double[] variablesValue) {
 
-		String varPrefixString = gson.toJson(varPrefix);
-		String variablesValueString = gson.toJson(variablesValue);
-
-		String[] stringVector = new String[2];
-		stringVector[0] = varPrefixString;
-		stringVector[1] = variablesValueString;
+		String[] stringVector = new String[3];
+		stringVector[0] = gson.toJson(wrapperId);
+		stringVector[1] = gson.toJson(varPrefix);
+		stringVector[2] = gson.toJson(variablesValue);
 		String jsonString = gson.toJson(stringVector);
 		executePOSTRequest(jsonString, baseUrl + INIT_VARIABLES);
 	}
@@ -195,8 +187,7 @@ public class AnalysisWrapper {
 	 * Shuts down R.
 	 */
 	public void shutdown() {
-		isActive = false;
-		executePOSTRequest(null, baseUrl + SHUTDOWN);
+		executePOSTRequest(gson.toJson(wrapperId), baseUrl + SHUTDOWN);
 	}
 
 	/**

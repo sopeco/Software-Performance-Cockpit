@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.plugin.std.analysis.common;
+package org.sopeco.analysis.wrapper.common;
 
 /**
  * This class provides the simple infrastructure to create objects with unique

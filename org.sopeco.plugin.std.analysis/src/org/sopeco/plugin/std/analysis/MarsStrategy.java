@@ -43,7 +43,6 @@ import org.sopeco.persistence.dataset.SimpleDataSetRowBuilder;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.plugin.std.analysis.common.AbstractAnalysisStrategy;
-import org.sopeco.plugin.std.analysis.util.RAdapter;
 import org.sopeco.util.Tools;
 
 /**
@@ -58,6 +57,7 @@ public class MarsStrategy extends AbstractAnalysisStrategy implements
 
 	Logger logger = LoggerFactory.getLogger(MarsStrategy.class);
 
+	
 	/**
 	 * Instantiate a new MARS Analysis for R.
 	 */
@@ -65,8 +65,10 @@ public class MarsStrategy extends AbstractAnalysisStrategy implements
 		super(provider);
 		requireLibrary("leaps");
 		requireLibrary("earth");
-		loadLibraries();
+		loadLibraries(analysisWrapper);
 	}
+	
+
 
 	@Override
 	public void analyse(DataSetAggregated dataset, AnalysisConfiguration config) {
@@ -79,7 +81,7 @@ public class MarsStrategy extends AbstractAnalysisStrategy implements
 
 		DataSetAggregated numericAnalysisDataSet = createNumericDataSet(analysisDataSet);
 
-		loadDataSetInR(createValidSimpleDataSet(numericAnalysisDataSet));
+		loadDataSetInR(analysisWrapper,createValidSimpleDataSet(numericAnalysisDataSet));
 
 		StringBuilder cmdBuilder = new StringBuilder();
 		cmdBuilder.append(getId());
@@ -89,8 +91,8 @@ public class MarsStrategy extends AbstractAnalysisStrategy implements
 		cmdBuilder.append(data.getId());
 		cmdBuilder.append(", penalty=-1,  fast.k=0, degree=2)");
 		logger.debug("Running R Command: {}", cmdBuilder.toString());
-		RAdapter.getWrapper().executeCommandString(cmdBuilder.toString());
-		RAdapter.shutDown();
+		analysisWrapper.executeCommandString(cmdBuilder.toString());
+	
 
 	}
 
@@ -106,9 +108,9 @@ public class MarsStrategy extends AbstractAnalysisStrategy implements
 	 *         JavaScript syntax
 	 */
 	private String getFunctionAsString() {
-		String fs = RAdapter.getWrapper().executeCommandString(
+		String fs = analysisWrapper.executeCommandString(
 				"format(" + getId() + ", style=\"max\")");
-		RAdapter.shutDown();
+
 		fs = fs.replace("\n ", "");
 		fs = fs.replace("+  ", "+ ");
 		fs = fs.replace("-  ", "- ");

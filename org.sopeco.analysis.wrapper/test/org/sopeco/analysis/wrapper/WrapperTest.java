@@ -29,8 +29,6 @@ package org.sopeco.analysis.wrapper;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.net.ConnectException;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -65,7 +63,9 @@ public class WrapperTest {
 		if (skipUnitTest) {
 			return;
 		}
-		String result = wrapper.executeCommandString("2+3");
+		wrapper.executeCommandString("x <- 2");
+		wrapper.executeCommandString("y <- 3");
+		String result = wrapper.executeCommandString("x+y");
 		assertEquals("5.0", result);
 	}
 
@@ -140,6 +140,27 @@ public class WrapperTest {
 		assertEquals(10.0, c2.getResult(), 0.0001);
 		assertEquals(200.0, c2.getResult2(), 0.0001);
 
+	}
+	
+	@Test
+	public void testAnova(){
+		if (skipUnitTest) {
+			return;
+		}
+		
+		StringBuilder cmdBuilder = new StringBuilder();
+		cmdBuilder.append("a <- c(1,2,3,4,5)");
+		wrapper.executeCommandString(cmdBuilder.toString());
+		cmdBuilder = new StringBuilder();
+		cmdBuilder.append("b <- c(2,52,31,45,52)");
+		wrapper.executeCommandString(cmdBuilder.toString());
+		
+		cmdBuilder = new StringBuilder();
+		cmdBuilder.append("testObject <- lm(a~b)");
+		wrapper.executeCommandString(cmdBuilder.toString());
+
+		
+		
 	}
 
 }

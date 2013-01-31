@@ -32,6 +32,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.sopeco.analysis.wrapper.AnalysisWrapper;
+import org.sopeco.analysis.wrapper.common.AbstractRStrategy;
 import org.sopeco.engine.analysis.IPredictionFunctionStrategy;
 import org.sopeco.engine.registry.ISoPeCoExtension;
 import org.sopeco.persistence.EntityFactory;
@@ -52,11 +54,17 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
  * 
  */
 public abstract class AbstractAnalysisStrategy extends AbstractRStrategy {
-
+	protected final AnalysisWrapper analysisWrapper;
 	public AbstractAnalysisStrategy(ISoPeCoExtension<?> provider) {
 		super(provider);
+		analysisWrapper = new AnalysisWrapper();
 	}
 
+	@Override
+	protected void finalize() throws Throwable {
+		analysisWrapper.shutdown();
+		super.finalize();
+	}
 	protected ParameterDefinition dependentParameterDefintion;
 	protected List<ParameterDefinition> independentParameterDefinitions;
 

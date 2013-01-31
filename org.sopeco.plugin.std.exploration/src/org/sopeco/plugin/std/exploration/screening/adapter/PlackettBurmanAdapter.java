@@ -30,7 +30,6 @@ import org.sopeco.persistence.entities.definition.ExplorationStrategy;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.plugin.std.exploration.screening.config.ScreeningConfiguration;
 import org.sopeco.plugin.std.exploration.screening.container.ParameterRunLevels;
-import org.sopeco.plugin.std.exploration.screening.util.RAdapter;
 
 /**
  * Adapter used to generate a PlackettBurman screening design with R.
@@ -49,8 +48,8 @@ public class PlackettBurmanAdapter extends AbstractScreeningAdapter {
 	
 	@Override
 	protected void loadRLibraries() {
-		RAdapter.getWrapper().executeCommandString("library(FrF2);");
-		RAdapter.shutDown();
+		analysisWrapper.executeCommandString("library(FrF2);");
+
 	}
 	
 	/**
@@ -81,8 +80,8 @@ public class PlackettBurmanAdapter extends AbstractScreeningAdapter {
 			cmdBuilder.append("desnum(curDesign)[," + i + "]");
 			i++;
 			
-			double[] factorLevelsOfParam = RAdapter.getWrapper().executeCommandDoubleArray(cmdBuilder.toString());
-			RAdapter.shutDown();
+			double[] factorLevelsOfParam = analysisWrapper.executeCommandDoubleArray(cmdBuilder.toString());
+
 			ParameterRunLevels runLevels = new ParameterRunLevels(param);
 			for (double value : factorLevelsOfParam) {
 				runLevels.addRunLevel(((Double) value).intValue());

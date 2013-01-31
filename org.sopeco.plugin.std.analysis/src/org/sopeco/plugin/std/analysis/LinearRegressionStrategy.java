@@ -31,7 +31,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sopeco.analysis.wrapper.AnalysisWrapper;
+import org.sopeco.analysis.wrapper.common.CSVStringGenerator;
 import org.sopeco.engine.analysis.IParameterInfluenceResult;
 import org.sopeco.engine.analysis.IParameterInfluenceStrategy;
 import org.sopeco.engine.analysis.IPredictionFunctionResult;
@@ -43,8 +43,6 @@ import org.sopeco.persistence.dataset.DataSetAggregated;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.plugin.std.analysis.common.AbstractAnalysisStrategy;
-import org.sopeco.plugin.std.analysis.util.CSVStringGenerator;
-import org.sopeco.plugin.std.analysis.util.RAdapter;
 
 /**
  * This analysis strategy allows executing a linear regression in R.
@@ -59,7 +57,7 @@ public class LinearRegressionStrategy extends AbstractAnalysisStrategy implement
 
 	protected LinearRegressionStrategy(LinearRegressionStrategyExtension provider) {
 		super(provider);
-		loadLibraries();
+		loadLibraries(analysisWrapper);
 	}
 
 	@Override
@@ -73,7 +71,7 @@ public class LinearRegressionStrategy extends AbstractAnalysisStrategy implement
 
 		DataSetAggregated numericAnalysisDataSet = createNumericDataSet(analysisDataSet);
 		
-		loadDataSetInR(numericAnalysisDataSet.convertToSimpleDataSet());
+		loadDataSetInR(analysisWrapper,numericAnalysisDataSet.convertToSimpleDataSet());
 
 		// build and execute R command
 		StringBuilder cmdBuilder = new StringBuilder();
@@ -84,8 +82,8 @@ public class LinearRegressionStrategy extends AbstractAnalysisStrategy implement
 		cmdBuilder.append(CSVStringGenerator.generateParameterString(" + ", independentParameterDefinitions));
 		cmdBuilder.append(")");
 		logger.debug("Running R Command: {}", cmdBuilder.toString());
-		RAdapter.getWrapper().executeCommandString(cmdBuilder.toString());
-		RAdapter.shutDown();
+		analysisWrapper.executeCommandString(cmdBuilder.toString());
+
 	}
 
 	@Override
@@ -100,17 +98,16 @@ public class LinearRegressionStrategy extends AbstractAnalysisStrategy implement
 	 */
 	private String getFunctionAsString() {
 		StringBuilder functionBuilder = new StringBuilder();
-		functionBuilder.append(RAdapter.getWrapper().executeCommandString(getId() + "$coefficients[1]"));
+		functionBuilder.append(analysisWrapper.executeCommandString(getId() + "$coefficients[1]"));
 		int index = 1;
 		for (ParameterDefinition inputParameter : independentParameterDefinitions) {
 			index++;
 			functionBuilder.append(" + ");
-			functionBuilder.append(RAdapter.getWrapper().executeCommandString(
+			functionBuilder.append(analysisWrapper.executeCommandString(
 					getId() + "$coefficients[" + index + "]"));
 			functionBuilder.append(" * ");
 			functionBuilder.append(inputParameter.getFullName("_"));
 		}
-		RAdapter.shutDown();
 		/*
 		 * Workaround for bug in linear regression implementation of R. R
 		 * returns a function of type 10 + NA * paramID if the value of the
@@ -139,8 +136,8 @@ public class LinearRegressionStrategy extends AbstractAnalysisStrategy implement
 	public ParameterRegressionCoefficient getCoefficientByParameter(ParameterDefinition parameter) {
 
 		int index = independentParameterDefinitions.indexOf(parameter);
-		double coeff = RAdapter.getWrapper().executeCommandDouble(getId() + "$coefficients[" + (index + 2) + "]");
-		RAdapter.shutDown();
+		double coeff = analysisWrapper.executeCommandDouble(getId() + "$coefficients[" + (index + 2) + "]");
+
 		return new ParameterRegressionCoefficient(parameter, dependentParameterDefintion, coeff);
 	}
 
@@ -160,10 +157,10 @@ public class LinearRegressionStrategy extends AbstractAnalysisStrategy implement
 		for (int i = 0; i < independentParameterDefinitions.size(); i++) {
 			ParameterDefinition parameter = independentParameterDefinitions.get(i);
 			index++;
-			double coeff = RAdapter.getWrapper().executeCommandDouble(getId() + "$coefficients[" + index + "]");
+			double coeff = analysisWrapper.executeCommandDouble(getId() + "$coefficients[" + index + "]");
 			resultList.add(new ParameterRegressionCoefficient(parameter, dependentParameterDefintion, coeff));
 		}
-		RAdapter.shutDown();
+
 		return resultList;
 	}
 

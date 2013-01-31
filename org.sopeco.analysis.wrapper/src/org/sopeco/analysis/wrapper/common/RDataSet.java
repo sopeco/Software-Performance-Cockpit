@@ -24,14 +24,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.plugin.std.analysis.common;
+package org.sopeco.analysis.wrapper.common;
 
 import org.sopeco.analysis.wrapper.AnalysisWrapper;
 import org.sopeco.persistence.dataset.SimpleDataSet;
 import org.sopeco.persistence.dataset.SimpleDataSetColumn;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
-import org.sopeco.plugin.std.analysis.util.CSVStringGenerator;
-import org.sopeco.plugin.std.analysis.util.RAdapter;
+
 
 /**
  * Representation of a DataSet in R. This class provides the functionality to
@@ -67,7 +66,7 @@ public class RDataSet extends RIdentifiableObject {
 	 * Transfers this DataSet to R and makes it available under a newly
 	 * generated ID.
 	 */
-	public void loadDataSetInR() {
+	public void loadDataSetInR(AnalysisWrapper analysisWrapper) {
 
 		String parameterIdString = "";
 		String parameterIdStringInQuotes = "";
@@ -75,7 +74,7 @@ public class RDataSet extends RIdentifiableObject {
 		int i = 0;
 		for (SimpleDataSetColumn<?> column : dataset.getColumns()) {
 			String columnId = column.getParameter().getFullName("_");
-			RAdapter.getWrapper().executeCommandString(columnId + " <- c(" + new CSVStringGenerator().generateValueString(column.getParameterValues()) + ")");
+			analysisWrapper.executeCommandString(columnId + " <- c(" + new CSVStringGenerator().generateValueString(column.getParameterValues()) + ")");
 			if (i == 0) {
 				parameterIdString = columnId;
 				parameterIdStringInQuotes = "\"" + columnId + "\"";
@@ -86,10 +85,9 @@ public class RDataSet extends RIdentifiableObject {
 			i++;
 		}
 
-		RAdapter.getWrapper().executeCommandString(getId() + " <- data.frame(" + parameterIdString + ");");
-		RAdapter.getWrapper().executeCommandString("colnames(" + getId() + ") <- c(" + parameterIdStringInQuotes + ")");
+		analysisWrapper.executeCommandString(getId() + " <- data.frame(" + parameterIdString + ");");
+		analysisWrapper.executeCommandString("colnames(" + getId() + ") <- c(" + parameterIdStringInQuotes + ")");
 		
-		RAdapter.shutDown();
 		dataLoaded = true;
 
 	}
@@ -103,7 +101,7 @@ public class RDataSet extends RIdentifiableObject {
 	 * 
 	 * @param parameter for which the values should be jittered
 	 */
-	public void jitter(ParameterDefinition parameter) {
+	public void jitter(AnalysisWrapper analysisWrapper, ParameterDefinition parameter) {
 
 		
 		StringBuilder cmdBuilder = new StringBuilder();
@@ -115,21 +113,21 @@ public class RDataSet extends RIdentifiableObject {
 		cmdBuilder.append("$");
 		cmdBuilder.append(parameter.getFullName("_")); 
 		cmdBuilder.append(", 0.0000001)");
-		RAdapter.getWrapper().executeCommandString(cmdBuilder.toString());
+		analysisWrapper.executeCommandString(cmdBuilder.toString());
 	}
 
 	/**
 	 * Removes this DataSet from R to free the used memory.
 	 */
-	public void removeDataSetInR() {
+	public void removeDataSetInR(AnalysisWrapper analysisWrapper) {
 		if (dataLoaded) {
 			// Delete all columns
 			for (SimpleDataSetColumn<?> column : dataset.getColumns()) {
 				String columnId = column.getParameter().getFullName("_");
-				RAdapter.getWrapper().executeCommandString("rm(" + columnId + ");");
+				analysisWrapper.executeCommandString("rm(" + columnId + ");");
 			}
 			// Delete data table
-			RAdapter.getWrapper().executeCommandString("rm(" + getId() + ");");
+			analysisWrapper.executeCommandString("rm(" + getId() + ");");
 			dataLoaded = false;
 		}
 	}

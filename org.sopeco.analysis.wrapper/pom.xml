@@ -19,6 +19,16 @@
 			<artifactId>org.sopeco.config</artifactId>
 			<version>5.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.sopeco.core</groupId>
+			<artifactId>org.sopeco.persistence</artifactId>
+			<version>5.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.sopeco.core</groupId>
+			<artifactId>org.sopeco.engine</artifactId>
+			<version>5.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 

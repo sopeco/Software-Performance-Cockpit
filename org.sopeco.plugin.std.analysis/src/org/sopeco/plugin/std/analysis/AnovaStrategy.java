@@ -31,7 +31,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sopeco.analysis.wrapper.AnalysisWrapper;
+import org.sopeco.analysis.wrapper.common.CSVStringGenerator;
 import org.sopeco.engine.analysis.AnovaCalculatedEffect;
 import org.sopeco.engine.analysis.AnovaResult;
 import org.sopeco.engine.analysis.IAnovaResult;
@@ -46,8 +46,7 @@ import org.sopeco.persistence.dataset.SimpleDataSet;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.plugin.std.analysis.common.AbstractAnalysisStrategy;
-import org.sopeco.plugin.std.analysis.util.CSVStringGenerator;
-import org.sopeco.plugin.std.analysis.util.RAdapter;
+
 
 /**
  * This analysis strategy allows using the ANOVA method in R.
@@ -70,7 +69,7 @@ public class AnovaStrategy extends AbstractAnalysisStrategy implements IAnovaStr
 	 */
 	public AnovaStrategy(ISoPeCoExtension<?> provider) {
 		super(provider);
-		loadLibraries();
+		loadLibraries(analysisWrapper);
 	}
 
 	@Override
@@ -84,7 +83,7 @@ public class AnovaStrategy extends AbstractAnalysisStrategy implements IAnovaStr
 
 		DataSetAggregated numericAnalysisDataSet = createNumericDataSet(analysisDataSet);
 
-		loadDataSetInR(createValidSimpleDataSet(numericAnalysisDataSet));
+		loadDataSetInR(analysisWrapper,createValidSimpleDataSet(numericAnalysisDataSet));
 
 		/**
 		 * Example for Anova in R: <br>
@@ -106,8 +105,8 @@ public class AnovaStrategy extends AbstractAnalysisStrategy implements IAnovaStr
 		cmdBuilder.append(data.getId());
 		cmdBuilder.append("))");
 		logger.debug("Running R Command: {}", cmdBuilder.toString());
-		RAdapter.getWrapper().executeCommandString(cmdBuilder.toString());
-		RAdapter.shutDown();
+		analysisWrapper.executeCommandString(cmdBuilder.toString());
+
 		extractResult();
 	}
 
@@ -122,8 +121,8 @@ public class AnovaStrategy extends AbstractAnalysisStrategy implements IAnovaStr
 		}
 
 		// interaction effects
-		String[] effectCodes = RAdapter.getWrapper().executeCommandStringArray("rownames(" + getId() + ")");
-		RAdapter.shutDown();
+		String[] effectCodes = analysisWrapper.executeCommandStringArray("rownames(" + getId() + ")");
+
 		for (int i = 0; i < effectCodes.length; i++) {
 			List<ParameterDefinition> paramList = new ArrayList<ParameterDefinition>();
 			String[] paramNames = effectCodes[i].split(":");
@@ -201,8 +200,8 @@ public class AnovaStrategy extends AbstractAnalysisStrategy implements IAnovaStr
 		cmdBuilder.append("\",]$\"");
 		cmdBuilder.append(colName);
 		cmdBuilder.append("\")");
-		double result = RAdapter.getWrapper().executeCommandDouble(cmdBuilder.toString());
-		RAdapter.shutDown();
+		double result = analysisWrapper.executeCommandDouble(cmdBuilder.toString());
+
 		return result;
 	}
 

@@ -29,6 +29,7 @@ package org.sopeco.plugin.std.exploration.screening.adapter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sopeco.analysis.wrapper.AnalysisWrapper;
 import org.sopeco.engine.experimentseries.IParameterVariation;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.entities.definition.ExplorationStrategy;
@@ -36,7 +37,6 @@ import org.sopeco.plugin.std.exploration.screening.config.ScreeningConfiguration
 import org.sopeco.plugin.std.exploration.screening.container.ExpDesign;
 import org.sopeco.plugin.std.exploration.screening.container.ExpDesignType;
 import org.sopeco.plugin.std.exploration.screening.container.ParameterFactorValues;
-import org.sopeco.plugin.std.exploration.screening.util.RAdapter;
 
 /**
  * Abstract adapter used to provide a basic structure for different type of
@@ -56,15 +56,26 @@ public abstract class AbstractScreeningAdapter implements IScreeningAdapter {
 	 * design but are necessary for executing measurements.
 	 */
 	protected List<ParameterValue<?>> valuesOfConstantParams;
-
+	
+	/**
+	 * Analysis wrapper used for statistical operations.
+	 */
+	protected final AnalysisWrapper analysisWrapper;
 	/**
 	 * Constructor.
 	 */
 	public AbstractScreeningAdapter() {
 		expDesign = new ExpDesign();
 		valuesOfConstantParams = new ArrayList<ParameterValue<?>>();
+		analysisWrapper = new AnalysisWrapper();
 	}
 
+	@Override
+	protected void finalize() throws Throwable {
+		analysisWrapper.shutdown();
+		super.finalize();
+	}
+	
 	@Override
 	public final void setParameterVariations(List<IParameterVariation> variationImplementations) {
 		valuesOfConstantParams.clear();
@@ -137,8 +148,7 @@ public abstract class AbstractScreeningAdapter implements IScreeningAdapter {
 	protected final void executeRCommandAndGetDesign() {
 
 		String rCommand = buildRCommand();
-		RAdapter.getWrapper().executeCommandString(rCommand);
-		RAdapter.shutDown();
+		analysisWrapper.executeCommandString(rCommand);
 		getAllRunLevelsFromR();
 		expDesign.setType(getDesignTypeFromR());
 		expDesign.updateNumberOfRuns();
@@ -158,8 +168,7 @@ public abstract class AbstractScreeningAdapter implements IScreeningAdapter {
 	 */
 	private ExpDesignType getDesignTypeFromR() {
 		String rCommand = "design.info(curDesign)$type";
-		String type = RAdapter.getWrapper().executeCommandString(rCommand);
-		RAdapter.shutDown();
+		String type = analysisWrapper.executeCommandString(rCommand);
 		if (type.contains("FrF2")) {
 			return ExpDesignType.FRACTIONAL;
 		} else if (type.contains("full factorial")) {

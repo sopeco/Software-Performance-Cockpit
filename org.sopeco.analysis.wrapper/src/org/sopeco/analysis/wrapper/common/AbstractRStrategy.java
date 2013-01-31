@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.plugin.std.analysis.common;
+package org.sopeco.analysis.wrapper.common;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -38,7 +38,6 @@ import org.sopeco.persistence.dataset.DataSetInputColumn;
 import org.sopeco.persistence.dataset.SimpleDataSet;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
-import org.sopeco.plugin.std.analysis.util.RAdapter;
 
 /**
  * Implementation of the R specific features that have to be implemented by all
@@ -71,17 +70,13 @@ public abstract class AbstractRStrategy extends AbstractSoPeCoExtensionArtifact 
 	 */
 	private List<String> requiredLibraries = new ArrayList<String>();
 
-	/**
-	 * Backward reference to the R Adapter.
-	 */
-	private RAdapter rAdapter = null;
+
 	
-	public void loadLibraries() {
+	public void loadLibraries(AnalysisWrapper analysisWrapper) {
 		    
 			for (String library : requiredLibraries) {
-				RAdapter.getWrapper().executeCommandString("library(" + library + ");");
+				analysisWrapper.executeCommandString("library(" + library + ");");
 			}
-			RAdapter.shutDown();
 			requiredLibraries.clear();
 		
 	
@@ -99,12 +94,7 @@ public abstract class AbstractRStrategy extends AbstractSoPeCoExtensionArtifact 
 		requiredLibraries.add(libraryName);
 	}
 
-	/**
-	 * @return Returns the R-Adapter using this strategy.
-	 */
-	protected RAdapter getAdapter() {
-		return rAdapter;
-	}
+
 	
 	@SuppressWarnings("rawtypes")
 	protected List<ParameterDefinition> getParameterDefintions(Collection<DataSetInputColumn> inputColumns) {
@@ -119,9 +109,9 @@ public abstract class AbstractRStrategy extends AbstractSoPeCoExtensionArtifact 
 	protected AnalysisConfiguration config;
 	protected RDataSet data; 
 	
-	protected void loadDataSetInR(SimpleDataSet dataset){
+	protected void loadDataSetInR(AnalysisWrapper analysisWrapper, SimpleDataSet dataset){
 		
 		data = new RDataSet(dataset);
-		data.loadDataSetInR();
+		data.loadDataSetInR(analysisWrapper);
 	}
 }
