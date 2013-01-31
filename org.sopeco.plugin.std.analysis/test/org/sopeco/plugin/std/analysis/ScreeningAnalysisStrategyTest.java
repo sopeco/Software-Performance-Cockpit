@@ -36,6 +36,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -96,6 +97,11 @@ public class ScreeningAnalysisStrategyTest {
 	@Before
 	public void setUp() throws Exception {
 		
+	}
+	
+	@After
+	public void cleanUp(){
+		this.strategy.releaseAnalysisResources();
 	}
 
 	@Test
