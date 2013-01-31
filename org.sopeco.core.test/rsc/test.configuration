@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<org.sopeco.core.model:ScenarioDefinition xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:measurements="http://sopeco.org/configuration/measurements" xmlns:org.sopeco.core.model="http://sopeco.org/configuration" name="SoPeCo Test Scenario">
+  <measurementEnvironmentDefinition>
+    <root name="Main">
+      <children name="Preparation">
+        <parameters name="CPUCores" type="Integer"/>
+        <parameters name="MaxMem" type="Integer"/>
+      </children>
+      <children name="Initialization">
+        <parameters name="Platform" type="String"/>
+      </children>
+      <parameters name="Value" type="Integer"/>
+      <parameters name="Implementation" type="String"/>
+      <parameters name="ResponseTime" type="Double" role="OBSERVATION"/>
+    </root>
+  </measurementEnvironmentDefinition>
+  <measurementSpecification>
+    <experimentSeriesDefinitions name="Recursive">
+      <explorationStrategy name="Full Exploration Strategy"/>
+      <experimentAssignments xsi:type="measurements:DynamicValueAssignment" name="Linear Numeric Variation" parameter="//@measurementEnvironmentDefinition/@root/@parameters.0">
+        <configuration key="min" value="5"/>
+        <configuration key="max" value="15"/>
+        <configuration key="step" value="5"/>
+      </experimentAssignments>
+      <experimentAssignments xsi:type="measurements:ConstantValueAssignment" parameter="//@measurementEnvironmentDefinition/@root/@parameters.1" value="Recursive"/>
+      <experimentTerminationCondition xsi:type="measurements:NumberOfRepetitions" numberOfRepetitions="2"/>
+      <preperationAssignments parameter="//@measurementEnvironmentDefinition/@root/@children.0/@parameters.0" value="2"/>
+      <preperationAssignments parameter="//@measurementEnvironmentDefinition/@root/@children.0/@parameters.1" value="512"/>
+    </experimentSeriesDefinitions>
+    <experimentSeriesDefinitions name="Iterative">
+      <explorationStrategy name="Full Exploration Strategy"/>
+      <experimentAssignments xsi:type="measurements:ConstantValueAssignment" parameter="//@measurementEnvironmentDefinition/@root/@parameters.1" value="Iterative"/>
+      <experimentAssignments xsi:type="measurements:DynamicValueAssignment" name="CSV" parameter="//@measurementEnvironmentDefinition/@root/@parameters.0">
+        <configuration key="values" value="1, 2, 10...15, 20, 30 ... 32"/>
+      </experimentAssignments>
+      <experimentTerminationCondition xsi:type="measurements:NumberOfRepetitions" numberOfRepetitions="2"/>
+      <preperationAssignments parameter="//@measurementEnvironmentDefinition/@root/@children.0/@parameters.0" value="8"/>
+      <preperationAssignments parameter="//@measurementEnvironmentDefinition/@root/@children.0/@parameters.1" value="4096"/>
+    </experimentSeriesDefinitions>
+    <initializationAssignemts parameter="//@measurementEnvironmentDefinition/@root/@children.1/@parameters.0" value="linux"/>
+  </measurementSpecification>
+</org.sopeco.core.model:ScenarioDefinition>

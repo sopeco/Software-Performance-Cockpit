@@ -1,0 +1,4 @@
+org.sopeco.plugin.std.parametervariation.linear.LinearNumericVariationExtension
+org.sopeco.plugin.std.parametervariation.constant.ConstantVariationExtension
+org.sopeco.plugin.std.parametervariation.bool.BooleanVariationExtension
+org.sopeco.plugin.std.parametervariation.csv.CSVVariationExtension
