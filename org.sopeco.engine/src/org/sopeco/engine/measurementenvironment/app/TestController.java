@@ -87,8 +87,9 @@ public class TestController extends AbstractMEController {
 	public static void main(String[] args) {
 		MECApplication mecapp = MECApplication.get();
 		mecapp.addMeasurementController("ABC", new TestController());
-		mecapp.startREST(1300);
-		mecapp.startRMI();
+//		mecapp.startREST(1300);
+//		mecapp.startRMI();
+		mecapp.socketConnect("localhost", 11300);
 	}
 
 }
