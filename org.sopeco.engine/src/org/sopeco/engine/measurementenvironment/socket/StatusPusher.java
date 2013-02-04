@@ -24,38 +24,62 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.engine.measurementenvironment.connector;
+package org.sopeco.engine.measurementenvironment.socket;
 
-import java.net.URI;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
-import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
-import org.sopeco.engine.measurementenvironment.rmi.RmiInterlayer;
+import org.sopeco.engine.measurementenvironment.status.StatusProvider;
 
-/**
- * Creates a connector to a remote MEController using RMI.
- * 
- * @author Marius Oehler
- * 
- */
-public class RmiMEConnector implements IMEConnector {
+public class StatusPusher implements Runnable {
 
-	/**
-	 * This is a utility class, thus using private constructor.
-	 */
-	RmiMEConnector() {
+	private boolean loop;
+
+	private ObjectOutputStream ooStream;
+	private String controllerName;
+
+	private Object experimentResults;
+
+	public StatusPusher(String pControllerName, ObjectOutputStream stream) {
+		ooStream = stream;
+		controllerName = pControllerName;
 	}
 
-	/**
-	 * Connects to a remote measurement environment controller (via RMI)
-	 * identified by the given URI and returns a local instance.
-	 * 
-	 * @param meURI
-	 *            the URI of the RMI service
-	 * @return a local instance of the controller
-	 */
 	@Override
-	public IMeasurementEnvironmentController connectToMEController(URI meURI) {
-		return new RmiInterlayer(meURI);
+	public void run() {
+		loop = true;
+		while (loop) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+			}
+
+			if (experimentResults != null) {
+				loop = false;
+			}
+
+			synchronized (StatusProvider.getProvider(controllerName)) {
+				while (StatusProvider.getProvider(controllerName).hasNext()) {
+					try {
+						ooStream.writeObject(StatusProvider.getProvider(controllerName).next());
+						ooStream.flush();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+
+		try {
+			ooStream.writeObject(experimentResults);
+			ooStream.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void setExperimentResults(Object experimentResults) {
+		this.experimentResults = experimentResults;
 	}
 
 }

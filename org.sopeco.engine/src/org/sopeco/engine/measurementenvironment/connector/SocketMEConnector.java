@@ -29,33 +29,28 @@ package org.sopeco.engine.measurementenvironment.connector;
 import java.net.URI;
 
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
-import org.sopeco.engine.measurementenvironment.rmi.RmiInterlayer;
+import org.sopeco.engine.measurementenvironment.socket.SocketAppWrapper;
+import org.sopeco.engine.measurementenvironment.socket.SocketMECWrapper;
+import org.sopeco.engine.measurementenvironment.socket.SocketManager;
 
-/**
- * Creates a connector to a remote MEController using RMI.
- * 
- * @author Marius Oehler
- * 
- */
-public class RmiMEConnector implements IMEConnector {
+public class SocketMEConnector implements IMEConnector {
 
-	/**
-	 * This is a utility class, thus using private constructor.
-	 */
-	RmiMEConnector() {
-	}
-
-	/**
-	 * Connects to a remote measurement environment controller (via RMI)
-	 * identified by the given URI and returns a local instance.
-	 * 
-	 * @param meURI
-	 *            the URI of the RMI service
-	 * @return a local instance of the controller
-	 */
 	@Override
 	public IMeasurementEnvironmentController connectToMEController(URI meURI) {
-		return new RmiInterlayer(meURI);
+		SocketAppWrapper app = SocketManager.getSocketApp(meURI.getHost());
+		if (app == null) {
+			throw new RuntimeException("No MECApplication is registred by " + meURI.getHost());
+		}
+
+		String controllerName = getControllerName(meURI);
+		SocketMECWrapper mec = app.getMECWrapper(controllerName);
+		if (mec == null) {
+			throw new RuntimeException("No MEController '" + controllerName + "' is running on " + meURI.getHost());
+		}
+		return mec;
 	}
 
+	private static String getControllerName(URI uri) {
+		return uri.getPath().split("/")[1];
+	}
 }

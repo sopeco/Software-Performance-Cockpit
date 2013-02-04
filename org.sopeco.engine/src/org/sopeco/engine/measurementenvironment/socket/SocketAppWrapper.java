@@ -24,38 +24,53 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.engine.measurementenvironment.connector;
+package org.sopeco.engine.measurementenvironment.socket;
 
-import java.net.URI;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
-import org.sopeco.engine.measurementenvironment.rmi.RmiInterlayer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * Creates a connector to a remote MEController using RMI.
- * 
- * @author Marius Oehler
- * 
- */
-public class RmiMEConnector implements IMEConnector {
+public class SocketAppWrapper extends ConnectionResource {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SocketAppWrapper.class);
+	private String[] controller;
+	private Map<String, SocketMECWrapper> wrapperMap;
 
-	/**
-	 * This is a utility class, thus using private constructor.
-	 */
-	RmiMEConnector() {
+	public SocketAppWrapper(Socket pSocket) {
+		wrapperMap = new HashMap<String, SocketMECWrapper>();
+
+		try {
+			bind(pSocket);
+
+			controller = fetchAvailableMEController();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
-	/**
-	 * Connects to a remote measurement environment controller (via RMI)
-	 * identified by the given URI and returns a local instance.
-	 * 
-	 * @param meURI
-	 *            the URI of the RMI service
-	 * @return a local instance of the controller
-	 */
-	@Override
-	public IMeasurementEnvironmentController connectToMEController(URI meURI) {
-		return new RmiInterlayer(meURI);
+	public String[] fetchAvailableMEController() {
+		return callMethod("availableController");
 	}
 
+	public String[] getAvailableController() {
+		if (controller == null) {
+			controller = fetchAvailableMEController();
+		}
+		return controller;
+	}
+
+	public SocketMECWrapper getMECWrapper(String controllerName) {
+		if (Arrays.asList(controller).contains(controllerName)) {
+			if (!wrapperMap.containsKey(controllerName)) {
+				wrapperMap.put(controllerName, new SocketMECWrapper(this, controllerName));
+			}
+			return wrapperMap.get(controllerName);
+		}
+		LOGGER.warn("No MEController with name {} available.", controllerName);
+		return null;
+	}
 }
