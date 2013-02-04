@@ -24,38 +24,66 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.sopeco.engine.measurementenvironment.connector;
+package org.sopeco.engine.measurementenvironment.socket;
 
-import java.net.URI;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
 
-import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
-import org.sopeco.engine.measurementenvironment.rmi.RmiInterlayer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * Creates a connector to a remote MEController using RMI.
- * 
- * @author Marius Oehler
- * 
- */
-public class RmiMEConnector implements IMEConnector {
+public final class SocketAcception extends Thread {
 
-	/**
-	 * This is a utility class, thus using private constructor.
-	 */
-	RmiMEConnector() {
+	private static final Logger LOGGER = LoggerFactory.getLogger(SocketAcception.class);
+
+	private static final int DEFAULT_PORT = 11300;
+
+	private static SocketAcception singleton;
+
+	public static void open() {
+		open(DEFAULT_PORT);
 	}
 
-	/**
-	 * Connects to a remote measurement environment controller (via RMI)
-	 * identified by the given URI and returns a local instance.
-	 * 
-	 * @param meURI
-	 *            the URI of the RMI service
-	 * @return a local instance of the controller
-	 */
-	@Override
-	public IMeasurementEnvironmentController connectToMEController(URI meURI) {
-		return new RmiInterlayer(meURI);
+	public static void open(int port) {
+		if (singleton != null) {
+			throw new RuntimeException("Server already started.");
+		}
+		try {
+			LOGGER.info("Bind listener to port " + port);
+			singleton = new SocketAcception(port);
+			singleton.setDaemon(true);
+			singleton.start();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
+	private ServerSocket serverSocket;
+
+	private SocketAcception(int port) throws IOException {
+		serverSocket = new ServerSocket(port);
+	}
+
+	public void run() {
+		while (serverSocket.isBound()) {
+			Socket incoming = null;
+
+			try {
+				LOGGER.debug("Waiting for new connections..");
+				incoming = serverSocket.accept();
+				handleSocket(incoming);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private void handleSocket(Socket socket) {
+		LOGGER.debug("New connection from " + socket.getInetAddress().toString());
+
+		// TODO: maybe security check like IP-white list...
+
+		SocketManager.handle(socket);
+	}
 }

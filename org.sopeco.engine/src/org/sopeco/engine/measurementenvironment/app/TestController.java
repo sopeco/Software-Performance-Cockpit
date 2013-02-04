@@ -58,19 +58,23 @@ public class TestController extends AbstractMEController {
 
 	@Override
 	protected void runExperiment() throws ExperimentFailedException {
-
+System.out.println(1);
+		
 		for (int i = 0; i < abc; i++) {
+			System.out.println(2);
 
 			try {
 
 				sendInformation("started");
 
 				Thread.sleep(2500);
+				System.out.println(3);
 
 				sendInformation("1");
 				sendInformation("2");
 
 				Thread.sleep(2500);
+				System.out.println(4);
 
 				sendInformation("ending");
 
@@ -78,6 +82,7 @@ public class TestController extends AbstractMEController {
 			}
 
 		}
+		System.out.println(5);
 	}
 
 	@Override
@@ -87,8 +92,12 @@ public class TestController extends AbstractMEController {
 	public static void main(String[] args) {
 		MECApplication mecapp = MECApplication.get();
 		mecapp.addMeasurementController("ABC", new TestController());
-		mecapp.startREST(1300);
-		mecapp.startRMI();
+		mecapp.addMeasurementController("Testcontroller", new TestController());
+		mecapp.addMeasurementController("DasGleicheNochmal", new TestController());
+//		mecapp.startREST(1300);
+//		mecapp.startRMI();
+		mecapp.socketConnect("10.55.145.113", 11300);
+//		mecapp.socketConnect("127.0.0.1", 11300);
 	}
 
 }
