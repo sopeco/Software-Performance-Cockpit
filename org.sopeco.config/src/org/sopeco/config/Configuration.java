@@ -35,6 +35,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -80,7 +81,8 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	/** Holds the configured property values. */
 	private Map<String, Object> properties = new HashMap<String, Object>();
 
-	private Object lastLogbackConfigurationFileName = "";
+	/** Contains previously applied logging configurations. */
+	private HashSet<String> previousLogConfigs = new HashSet<String>();
 
 	private static final int HELP_FORMATTER_WIDTH = 120;
 
@@ -383,7 +385,7 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 
 	@Override
 	public void applyConfiguration() {
-		configureLogger();
+		configureLogger(false);
 	}
 
 	@Override
@@ -490,14 +492,22 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	@Override
 	public void setLoggerConfigFileName(String fileName) {
 		setProperty(CONF_LOGGER_CONFIG_FILE_NAME, fileName);
-		configureLogger();
 	}
 
+	@Override
+	public void applyLoggerConfiguration() {
+		configureLogger(true);
+	}
+	
 	/**
 	 * Configures the logging system with the provided logger configuration
-	 * file.
+	 * file. The configuration will be applied only if the same configuration has not been 
+	 * applied before.
+	 * 
+	 * @param forceConfiguration if true, the configuration will be done regardless of whether the 
+	 * 			configuration has been applied before or not. 
 	 */
-	private void configureLogger() {
+	private void configureLogger(boolean forceConfiguration) {
 		// The following code loads the logback config file using
 		// JoranConfigurator.
 		// Alternatively, you can specify the location of the config file using
@@ -509,7 +519,26 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		// if (fileName != null) &&
 		// !fileName.equals(lastLogbackConfigurationFileName)) { // This was a
 		// bad idea.
+		
+		
 		if (fileName != null) {
+			
+			String logConfig = "";
+			
+			// check to see if we should apply this configuration
+			if (!forceConfiguration) {
+				try {
+					logConfig = Tools.readFromInputStream(findConfigFileAsInputStream(ClassLoader.getSystemClassLoader(), null, fileName));
+					if (previousLogConfigs.contains(logConfig)) {
+						logger.debug("Logging configuration (from '{}') will not be re-applied.", fileName);
+						return;
+					}
+				} catch (Exception e1) {
+					logger.error("Cannot read from logback configuration file '{}'. Logging configuration will not change.", fileName);
+					return;
+				}
+			}
+
 			LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 			try {
 				logger.debug("Configuring logback using '{}'...", fileName);
@@ -523,6 +552,9 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 
 				configurator
 						.doConfigure(findConfigFileAsInputStream(ClassLoader.getSystemClassLoader(), null, fileName));
+				
+				previousLogConfigs.add(logConfig);
+				
 			} catch (JoranException je) {
 				logger.warn(
 						"Failed loading the logback configuration file. Using default configuration. Error message: {}",
@@ -533,7 +565,6 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 						fileName);
 			}
 
-			lastLogbackConfigurationFileName = fileName;
 			logger.debug("Logback configured.");
 		}
 	}
