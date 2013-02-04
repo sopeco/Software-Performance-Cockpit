@@ -27,63 +27,59 @@
 package org.sopeco.engine.measurementenvironment.socket;
 
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.io.ObjectOutputStream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.sopeco.engine.measurementenvironment.status.StatusProvider;
 
-public final class SocketAcception extends Thread {
+public class StatusPusher implements Runnable {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SocketAcception.class);
+	private boolean loop;
 
-	private static final int DEFAULT_PORT = 11300;
+	private ObjectOutputStream ooStream;
+	private String controllerName;
 
-	private static SocketAcception singleton;
+	private Object experimentResults;
 
-	public static void open() {
-		open(DEFAULT_PORT);
+	public StatusPusher(String pControllerName, ObjectOutputStream stream) {
+		ooStream = stream;
+		controllerName = pControllerName;
 	}
 
-	public static void open(int port) {
-		if (singleton != null) {
-			throw new RuntimeException("Server already started.");
+	@Override
+	public void run() {
+		loop = true;
+		while (loop) {
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+			}
+
+			if (experimentResults != null) {
+				loop = false;
+			}
+
+			synchronized (StatusProvider.getProvider(controllerName)) {
+				while (StatusProvider.getProvider(controllerName).hasNext()) {
+					try {
+						ooStream.writeObject(StatusProvider.getProvider(controllerName).next());
+						ooStream.flush();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
 		}
+
 		try {
-			LOGGER.info("Bind listener to port " + port);
-			singleton = new SocketAcception(port);
-			singleton.setDaemon(true);
-			singleton.start();
+			ooStream.writeObject(experimentResults);
+			ooStream.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private ServerSocket serverSocket;
-
-	private SocketAcception(int port) throws IOException {
-		serverSocket = new ServerSocket(port);
+	public void setExperimentResults(Object experimentResults) {
+		this.experimentResults = experimentResults;
 	}
 
-	public void run() {
-		while (serverSocket.isBound()) {
-			Socket incoming = null;
-
-			try {
-				LOGGER.debug("Waiting for new connections..");
-				incoming = serverSocket.accept();
-				handleSocket(incoming);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	private void handleSocket(Socket socket) {
-		LOGGER.debug("New connection from " + socket.getInetAddress().toString());
-
-		// TODO: maybe security check like IP-white list...
-
-		SocketManager.handle(socket);
-	}
 }

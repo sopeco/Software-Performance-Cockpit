@@ -69,6 +69,17 @@ public final class MEConnectorFactory {
 				StatusBroker.getManager(uri.toString()).newStatus(EventType.ERROR, e);
 				throw e;
 			}
+		}  else if (uri.getScheme().toLowerCase().equals("socket")) {
+			StatusBroker.getManager(uri.toString()).newStatus(EventType.CONNECT_TO_MEC);
+			LOGGER.debug("Getting Socket MEConnector.");
+			try {
+				return new SocketMEConnector().connectToMEController(uri);
+			} catch (RuntimeException e) {
+				ErrorInfo info = new ErrorInfo();
+				info.setThrowable(e);
+				StatusBroker.getManager(uri.toString()).newStatus(EventType.ERROR, e);
+				throw e;
+			}
 		} else {
 			IllegalStateException exception = new IllegalStateException("Only 'rmi://' and 'http://' are supported.");
 

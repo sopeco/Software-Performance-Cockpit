@@ -27,68 +27,79 @@
 package org.sopeco.engine.measurementenvironment.socket;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public abstract class ConnectionResource {
 
-public final class SocketManager {
+	private Socket socket;
 
-	private SocketManager() {
+	private ObjectInputStream oiStream;
+	private ObjectOutputStream ooStream;
+
+	public void bind(Socket pSocket) throws IOException {
+		socket = pSocket;
+
+		ooStream = new ObjectOutputStream(socket.getOutputStream());
+		oiStream = new ObjectInputStream(socket.getInputStream());
 	}
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SocketManager.class);
+	public void bind(ConnectionResource connectionResource) {
+		socket = connectionResource.getSocket();
 
-	private static Map<String, SocketAppWrapper> appWrapperMap = new HashMap<String, SocketAppWrapper>();
-
-	public static void handle(Socket socket) {
-		LOGGER.debug("Stored SocketMECWrapper from {}", socket.getInetAddress().getHostAddress());
-		SocketAppWrapper appWrapper = new SocketAppWrapper(socket);
-		String key = appWrapper.getSocket().getInetAddress().getHostAddress();
-		appWrapperMap.put(key, appWrapper);
+		ooStream = connectionResource.getOoStream();
+		oiStream = connectionResource.getOiStream();
 	}
 
-	public static Collection<SocketAppWrapper> getAllSocketApps() {
-		return new HashMap<String, SocketAppWrapper>(appWrapperMap).values();
+	public Socket getSocket() {
+		return socket;
 	}
 
-	public static SocketAppWrapper getSocketApp(String ip) {
-		if (appWrapperMap.containsKey(ip)) {
-			return appWrapperMap.get(ip);
-		}
-		return null;
+	public ObjectInputStream getOiStream() {
+		return oiStream;
 	}
 
-	public static void removeSocketApp(SocketAppWrapper appWrapper) {
-		removeSocketApp(appWrapper.getSocket().getInetAddress().getHostAddress());
+	public ObjectOutputStream getOoStream() {
+		return ooStream;
 	}
 
-	public static void removeSocketApp(String ip) {
-		if (!appWrapperMap.get(ip).getSocket().isClosed()) {
+	public <T> T callMethod(String methodName, Object... parameter) {
+		return callMethod(null, methodName, parameter);
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T callMethod(String controllerName, String methodName, Object... parameter) {
+		Object inObject = null;
+
+		synchronized (socket) {
 			try {
-				appWrapperMap.get(ip).getOoStream().close();
-				appWrapperMap.get(ip).getOiStream().close();
+				ooStream.writeObject(controllerName);
+				ooStream.writeObject(methodName);
+				ooStream.writeObject(parameter);
+				ooStream.flush();
+				inObject = oiStream.readObject();
 			} catch (IOException e) {
-			} finally {
-				try {
-					if (!appWrapperMap.get(ip).getSocket().isClosed()) {
-						appWrapperMap.get(ip).getSocket().close();
-					}
-				} catch (IOException e) {
-				}
-				appWrapperMap.remove(ip);
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
+		}
+
+		return (T) inObject;
+	}
+
+	public boolean isAlive() {
+		synchronized (socket) {
+			try {
+				ooStream.writeObject(true);
+				ooStream.flush();
+				return true;
+			} catch (IOException e) {
+				return false;
 			}
 		}
 	}
-
-	public static SocketMECWrapper getSocketMEC(String ip, String mecName) {
-		if (getSocketApp(ip) != null) {
-			return getSocketApp(ip).getMECWrapper(mecName);
-		}
-		return null;
-	}
-
 }
