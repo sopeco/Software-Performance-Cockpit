@@ -65,7 +65,7 @@ public abstract class ConnectionResource {
 	}
 
 	public <T> T callMethod(String methodName, Object... parameter) {
-		return callMethod(null, methodName, parameter);
+		return  this.<T>callMethod(null, methodName, parameter);
 	}
 
 	@SuppressWarnings("unchecked")
