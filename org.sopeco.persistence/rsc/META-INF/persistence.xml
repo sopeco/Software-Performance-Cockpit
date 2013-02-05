@@ -52,7 +52,7 @@
 			<property name="eclipselink.target-database" value="Derby"/>  
 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /> 
 			<property name="eclipselink.cache.shared.default" value="false"/>
-			<property name="eclipselink.logging.level" value="INFO"/> 
+			<property name="eclipselink.logging.level" value="SEVERE"/> 
 			 
 			<!--	
 			  <property name="eclipselink.target-database" value="Derby"/>            
@@ -80,12 +80,11 @@
 			<property name="javax.persistence.jdbc.url" value="jdbc:derby:memory:sopeco-jpa;create=true" />
 			<property name="javax.persistence.jdbc.user" value="app" />
 			<property name="javax.persistence.jdbc.password" value="app" />
-			
-			
+
 			<property name="eclipselink.target-database" value="Derby"/>  
 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /> 
 			<property name="eclipselink.cache.shared.default" value="false"/>
-			<property name="eclipselink.logging.level" value="INFO"/> 
+			<property name="eclipselink.logging.level" value="SEVERE"/> 
 		</properties>
 
 	</persistence-unit>
