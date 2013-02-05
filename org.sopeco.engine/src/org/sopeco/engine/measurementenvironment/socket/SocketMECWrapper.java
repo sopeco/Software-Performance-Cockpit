@@ -131,6 +131,6 @@ public class SocketMECWrapper extends ConnectionResource implements IMeasurement
 
 	private <T extends Object> T call(Object... parameter) {
 		String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-		return callMethod(controllerName, methodName, parameter);
+		return this.<T>callMethod(controllerName, methodName, parameter);
 	}
 }
