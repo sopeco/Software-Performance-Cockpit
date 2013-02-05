@@ -63,6 +63,8 @@ public interface IConfiguration extends ISessionAwareObject {
 
 	String CONF_MEC_ACQUISITION_TIMEOUT = "sopeco.config.MECAcquisitionTimeout";
 
+	String CONF_MEC_SOCKET_RECONNECT_DELAY = "sopeco.config.mec.reconnectDelay";
+	
 	String CONF_DEFINITION_CHANGE_HANDLING_MODE = "sopeco.config.definitionChangeHandlingMode";
 	String DCHM_ARCHIVE = "archive";
 	String DCHM_DISCARD = "discard";

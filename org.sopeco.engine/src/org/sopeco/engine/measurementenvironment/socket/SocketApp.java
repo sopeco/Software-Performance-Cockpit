@@ -30,14 +30,18 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.config.Configuration;
+import org.sopeco.config.IConfiguration;
 
 public class SocketApp extends Thread {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SocketApp.class);
+
+	private static final int RECONNECT_DELAY = Configuration.getSessionSingleton(Configuration.getGlobalSessionId())
+			.getPropertyAsInteger(IConfiguration.CONF_MEC_SOCKET_RECONNECT_DELAY, 60);
 
 	private Socket socket;
 
@@ -53,17 +57,24 @@ public class SocketApp extends Thread {
 	}
 
 	public void connect() {
-		try {
-			LOGGER.debug("Connect to {}:{}", host, port);
-			socket = new Socket(host, port);
+		do {
+			try {
+				LOGGER.debug("Connect to {}:{}", host, port);
+				socket = new Socket(host, port);
 
-			ooStream = new ObjectOutputStream(socket.getOutputStream());
-			oiStream = new ObjectInputStream(socket.getInputStream());
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+				ooStream = new ObjectOutputStream(socket.getOutputStream());
+				oiStream = new ObjectInputStream(socket.getInputStream());
+			} catch (IOException e) {
+				socket = null;
+				LOGGER.error("Can not connect cause: {}", e.getMessage());
+				LOGGER.info("Trying to reconnect in {} seconds", RECONNECT_DELAY);
+
+				try {
+					Thread.sleep(RECONNECT_DELAY * 1000);
+				} catch (Exception e2) {
+				}
+			}
+		} while (socket == null);
 	}
 
 	@Override
@@ -86,8 +97,8 @@ public class SocketApp extends Thread {
 
 				CallExecutor.execute(controllerName, method, parameter, ooStream);
 			} catch (IOException e) {
-				e.printStackTrace();
-				loop = false;
+				LOGGER.error("IOException: {}", e.getMessage());
+				connect();
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			} catch (Exception e) {
@@ -95,5 +106,4 @@ public class SocketApp extends Thread {
 			}
 		}
 	}
-
 }
