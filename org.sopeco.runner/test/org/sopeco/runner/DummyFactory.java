@@ -26,7 +26,6 @@
  */
 package org.sopeco.runner;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -51,136 +50,164 @@ import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.persistence.util.ScenarioDefinitionBuilder;
 import org.sopeco.persistence.util.ScenarioDefinitionBuilder.AssignmentType;
 
-public class DummyFactory {
+/**
+ * Factory for test scenario definitions and instances.
+ * 
+ * @author Alexander Wert
+ * 
+ */
+/* CHECKSTYLE:OFF*/
+public final class DummyFactory {
 
-	private static ScenarioDefinition scenarioDefinition; 
-	
-	public static ScenarioInstance createDummyScenarioInstance() throws IOException{
+	private static final int _30 = 30;
+	private static final int _20 = 20;
+	private static final int _10 = 10;
+
+	private DummyFactory() {
+
+	}
+
+	private static ScenarioDefinition scenarioDefinition;
+
+	/**
+	 * 
+	 * @return a dummy scenario instance
+	 */
+	public static ScenarioInstance createDummyScenarioInstance() {
 		scenarioDefinition = loadScenarioDefinition();
 		ScenarioInstance scenarioInstance = EntityFactory.createScenarioInstance(scenarioDefinition, "Dummy");
 
-		for (ExperimentSeries es : createDummyExperimentSeries()){
+		for (ExperimentSeries es : createDummyExperimentSeries()) {
 			scenarioInstance.getExperimentSeriesList().add(es);
 			es.setScenarioInstance(scenarioInstance);
 		}
 		return scenarioInstance;
 	}
-	
+
+	/**
+	 * 
+	 * @return a loaded scenario definition.
+	 */
 	@SuppressWarnings("unchecked")
 	public static ScenarioDefinition loadScenarioDefinition() {
 		ScenarioDefinitionBuilder builder = new ScenarioDefinitionBuilder("Dummy");
-		
+
 		builder.createNewNamespace("default");
-		ParameterDefinition dummyInputParam = builder.createParameter("DummyInput", ParameterType.INTEGER, ParameterRole.INPUT);
-		ParameterDefinition dummyOutputParam = builder.createParameter("DummyOutput", ParameterType.INTEGER, ParameterRole.OBSERVATION);
-		
+		ParameterDefinition dummyInputParam = builder.createParameter("DummyInput", ParameterType.INTEGER,
+				ParameterRole.INPUT);
+		ParameterDefinition dummyOutputParam = builder.createParameter("DummyOutput", ParameterType.INTEGER,
+				ParameterRole.OBSERVATION);
+
 		builder.createMeasurementSpecification("DummyMeasurementSpecification");
-		
+
 		builder.createExperimentSeriesDefinition("Dummy0");
 		Map<String, String> terminationConfig = new HashMap<String, String>();
 		terminationConfig.put("repetitions", "4");
 		builder.createExperimentTerminationCondition("Number Of Repetitions", terminationConfig);
-		builder.createDynamicValueAssignment(AssignmentType.Experiment, "Linear Numeric Variation", dummyInputParam, Collections.EMPTY_MAP);
-		builder.createExplorationStrategy("Full Exploration Strategy", Collections.EMPTY_MAP);	
+		builder.createDynamicValueAssignment(AssignmentType.Experiment, "Linear Numeric Variation", dummyInputParam,
+				Collections.EMPTY_MAP);
+		builder.createExplorationStrategy("Full Exploration Strategy", Collections.EMPTY_MAP);
 		builder.createAnalysisConfiguration("MARS", Collections.EMPTY_MAP);
 		builder.addDependentParameter(dummyOutputParam);
 		builder.addIndependentParameter(dummyInputParam);
-		
+
 		builder.createExperimentSeriesDefinition("Dummy1");
 
 		builder.createExperimentTerminationCondition("Number Of Repetitions", terminationConfig);
-		builder.createDynamicValueAssignment(AssignmentType.Experiment, "Linear Numeric Variation", dummyInputParam, Collections.EMPTY_MAP);
-		builder.createExplorationStrategy("Full Exploration Strategy", Collections.EMPTY_MAP);	
+		builder.createDynamicValueAssignment(AssignmentType.Experiment, "Linear Numeric Variation", dummyInputParam,
+				Collections.EMPTY_MAP);
+		builder.createExplorationStrategy("Full Exploration Strategy", Collections.EMPTY_MAP);
 		builder.createAnalysisConfiguration("MARS", Collections.EMPTY_MAP);
 		builder.addDependentParameter(dummyOutputParam);
 		builder.addIndependentParameter(dummyInputParam);
-		
+
 		return builder.getScenarioDefinition();
 	}
-	
-	private static List<ExperimentSeries> createDummyExperimentSeries() throws IOException{
+
+	private static List<ExperimentSeries> createDummyExperimentSeries() {
 		List<ExperimentSeries> seriesList = new LinkedList<ExperimentSeries>();
-		for (ExperimentSeriesDefinition esd : scenarioDefinition.getMeasurementSpecifications().get(0).getExperimentSeriesDefinitions()) {
+		for (ExperimentSeriesDefinition esd : scenarioDefinition.getMeasurementSpecifications().get(0)
+				.getExperimentSeriesDefinitions()) {
 			ExperimentSeries es = EntityFactory.createExperimentSeries(esd);
-			
-			for(ExperimentSeriesRun run : createDummyExperimentSeriesRuns(10)){
+
+			for (ExperimentSeriesRun run : createDummyExperimentSeriesRuns(_10)) {
 				es.getExperimentSeriesRuns().add(run);
 				run.setExperimentSeries(es);
 			}
-			
+
 			seriesList.add(es);
 		}
-		
+
 		return seriesList;
-		
+
 	}
-	
-	
-	
-	static Collection<? extends ExperimentSeriesRun> createDummyExperimentSeriesRuns(
-			int numberOfRunsToCreate) throws IOException {
+
+	static Collection<? extends ExperimentSeriesRun> createDummyExperimentSeriesRuns(int numberOfRunsToCreate) {
 		ArrayList<ExperimentSeriesRun> runs = new ArrayList<ExperimentSeriesRun>();
 		for (int i = 0; i < numberOfRunsToCreate; i++) {
-			
+
 			ExperimentSeriesRun run = EntityFactory.createExperimentSeriesRun();
 			run.setSuccessfulResultDataSet(createDummyResultDataSet());
 			runs.add(run);
 		}
-		
+
 		return runs;
 	}
 
-
+	/**
+	 * 
+	 * @return a dummy result set.
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static DataSetAggregated createDummyResultDataSet() throws IOException {
-		if(scenarioDefinition==null) 
+	public static DataSetAggregated createDummyResultDataSet() {
+		if (scenarioDefinition == null) {
 			scenarioDefinition = loadScenarioDefinition();
-		
+		}
 		DataSetColumnBuilder builder = new DataSetColumnBuilder();
 		builder.startInputColumn(scenarioDefinition.getParameterDefinition("default.DummyInput"));
 		builder.addInputValue(1);
 		builder.addInputValue(2);
 		builder.finishColumn();
-		
+
 		ParameterDefinition paramDef = scenarioDefinition.getParameterDefinition("default.DummyOutput");
 		ArrayList<ParameterValueList> obsValueLists = new ArrayList<ParameterValueList>();
 		builder.startObservationColumn(paramDef);
 		ArrayList<Object> obsValues1 = new ArrayList<Object>();
-		obsValues1.add(10);
-		obsValues1.add(10);
+		obsValues1.add(_10);
+		obsValues1.add(_10);
 		obsValueLists.add(new ParameterValueList<Object>(paramDef, obsValues1));
-		
+
 		ArrayList<Object> obsValues2 = new ArrayList<Object>();
-		obsValues2.add(20);
-		obsValues2.add(20);
-//		builder.addObservationValues(obsValues2);
+		obsValues2.add(_20);
+		obsValues2.add(_20);
+		// builder.addObservationValues(obsValues2);
 		obsValueLists.add(new ParameterValueList(paramDef, obsValues2));
-		
+
 		builder.addObservationValueLists(obsValueLists);
 		builder.finishColumn();
-		
+
 		return builder.createDataSet();
 	}
 
+
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static void addDummyObservationColumn(DataSetAggregated dataset){
+	private static void addDummyObservationColumn(DataSetAggregated dataset) {
 		DataSetModifier modifier = new DataSetModifier(dataset);
 		ArrayList<Object> obsValuesAdded = new ArrayList<Object>();
-		obsValuesAdded.add(30);
-		obsValuesAdded.add(30);
+		obsValuesAdded.add(_30);
+		obsValuesAdded.add(_30);
 		ParameterDefinition paramDef = createDummyObservationParameterDefinition("DummyOutputAdded");
 		List<ParameterValueList<?>> listOfValueLists = new ArrayList<ParameterValueList<?>>();
-		listOfValueLists.add(new ParameterValueList(paramDef,obsValuesAdded));
+		listOfValueLists.add(new ParameterValueList(paramDef, obsValuesAdded));
 		modifier.addObservationColumn(paramDef, listOfValueLists);
-		
-	}
-	
-	public static ParameterDefinition createDummyObservationParameterDefinition(String name) {
-		ParameterDefinition paramDef = EntityFactory.createParameterDefinition(name, "INTEGER", ParameterRole.OBSERVATION);
-		return paramDef; 
+
 	}
 
+	private static ParameterDefinition createDummyObservationParameterDefinition(String name) {
+		ParameterDefinition paramDef = EntityFactory.createParameterDefinition(name, "INTEGER",
+				ParameterRole.OBSERVATION);
+		return paramDef;
+	}
 
-
-	
 }
+/* CHECKSTYLE:ON*/

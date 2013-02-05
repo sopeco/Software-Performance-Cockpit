@@ -55,6 +55,13 @@ import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.persistence.exceptions.DataNotFoundException;
 
+/* CHECKSTYLE:OFF*/
+/**
+ * 
+ * @author Alexander Wert
+ *
+ */
+/* CHECKSTYLE:OFF*/
 public class ExecutionTest {
 
 	private static final String ME_URI = "rmi://localhost:1098/DummyMEController";
@@ -173,3 +180,4 @@ public class ExecutionTest {
 
 	}
 }
+/* CHECKSTYLE:ON*/
