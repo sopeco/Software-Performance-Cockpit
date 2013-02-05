@@ -45,6 +45,13 @@ import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentControlle
 import org.sopeco.engine.measurementenvironment.app.MECApplication;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
+/**
+ * Tests concurrent usage of ME Controller.
+ * 
+ * @author Alexander Wert
+ * 
+ */
+/* CHECKSTYLE:OFF*/
 public class ConcurrencyTest {
 	private static final String ME_URI = "rmi://localhost:1098/DummyMEController";
 
@@ -54,6 +61,9 @@ public class ConcurrencyTest {
 
 	private static boolean exceptionThrown = false;
 
+	/**
+	 * Start ME Controller.
+	 */
 	@BeforeClass
 	public static void startMEController() {
 		try {
@@ -64,7 +74,7 @@ public class ConcurrencyTest {
 			URI meURI = URI.create(ME_URI);
 
 			MECApplication.get().startRemoteMEController(meController, meURI);
-			
+
 			LocateRegistry.getRegistry(meURI.getHost(), meURI.getPort());
 
 			assertNotNull(Naming.lookup(meURI.toString()));
@@ -73,6 +83,9 @@ public class ConcurrencyTest {
 		}
 	}
 
+	/**
+	 * Setup configuration.
+	 */
 	@BeforeClass
 	public static void initialize() {
 		Configuration.getSessionSingleton(ConcurrencyTest.class, SESSION_ID_1).setProperty(
@@ -82,6 +95,12 @@ public class ConcurrencyTest {
 
 	}
 
+	/**
+	 * Test concurrent execution.
+	 * 
+	 * @throws InterruptedException
+	 *             error during concurrent execution
+	 */
 	@Test
 	public void testConcurrentExecution() throws InterruptedException {
 
@@ -103,7 +122,7 @@ public class ConcurrencyTest {
 					engine.run(scenarioDefinition);
 				} catch (Exception e) {
 					Throwable error = e;
-					while(error != null){
+					while (error != null) {
 						if (error.getMessage().contains("MEController in use")) {
 							exceptionThrown = true;
 							break;
@@ -134,7 +153,7 @@ public class ConcurrencyTest {
 					engine.run(scenarioDefinition);
 				} catch (Exception e) {
 					Throwable error = e;
-					while(error != null){
+					while (error != null) {
 						if (error.getMessage().contains("MEController in use")) {
 							exceptionThrown = true;
 							break;
@@ -156,3 +175,4 @@ public class ConcurrencyTest {
 
 	}
 }
+/* CHECKSTYLE:ON*/

@@ -47,6 +47,7 @@ import org.sopeco.util.Tools;
  * @author Dennis Westermann
  * 
  */
+/* CHECKSTYLE:OFF*/
 public class DummyMEController extends AbstractMEController {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(DummyMEController.class);
@@ -119,3 +120,4 @@ public class DummyMEController extends AbstractMEController {
 
 	}
 }
+/* CHECKSTYLE:ON*/

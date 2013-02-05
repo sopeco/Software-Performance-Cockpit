@@ -40,9 +40,23 @@ import org.sopeco.persistence.dataset.ParameterValueFactory;
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.definition.ParameterNamespace;
 import org.sopeco.persistence.util.ParameterCollectionFactory;
-import org.sopeco.runner.DummyMEController;
 
+/**
+ * Tests the ME Controller functionality encapsulated in the
+ * AbstractMEController class.
+ * 
+ * @author Alexander Wert
+ * 
+ */
+/* CHECKSTYLE:OFF*/
 public class AbstractMEControllerTest {
+	private static final int INIT_PARAMETER_VALUE = 11;
+
+	/**
+	 * Test MEDefinition interpretation of MEController.
+	 * 
+	 * @throws RemoteException Thrown if MEController throws an exception.
+	 */
 	@Test
 	public void testMEDefinitionInterpretation() throws RemoteException {
 		DummyMEController dummyController = new DummyMEController();
@@ -78,12 +92,17 @@ public class AbstractMEControllerTest {
 
 	}
 
+	/**
+	 * Test execution of MEController.
+	 * 
+	 * @throws RemoteException Thrown if MEController throws an exception.
+	 */
 	@Test
 	public void testMECExecution() throws RemoteException {
 		DummyMEController dummyController = new DummyMEController();
 		ParameterNamespace initNS = dummyController.getMEDefinition().getNamespace("init");
 		ParameterValue<Integer> initPV = ParameterValueFactory.createParameterValue(
-				initNS.getParameter("initParameter"), 11);
+				initNS.getParameter("initParameter"), INIT_PARAMETER_VALUE);
 		List<ParameterValue<?>> pvc = new ArrayList<ParameterValue<?>>();
 		pvc.add(initPV);
 		dummyController.acquireMEController("myID", 0);
@@ -91,3 +110,4 @@ public class AbstractMEControllerTest {
 		dummyController.releaseMEController("myID");
 	}
 }
+/* CHECKSTYLE:ON*/

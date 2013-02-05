@@ -187,6 +187,7 @@
 				<version>2.9.1</version>
 				<configuration>
 					<configLocation>checkstyle-sopeco.config.xml</configLocation>
+					<excludes>test/**/*</excludes>
 				</configuration>
 			</plugin>
 
