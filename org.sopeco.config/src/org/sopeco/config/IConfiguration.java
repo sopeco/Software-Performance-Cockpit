@@ -87,7 +87,6 @@ public interface IConfiguration extends ISessionAwareObject {
 	String DIR_SEPARATOR = ":";
 
 	Map<String, Object> getProperties();
-
 	/**
 	 * Returns the configured value of the given property in SoPeCo.
 	 * 
@@ -320,6 +319,11 @@ public interface IConfiguration extends ISessionAwareObject {
 	void applyConfiguration();
 
 	/**
+	 * Forces the (re-)configuration of the logger. 
+	 */
+	void applyLoggerConfiguration();
+
+	/**
 	 * Sets the value of scenario description file name.
 	 * 
 	 * @param fileName
@@ -468,8 +472,9 @@ public interface IConfiguration extends ISessionAwareObject {
 	 * @param configuration
 	 *            with the new values
 	 */
-	void overwrite(IConfiguration configuration);
+	 void overwrite(IConfiguration configuration);
 
+	
 	/**
 	 * Overrides the custom values of this configuration with those of the given
 	 * properties object.
@@ -477,5 +482,5 @@ public interface IConfiguration extends ISessionAwareObject {
 	 * @param properties
 	 *            with the new values
 	 */
-	void overwrite(Map<String, Object> properties);
+	 void overwrite(Map<String, Object> properties);
 }
