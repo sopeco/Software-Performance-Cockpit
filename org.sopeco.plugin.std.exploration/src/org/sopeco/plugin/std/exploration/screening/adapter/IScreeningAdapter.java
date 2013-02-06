@@ -85,4 +85,11 @@ public interface IScreeningAdapter {
 	 * @return
 	 */
 	List<ParameterValue<?>> getConstantParameterValues();
+	
+	/**
+	 * Release resources required for analysis
+	 */
+	void releaseAnalysisResources();
+	
+	
 }

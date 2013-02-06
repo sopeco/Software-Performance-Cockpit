@@ -26,6 +26,7 @@
  */
 package org.sopeco.plugin.std.exploration.screening.adapter;
 
+import org.sopeco.analysis.wrapper.exception.AnalysisWrapperException;
 import org.sopeco.persistence.entities.definition.ExplorationStrategy;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.plugin.std.exploration.screening.config.ScreeningConfiguration;
@@ -47,7 +48,7 @@ public class PlackettBurmanAdapter extends AbstractScreeningAdapter {
 	}
 	
 	@Override
-	protected void loadRLibraries() {
+	protected void loadRLibraries() throws AnalysisWrapperException {
 		analysisWrapper.executeCommandString("library(FrF2);");
 
 	}
@@ -72,7 +73,7 @@ public class PlackettBurmanAdapter extends AbstractScreeningAdapter {
 	}
 
 	@Override
-	protected void getAllRunLevelsFromR() {
+	protected void getAllRunLevelsFromR() throws AnalysisWrapperException {
 		int i = 1;
 		for (ParameterDefinition param : expDesign.getParameters()) {
 					

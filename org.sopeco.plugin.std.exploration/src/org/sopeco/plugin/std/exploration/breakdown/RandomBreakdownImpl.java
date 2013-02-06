@@ -74,7 +74,7 @@ public class RandomBreakdownImpl extends AbstractBreakdownExploration implements
 
 	@Override
 	public void finishWork() {
-		// not used
+		cachedEnvironmentAccess.cleanUp();
 
 	}
 

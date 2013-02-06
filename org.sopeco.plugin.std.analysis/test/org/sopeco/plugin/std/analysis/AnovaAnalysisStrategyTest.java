@@ -42,6 +42,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.sopeco.analysis.wrapper.exception.AnalysisWrapperException;
 import org.sopeco.engine.analysis.AnovaCalculatedEffect;
 import org.sopeco.engine.analysis.IAnovaResult;
 import org.sopeco.engine.analysis.IAnovaStrategy;
@@ -72,26 +75,41 @@ import org.sopeco.plugin.std.analysis.util.DummyScenarioDefinitionFactory;
  */
 @RunWith(Parameterized.class)
 public class AnovaAnalysisStrategyTest {
-
+	private static Logger LOGGER = LoggerFactory.getLogger(AnovaAnalysisStrategyTest.class);
 	private IAnovaStrategy strategy;
 	private AnalysisConfiguration analysisConfiguration;
 	private static ScenarioDefinition scenarioDefinition;
 	private DataSetAggregated dataset;
+	private static boolean skipTests = false;
 
 	@Parameters
 	public static Collection<Object[]> data() {
-		Object[][] data = new Object[][] {
-				{ (IAnovaStrategy) new AnovaStrategyExtension().createExtensionArtifact(), AnovaStrategyExtension.NAME,
-						"Correlated" },
-						{ (IAnovaStrategy) new AnovaStrategyExtension().createExtensionArtifact(), AnovaStrategyExtension.NAME,
-						"Uncorrelated" },
-				{ (IAnovaStrategy) new AnovaStrategyExtension().createExtensionArtifact(), AnovaStrategyExtension.NAME,
-						"NotEnoughData" } 
-						};
-		return Arrays.asList(data);
+		try {
+			Object[][] data = new Object[][] {
+					{ (IAnovaStrategy) new AnovaStrategyExtension().createExtensionArtifact(),
+							AnovaStrategyExtension.NAME, "Correlated" },
+					{ (IAnovaStrategy) new AnovaStrategyExtension().createExtensionArtifact(),
+							AnovaStrategyExtension.NAME, "Uncorrelated" },
+					{ (IAnovaStrategy) new AnovaStrategyExtension().createExtensionArtifact(),
+							AnovaStrategyExtension.NAME, "NotEnoughData" } };
+			return Arrays.asList(data);
+		} catch (RuntimeException e) {
+			if (e.getCause() instanceof AnalysisWrapperException) {
+				skipTests = true;
+				LOGGER.error("Can't connect to analysis server. Analysis related Unit tests will be skipped.");
+
+				return new ArrayList<Object[]>();
+			} else {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 
 	public AnovaAnalysisStrategyTest(IAnovaStrategy strategy, String name, String dataSetType) throws IOException {
+		if (skipTests) {
+			return;
+		}
+
 		this.strategy = strategy;
 
 		scenarioDefinition = loadScenarioDefinition();
@@ -105,32 +123,40 @@ public class AnovaAnalysisStrategyTest {
 
 		if (dataSetType.equalsIgnoreCase("Correlated")) {
 			this.dataset = createCorrelatedDummyDataSet();
-		} else if (dataSetType.equalsIgnoreCase("Uncorrelated")){
+		} else if (dataSetType.equalsIgnoreCase("Uncorrelated")) {
 			this.dataset = createUncorrelatedDummyDataSet();
-		} else if (dataSetType.equalsIgnoreCase("NotEnoughData")){
+		} else if (dataSetType.equalsIgnoreCase("NotEnoughData")) {
 			this.dataset = createNotEnoughDataDummyDataSet();
 		}
 		System.out.println("\n*** Running test for " + name + ", using data set type " + dataSetType);
+
 	}
 
 	@Before
 	public void setUp() throws Exception {
+		if (skipTests) {
+			return;
+		}
 		scenarioDefinition = loadScenarioDefinition();
 	}
-	
+
 	@After
-	public void cleanUp(){
+	public void cleanUp() {
+		if (skipTests) {
+			return;
+		}
 		this.strategy.releaseAnalysisResources();
 	}
-	
 
 	@Test
 	public void testAnalysis() {
-
+		if (skipTests) {
+			return;
+		}
 		assertTrue(strategy.supports(analysisConfiguration));
 
 		try {
-		strategy.analyse(dataset, analysisConfiguration);
+			strategy.analyse(dataset, analysisConfiguration);
 		} catch (RuntimeException x) {
 			if (x.getMessage().equals("failed calling R service")) {
 				System.err.println("failed calling R service. skip test");
@@ -139,7 +165,7 @@ public class AnovaAnalysisStrategyTest {
 				throw x;
 			}
 		}
-		
+
 		IAnovaResult result = strategy.getAnovaResult();
 
 		assertNotNull(result);
@@ -151,10 +177,10 @@ public class AnovaAnalysisStrategyTest {
 			System.out.println("P-value:" + effect.getpValue());
 			System.out.println("IsSignificant (at 95% significance level): " + effect.isSignificant(0.95));
 		}
-		
+
 		for (AnovaCalculatedEffect effect : result.getAllInteractionEffects()) {
 			System.out.print("Parameter: ");
-			for(ParameterDefinition pd : effect.getIndependentParameters()) {
+			for (ParameterDefinition pd : effect.getIndependentParameters()) {
 				System.out.print(pd.getFullName() + ":");
 			}
 			System.out.println();
@@ -176,13 +202,10 @@ public class AnovaAnalysisStrategyTest {
 			scenarioDefinition = loadScenarioDefinition();
 
 		/*
-		 * Example for Anova in R: <br>
-		 * a <- c(1, 1, 1, 1, 2, 2, 2, 2) <br>
-		 * b <- c(1, 1, 2, 2, 1, 1, 2, 2) <br>
-		 * c <- a*b + 2*b + 0.1*a*b + b <br>
-		 * c <- jitter(c) <br>
-		 * data <- data.frame(a,b,c) <br>
-		 * anova(lm(c ~ a * b, data)) <br>
+		 * Example for Anova in R: <br> a <- c(1, 1, 1, 1, 2, 2, 2, 2) <br> b <-
+		 * c(1, 1, 2, 2, 1, 1, 2, 2) <br> c <- a*b + 2*b + 0.1*a*b + b <br> c <-
+		 * jitter(c) <br> data <- data.frame(a,b,c) <br> anova(lm(c ~ a * b,
+		 * data)) <br>
 		 */
 		DataSetColumnBuilder builder = new DataSetColumnBuilder();
 		builder.startInputColumn(scenarioDefinition.getParameterDefinition("default.DummyInput1"));
@@ -191,7 +214,7 @@ public class AnovaAnalysisStrategyTest {
 		builder.addInputValue(2);
 		builder.addInputValue(2);
 		builder.finishColumn();
-		
+
 		builder.startInputColumn(scenarioDefinition.getParameterDefinition("default.DummyInput2"));
 		builder.addInputValue(1);
 		builder.addInputValue(2);
@@ -211,12 +234,12 @@ public class AnovaAnalysisStrategyTest {
 		obsValues2.add(20);
 		obsValues2.add(20);
 		obsValueLists.add(new ParameterValueList(paramDef, obsValues2));
-		
+
 		ArrayList<Object> obsValues3 = new ArrayList<Object>();
 		obsValues3.add(20);
 		obsValues3.add(20);
 		obsValueLists.add(new ParameterValueList(paramDef, obsValues3));
-		
+
 		ArrayList<Object> obsValues4 = new ArrayList<Object>();
 		obsValues4.add(40);
 		obsValues4.add(40);
@@ -240,7 +263,7 @@ public class AnovaAnalysisStrategyTest {
 		builder.addInputValue(2);
 		builder.addInputValue(2);
 		builder.finishColumn();
-		
+
 		builder.startInputColumn(scenarioDefinition.getParameterDefinition("default.DummyInput2"));
 		builder.addInputValue(1);
 		builder.addInputValue(2);
@@ -260,12 +283,12 @@ public class AnovaAnalysisStrategyTest {
 		obsValues2.add(10);
 		obsValues2.add(10);
 		obsValueLists.add(new ParameterValueList(paramDef, obsValues2));
-		
+
 		ArrayList<Object> obsValues3 = new ArrayList<Object>();
 		obsValues3.add(10);
 		obsValues3.add(10);
 		obsValueLists.add(new ParameterValueList(paramDef, obsValues3));
-		
+
 		ArrayList<Object> obsValues4 = new ArrayList<Object>();
 		obsValues4.add(10);
 		obsValues4.add(10);
@@ -276,7 +299,7 @@ public class AnovaAnalysisStrategyTest {
 
 		return builder.createDataSet();
 	}
-	
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private static DataSetAggregated createNotEnoughDataDummyDataSet() throws IOException {
 		if (scenarioDefinition == null)
@@ -289,7 +312,7 @@ public class AnovaAnalysisStrategyTest {
 		builder.addInputValue(2);
 		builder.addInputValue(2);
 		builder.finishColumn();
-		
+
 		builder.startInputColumn(scenarioDefinition.getParameterDefinition("default.DummyInput2"));
 		builder.addInputValue(1);
 		builder.addInputValue(2);
@@ -307,11 +330,11 @@ public class AnovaAnalysisStrategyTest {
 		ArrayList<Object> obsValues2 = new ArrayList<Object>();
 		obsValues2.add(10);
 		obsValueLists.add(new ParameterValueList(paramDef, obsValues2));
-		
+
 		ArrayList<Object> obsValues3 = new ArrayList<Object>();
 		obsValues3.add(10);
 		obsValueLists.add(new ParameterValueList(paramDef, obsValues3));
-		
+
 		ArrayList<Object> obsValues4 = new ArrayList<Object>();
 		obsValues4.add(10);
 		obsValueLists.add(new ParameterValueList(paramDef, obsValues4));

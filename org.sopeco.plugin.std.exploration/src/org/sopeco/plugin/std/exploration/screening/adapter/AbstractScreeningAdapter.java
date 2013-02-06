@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.sopeco.analysis.wrapper.AnalysisWrapper;
+import org.sopeco.analysis.wrapper.exception.AnalysisWrapperException;
 import org.sopeco.engine.experimentseries.IParameterVariation;
 import org.sopeco.persistence.dataset.ParameterValue;
 import org.sopeco.persistence.entities.definition.ExplorationStrategy;
@@ -56,39 +57,42 @@ public abstract class AbstractScreeningAdapter implements IScreeningAdapter {
 	 * design but are necessary for executing measurements.
 	 */
 	protected List<ParameterValue<?>> valuesOfConstantParams;
-	
+
 	/**
 	 * Analysis wrapper used for statistical operations.
 	 */
-	protected final AnalysisWrapper analysisWrapper;
+	protected AnalysisWrapper analysisWrapper;
+
 	/**
 	 * Constructor.
 	 */
 	public AbstractScreeningAdapter() {
 		expDesign = new ExpDesign();
 		valuesOfConstantParams = new ArrayList<ParameterValue<?>>();
-		analysisWrapper = new AnalysisWrapper();
+
+		try {
+			analysisWrapper = new AnalysisWrapper();
+		} catch (AnalysisWrapperException e) {
+			throw new RuntimeException(e);
+		}
+
 	}
 
 	@Override
-	protected void finalize() throws Throwable {
-		analysisWrapper.shutdown();
-		super.finalize();
-	}
-	
-	@Override
 	public final void setParameterVariations(List<IParameterVariation> variationImplementations) {
 		valuesOfConstantParams.clear();
-	
+
 		for (IParameterVariation iter : variationImplementations) {
 			if (iter.size() > 1) {
-				ParameterFactorValues factorValues = new ParameterFactorValues(iter.get(0), iter.get(iter.size()-1), iter.getParameter());
+				ParameterFactorValues factorValues = new ParameterFactorValues(iter.get(0), iter.get(iter.size() - 1),
+						iter.getParameter());
 				expDesign.addParameter(iter.getParameter());
 				expDesign.addFactorValuesByParameter(iter.getParameter(), factorValues);
 			} else if (iter.size() == 1) {
 				valuesOfConstantParams.add(iter.get(0));
 			} else {
-				throw new IllegalStateException("Screening explorations require parameter variations with a size of at least 1.");
+				throw new IllegalStateException(
+						"Screening explorations require parameter variations with a size of at least 1.");
 			}
 		}
 	}
@@ -101,7 +105,8 @@ public abstract class AbstractScreeningAdapter implements IScreeningAdapter {
 		expDesign.setRandomizeRuns(ScreeningConfiguration.randomizeRuns(expConf));
 		if (expDesign.isUseReplication() && expDesign.getNumberOfReplications() <= 1) {
 			expDesign.setUseReplication(false);
-			throw new IllegalStateException("numberOfReplications has to be larger than 1." + "No replications will be executed!");
+			throw new IllegalStateException("numberOfReplications has to be larger than 1."
+					+ "No replications will be executed!");
 		}
 		setSpecialExplorationConfParams(expConf);
 	}
@@ -125,33 +130,41 @@ public abstract class AbstractScreeningAdapter implements IScreeningAdapter {
 
 	@Override
 	public void generateDesign() {
-
-		loadRLibraries();
-		executeRCommandAndGetDesign();
-		expDesign.setResolution(getDesignResolutionFromR());
+		try {
+			loadRLibraries();
+			executeRCommandAndGetDesign();
+			expDesign.setResolution(getDesignResolutionFromR());
+		} catch (AnalysisWrapperException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
 	 * Loads the R libraries needed to generate the design.
+	 * @throws AnalysisWrapperException 
 	 */
-	protected abstract void loadRLibraries();
+	protected abstract void loadRLibraries() throws AnalysisWrapperException;
 
 	/**
 	 * Reads the resolution of the generated design from R.
+	 * @throws AnalysisWrapperException 
 	 */
-	protected abstract int getDesignResolutionFromR();
+	protected abstract int getDesignResolutionFromR() throws AnalysisWrapperException;
 
 	/**
 	 * Executes the RCommand to generate a design and retrieves it from R.
 	 * 
+	 * @throws AnalysisWrapperException
+	 * 
 	 */
-	protected final void executeRCommandAndGetDesign() {
+	protected final void executeRCommandAndGetDesign() throws AnalysisWrapperException {
 
 		String rCommand = buildRCommand();
 		analysisWrapper.executeCommandString(rCommand);
 		getAllRunLevelsFromR();
 		expDesign.setType(getDesignTypeFromR());
 		expDesign.updateNumberOfRuns();
+
 	}
 
 	/**
@@ -165,8 +178,9 @@ public abstract class AbstractScreeningAdapter implements IScreeningAdapter {
 	 * generated.
 	 * 
 	 * @return type of the generated design
+	 * @throws AnalysisWrapperException
 	 */
-	private ExpDesignType getDesignTypeFromR() {
+	private ExpDesignType getDesignTypeFromR() throws AnalysisWrapperException {
 		String rCommand = "design.info(curDesign)$type";
 		String type = analysisWrapper.executeCommandString(rCommand);
 		if (type.contains("FrF2")) {
@@ -183,10 +197,11 @@ public abstract class AbstractScreeningAdapter implements IScreeningAdapter {
 	/**
 	 * Reads all run levels of all parameters from R and stores them in the
 	 * design.
+	 * @throws AnalysisWrapperException 
 	 * 
 	 * @throws FrameworkException
 	 */
-	protected abstract void getAllRunLevelsFromR();
+	protected abstract void getAllRunLevelsFromR() throws AnalysisWrapperException;
 
 	/**
 	 * Builds the RCommand used to create the screening design with R.
@@ -203,6 +218,18 @@ public abstract class AbstractScreeningAdapter implements IScreeningAdapter {
 	@Override
 	public List<ParameterValue<?>> getConstantParameterValues() {
 		return valuesOfConstantParams;
+	}
+
+	@Override
+	public void releaseAnalysisResources() {
+		try {
+			if (analysisWrapper != null) {
+				analysisWrapper.shutdown();
+				analysisWrapper = null;
+			}
+		} catch (AnalysisWrapperException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

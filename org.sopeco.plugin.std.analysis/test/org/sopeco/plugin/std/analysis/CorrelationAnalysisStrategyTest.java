@@ -42,6 +42,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.sopeco.analysis.wrapper.exception.AnalysisWrapperException;
 import org.sopeco.engine.analysis.ICorrelationResult;
 import org.sopeco.engine.analysis.ICorrelationStrategy;
 import org.sopeco.engine.analysis.ParameterCorrelation;
@@ -55,38 +58,57 @@ import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.plugin.std.analysis.util.DummyScenarioDefinitionFactory;
 
 /**
- * Test class for implementations of the {@link ICorrelationStrategy}
- * interface that implement a correlation analysis.
+ * Test class for implementations of the {@link ICorrelationStrategy} interface
+ * that implement a correlation analysis.
  * 
  * @author Dennis Westermann
  * 
  */
 @RunWith(Parameterized.class)
 public class CorrelationAnalysisStrategyTest {
-
+	private static Logger LOGGER = LoggerFactory.getLogger(CorrelationAnalysisStrategyTest.class);
 	private ICorrelationStrategy strategy;
 	private AnalysisConfiguration analysisConfiguration;
 	private static ScenarioDefinition scenarioDefinition;
 	private DataSetAggregated dataset;
-	
+	private static boolean skipTests = false;
+
 	@Parameters
 	public static Collection<Object[]> data() {
-		Object[][] data = new Object[][] {
-				{ (ICorrelationStrategy) new CorrelationAnalysisStrategyExtension().createExtensionArtifact(), CorrelationAnalysisStrategyExtension.NAME, true},
-				{ (ICorrelationStrategy) new CorrelationAnalysisStrategyExtension().createExtensionArtifact(), CorrelationAnalysisStrategyExtension.NAME, false}
-		};
-		return Arrays.asList(data);
+		try {
+			Object[][] data = new Object[][] {
+					{ (ICorrelationStrategy) new CorrelationAnalysisStrategyExtension().createExtensionArtifact(),
+							CorrelationAnalysisStrategyExtension.NAME, true },
+					{ (ICorrelationStrategy) new CorrelationAnalysisStrategyExtension().createExtensionArtifact(),
+							CorrelationAnalysisStrategyExtension.NAME, false } };
+			return Arrays.asList(data);
+		} catch (RuntimeException e) {
+			if (e.getCause() instanceof AnalysisWrapperException) {
+				skipTests = true;
+				LOGGER.error("Can't connect to analysis server. Analysis related Unit tests will be skipped.");
+
+				return new ArrayList<Object[]>();
+			} else {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 
-	public CorrelationAnalysisStrategyTest(ICorrelationStrategy strategy, String name, boolean correlation) throws IOException {
+	public CorrelationAnalysisStrategyTest(ICorrelationStrategy strategy, String name, boolean correlation)
+			throws IOException {
+		if (skipTests) {
+			return;
+		}
 		this.strategy = strategy;
 
 		scenarioDefinition = loadScenarioDefinition();
 		this.analysisConfiguration = EntityFactory.createAnalysisConfiguration(name, new HashMap<String, String>());
-		this.analysisConfiguration.getDependentParameters().add(scenarioDefinition.getParameterDefinition("default.DummyOutput"));
-		this.analysisConfiguration.getIndependentParameters().add(scenarioDefinition.getParameterDefinition("default.DummyInput"));
-		
-		if(correlation) {
+		this.analysisConfiguration.getDependentParameters().add(
+				scenarioDefinition.getParameterDefinition("default.DummyOutput"));
+		this.analysisConfiguration.getIndependentParameters().add(
+				scenarioDefinition.getParameterDefinition("default.DummyInput"));
+
+		if (correlation) {
 			this.dataset = createCorrelatedDummyDataSet();
 		} else {
 			this.dataset = createUncorrelatedDummyDataSet();
@@ -96,44 +118,50 @@ public class CorrelationAnalysisStrategyTest {
 
 	@Before
 	public void setUp() throws Exception {
+		if (skipTests) {
+			return;
+		}
 		scenarioDefinition = loadScenarioDefinition();
 	}
-	
+
 	@After
-	public void cleanUp(){
+	public void cleanUp() {
+		if (skipTests) {
+			return;
+		}
 		this.strategy.releaseAnalysisResources();
 	}
 
 	@Test
 	public void testAnalysis() {
+		if (skipTests) {
+			return;
+		}
+		assertTrue(strategy.supports(analysisConfiguration));
 
-			assertTrue(strategy.supports(analysisConfiguration));
+		strategy.analyse(dataset, analysisConfiguration);
 
-			strategy.analyse(dataset, analysisConfiguration);
+		ICorrelationResult result = strategy.getCorrelationResult();
 
-			ICorrelationResult result = strategy.getCorrelationResult();
+		assertNotNull(result);
+		assertEquals(analysisConfiguration.getName(), result.getAnalysisStrategyConfiguration().getName());
 
-			assertNotNull(result);
-			assertEquals(analysisConfiguration.getName(), result.getAnalysisStrategyConfiguration().getName());
+		ParameterCorrelation dummyInputCorrelation = result.getParameterCorrelationByParam(scenarioDefinition
+				.getParameterDefinition("default.DummyInput"));
+		assertNotNull(dummyInputCorrelation);
+		assertEquals(result.getAllParameterCorrelations().size(), 1);
 
+		assertNotNull(dummyInputCorrelation.getCorrelation());
+		assertNotNull(dummyInputCorrelation.getPValue());
 
-			ParameterCorrelation dummyInputCorrelation = result.getParameterCorrelationByParam(scenarioDefinition.getParameterDefinition("default.DummyInput"));
-			assertNotNull(dummyInputCorrelation);
-			assertEquals(result.getAllParameterCorrelations().size(), 1);
-			
-			assertNotNull(dummyInputCorrelation.getCorrelation());
-			assertNotNull(dummyInputCorrelation.getPValue());
-
-			
-			System.out.println("Correlation: " + dummyInputCorrelation.getCorrelation());
-			System.out.println("P-value:" + dummyInputCorrelation.getPValue());
-			System.out.println("IsCorrelated (at 95% significance level): " + dummyInputCorrelation.isCorrelated(0.95));
+		System.out.println("Correlation: " + dummyInputCorrelation.getCorrelation());
+		System.out.println("P-value:" + dummyInputCorrelation.getPValue());
+		System.out.println("IsCorrelated (at 95% significance level): " + dummyInputCorrelation.isCorrelated(0.95));
 
 	}
-	
 
 	private static ScenarioDefinition loadScenarioDefinition() throws IOException {
-		
+
 		return DummyScenarioDefinitionFactory.createScenarioDefinition();
 	}
 
@@ -146,7 +174,7 @@ public class CorrelationAnalysisStrategyTest {
 		builder.startInputColumn(scenarioDefinition.getParameterDefinition("default.DummyInput"));
 		builder.addInputValue(1);
 		builder.addInputValue(2);
-//		builder.addInputValue(3);
+		// builder.addInputValue(3);
 		builder.finishColumn();
 
 		ParameterDefinition paramDef = scenarioDefinition.getParameterDefinition("default.DummyOutput");
@@ -166,20 +194,19 @@ public class CorrelationAnalysisStrategyTest {
 		obsValues2.add(11);
 		obsValueLists.add(new ParameterValueList(paramDef, obsValues2));
 
-//		ArrayList<Object> obsValues3 = new ArrayList<Object>();
-//		obsValues3.add(30);
-//		obsValues3.add(30);
-//		obsValues3.add(30);
-//		obsValues3.add(30);
-//		obsValueLists.add(new ParameterValueList(paramDef, obsValues3));
+		// ArrayList<Object> obsValues3 = new ArrayList<Object>();
+		// obsValues3.add(30);
+		// obsValues3.add(30);
+		// obsValues3.add(30);
+		// obsValues3.add(30);
+		// obsValueLists.add(new ParameterValueList(paramDef, obsValues3));
 
-		
 		builder.addObservationValueLists(obsValueLists);
 		builder.finishColumn();
 
 		return builder.createDataSet();
 	}
-	
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private static DataSetAggregated createUncorrelatedDummyDataSet() throws IOException {
 		if (scenarioDefinition == null)
@@ -213,7 +240,5 @@ public class CorrelationAnalysisStrategyTest {
 
 		return builder.createDataSet();
 	}
-	
-	
 
 }

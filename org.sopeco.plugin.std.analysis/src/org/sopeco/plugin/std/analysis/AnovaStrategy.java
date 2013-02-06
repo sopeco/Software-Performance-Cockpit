@@ -32,6 +32,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.analysis.wrapper.common.CSVStringGenerator;
+import org.sopeco.analysis.wrapper.exception.AnalysisWrapperException;
 import org.sopeco.engine.analysis.AnovaCalculatedEffect;
 import org.sopeco.engine.analysis.AnovaResult;
 import org.sopeco.engine.analysis.IAnovaResult;
@@ -46,7 +47,6 @@ import org.sopeco.persistence.dataset.SimpleDataSet;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.plugin.std.analysis.common.AbstractAnalysisStrategy;
-
 
 /**
  * This analysis strategy allows using the ANOVA method in R.
@@ -69,48 +69,56 @@ public class AnovaStrategy extends AbstractAnalysisStrategy implements IAnovaStr
 	 */
 	public AnovaStrategy(ISoPeCoExtension<?> provider) {
 		super(provider);
-		loadLibraries(analysisWrapper);
+		try {
+			loadLibraries(analysisWrapper);
+		} catch (AnalysisWrapperException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public void analyse(DataSetAggregated dataset, AnalysisConfiguration config) {
+		try {
+			logger.debug("Starting Anova analysis.");
 
-		logger.debug("Starting Anova analysis.");
+			deriveDependentAndIndependentParameters(dataset, config);
 
-		deriveDependentAndIndependentParameters(dataset, config);
+			DataSetAggregated analysisDataSet = extractAnalysisDataSet(dataset);
 
-		DataSetAggregated analysisDataSet = extractAnalysisDataSet(dataset);
+			DataSetAggregated numericAnalysisDataSet = createNumericDataSet(analysisDataSet);
 
-		DataSetAggregated numericAnalysisDataSet = createNumericDataSet(analysisDataSet);
+			loadDataSetInR(analysisWrapper, createValidSimpleDataSet(numericAnalysisDataSet));
 
-		loadDataSetInR(analysisWrapper,createValidSimpleDataSet(numericAnalysisDataSet));
+			/**
+			 * Example for Anova in R: <br>
+			 * a <- c(1, 1, 1, 1, 2, 2, 2, 2) <br>
+			 * b <- c(1, 1, 2, 2, 1, 1, 2, 2) <br>
+			 * c <- a*b + 2*b + 0.1*a*b + b <br>
+			 * c <- jitter(c) <br>
+			 * data <- data.frame(a,b,c) <br>
+			 * anova(lm(c ~ a * b, data)) <br>
+			 */
 
-		/**
-		 * Example for Anova in R: <br>
-		 * a <- c(1, 1, 1, 1, 2, 2, 2, 2) <br>
-		 * b <- c(1, 1, 2, 2, 1, 1, 2, 2) <br>
-		 * c <- a*b + 2*b + 0.1*a*b + b <br>
-		 * c <- jitter(c) <br>
-		 * data <- data.frame(a,b,c) <br>
-		 * anova(lm(c ~ a * b, data)) <br>
-		 */
+			StringBuilder cmdBuilder = new StringBuilder();
+			cmdBuilder.append(getId());
+			cmdBuilder.append(" <- anova(lm(");
+			cmdBuilder.append(dependentParameterDefintion.getFullName("_"));
+			cmdBuilder.append(" ~ ");
+			cmdBuilder.append(CSVStringGenerator.generateParameterString("*", independentParameterDefinitions));
+			cmdBuilder.append(", ");
+			cmdBuilder.append(data.getId());
+			cmdBuilder.append("))");
+			logger.debug("Running R Command: {}", cmdBuilder.toString());
 
-		StringBuilder cmdBuilder = new StringBuilder();
-		cmdBuilder.append(getId());
-		cmdBuilder.append(" <- anova(lm(");
-		cmdBuilder.append(dependentParameterDefintion.getFullName("_"));
-		cmdBuilder.append(" ~ ");
-		cmdBuilder.append(CSVStringGenerator.generateParameterString("*", independentParameterDefinitions));
-		cmdBuilder.append(", ");
-		cmdBuilder.append(data.getId());
-		cmdBuilder.append("))");
-		logger.debug("Running R Command: {}", cmdBuilder.toString());
-		analysisWrapper.executeCommandString(cmdBuilder.toString());
+			analysisWrapper.executeCommandString(cmdBuilder.toString());
 
-		extractResult();
+			extractResult();
+		} catch (AnalysisWrapperException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
-	private void extractResult() {
+	private void extractResult() throws AnalysisWrapperException {
 		latestAnalysisResult = new AnovaResult(config);
 
 		// main effects
@@ -173,8 +181,10 @@ public class AnovaStrategy extends AbstractAnalysisStrategy implements IAnovaStr
 	 *            by R
 	 * @return the effect of the given indep parameters on the dependent
 	 *         parameter calculated by ANOVA
+	 * @throws AnalysisWrapperException
 	 */
-	private AnovaCalculatedEffect getEffect(List<ParameterDefinition> indepParams, String effectCode) {
+	private AnovaCalculatedEffect getEffect(List<ParameterDefinition> indepParams, String effectCode)
+			throws AnalysisWrapperException {
 
 		AnovaCalculatedEffect ace = new AnovaCalculatedEffect(indepParams, dependentParameterDefintion);
 
@@ -191,7 +201,7 @@ public class AnovaStrategy extends AbstractAnalysisStrategy implements IAnovaStr
 		return ace;
 	}
 
-	private Double getValueAsDouble(String rowName, String colName) {
+	private Double getValueAsDouble(String rowName, String colName) throws AnalysisWrapperException {
 		StringBuilder cmdBuilder = new StringBuilder();
 		cmdBuilder.append("as.double(");
 		cmdBuilder.append(getId());

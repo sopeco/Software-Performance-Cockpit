@@ -32,13 +32,14 @@ import static org.junit.Assert.assertTrue;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.sopeco.analysis.wrapper.exception.AnalysisWrapperException;
 
 public class WrapperTest {
 
 	private AnalysisWrapper wrapper;
 
 	private boolean skipUnitTest = false;
-	
+
 	@Before
 	public void initAnalysisWrapper() {
 		try {
@@ -47,19 +48,19 @@ public class WrapperTest {
 			System.err.println("Can't connect to R server. Unit test will be skipped.");
 			skipUnitTest = true;
 		}
-		
+
 	}
 
 	@After
-	public void shutdownAnalysisWrapper() {
+	public void shutdownAnalysisWrapper() throws AnalysisWrapperException {
 		if (skipUnitTest) {
 			return;
 		}
 		wrapper.shutdown();
 	}
-	
+
 	@Test
-	public void testExecuteCommandString() {
+	public void testExecuteCommandString() throws AnalysisWrapperException {
 		if (skipUnitTest) {
 			return;
 		}
@@ -70,7 +71,7 @@ public class WrapperTest {
 	}
 
 	@Test
-	public void testExecuteCommandStringArray() {
+	public void testExecuteCommandStringArray() throws AnalysisWrapperException {
 		if (skipUnitTest) {
 			return;
 		}
@@ -82,7 +83,7 @@ public class WrapperTest {
 	}
 
 	@Test
-	public void testExecuteCommandDouble() {
+	public void testExecuteCommandDouble() throws AnalysisWrapperException {
 		if (skipUnitTest) {
 			return;
 		}
@@ -91,7 +92,7 @@ public class WrapperTest {
 	}
 
 	@Test
-	public void testExecuteCommandDoubleArray() {
+	public void testExecuteCommandDoubleArray() throws AnalysisWrapperException {
 		if (skipUnitTest) {
 			return;
 		}
@@ -104,7 +105,7 @@ public class WrapperTest {
 	}
 
 	@Test
-	public void testInitVariables() {
+	public void testInitVariables() throws AnalysisWrapperException {
 		if (skipUnitTest) {
 			return;
 		}
@@ -115,7 +116,7 @@ public class WrapperTest {
 	}
 
 	@Test
-	public void testMultipleWrapperInstances() {
+	public void testMultipleWrapperInstances() throws AnalysisWrapperException {
 		if (skipUnitTest) {
 			return;
 		}
@@ -141,26 +142,24 @@ public class WrapperTest {
 		assertEquals(200.0, c2.getResult2(), 0.0001);
 
 	}
-	
+
 	@Test
-	public void testAnova(){
+	public void testAnova() throws AnalysisWrapperException {
 		if (skipUnitTest) {
 			return;
 		}
-		
+
 		StringBuilder cmdBuilder = new StringBuilder();
 		cmdBuilder.append("a <- c(1,2,3,4,5)");
 		wrapper.executeCommandString(cmdBuilder.toString());
 		cmdBuilder = new StringBuilder();
 		cmdBuilder.append("b <- c(2,52,31,45,52)");
 		wrapper.executeCommandString(cmdBuilder.toString());
-		
+
 		cmdBuilder = new StringBuilder();
 		cmdBuilder.append("testObject <- lm(a~b)");
 		wrapper.executeCommandString(cmdBuilder.toString());
 
-		
-		
 	}
 
 }

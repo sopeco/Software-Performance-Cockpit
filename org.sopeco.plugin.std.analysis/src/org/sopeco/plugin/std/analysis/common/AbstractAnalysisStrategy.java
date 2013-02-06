@@ -36,6 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.analysis.wrapper.AnalysisWrapper;
 import org.sopeco.analysis.wrapper.common.AbstractRStrategy;
+import org.sopeco.analysis.wrapper.exception.AnalysisWrapperException;
 import org.sopeco.engine.analysis.IPredictionFunctionStrategy;
 import org.sopeco.engine.registry.ISoPeCoExtension;
 import org.sopeco.persistence.EntityFactory;
@@ -61,7 +62,11 @@ public abstract class AbstractAnalysisStrategy extends AbstractRStrategy {
 
 	public AbstractAnalysisStrategy(ISoPeCoExtension<?> provider) {
 		super(provider);
-		analysisWrapper = new AnalysisWrapper();
+		try {
+			analysisWrapper = new AnalysisWrapper();
+		} catch (AnalysisWrapperException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	protected ParameterDefinition dependentParameterDefintion;
@@ -234,9 +239,13 @@ public abstract class AbstractAnalysisStrategy extends AbstractRStrategy {
 	}
 
 	public void releaseAnalysisResources() {
-		if (analysisWrapper != null) {
-			analysisWrapper.shutdown();
-			analysisWrapper = null;
+		try {
+			if (analysisWrapper != null) {
+				analysisWrapper.shutdown();
+				analysisWrapper = null;
+			}
+		} catch (AnalysisWrapperException e) {
+			throw new RuntimeException(e);
 		}
 	}
 

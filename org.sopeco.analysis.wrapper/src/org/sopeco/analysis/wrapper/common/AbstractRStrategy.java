@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.sopeco.analysis.wrapper.AnalysisWrapper;
+import org.sopeco.analysis.wrapper.exception.AnalysisWrapperException;
 import org.sopeco.engine.registry.AbstractSoPeCoExtensionArtifact;
 import org.sopeco.engine.registry.ISoPeCoExtension;
 import org.sopeco.persistence.dataset.AbstractDataSetColumn;
@@ -72,7 +73,7 @@ public abstract class AbstractRStrategy extends AbstractSoPeCoExtensionArtifact 
 
 
 	
-	public void loadLibraries(AnalysisWrapper analysisWrapper) {
+	public void loadLibraries(AnalysisWrapper analysisWrapper) throws AnalysisWrapperException {
 		    
 			for (String library : requiredLibraries) {
 				analysisWrapper.executeCommandString("library(" + library + ");");
@@ -109,7 +110,7 @@ public abstract class AbstractRStrategy extends AbstractSoPeCoExtensionArtifact 
 	protected AnalysisConfiguration config;
 	protected RDataSet data; 
 	
-	protected void loadDataSetInR(AnalysisWrapper analysisWrapper, SimpleDataSet dataset){
+	protected void loadDataSetInR(AnalysisWrapper analysisWrapper, SimpleDataSet dataset) throws AnalysisWrapperException{
 		
 		data = new RDataSet(dataset);
 		data.loadDataSetInR(analysisWrapper);

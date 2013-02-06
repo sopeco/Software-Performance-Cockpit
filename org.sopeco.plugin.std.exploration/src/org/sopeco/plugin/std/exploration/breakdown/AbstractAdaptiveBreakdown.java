@@ -157,6 +157,8 @@ public abstract class AbstractAdaptiveBreakdown extends AbstractBreakdownExplora
 					.measure(pMiddle).value;
 			this.cachedEnvironmentAccess.addToModel(pMiddle, value);
 		}
+		
+		cachedEnvironmentAccess.cleanUp();
 	}
 	
 	
