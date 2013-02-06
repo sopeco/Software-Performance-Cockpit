@@ -27,6 +27,7 @@
 package org.sopeco.analysis.wrapper.common;
 
 import org.sopeco.analysis.wrapper.AnalysisWrapper;
+import org.sopeco.analysis.wrapper.exception.AnalysisWrapperException;
 import org.sopeco.persistence.dataset.SimpleDataSet;
 import org.sopeco.persistence.dataset.SimpleDataSetColumn;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
@@ -65,8 +66,9 @@ public class RDataSet extends RIdentifiableObject {
 	/**
 	 * Transfers this DataSet to R and makes it available under a newly
 	 * generated ID.
+	 * @throws AnalysisWrapperException thrown if calling analysis implementation fails!
 	 */
-	public void loadDataSetInR(AnalysisWrapper analysisWrapper) {
+	public void loadDataSetInR(AnalysisWrapper analysisWrapper) throws AnalysisWrapperException {
 
 		String parameterIdString = "";
 		String parameterIdStringInQuotes = "";
@@ -100,8 +102,9 @@ public class RDataSet extends RIdentifiableObject {
 	 * that it contains the given parameter.
 	 * 
 	 * @param parameter for which the values should be jittered
+	 * @throws AnalysisWrapperException thrown if calling analysis implementation fails!
 	 */
-	public void jitter(AnalysisWrapper analysisWrapper, ParameterDefinition parameter) {
+	public void jitter(AnalysisWrapper analysisWrapper, ParameterDefinition parameter) throws AnalysisWrapperException {
 
 		
 		StringBuilder cmdBuilder = new StringBuilder();
@@ -118,8 +121,9 @@ public class RDataSet extends RIdentifiableObject {
 
 	/**
 	 * Removes this DataSet from R to free the used memory.
+	 * @throws AnalysisWrapperException thrown if calling analysis implementation fails!
 	 */
-	public void removeDataSetInR(AnalysisWrapper analysisWrapper) {
+	public void removeDataSetInR(AnalysisWrapper analysisWrapper) throws AnalysisWrapperException {
 		if (dataLoaded) {
 			// Delete all columns
 			for (SimpleDataSetColumn<?> column : dataset.getColumns()) {

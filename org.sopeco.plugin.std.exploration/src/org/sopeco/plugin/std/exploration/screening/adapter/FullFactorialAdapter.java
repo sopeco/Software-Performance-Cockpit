@@ -26,6 +26,7 @@
  */
 package org.sopeco.plugin.std.exploration.screening.adapter;
 
+import org.sopeco.analysis.wrapper.exception.AnalysisWrapperException;
 import org.sopeco.persistence.entities.definition.ExplorationStrategy;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.plugin.std.exploration.screening.config.ScreeningConfiguration;
@@ -60,9 +61,10 @@ public class FullFactorialAdapter extends AbstractScreeningAdapter {
 	/**
 	 * Reads all run levels of all parameters from R and stores them in the design.
 	 * Additionally center points have to be added manually if they are desired.
+	 * @throws AnalysisWrapperException 
 	 * 
 	 */
-	protected void getAllRunLevelsFromR() {
+	protected void getAllRunLevelsFromR() throws AnalysisWrapperException {
 		int i = 0;
 		for (ParameterDefinition param : expDesign.getParameters()) {
 					
@@ -133,7 +135,7 @@ public class FullFactorialAdapter extends AbstractScreeningAdapter {
 	}
 
 	@Override
-	protected void loadRLibraries() {
+	protected void loadRLibraries() throws AnalysisWrapperException {
 		analysisWrapper.executeCommandString("library(FrF2);");	
 	}
 

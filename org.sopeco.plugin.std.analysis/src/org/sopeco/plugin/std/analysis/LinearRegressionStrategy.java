@@ -32,6 +32,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.analysis.wrapper.common.CSVStringGenerator;
+import org.sopeco.analysis.wrapper.exception.AnalysisWrapperException;
 import org.sopeco.engine.analysis.IParameterInfluenceResult;
 import org.sopeco.engine.analysis.IParameterInfluenceStrategy;
 import org.sopeco.engine.analysis.IPredictionFunctionResult;
@@ -57,54 +58,65 @@ public class LinearRegressionStrategy extends AbstractAnalysisStrategy implement
 
 	protected LinearRegressionStrategy(LinearRegressionStrategyExtension provider) {
 		super(provider);
-		loadLibraries(analysisWrapper);
+		try {
+			loadLibraries(analysisWrapper);
+		} catch (AnalysisWrapperException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public void analyse(DataSetAggregated dataset, AnalysisConfiguration config) {
+		try {
+			logger.debug("Starting linear regression analysis.");
 
-		logger.debug("Starting linear regression analysis.");
+			deriveDependentAndIndependentParameters(dataset, config);
 
-		deriveDependentAndIndependentParameters(dataset, config);
+			DataSetAggregated analysisDataSet = extractAnalysisDataSet(dataset);
 
-		DataSetAggregated analysisDataSet = extractAnalysisDataSet(dataset);
+			DataSetAggregated numericAnalysisDataSet = createNumericDataSet(analysisDataSet);
 
-		DataSetAggregated numericAnalysisDataSet = createNumericDataSet(analysisDataSet);
-		
-		loadDataSetInR(analysisWrapper,numericAnalysisDataSet.convertToSimpleDataSet());
+			loadDataSetInR(analysisWrapper, numericAnalysisDataSet.convertToSimpleDataSet());
 
-		// build and execute R command
-		StringBuilder cmdBuilder = new StringBuilder();
-		cmdBuilder.append(getId());
-		cmdBuilder.append(" <- lm(");
-		cmdBuilder.append(dependentParameterDefintion.getFullName("_"));
-		cmdBuilder.append(" ~ ");
-		cmdBuilder.append(CSVStringGenerator.generateParameterString(" + ", independentParameterDefinitions));
-		cmdBuilder.append(")");
-		logger.debug("Running R Command: {}", cmdBuilder.toString());
-		analysisWrapper.executeCommandString(cmdBuilder.toString());
+			// build and execute R command
+			StringBuilder cmdBuilder = new StringBuilder();
+			cmdBuilder.append(getId());
+			cmdBuilder.append(" <- lm(");
+			cmdBuilder.append(dependentParameterDefintion.getFullName("_"));
+			cmdBuilder.append(" ~ ");
+			cmdBuilder.append(CSVStringGenerator.generateParameterString(" + ", independentParameterDefinitions));
+			cmdBuilder.append(")");
+			logger.debug("Running R Command: {}", cmdBuilder.toString());
+			analysisWrapper.executeCommandString(cmdBuilder.toString());
+		} catch (AnalysisWrapperException e) {
+			throw new RuntimeException(e);
+		}
 
 	}
 
 	@Override
 	public IPredictionFunctionResult getPredictionFunctionResult() {
 		// create and return result object
-		return buildResultObject();
+		try {
+			return buildResultObject();
+		} catch (AnalysisWrapperException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
 	 * @return the analysis result as a function string that conforms to the
 	 *         JavaScript syntax
+	 * @throws AnalysisWrapperException
 	 */
-	private String getFunctionAsString() {
+	private String getFunctionAsString() throws AnalysisWrapperException {
 		StringBuilder functionBuilder = new StringBuilder();
 		functionBuilder.append(analysisWrapper.executeCommandString(getId() + "$coefficients[1]"));
 		int index = 1;
 		for (ParameterDefinition inputParameter : independentParameterDefinitions) {
 			index++;
 			functionBuilder.append(" + ");
-			functionBuilder.append(analysisWrapper.executeCommandString(
-					getId() + "$coefficients[" + index + "]"));
+			functionBuilder.append(analysisWrapper.executeCommandString(getId() + "$coefficients[" + index + "]"));
 			functionBuilder.append(" * ");
 			functionBuilder.append(inputParameter.getFullName("_"));
 		}
@@ -115,15 +127,16 @@ public class LinearRegressionStrategy extends AbstractAnalysisStrategy implement
 		 * get the single value.
 		 */
 		String functionString = functionBuilder.toString();
-		if(functionString.contains("NA")){
+		if (functionString.contains("NA")) {
 			functionString = functionString.replaceAll("NA", "0");
 		}
-		
+
 		return functionString;
 	}
 
-	private IPredictionFunctionResult buildResultObject() {
-		return new PredictionFunctionResult(getFunctionAsString(), dependentParameterDefintion, config, nonNumericParameterEncodings);
+	private IPredictionFunctionResult buildResultObject() throws AnalysisWrapperException {
+		return new PredictionFunctionResult(getFunctionAsString(), dependentParameterDefintion, config,
+				nonNumericParameterEncodings);
 	}
 
 	/**
@@ -132,8 +145,10 @@ public class LinearRegressionStrategy extends AbstractAnalysisStrategy implement
 	 * @param parameter
 	 *            parameter for which the model coefficient is desired
 	 * @return coefficient of the specified parameter
+	 * @throws AnalysisWrapperException
 	 */
-	public ParameterRegressionCoefficient getCoefficientByParameter(ParameterDefinition parameter) {
+	public ParameterRegressionCoefficient getCoefficientByParameter(ParameterDefinition parameter)
+			throws AnalysisWrapperException {
 
 		int index = independentParameterDefinitions.indexOf(parameter);
 		double coeff = analysisWrapper.executeCommandDouble(getId() + "$coefficients[" + (index + 2) + "]");
@@ -149,8 +164,9 @@ public class LinearRegressionStrategy extends AbstractAnalysisStrategy implement
 	 * @param parameter
 	 *            parameter for which the model coefficient is desired
 	 * @return coefficient of the specified parameter
+	 * @throws AnalysisWrapperException
 	 */
-	public List<ParameterRegressionCoefficient> getAllParameterCoefficients() {
+	public List<ParameterRegressionCoefficient> getAllParameterCoefficients() throws AnalysisWrapperException {
 		ArrayList<ParameterRegressionCoefficient> resultList = new ArrayList<ParameterRegressionCoefficient>();
 		int index = 1;
 
@@ -167,11 +183,15 @@ public class LinearRegressionStrategy extends AbstractAnalysisStrategy implement
 	@Override
 	public IParameterInfluenceResult getParameterInfluenceResult() {
 		ParameterInfluenceResult result = new ParameterInfluenceResult(config);
-		for (ParameterRegressionCoefficient prc : getAllParameterCoefficients()) {
-			result.addParameterInfluenceDescriptor(prc);
+		try {
+			for (ParameterRegressionCoefficient prc : getAllParameterCoefficients()) {
+				result.addParameterInfluenceDescriptor(prc);
+			}
+			return result;
+		} catch (AnalysisWrapperException e) {
+			throw new RuntimeException(e);
 		}
 
-		return result;
 	}
 
 }

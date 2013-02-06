@@ -56,28 +56,20 @@ import org.sopeco.plugin.std.exploration.screening.config.ScreeningConfiguration
  */
 public final class ScreeningDesignExploration extends AbstractSoPeCoExtensionArtifact implements IExplorationStrategy {
 
-	
-	/**
-	 * Adapter used to generate the screening design.
-	 */
-	private IScreeningAdapter adapter = null;
 	/**
 	 * ExperimentController used to execute the measurements.
 	 */
 	private IExperimentController experimentController = null;
 
 	private int numberOfMeasurements;
-	
+
 	private IExtensionRegistry sopecoExtensionRegistry;
-	
+
 	private ExplorationStrategy strategyConfig;
 
-	
 	public ScreeningDesignExploration(ISoPeCoExtension<?> provider) {
 		super(provider);
 	}
-
-
 
 	@Override
 	public boolean canRun(ExperimentSeriesDefinition expSeries) {
@@ -89,13 +81,13 @@ public final class ScreeningDesignExploration extends AbstractSoPeCoExtensionArt
 
 	@Override
 	public void runExperimentSeries(ExperimentSeriesRun expSeriesRun, List<IParameterVariation> parameterVariations) {
-		
+
 		if (parameterVariations == null || parameterVariations.isEmpty()) {
 			throw new IllegalArgumentException("No information about parameter variation provided!");
 		}
-		
+
 		strategyConfig = expSeriesRun.getExperimentSeries().getExperimentSeriesDefinition().getExplorationStrategy();
-		
+		IScreeningAdapter adapter = null;
 		if (strategyConfig.getName().equalsIgnoreCase(ScreeningConfiguration.FULL_FACTORIAL)) {
 			adapter = new FullFactorialAdapter();
 		} else if (strategyConfig.getName().equalsIgnoreCase(ScreeningConfiguration.FRACTIONAL_FACTORIAL)) {
@@ -105,22 +97,24 @@ public final class ScreeningDesignExploration extends AbstractSoPeCoExtensionArt
 		} else {
 			throw new IllegalArgumentException("Strategy not supported: " + strategyConfig.getName());
 		}
-		
+
 		adapter.setParameterVariations(parameterVariations);
 		adapter.setExplorationConf(strategyConfig);
 		adapter.generateDesign();
-		
+
 		numberOfMeasurements = 0;
-		
-		executeExperimentSeries(expSeriesRun);
-		
+
+		executeExperimentSeries(expSeriesRun, adapter);
+
+		adapter.releaseAnalysisResources();
+
 	}
-	
+
 	/**
 	 * Execute the experiments series.
-	 *
+	 * 
 	 */
-	private void executeExperimentSeries(ExperimentSeriesRun expSeriesRun) {
+	private void executeExperimentSeries(ExperimentSeriesRun expSeriesRun, IScreeningAdapter adapter) {
 
 		// As long as not all experiment runs have been executed:
 		// determine next parameters and execute the experiment-run
@@ -130,10 +124,10 @@ public final class ScreeningDesignExploration extends AbstractSoPeCoExtensionArt
 		for (int i = 0; i < adapter.getExpDesign().getNumberOfRuns(); i++) {
 			List<ParameterValue<?>> valuesOfRun = new ArrayList<ParameterValue<?>>();
 			valuesOfRun.addAll(adapter.getConstantParameterValues());
-			valuesOfRun.addAll(adapter.getExpDesign()
-					.getParameterValuesByRun(i));
-			ParameterCollection<ParameterValue<?>> paramValueCollection = ParameterCollectionFactory.createParameterValueCollection(valuesOfRun);
-			
+			valuesOfRun.addAll(adapter.getExpDesign().getParameterValuesByRun(i));
+			ParameterCollection<ParameterValue<?>> paramValueCollection = ParameterCollectionFactory
+					.createParameterValueCollection(valuesOfRun);
+
 			experimentController.runExperiment(paramValueCollection);
 		}
 	}
@@ -148,20 +142,19 @@ public final class ScreeningDesignExploration extends AbstractSoPeCoExtensionArt
 	}
 
 	@Override
-	public void setExperimentController(
-			IExperimentController experimentController) {
+	public void setExperimentController(IExperimentController experimentController) {
 		this.experimentController = experimentController;
 	}
 
 	@Override
 	public void setPersistenceProvider(IPersistenceProvider persistenceProvider) {
 		// not used
-		
+
 	}
 
 	@Override
 	public void setExtensionRegistry(IExtensionRegistry registry) {
 		this.sopecoExtensionRegistry = registry;
-		
+
 	}
 }
