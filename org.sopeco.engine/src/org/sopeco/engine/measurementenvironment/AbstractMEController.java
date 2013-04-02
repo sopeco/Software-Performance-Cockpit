@@ -150,7 +150,7 @@ public abstract class AbstractMEController extends MEControllerResource {
 	protected Collection<ParameterValueList<?>> runExperiment(ParameterCollection<ParameterValue<?>> inputPVs)
 			throws ExperimentFailedException {
 		cleanUpObservations();
-		resultSet.clear();
+		resultSet = new ArrayList<ParameterValueList<?>>();
 		setParameterValues(inputPVs);
 		runExperiment();
 		defineResultSet();
@@ -159,7 +159,7 @@ public abstract class AbstractMEController extends MEControllerResource {
 
 	@Override
 	protected void cleanUpMEController() {
-		resultSet.clear();
+		resultSet = new ArrayList<ParameterValueList<?>>();
 		cleanUpInpuValues();
 		cleanUpObservations();
 
