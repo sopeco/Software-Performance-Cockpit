@@ -33,7 +33,11 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.sopeco.persistence.dataset.AbstractDataSetColumn;
+import org.sopeco.persistence.dataset.DataSetAggregated;
+import org.sopeco.persistence.dataset.DataSetRow;
 import org.sopeco.persistence.dataset.ParameterValue;
+import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.dataset.SimpleDataSet;
 import org.sopeco.persistence.dataset.SimpleDataSetColumn;
 import org.sopeco.persistence.dataset.SimpleDataSetRow;
@@ -90,8 +94,8 @@ public class DataSetCsvHandler {
 	 *            Column names are to be stored in the file.
 	 */
 	public DataSetCsvHandler(char valueSeparator, char commentSeparator, char decimalDelimiter, boolean hasColumnNames) {
-		this.valueSeparator=valueSeparator;
-		this.commentSeparator=commentSeparator;
+		this.valueSeparator = valueSeparator;
+		this.commentSeparator = commentSeparator;
 		this.hasColumnNames = hasColumnNames;
 		this.decimalDelimiter = decimalDelimiter;
 	}
@@ -129,39 +133,123 @@ public class DataSetCsvHandler {
 		stringWriter.close();
 		return csvString;
 	}
+	
+	/**
+	 * Store the content of a DataSet as CSV file.
+	 * 
+	 * @param dataset
+	 *            DataSet to be stored.
+	 * @param fileName
+	 *            Name of the CSV file.
+	 * @throws IOException
+	 *             Thrown if the file cannot be written.
+	 */
+	@SuppressWarnings("unchecked")
+	public void store(DataSetAggregated dataset, String fileName) throws IOException {
+		FileWriter fileWriter = new FileWriter(fileName);
+		writeCSV(dataset, fileWriter);
+		fileWriter.close();
+	}
+
+	/**
+	 * Converts the passed {@link SimpleDataSet} to a CSV String.
+	 * 
+	 * @param dataset
+	 *            dataset to be converted
+	 * @return Returns a CSV string representation of the passed dataset
+	 * @throws IOException
+	 *             If writing to the string fails
+	 */
+	public String convertToCSVString(DataSetAggregated dataset) throws IOException {
+		StringWriter stringWriter = new StringWriter();
+		writeCSV(dataset, stringWriter);
+		String csvString = stringWriter.toString();
+		stringWriter.close();
+		return csvString;
+	}
 
 	/**
 	 * Converts the the passed {@link SimpleDataSet} to a CSV stream and writes
 	 * the stream to the passed writer.
 	 */
 	private void writeCSV(SimpleDataSet dataset, Writer writer) throws IOException {
-		CSVWriter csvWriter = new CSVWriter(writer,valueSeparator,commentSeparator);
-		
+		CSVWriter csvWriter = new CSVWriter(writer, valueSeparator, commentSeparator);
 
 		if (hasColumnNames) {
-	
+
 			List<String> headers = new ArrayList<String>();
 			for (SimpleDataSetColumn column : dataset.getColumns()) {
 				headers.add(column.getParameter().getName());
 			}
 
-			csvWriter.writeNext(headers.toArray(new String [0]));
+			csvWriter.writeNext(headers.toArray(new String[0]));
 		}
 
 		List<String> values = new ArrayList<String>();
 		for (SimpleDataSetRow row : dataset) {
-			
+
 			for (ParameterValue pv : row.getRowValues()) {
-				if (decimalDelimiter != '.' && pv.getValue() instanceof Double) {
-					values.add(pv.getValue().toString().replace('.', decimalDelimiter));
-				
-				} else {
-					values.add(pv.getValue().toString());
-				}
+				addValueToList(values, pv);
 			}
 			csvWriter.writeNext(values.toArray(new String[0]));
 			values.clear();
 		}
 
+	}
+
+	/**
+	 * Converts the the passed {@link SimpleDataSet} to a CSV stream and writes
+	 * the stream to the passed writer.
+	 */
+	private void writeCSV(DataSetAggregated dataset, Writer writer) throws IOException {
+		CSVWriter csvWriter = new CSVWriter(writer, valueSeparator, commentSeparator);
+
+		if (hasColumnNames) {
+
+			List<String> headers = new ArrayList<String>();
+			for (AbstractDataSetColumn column : dataset.getColumns()) {
+				headers.add(column.getParameter().getName());
+			}
+
+			csvWriter.writeNext(headers.toArray(new String[0]));
+		}
+
+		List<String> values = new ArrayList<String>();
+		for (DataSetRow row : dataset) {
+			int maxRowSize = row.getMaxSize();
+			for (int i = 0; i < maxRowSize; i++) {
+				// input parameters
+				for (ParameterValue pv : row.getInputRowValues()) {
+					addValueToList(values, pv);
+				}
+
+				// observation parameters
+				for (ParameterValueList pvl : row.getObservableRowValues()) {
+					if (i >= pvl.getSize()) {
+						values.add("");
+					} else {
+						Object value = pvl.getValues().get(i);
+						if (decimalDelimiter != '.' && value instanceof Double) {
+							values.add(value.toString().replace('.', decimalDelimiter));
+
+						} else {
+							values.add(value.toString());
+						}
+					}
+				}
+
+				csvWriter.writeNext(values.toArray(new String[0]));
+				values.clear();
+			}
+		}
+	}
+
+	private void addValueToList(List<String> values, ParameterValue pv) {
+		if (decimalDelimiter != '.' && pv.getValue() instanceof Double) {
+			values.add(pv.getValue().toString().replace('.', decimalDelimiter));
+
+		} else {
+			values.add(pv.getValue().toString());
+		}
 	}
 }
