@@ -165,5 +165,15 @@ public class DataSetRow implements Serializable {
 
 		return true;
 	}
+	
+	public int getMaxSize(){
+		int maxSize = 1;
+		for (ParameterValueList pvl : getObservableRowValues()) {
+			if (pvl.getValues().size() > maxSize) {
+				maxSize = pvl.getValues().size();
+			}
+		}
+		return maxSize;
+	}
 
 }

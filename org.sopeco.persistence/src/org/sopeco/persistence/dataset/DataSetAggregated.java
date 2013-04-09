@@ -553,7 +553,7 @@ public class DataSetAggregated implements Iterable<DataSetRow>, Serializable {
 		// check if all sizes larger than 1 are equal
 		for (ParameterValueList pvl : collection) {
 			final int pvlSize = pvl.getValues().size();
-			if (pvlSize > 1 && pvlSize != maxSize) {
+			if (pvlSize != 1 && pvlSize != maxSize ) {
 				return -1;
 			}
 		}
