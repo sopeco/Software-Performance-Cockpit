@@ -100,6 +100,11 @@ public interface IEngine extends ISessionAwareObject {
 	ScenarioInstance run(ScenarioDefinition scenarioDefinition);
 	
 	/**
+	 * Triggers abort of the currently running experiment run.
+	 */
+	void abortExperimentRun();
+	
+	/**
 	 * Runs the scenario; i.e., runs the measurements defined in the scenario
 	 * against the target system.
 	 * 

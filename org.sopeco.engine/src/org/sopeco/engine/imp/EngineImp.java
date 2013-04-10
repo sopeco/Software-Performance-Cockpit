@@ -42,17 +42,13 @@ import org.sopeco.config.IConfiguration;
 import org.sopeco.engine.IEngine;
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.experimentseries.IExperimentSeriesManager;
-import org.sopeco.engine.model.ScenarioDefinitionWriter;
-import org.sopeco.engine.measurementenvironment.status.StatusProvider;
 import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.engine.registry.IExtensionRegistry;
 import org.sopeco.engine.util.EngineTools;
 import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.PersistenceProviderFactory;
-import org.sopeco.persistence.entities.ArchiveEntry;
 import org.sopeco.persistence.entities.ExperimentSeries;
-import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
@@ -177,6 +173,12 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 		return persistenceProvider;
 	}
 
+	@Override
+	public void abortExperimentRun() {
+		Configuration.getSessionSingleton(getSessionId()).setProperty(IConfiguration.EXPERIMENT_RUN_ABORT,
+				new Boolean(true));
+	}
+
 	private ScenarioInstance retrieveScenarioInstance(ScenarioDefinition scenarioDefinition) {
 		ScenarioInstance scenarioInstance = null;
 
@@ -238,7 +240,5 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 			}
 		}
 	}
-
-	
 
 }
