@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.config.Configuration;
 import org.sopeco.config.IConfiguration;
+import org.sopeco.engine.exception.ExperimentAbortException;
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
 import org.sopeco.engine.status.EventType;
@@ -97,7 +98,7 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 	@Override
 	public void initialize(ParameterCollection<ParameterValue<?>> initializationPVs,
 			MeasurementEnvironmentDefinition meDefinition) {
-
+		checkRunToBeAborted();
 		if (meController == null) {
 			throw new IllegalStateException("No MeasurementEnvironmentController has been set.");
 		}
@@ -123,6 +124,7 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 	@Override
 	public void prepareExperimentSeries(ExperimentSeriesRun experimentSeriesRun,
 			ParameterCollection<ParameterValue<?>> preparationPVs) {
+		checkRunToBeAborted();
 		if (experimentSeriesRun == null) {
 			throw new IllegalArgumentException("ExperimentSeriesRun must not be null.");
 		}
@@ -158,7 +160,7 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 		boolean experimentWasSuccessful = false;
 
 		try {
-
+			checkRunToBeAborted();
 			StatusBroker.getManagerViaSessionID(getSessionId()).newStatus(EventType.EXECUTE_EXPERIMENTRUN);
 
 			// update experiment series run instance with latest database
@@ -207,7 +209,7 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 	@Override
 	public void finalizeExperimentSeries() {
 		try {
-
+			checkRunToBeAborted();
 			StatusBroker.getManagerViaSessionID(getSessionId()).newStatus(EventType.FINALIZE_EXPERIMENTSERIES);
 
 			meController.finalizeExperimentSeries(getSessionId());
@@ -377,6 +379,14 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 			StatusBroker.getManagerViaSessionID(getSessionId()).newStatus(EventType.MEASUREMENT_FINISHED);
 		} catch (RemoteException e) {
 			throw new RuntimeException("RemoteException.", e);
+		}
+	}
+	
+	private void checkRunToBeAborted(){
+		boolean abort = Configuration.getSessionSingleton(getSessionId()).getPropertyAsBoolean(IConfiguration.EXPERIMENT_RUN_ABORT, false);
+		if(abort){
+			Configuration.getSessionSingleton(getSessionId()).setProperty(IConfiguration.EXPERIMENT_RUN_ABORT, false);
+			throw new ExperimentAbortException("Experiment has been aborted by the user!");
 		}
 	}
 
