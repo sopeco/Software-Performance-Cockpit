@@ -93,6 +93,8 @@ public interface IConfiguration extends ISessionAwareObject {
 	String DEFAULT_CONFIG_FILE_NAME = "sopeco-defaults.conf";
 
 	String DIR_SEPARATOR = ":";
+	
+	String EXPERIMENT_RUN_ABORT = "org.sopeco.experiment.run.abort";
 
 	Map<String, Object> getProperties();
 	/**
