@@ -36,7 +36,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class SocketAppWrapper extends ConnectionResource {
+	private static final String GET_IDENTIFIER = "getIdentifier";
+
+	private static final String AVAILABLE_CONTROLLER = "availableController";
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(SocketAppWrapper.class);
+	
 	private String[] controller;
 	private Map<String, SocketMECWrapper> wrapperMap;
 
@@ -53,7 +58,11 @@ public class SocketAppWrapper extends ConnectionResource {
 	}
 
 	public String[] fetchAvailableMEController() {
-		return callMethod("availableController");
+		return callMethod(AVAILABLE_CONTROLLER);
+	}
+	
+	public String getIdentifier(){
+		return callMethod(GET_IDENTIFIER);
 	}
 
 	public String[] getAvailableController() {

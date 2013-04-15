@@ -29,6 +29,7 @@ package org.sopeco.engine.measurementenvironment.socket;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,7 +38,8 @@ public final class SocketAcception extends Thread {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(SocketAcception.class);
 
-	private static final int DEFAULT_PORT = 11300;
+	private static final int SOCKET_TIMEOUT = 1000 * 30;
+	private static final int DEFAULT_PORT = 8089;
 
 	private static SocketAcception singleton;
 
@@ -63,6 +65,7 @@ public final class SocketAcception extends Thread {
 
 	private SocketAcception(int port) throws IOException {
 		serverSocket = new ServerSocket(port);
+		serverSocket.setSoTimeout(SOCKET_TIMEOUT);
 	}
 
 	public void run() {
@@ -72,11 +75,21 @@ public final class SocketAcception extends Thread {
 			try {
 				LOGGER.debug("Waiting for new connections..");
 				incoming = serverSocket.accept();
+				cleanUpConnections();
 				handleSocket(incoming);
+
+			} catch (SocketTimeoutException ste) {
+				// clean up dead connections and retry
+				cleanUpConnections();
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOGGER.error("Socket acceptence error! {}", e);
 			}
 		}
+	}
+
+	private void cleanUpConnections() {
+		SocketManager.cleanUp();
+
 	}
 
 	private void handleSocket(Socket socket) {
