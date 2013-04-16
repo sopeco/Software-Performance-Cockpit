@@ -28,8 +28,10 @@ package org.sopeco.engine.measurementenvironment.socket;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -45,19 +47,22 @@ public final class SocketManager {
 	private static Map<String, SocketAppWrapper> appWrapperMap = new HashMap<String, SocketAppWrapper>();
 
 	public static void handle(Socket socket) {
-		LOGGER.debug("Stored SocketMECWrapper from {}", socket.getInetAddress().getHostAddress());
 		SocketAppWrapper appWrapper = new SocketAppWrapper(socket);
-		String key = appWrapper.getSocket().getInetAddress().getHostAddress();
+		String key = appWrapper.getIdentifier();
+		// String key =
+		// appWrapper.getSocket().getInetAddress().getHostAddress();
 		appWrapperMap.put(key, appWrapper);
+		LOGGER.debug("Stored SocketMECWrapper from {} with identifier {}", socket.getInetAddress().getHostAddress(),
+				key);
 	}
 
 	public static Collection<SocketAppWrapper> getAllSocketApps() {
 		return new HashMap<String, SocketAppWrapper>(appWrapperMap).values();
 	}
 
-	public static SocketAppWrapper getSocketApp(String ip) {
-		if (appWrapperMap.containsKey(ip)) {
-			return appWrapperMap.get(ip);
+	public static SocketAppWrapper getSocketApp(String identifier) {
+		if (appWrapperMap.containsKey(identifier)) {
+			return appWrapperMap.get(identifier);
 		}
 		return null;
 	}
@@ -84,11 +89,24 @@ public final class SocketManager {
 		}
 	}
 
-	public static SocketMECWrapper getSocketMEC(String ip, String mecName) {
-		if (getSocketApp(ip) != null) {
-			return getSocketApp(ip).getMECWrapper(mecName);
+	public static SocketMECWrapper getSocketMEC(String identifier, String mecName) {
+		if (getSocketApp(identifier) != null) {
+			return getSocketApp(identifier).getMECWrapper(mecName);
 		}
 		return null;
+	}
+
+	public static void cleanUp() {
+		List<String> keysToRemove = new ArrayList<String>();
+		for (String key : appWrapperMap.keySet()) {
+			if (!appWrapperMap.get(key).isAlive()) {
+				keysToRemove.add(key);
+			}
+		}
+		for (String key : keysToRemove) {
+			appWrapperMap.remove(key);
+		}
+
 	}
 
 }

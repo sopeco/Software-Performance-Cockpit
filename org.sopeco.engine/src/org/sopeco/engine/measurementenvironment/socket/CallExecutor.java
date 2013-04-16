@@ -178,5 +178,9 @@ public final class CallExecutor {
 	public String[] availableController() {
 		return MECApplication.get().getControllerList();
 	}
+	
+	public String getIdentifier(){
+		return MECApplication.get().getSocketIdentifier();
+	}
 
 }

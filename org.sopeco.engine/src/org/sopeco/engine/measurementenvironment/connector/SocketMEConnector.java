@@ -37,7 +37,7 @@ public class SocketMEConnector implements IMEConnector {
 
 	@Override
 	public IMeasurementEnvironmentController connectToMEController(URI meURI) {
-		SocketAppWrapper app = SocketManager.getSocketApp(meURI.getHost());
+		SocketAppWrapper app = SocketManager.getSocketApp(getIdentifier(meURI));
 		if (app == null) {
 			throw new RuntimeException("No MECApplication is registred by " + meURI.getHost());
 		}
@@ -45,12 +45,16 @@ public class SocketMEConnector implements IMEConnector {
 		String controllerName = getControllerName(meURI);
 		SocketMECWrapper mec = app.getMECWrapper(controllerName);
 		if (mec == null) {
-			throw new RuntimeException("No MEController '" + controllerName + "' is running on " + meURI.getHost());
+			throw new RuntimeException("No MEController '" + controllerName + "' is registered with identifier " + getIdentifier(meURI));
 		}
 		return mec;
 	}
 
 	private static String getControllerName(URI uri) {
 		return uri.getPath().split("/")[1];
+	}
+	
+	private static String getIdentifier(URI uri) {
+		return uri.getHost();
 	}
 }

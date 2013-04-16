@@ -44,8 +44,7 @@ import org.sopeco.engine.measurementenvironment.socket.SocketApp;
  */
 public final class MECApplication {
 
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(MECApplication.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(MECApplication.class);
 
 	/** Default port for the REST server. */
 	private static final int DEFAULT_REST_PORT = 1300;
@@ -53,6 +52,7 @@ public final class MECApplication {
 	/** The singleton instance of this class. */
 	private static MECApplication singleton;
 
+	private String socketIdentifier;
 	/**
 	 * Returns the singleton instance of this class.
 	 * 
@@ -93,12 +93,10 @@ public final class MECApplication {
 	 * @param controller
 	 *            which is binded to the specified name
 	 */
-	public void addMeasurementController(String name,
-			IMeasurementEnvironmentController controller) {
+	public void addMeasurementController(String name, IMeasurementEnvironmentController controller) {
 		String pattern = "[a-zA-Z0-9_\\-]+";
 		if (!name.matches(pattern)) {
-			throw new RuntimeException(
-					"Only the following characters are allowed: 0-9 a-z A-Z _ -");
+			throw new RuntimeException("Only the following characters are allowed: 0-9 a-z A-Z _ -");
 		}
 		if (meControllerMap.containsKey(name)) {
 			// throw new
@@ -134,8 +132,7 @@ public final class MECApplication {
 	 */
 	public IMeasurementEnvironmentController getMEController(String name) {
 		if (!meControllerMap.containsKey(name)) {
-			throw new RuntimeException("No Controller, named '" + name
-					+ "', available.");
+			throw new RuntimeException("No Controller, named '" + name + "', available.");
 		}
 		return meControllerMap.get(name);
 	}
@@ -178,15 +175,39 @@ public final class MECApplication {
 	}
 
 	@Deprecated
-	public void startRemoteMEController(
-			IMeasurementEnvironmentController meController, URI uri) {
+	public void startRemoteMEController(IMeasurementEnvironmentController meController, URI uri) {
 		String name = uri.getPath().replaceAll("/", "");
 		addMeasurementController(name, meController);
 		startRMI(uri.getPort());
 	}
 
 	public void socketConnect(String host, int port) {
-		new SocketApp(host, port).start();
+		SocketApp sApp = new SocketApp(host, port);
+		setSocketIdentifier(sApp.getIdentifier());
+		LOGGER.info("connecting to SoPeCo with the following identifier: {}", getSocketIdentifier());
+		sApp.start();
+
+	}
+
+	public void socketConnect(String host, int port, String identifier) {
+		SocketApp sApp = new SocketApp(host, port, identifier);
+		setSocketIdentifier(sApp.getIdentifier());
+		LOGGER.info("connecting to SoPeCo with the following identifier: {}", getSocketIdentifier());
+		sApp.start();
+	}
+
+	/**
+	 * @return the socketIdentifier
+	 */
+	public String getSocketIdentifier() {
+		return socketIdentifier;
+	}
+
+	/**
+	 * @param socketIdentifier the socketIdentifier to set
+	 */
+	public void setSocketIdentifier(String socketIdentifier) {
+		this.socketIdentifier = socketIdentifier;
 	}
 
 }
