@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,13 +48,19 @@ public class SocketApp extends Thread {
 
 	private String host;
 	private int port;
-
+	private String identifier;
 	private ObjectInputStream oiStream;
 	private ObjectOutputStream ooStream;
 
 	public SocketApp(String pHost, int pPort) {
+		this(pHost, pPort, UUID.randomUUID().toString());
+
+	}
+
+	public SocketApp(String pHost, int pPort, String identifier) {
 		host = pHost;
 		port = pPort;
+		this.setIdentifier(identifier);
 	}
 
 	public void connect() {
@@ -105,5 +112,20 @@ public class SocketApp extends Thread {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	/**
+	 * @return the identifier
+	 */
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	/**
+	 * @param identifier
+	 *            the identifier to set
+	 */
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
 	}
 }
