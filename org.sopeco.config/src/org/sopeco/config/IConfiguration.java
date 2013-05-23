@@ -501,4 +501,20 @@ public interface IConfiguration extends ISessionAwareObject {
 	 *            with the new values
 	 */
 	 void overwrite(Map<String, Object> properties);
+
+	 /**
+	  * Adds a new command-line extension to the configuration component. 
+	  * 
+	  * The same extension will not be added twice. 
+	  * 
+	  * @param extension a command-line extension
+	  */
+	 void addCommandLineExtension(ICommandLineArgumentsExtension extension);
+	 
+	 /**
+	  * Removes a new command-line extension from the configuration component. 
+	  * 
+	  * @param extension a command-line extension
+	  */
+	 void removeCommandLineExtension(ICommandLineArgumentsExtension extension);
 }

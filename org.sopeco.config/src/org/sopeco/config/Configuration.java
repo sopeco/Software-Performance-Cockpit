@@ -39,6 +39,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -84,6 +85,8 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	/** Contains previously applied logger configurations. */
 	private HashSet<String> previousLogConfigs = new HashSet<String>();
 
+	private Set<ICommandLineArgumentsExtension> commandLineExtensions;
+
 	private static final int HELP_FORMATTER_WIDTH = 120;
 
 	/*
@@ -91,6 +94,7 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	 */
 	private Configuration(Class<?> mainClass, String sessionId) {
 		super(sessionId);
+		commandLineExtensions = new HashSet<ICommandLineArgumentsExtension>();
 		try {
 			logger.debug("Initializing SoPeCo configuration module{}.", (mainClass == null ? "" : " with main class " + mainClass.getName() + ""));
 			setDefaultValues(mainClass);
@@ -301,6 +305,14 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		options.addOptionGroup(meGroup);
 		options.addOption(logconfig);
 		options.addOption(homePathOption);
+		
+		// include command-line extensions
+		for (ICommandLineArgumentsExtension ext: commandLineExtensions) {
+			for (Option opt: ext.getCommandLineOptions()) {
+				options.addOption(opt);
+			}
+		}
+		
 		// options.addOption(logVerbosity);
 
 		CommandLineParser parser = new GnuParser();
@@ -363,6 +375,11 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		if (line.hasOption(homePathOption.getOpt())) {
 			final String homePath = line.getOptionValue(homePathOption.getOpt());
 			setAppRootDirectory(homePath);
+		}
+		
+		// process command-line extensions
+		for (ICommandLineArgumentsExtension ext: commandLineExtensions) {
+			ext.processOptions(line);
 		}
 	}
 
@@ -765,6 +782,16 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		mergedProperties.putAll(this.defaultValues);
 		mergedProperties.putAll(this.properties);
 		return mergedProperties;
+	}
+
+	@Override
+	public void addCommandLineExtension(ICommandLineArgumentsExtension extension) {
+		commandLineExtensions.add(extension);
+	}
+
+	@Override
+	public void removeCommandLineExtension(ICommandLineArgumentsExtension extension) {
+		commandLineExtensions.remove(extension);
 	}
 
 }
