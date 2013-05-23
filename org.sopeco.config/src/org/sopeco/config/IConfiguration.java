@@ -192,6 +192,14 @@ public interface IConfiguration extends ISessionAwareObject {
 	void setProperty(String key, Object value);
 
 	/**
+	 * Clears the value of the given property in all layers of configuration,
+	 * including the system property environment.
+	 * 
+	 * @param key the property
+	 */
+	void clearProperty(String key);
+
+	/**
 	 * Returns the default value (ignoring the current runtime configuration)
 	 * for a given property.
 	 * 

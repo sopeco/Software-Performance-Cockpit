@@ -244,6 +244,14 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		properties.put(key, value);
 	}
 
+
+	@Override
+	public void clearProperty(String key) {
+		properties.remove(key);
+		System.clearProperty(key);
+		defaultValues.remove(key);
+	}
+	
 	@Override
 	public Object getDefaultValue(String key) {
 		return defaultValues.get(key);
