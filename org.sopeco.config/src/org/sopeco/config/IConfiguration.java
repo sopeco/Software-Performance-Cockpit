@@ -164,6 +164,24 @@ public interface IConfiguration extends ISessionAwareObject {
 	long getPropertyAsLong(String key, long defaultValue);
 
 	/**
+	 * Returns the configured value of the given property as a Double value.
+	 * 
+	 * This method uses the {@link Double.#parseLong(String)} to interpret the
+	 * values. If the value of the given property is <code>null</code> it
+	 * returns the passed default value.
+	 * 
+	 * @param key
+	 *            property key
+	 * @param defaultValue
+	 *            the default value returned in case of a null property value
+	 * 
+	 * @return the value of the given property as a double
+	 * 
+	 * @see #getProperty(String)
+	 */
+	double getPropertyAsDouble(String key, double defaultValue);
+
+	/**
 	 * Returns the configured value of the given property as an Integer value.
 	 * 
 	 * This method uses the {@link Integer.#parseInt(String)} to interpret the

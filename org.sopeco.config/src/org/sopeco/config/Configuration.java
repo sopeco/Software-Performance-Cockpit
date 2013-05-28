@@ -244,6 +244,17 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	}
 
 	@Override
+	public double getPropertyAsDouble(String key, double defaultValue) {
+		final String value = getPropertyAsStr(key);
+		if (value == null) {
+			return defaultValue;
+		} else {
+			return Double.parseDouble(value.trim());
+		}
+	}
+
+
+	@Override
 	public void setProperty(String key, Object value) {
 		properties.put(key, value);
 	}
