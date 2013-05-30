@@ -208,7 +208,7 @@ public class DataSetCsvHandler {
 
 			List<String> headers = new ArrayList<String>();
 			for (AbstractDataSetColumn column : dataset.getColumns()) {
-				headers.add(column.getParameter().getName());
+				headers.add(column.getParameter().getFullName());
 			}
 
 			csvWriter.writeNext(headers.toArray(new String[0]));
