@@ -135,8 +135,8 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 		}
 
 		try {
-
-			StatusBroker.getManagerViaSessionID(getSessionId()).newStatus(EventType.PREPARE_EXPERIMENTSERIES);
+			String seriesName = experimentSeriesRun.getExperimentSeries().getName();
+			StatusBroker.getManagerViaSessionID(getSessionId()).newStatus(EventType.PREPARE_EXPERIMENTSERIES, seriesName);
 
 			this.currentExperimentSeriesRun = experimentSeriesRun;
 			this.preparationPVs = preparationPVs;
@@ -327,7 +327,7 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 			throw new RuntimeException("RemoteException.", e);
 		} catch (Exception e) {
 			StatusBroker.getManagerViaSessionID(getSessionId()).newStatus(EventType.EXECUTION_FAILED, e);
-			
+
 			LOGGER.error("Exception was thrown. Reason: {}", e.getMessage());
 			throw new RuntimeException(e);
 		}
@@ -381,10 +381,11 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 			throw new RuntimeException("RemoteException.", e);
 		}
 	}
-	
-	private void checkRunToBeAborted(){
-		boolean abort = Configuration.getSessionSingleton(getSessionId()).getPropertyAsBoolean(IConfiguration.EXPERIMENT_RUN_ABORT, false);
-		if(abort){
+
+	private void checkRunToBeAborted() {
+		boolean abort = Configuration.getSessionSingleton(getSessionId()).getPropertyAsBoolean(
+				IConfiguration.EXPERIMENT_RUN_ABORT, false);
+		if (abort) {
 			Configuration.getSessionSingleton(getSessionId()).setProperty(IConfiguration.EXPERIMENT_RUN_ABORT, false);
 			throw new ExperimentAbortException("Experiment has been aborted by the user!");
 		}
