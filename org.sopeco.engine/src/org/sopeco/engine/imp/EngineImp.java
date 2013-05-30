@@ -126,14 +126,23 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 		if (experimentSeriesNames == null || experimentSeriesNames.isEmpty()) {
 			throw new RuntimeException("List of experiment series names is empty or null!");
 		}
-		ScenarioInstance scenarioInstance = retrieveScenarioInstance(scenarioDefinition);
 
+		List<String> experimentSeriesFilter = (List<String>) Configuration.getSessionSingleton(getSessionId())
+				.getProperty(IConfiguration.CONF_EXPERIMENT_EXECUTION_SELECTION);
+
+		ScenarioInstance scenarioInstance = retrieveScenarioInstance(scenarioDefinition);
 		scenarioInstance.getScenarioDefinition().getAllExperimentSeriesDefinitions();
+
 		Map<MeasurementSpecification, List<ExperimentSeriesDefinition>> experimentSeries = new HashMap<MeasurementSpecification, List<ExperimentSeriesDefinition>>();
 
 		for (MeasurementSpecification ms : scenarioDefinition.getMeasurementSpecifications()) {
 			List<ExperimentSeriesDefinition> currentExpSeriesList = new ArrayList<ExperimentSeriesDefinition>();
 			for (ExperimentSeriesDefinition esd : ms.getExperimentSeriesDefinitions()) {
+				// Filter Experiments
+				if (experimentSeriesFilter != null && experimentSeriesFilter.contains(ms.getName() + "." + esd.getName())) {
+					continue;
+				}
+
 				for (String expSeriesName : experimentSeriesNames) {
 					if (esd.getName().equals(expSeriesName)) {
 						currentExpSeriesList.add(esd);

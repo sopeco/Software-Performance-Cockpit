@@ -119,6 +119,14 @@ public class StatusManager {
 		
 		newStatus(message);
 	}
+	
+	public void newStatus(EventType eventType, String description) {
+		StatusMessage message = new StatusMessage();
+		message.setEventType(eventType);
+		message.setDescription(description);
+		
+		newStatus(message);
+	}
 
 	/**
 	 * Adds the given {@link StatusMessage} to the current statusManager.
