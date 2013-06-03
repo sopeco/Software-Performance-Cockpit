@@ -41,8 +41,8 @@ import org.sopeco.persistence.dataset.ParameterValueList;
 import org.sopeco.persistence.dataset.SimpleDataSet;
 import org.sopeco.persistence.dataset.SimpleDataSetColumn;
 import org.sopeco.persistence.dataset.SimpleDataSetRow;
-
-import au.com.bytecode.opencsv.CSVWriter;
+import org.supercsv.io.CsvListWriter;
+import org.supercsv.prefs.CsvPreference;
 
 /**
  * 
@@ -52,6 +52,10 @@ import au.com.bytecode.opencsv.CSVWriter;
  * 
  */
 public class DataSetCsvHandler {
+
+	private static final char DEFAULT_DECIMAL_DELIMITER = '.';
+
+	private static final String DEFAULT_CSV_EOL = "\r\n";
 
 	/**
 	 * Column names are used in the CSV files.
@@ -64,20 +68,20 @@ public class DataSetCsvHandler {
 	private char decimalDelimiter;
 
 	private char valueSeparator;
-	private char commentSeparator;
+	private char quoteChar;
 
 	/**
 	 * Constructor.
 	 * 
 	 * @param valueSeparator
 	 *            Character to be used for separation in the file.
-	 * @param commentSeparator
-	 *            Character to be used to mark comments in the file.
+	 * @param quoteChar
+	 *            Character to be used to quote values in the file.
 	 * @param hasColumnNames
 	 *            Column names are to be stored in the file.
 	 */
-	public DataSetCsvHandler(char valueSeparator, char commentSeparator, boolean hasColumnNames) {
-		this(valueSeparator, commentSeparator, '.', hasColumnNames);
+	public DataSetCsvHandler(char valueSeparator, char quoteChar, boolean hasColumnNames) {
+		this(valueSeparator, quoteChar, DEFAULT_DECIMAL_DELIMITER, hasColumnNames);
 	}
 
 	/**
@@ -93,9 +97,9 @@ public class DataSetCsvHandler {
 	 * @param hasColumnNames
 	 *            Column names are to be stored in the file.
 	 */
-	public DataSetCsvHandler(char valueSeparator, char commentSeparator, char decimalDelimiter, boolean hasColumnNames) {
+	public DataSetCsvHandler(char valueSeparator, char quoteChar, char decimalDelimiter, boolean hasColumnNames) {
 		this.valueSeparator = valueSeparator;
-		this.commentSeparator = commentSeparator;
+		this.quoteChar = quoteChar;
 		this.hasColumnNames = hasColumnNames;
 		this.decimalDelimiter = decimalDelimiter;
 	}
@@ -110,7 +114,6 @@ public class DataSetCsvHandler {
 	 * @throws IOException
 	 *             Thrown if the file cannot be written.
 	 */
-	@SuppressWarnings("unchecked")
 	public void store(SimpleDataSet dataset, String fileName) throws IOException {
 		FileWriter fileWriter = new FileWriter(fileName);
 		writeCSV(dataset, fileWriter);
@@ -133,7 +136,7 @@ public class DataSetCsvHandler {
 		stringWriter.close();
 		return csvString;
 	}
-	
+
 	/**
 	 * Store the content of a DataSet as CSV file.
 	 * 
@@ -144,7 +147,6 @@ public class DataSetCsvHandler {
 	 * @throws IOException
 	 *             Thrown if the file cannot be written.
 	 */
-	@SuppressWarnings("unchecked")
 	public void store(DataSetAggregated dataset, String fileName) throws IOException {
 		FileWriter fileWriter = new FileWriter(fileName);
 		writeCSV(dataset, fileWriter);
@@ -173,7 +175,8 @@ public class DataSetCsvHandler {
 	 * the stream to the passed writer.
 	 */
 	private void writeCSV(SimpleDataSet dataset, Writer writer) throws IOException {
-		CSVWriter csvWriter = new CSVWriter(writer, valueSeparator, commentSeparator);
+		CsvPreference csvPreference = new CsvPreference.Builder(quoteChar, valueSeparator, DEFAULT_CSV_EOL).build();
+		CsvListWriter csvWriter = new CsvListWriter(writer, csvPreference);
 
 		if (hasColumnNames) {
 
@@ -182,7 +185,7 @@ public class DataSetCsvHandler {
 				headers.add(column.getParameter().getName());
 			}
 
-			csvWriter.writeNext(headers.toArray(new String[0]));
+			csvWriter.writeHeader(headers.toArray(new String[0]));
 		}
 
 		List<String> values = new ArrayList<String>();
@@ -191,10 +194,11 @@ public class DataSetCsvHandler {
 			for (ParameterValue pv : row.getRowValues()) {
 				addValueToList(values, pv);
 			}
-			csvWriter.writeNext(values.toArray(new String[0]));
+			csvWriter.write(values);
 			values.clear();
 		}
 
+		csvWriter.close();
 	}
 
 	/**
@@ -202,7 +206,8 @@ public class DataSetCsvHandler {
 	 * the stream to the passed writer.
 	 */
 	private void writeCSV(DataSetAggregated dataset, Writer writer) throws IOException {
-		CSVWriter csvWriter = new CSVWriter(writer, valueSeparator, commentSeparator);
+		CsvPreference csvPreference = new CsvPreference.Builder(quoteChar, valueSeparator, DEFAULT_CSV_EOL).build();
+		CsvListWriter csvWriter = new CsvListWriter(writer, csvPreference);
 
 		if (hasColumnNames) {
 
@@ -211,7 +216,7 @@ public class DataSetCsvHandler {
 				headers.add(column.getParameter().getFullName());
 			}
 
-			csvWriter.writeNext(headers.toArray(new String[0]));
+			csvWriter.writeHeader(headers.toArray(new String[0]));
 		}
 
 		List<String> values = new ArrayList<String>();
@@ -238,10 +243,12 @@ public class DataSetCsvHandler {
 					}
 				}
 
-				csvWriter.writeNext(values.toArray(new String[0]));
+				csvWriter.write(values.toArray(new String[0]));
 				values.clear();
 			}
 		}
+
+		csvWriter.close();
 	}
 
 	private void addValueToList(List<String> values, ParameterValue pv) {
