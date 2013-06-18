@@ -55,7 +55,7 @@ public final class MEConnectorFactory {
 			} catch (RuntimeException e) {
 				ErrorInfo info = new ErrorInfo();
 				info.setThrowable(e);
-				StatusBroker.getManager(uri.toString()).newStatus(EventType.ERROR, e);
+				StatusBroker.getManager(uri.toString()).newStatus(EventType.EXCEPTION, e);
 				throw e;
 			}
 		} else if (uri.getScheme().toLowerCase().equals("http")) {
@@ -66,7 +66,7 @@ public final class MEConnectorFactory {
 			} catch (RuntimeException e) {
 				ErrorInfo info = new ErrorInfo();
 				info.setThrowable(e);
-				StatusBroker.getManager(uri.toString()).newStatus(EventType.ERROR, e);
+				StatusBroker.getManager(uri.toString()).newStatus(EventType.EXCEPTION, e);
 				throw e;
 			}
 		}  else if (uri.getScheme().toLowerCase().equals("socket")) {
@@ -77,7 +77,7 @@ public final class MEConnectorFactory {
 			} catch (RuntimeException e) {
 				ErrorInfo info = new ErrorInfo();
 				info.setThrowable(e);
-				StatusBroker.getManager(uri.toString()).newStatus(EventType.ERROR, e);
+				StatusBroker.getManager(uri.toString()).newStatus(EventType.EXCEPTION, e);
 				throw e;
 			}
 		} else {
@@ -86,7 +86,7 @@ public final class MEConnectorFactory {
 			ErrorInfo info = new ErrorInfo();
 			info.setThrowable(exception);
 
-			StatusBroker.getManager(uri.toString()).newStatus(EventType.ERROR, exception);
+			StatusBroker.getManager(uri.toString()).newStatus(EventType.EXCEPTION, exception);
 			throw exception;
 		}
 

@@ -75,14 +75,14 @@ public final class StatusProvider {
 	public void sendInformation(String information) {
 		nextStatus(EventType.INFORMATION, information, null);
 	}
+	
+	public void sendError(String error) {
+		nextStatus(EventType.ERROR, error, null);
+	}
 
 	public void sendProgressInfo(String description, ProgressInfo progressInfo) {
 		nextStatus(EventType.INFORMATION, description, progressInfo);
 	}
-
-	// public void nextStatus(String description) {
-	// nextStatus(description, null);
-	// }
 
 	private void nextStatus(EventType eventType, String description, IStatusInfo statusInfo) {
 		StatusMessage status = new StatusMessage();
