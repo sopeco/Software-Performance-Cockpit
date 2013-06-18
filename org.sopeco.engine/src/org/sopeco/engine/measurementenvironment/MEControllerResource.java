@@ -171,12 +171,37 @@ public abstract class MEControllerResource implements IMeasurementEnvironmentCon
 	 * Sends a message/information to SoPeCo.
 	 * 
 	 * @param information
+	 * 
+	 * @deprecated Use instead of this the method
+	 *             {@link MEControllerResource#print(String)}
 	 */
+	@Deprecated
 	protected void sendInformation(String information) {
+		print(information);
+	}
+
+	/**
+	 * Sends a message/information to SoPeCo.
+	 * 
+	 * @param information
+	 */
+	protected void print(String information) {
 		if (statusProvider == null) {
 			return;
 		}
 		statusProvider.sendInformation(information);
+	}
+
+	/**
+	 * Sends a error message/information to SoPeCo.
+	 * 
+	 * @param information
+	 */
+	protected void printErr(String errorText) {
+		if (statusProvider == null) {
+			return;
+		}
+		statusProvider.sendError(errorText);
 	}
 
 	/**
