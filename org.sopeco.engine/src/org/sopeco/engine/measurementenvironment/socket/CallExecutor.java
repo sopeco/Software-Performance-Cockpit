@@ -166,13 +166,14 @@ public final class CallExecutor {
 
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
+			return e;
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
+			return e;
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
+			return e;
 		}
-
-		return null;
 	}
 
 	public String[] availableController() {
