@@ -116,8 +116,10 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 	public ScenarioInstance run(ScenarioDefinition scenarioDefinition) {
 		List<String> experimentSeriesNames = new ArrayList<String>();
 
-		for (ExperimentSeriesDefinition esd : scenarioDefinition.getAllExperimentSeriesDefinitions()) {
-			experimentSeriesNames.add(esd.getName());
+		for (MeasurementSpecification ms : scenarioDefinition.getMeasurementSpecifications()) {
+			for (ExperimentSeriesDefinition esd : ms.getExperimentSeriesDefinitions()) {
+				experimentSeriesNames.add(ms.getName() + "." + esd.getName());
+			}
 		}
 
 		return run(scenarioDefinition, experimentSeriesNames);
