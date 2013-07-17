@@ -65,6 +65,9 @@ import org.sopeco.util.session.SessionAwareObject;
  */
 public class EngineImp extends SessionAwareObject implements IEngine {
 
+	/** * */
+	private static final long serialVersionUID = 1L;
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(EngineImp.class);
 
 	private IConfiguration configuration = null;
@@ -127,9 +130,6 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 			throw new RuntimeException("List of experiment series names is empty or null!");
 		}
 
-		List<String> experimentSeriesFilter = (List<String>) Configuration.getSessionSingleton(getSessionId())
-				.getProperty(IConfiguration.CONF_EXPERIMENT_EXECUTION_SELECTION);
-
 		ScenarioInstance scenarioInstance = retrieveScenarioInstance(scenarioDefinition);
 		scenarioInstance.getScenarioDefinition().getAllExperimentSeriesDefinitions();
 
@@ -138,13 +138,9 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 		for (MeasurementSpecification ms : scenarioDefinition.getMeasurementSpecifications()) {
 			List<ExperimentSeriesDefinition> currentExpSeriesList = new ArrayList<ExperimentSeriesDefinition>();
 			for (ExperimentSeriesDefinition esd : ms.getExperimentSeriesDefinitions()) {
-				// Filter Experiments
-				if (experimentSeriesFilter != null && experimentSeriesFilter.contains(ms.getName() + "." + esd.getName())) {
-					continue;
-				}
 
 				for (String expSeriesName : experimentSeriesNames) {
-					if (esd.getName().equals(expSeriesName)) {
+					if ((ms.getName() + "." + esd.getName()).equals(expSeriesName)) {
 						currentExpSeriesList.add(esd);
 					}
 				}

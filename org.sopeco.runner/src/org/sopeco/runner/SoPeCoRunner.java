@@ -30,6 +30,7 @@
 package org.sopeco.runner;
 
 import java.rmi.RemoteException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,6 +59,9 @@ import org.sopeco.util.session.SessionAwareObject;
  */
 public class SoPeCoRunner extends SessionAwareObject implements Runnable {
 
+	/** */
+	private static final long serialVersionUID = 1L;
+
 	protected static final Logger LOGGER = LoggerFactory.getLogger(SoPeCoRunner.class);
 
 	protected String[] args = null;
@@ -72,6 +76,8 @@ public class SoPeCoRunner extends SessionAwareObject implements Runnable {
 	private IEngine lastEngine = null;
 
 	private Map<String, Object> executionProperties = null;
+
+	private Collection<String> experimentSeriesNames = null;
 
 	/**
 	 * Use this constructor to provide a session id.
@@ -105,6 +111,32 @@ public class SoPeCoRunner extends SessionAwareObject implements Runnable {
 	}
 
 	/**
+	 * Use this constructor to provide a session id and a properties map,
+	 * required for experiment execution. Additionally you can specify which
+	 * experiments are executed.
+	 * 
+	 * @param sessionId
+	 *            session id to be used for retrieving configuration properties
+	 *            for this runner and all it triggered subprocesses.
+	 * 
+	 * @param executionProperties
+	 *            A map containing properties objects specifying experiment
+	 *            execution and used configurations
+	 * 
+	 * @param experimentSeriesNames
+	 *            A collection of string containing the names of the experiments
+	 *            which should be executed
+	 */
+	public SoPeCoRunner(String sessionId, Map<String, Object> executionProperties,
+			Collection<String> experimentSeriesNames) {
+		this(sessionId, executionProperties);
+		this.experimentSeriesNames = experimentSeriesNames;
+		if (this.experimentSeriesNames == null || experimentSeriesNames.isEmpty()) {
+			throw new IllegalArgumentException("experimentSeriesNames must not be null or empty!");
+		}
+	}
+
+	/**
 	 * 
 	 * Assuming that the required command-line arguments (if any) are set
 	 * already, using {@link SoPeCoRunner#setArguments(String[]).
@@ -127,7 +159,11 @@ public class SoPeCoRunner extends SessionAwareObject implements Runnable {
 
 		lastEngine = EngineFactory.getInstance().createEngine(getSessionId());
 
-		lastExecutedScenarioInstance = lastEngine.run(scenario);
+		if (experimentSeriesNames == null || experimentSeriesNames.isEmpty()) {
+			lastExecutedScenarioInstance = lastEngine.run(scenario);
+		} else {
+			lastExecutedScenarioInstance = lastEngine.run(scenario, experimentSeriesNames);
+		}
 
 		executionProperties = null;
 		LOGGER.info("SoPeCo run finished.");

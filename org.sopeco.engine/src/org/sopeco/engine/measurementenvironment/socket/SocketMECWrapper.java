@@ -27,6 +27,7 @@
 package org.sopeco.engine.measurementenvironment.socket;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
@@ -91,6 +92,12 @@ public class SocketMECWrapper extends ConnectionResource implements IMeasurement
 				throw new RuntimeException(e);
 			}
 		}
+		if (result instanceof InvocationTargetException ) {
+			InvocationTargetException exc = (InvocationTargetException) result;
+			throw new RuntimeException(exc.getCause());
+		} else if (result instanceof Exception) {
+			throw new RuntimeException((Exception) result);
+		}
 		return (Collection<ParameterValueList<?>>) result;
 	}
 
@@ -131,6 +138,6 @@ public class SocketMECWrapper extends ConnectionResource implements IMeasurement
 
 	private <T extends Object> T call(Object... parameter) {
 		String methodName = Thread.currentThread().getStackTrace()[2].getMethodName();
-		return this.<T>callMethod(controllerName, methodName, parameter);
+		return this.<T> callMethod(controllerName, methodName, parameter);
 	}
 }
