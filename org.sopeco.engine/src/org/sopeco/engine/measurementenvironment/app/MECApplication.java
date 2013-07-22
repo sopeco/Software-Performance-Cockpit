@@ -209,5 +209,4 @@ public final class MECApplication {
 	public void setSocketIdentifier(String socketIdentifier) {
 		this.socketIdentifier = socketIdentifier;
 	}
-
 }
