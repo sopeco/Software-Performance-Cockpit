@@ -30,6 +30,7 @@
 package org.sopeco.runner;
 
 import java.rmi.RemoteException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -58,8 +59,10 @@ import org.sopeco.util.session.SessionAwareObject;
  */
 public class SoPeCoRunner extends SessionAwareObject implements Runnable {
 
-	protected static final Logger logger = LoggerFactory
-			.getLogger(SoPeCoRunner.class);
+	/** */
+	private static final long serialVersionUID = 1L;
+
+	protected static final Logger LOGGER = LoggerFactory.getLogger(SoPeCoRunner.class);
 
 	protected String[] args = null;
 
@@ -74,6 +77,8 @@ public class SoPeCoRunner extends SessionAwareObject implements Runnable {
 
 	private Map<String, Object> executionProperties = null;
 
+	private Collection<String> experimentSeriesNames = null;
+
 	/**
 	 * Use this constructor to provide a session id.
 	 * 
@@ -83,13 +88,52 @@ public class SoPeCoRunner extends SessionAwareObject implements Runnable {
 	 */
 	public SoPeCoRunner(String sessionId) {
 		this(sessionId, new HashMap<String, Object>());
-
 	}
 
-	public SoPeCoRunner(String sessionId,
-			Map<String, Object> executionProperties) {
+	/**
+	 * Use this constructor to provide a session id and a properties map,
+	 * required for experiment execution.
+	 * 
+	 * @param sessionId
+	 *            session id to be used for retrieving configuration properties
+	 *            for this runner and all it triggered subprocesses.
+	 * 
+	 * @param executionProperties
+	 *            A map containing properties objects specifying experiment
+	 *            execution and used configurations
+	 */
+	public SoPeCoRunner(String sessionId, Map<String, Object> executionProperties) {
 		super(sessionId);
 		this.executionProperties = executionProperties;
+		if (this.executionProperties == null) {
+			throw new IllegalArgumentException("executionProperties must not be null!");
+		}
+	}
+
+	/**
+	 * Use this constructor to provide a session id and a properties map,
+	 * required for experiment execution. Additionally you can specify which
+	 * experiments are executed.
+	 * 
+	 * @param sessionId
+	 *            session id to be used for retrieving configuration properties
+	 *            for this runner and all it triggered subprocesses.
+	 * 
+	 * @param executionProperties
+	 *            A map containing properties objects specifying experiment
+	 *            execution and used configurations
+	 * 
+	 * @param experimentSeriesNames
+	 *            A collection of string containing the names of the experiments
+	 *            which should be executed
+	 */
+	public SoPeCoRunner(String sessionId, Map<String, Object> executionProperties,
+			Collection<String> experimentSeriesNames) {
+		this(sessionId, executionProperties);
+		this.experimentSeriesNames = experimentSeriesNames;
+		if (this.experimentSeriesNames == null || experimentSeriesNames.isEmpty()) {
+			throw new IllegalArgumentException("experimentSeriesNames must not be null or empty!");
+		}
 	}
 
 	/**
@@ -100,8 +144,7 @@ public class SoPeCoRunner extends SessionAwareObject implements Runnable {
 	@Override
 	public synchronized void run() {
 		lastExecutedScenarioInstance = null;
-		IConfiguration config = Configuration
-				.getSessionSingleton(getSessionId());
+		IConfiguration config = Configuration.getSessionSingleton(getSessionId());
 		config.overwrite(executionProperties);
 		// if the user has set any command-line arguments
 		if (args != null) {
@@ -116,10 +159,14 @@ public class SoPeCoRunner extends SessionAwareObject implements Runnable {
 
 		lastEngine = EngineFactory.getInstance().createEngine(getSessionId());
 
-		lastExecutedScenarioInstance = lastEngine.run(scenario);
+		if (experimentSeriesNames == null || experimentSeriesNames.isEmpty()) {
+			lastExecutedScenarioInstance = lastEngine.run(scenario);
+		} else {
+			lastExecutedScenarioInstance = lastEngine.run(scenario, experimentSeriesNames);
+		}
 
 		executionProperties = null;
-		logger.info("SoPeCo run finished.");
+		LOGGER.info("SoPeCo run finished.");
 
 	}
 
@@ -133,36 +180,32 @@ public class SoPeCoRunner extends SessionAwareObject implements Runnable {
 			// if the scenario definition is not set as an object,
 			// then a filename should have been given
 			if (fileName == null) {
-				throw new RuntimeException(new ConfigurationException(
-						"Scenario definition is not provided."));
+				throw new RuntimeException(new ConfigurationException("Scenario definition is not provided."));
 			}
 
 			if (!Tools.isAbsolutePath(fileName)) {
-				fileName = Tools.concatFileName(config.getAppRootDirectory(),
-						fileName);
+				fileName = Tools.concatFileName(config.getAppRootDirectory(), fileName);
 			}
 			MeasurementEnvironmentDefinition meDefinition;
 			try {
-				meDefinition = EngineFactory.getInstance()
-						.retrieveMEController(getSessionId()).getMEDefinition();
+				meDefinition = EngineFactory.getInstance().retrieveMEController(getSessionId()).getMEDefinition();
 			} catch (RemoteException e) {
 				throw new RuntimeException(e);
 			}
-			ScenarioDefinitionReader scenarioReader = new ScenarioDefinitionReader(
-					meDefinition, getSessionId());
+			ScenarioDefinitionReader scenarioReader = new ScenarioDefinitionReader(meDefinition, getSessionId());
 			scenario = scenarioReader.readFromFile(fileName);
-			logger.debug("Scenario definition file loaded.");
+			LOGGER.debug("Scenario definition file loaded.");
 
 		} else {
-			if (scenarioObj instanceof ScenarioDefinition)
+			if (scenarioObj instanceof ScenarioDefinition) {
 				scenario = (ScenarioDefinition) scenarioObj;
-			else {
-				final String msg = "Scenario definition object is not of class "
-						+ ScenarioDefinition.class.getName() + ".";
+			} else {
+				final String msg = "Scenario definition object is not of class " + ScenarioDefinition.class.getName()
+						+ ".";
 				throw new RuntimeException(new ConfigurationException(msg));
 			}
 
-			logger.debug("Scenario definition is passed as an object.");
+			LOGGER.debug("Scenario definition is passed as an object.");
 		}
 		return scenario;
 	}
@@ -172,27 +215,25 @@ public class SoPeCoRunner extends SessionAwareObject implements Runnable {
 	 * this method is called before any "run", it does nothing.
 	 */
 	public void deleteLastExperimentSeriesRuns() {
-		logger.debug("Deleting last experiment series runs...");
+		LOGGER.debug("Deleting last experiment series runs...");
 
 		if (lastExecutedScenarioInstance != null) {
-			for (ExperimentSeries es : lastExecutedScenarioInstance
-					.getExperimentSeriesList()) {
+			for (ExperimentSeries es : lastExecutedScenarioInstance.getExperimentSeriesList()) {
 				ExperimentSeriesRun esr = es.getLatestExperimentSeriesRun();
 
 				if (esr != null) {
 					try {
 						lastEngine.getPersistenceProvider().remove(esr);
 					} catch (DataNotFoundException e) {
-						logger.warn(
-								"Cannot remove experiment series run '{}'. Experiment series run not found.",
+						LOGGER.warn("Cannot remove experiment series run '{}'. Experiment series run not found.",
 								esr.getLabel());
 					}
 				}
 			}
 
-			logger.debug("Deleting last experiment series runs... done.");
+			LOGGER.debug("Deleting last experiment series runs... done.");
 		} else {
-			logger.warn("Deleting last experiment series runs... Nothing to do.");
+			LOGGER.warn("Deleting last experiment series runs... Nothing to do.");
 		}
 	}
 
@@ -200,6 +241,7 @@ public class SoPeCoRunner extends SessionAwareObject implements Runnable {
 	 * Sets the command-line arguments before running SoPeCo.
 	 * 
 	 * @param args
+	 *            arguments for SoPeCo execution
 	 */
 	public void setArguments(String[] args) {
 		this.args = args;

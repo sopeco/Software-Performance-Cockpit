@@ -26,11 +26,7 @@
  */
 package org.sopeco.engine.measurementenvironment.connector;
 
-import java.net.ConnectException;
 import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,10 +34,6 @@ import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentControlle
 import org.sopeco.engine.status.ErrorInfo;
 import org.sopeco.engine.status.EventType;
 import org.sopeco.engine.status.StatusBroker;
-import org.sopeco.persistence.dataset.ParameterValue;
-import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition;
-import org.sopeco.persistence.util.ParameterCollection;
-import org.sopeco.persistence.util.ParameterCollectionFactory;
 
 /**
  * 
@@ -63,7 +55,7 @@ public final class MEConnectorFactory {
 			} catch (RuntimeException e) {
 				ErrorInfo info = new ErrorInfo();
 				info.setThrowable(e);
-				StatusBroker.getManager(uri.toString()).newStatus(EventType.ERROR, e);
+				StatusBroker.getManager(uri.toString()).newStatus(EventType.EXCEPTION, e);
 				throw e;
 			}
 		} else if (uri.getScheme().toLowerCase().equals("http")) {
@@ -74,7 +66,18 @@ public final class MEConnectorFactory {
 			} catch (RuntimeException e) {
 				ErrorInfo info = new ErrorInfo();
 				info.setThrowable(e);
-				StatusBroker.getManager(uri.toString()).newStatus(EventType.ERROR, e);
+				StatusBroker.getManager(uri.toString()).newStatus(EventType.EXCEPTION, e);
+				throw e;
+			}
+		}  else if (uri.getScheme().toLowerCase().equals("socket")) {
+			StatusBroker.getManager(uri.toString()).newStatus(EventType.CONNECT_TO_MEC);
+			LOGGER.debug("Getting Socket MEConnector.");
+			try {
+				return new SocketMEConnector().connectToMEController(uri);
+			} catch (RuntimeException e) {
+				ErrorInfo info = new ErrorInfo();
+				info.setThrowable(e);
+				StatusBroker.getManager(uri.toString()).newStatus(EventType.EXCEPTION, e);
 				throw e;
 			}
 		} else {
@@ -83,7 +86,7 @@ public final class MEConnectorFactory {
 			ErrorInfo info = new ErrorInfo();
 			info.setThrowable(exception);
 
-			StatusBroker.getManager(uri.toString()).newStatus(EventType.ERROR, exception);
+			StatusBroker.getManager(uri.toString()).newStatus(EventType.EXCEPTION, exception);
 			throw exception;
 		}
 

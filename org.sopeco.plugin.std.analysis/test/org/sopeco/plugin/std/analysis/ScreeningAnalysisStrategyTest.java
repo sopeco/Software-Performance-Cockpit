@@ -36,11 +36,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.sopeco.analysis.wrapper.exception.AnalysisWrapperException;
 import org.sopeco.engine.analysis.ICorrelationStrategy;
 import org.sopeco.engine.analysis.IScreeningAnalysisResult;
 import org.sopeco.engine.analysis.IScreeningAnalysisStrategy;
@@ -56,38 +60,51 @@ import org.sopeco.persistence.entities.definition.ParameterRole;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 
 /**
- * Test class for implementations of the {@link ICorrelationStrategy}
- * interface that implement a correlation analysis.
+ * Test class for implementations of the {@link ICorrelationStrategy} interface
+ * that implement a correlation analysis.
  * 
  * @author Dennis Westermann
  * 
  */
 @RunWith(Parameterized.class)
 public class ScreeningAnalysisStrategyTest {
+	private static Logger LOGGER = LoggerFactory.getLogger(ScreeningAnalysisStrategyTest.class);
 
 	private IScreeningAnalysisStrategy strategy;
 	private AnalysisConfiguration analysisConfiguration;
 	private DataSetAggregated dataset;
-	
+
 	private ParameterDefinition dummyInput1;
 	private ParameterDefinition dummyInput2;
 	private ParameterDefinition dummyOutput;
 
-	
+	private static boolean skipTests = false;
+
 	@Parameters
 	public static Collection<Object[]> data() {
-		Object[][] data = new Object[][] {
-				{ (IScreeningAnalysisStrategy) new ScreeningAnalysisStrategyExtension().createExtensionArtifact()}
-				};
-		return Arrays.asList(data);
+		try {
+			Object[][] data = new Object[][] { { (IScreeningAnalysisStrategy) new ScreeningAnalysisStrategyExtension()
+					.createExtensionArtifact() } };
+			return Arrays.asList(data);
+		} catch (RuntimeException e) {
+			if (e.getCause() instanceof AnalysisWrapperException) {
+				skipTests = true;
+				LOGGER.error("Can't connect to analysis server. Analysis related Unit tests will be skipped.");
+
+				return new ArrayList<Object[]>();
+			} else {
+				throw new RuntimeException(e);
+			}
+		}
 	}
 
 	public ScreeningAnalysisStrategyTest(IScreeningAnalysisStrategy strategy) throws IOException {
 		this.strategy = strategy;
 
 		this.dataset = createScreeningDesignDummyDataSet();
-		
-		this.analysisConfiguration = EntityFactory.createAnalysisConfiguration(ScreeningAnalysisStrategyExtension.NAME, new HashMap<String, String>());
+
+		this.analysisConfiguration = EntityFactory.createAnalysisConfiguration(ScreeningAnalysisStrategyExtension.NAME,
+				new HashMap<String, String>());
 		this.analysisConfiguration.getDependentParameters().add(dummyOutput);
 		this.analysisConfiguration.getIndependentParameters().add(dummyInput1);
 		this.analysisConfiguration.getIndependentParameters().add(dummyInput2);
@@ -95,35 +112,49 @@ public class ScreeningAnalysisStrategyTest {
 
 	@Before
 	public void setUp() throws Exception {
-		
+		if (skipTests) {
+			return;
+		}
+	}
+
+	@After
+	public void cleanUp() {
+		if (skipTests) {
+			return;
+		}
+		this.strategy.releaseAnalysisResources();
 	}
 
 	@Test
 	public void testAnalysis() {
+		if (skipTests) {
+			return;
+		}
+		assertTrue(strategy.supports(analysisConfiguration));
 
-			assertTrue(strategy.supports(analysisConfiguration));
+		strategy.analyse(dataset, analysisConfiguration);
 
-			strategy.analyse(dataset, analysisConfiguration);
+		IScreeningAnalysisResult result = strategy.getScreeningAnalysisResult();
 
-			IScreeningAnalysisResult result = strategy.getScreeningAnalysisResult();
+		assertNotNull(result);
+		assertEquals(analysisConfiguration.getName(), result.getAnalysisStrategyConfiguration().getName());
 
-			assertNotNull(result);
-			assertEquals(analysisConfiguration.getName(), result.getAnalysisStrategyConfiguration().getName());
-			
-			assertEquals(2, result.getAllMainEffects().size());
-			assertNotNull(result.getMainEffectByParam(dummyInput1));
-			assertTrue(result.getMainEffectByParam(dummyInput1).getEffectValue() < result.getMainEffectByParam(dummyInput2).getEffectValue());
+		assertEquals(2, result.getAllMainEffects().size());
+		assertNotNull(result.getMainEffectByParam(dummyInput1));
+		assertTrue(result.getMainEffectByParam(dummyInput1).getEffectValue() < result.getMainEffectByParam(dummyInput2)
+				.getEffectValue());
 
-			System.out.println("MainEffect of " + dummyInput1.getName() + ": " + result.getMainEffectByParam(dummyInput1).getEffectValue());
-			System.out.println("MainEffect of " + dummyInput2.getName() + ": " + result.getMainEffectByParam(dummyInput2).getEffectValue());
+		System.out.println("MainEffect of " + dummyInput1.getName() + ": "
+				+ result.getMainEffectByParam(dummyInput1).getEffectValue());
+		System.out.println("MainEffect of " + dummyInput2.getName() + ": "
+				+ result.getMainEffectByParam(dummyInput2).getEffectValue());
 	}
-	
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private DataSetAggregated createScreeningDesignDummyDataSet() throws IOException {
-		
+
 		// Full Factorial Design DataSet
-		
+
 		ScenarioDefinition sd = EntityFactory.createScenarioDefinition("DummyScenario");
 		MeasurementEnvironmentDefinition med = EntityFactory.createMeasurementEnvironmentDefinition();
 		sd.setMeasurementEnvironmentDefinition(med);
@@ -138,7 +169,6 @@ public class ScreeningAnalysisStrategyTest {
 		dummyOutput.setNamespace(pns);
 		pns.getParameters().add(dummyOutput);
 		med.setRoot(pns);
-	
 
 		DataSetColumnBuilder builder = new DataSetColumnBuilder();
 		builder.startInputColumn(dummyInput1);
@@ -149,7 +179,7 @@ public class ScreeningAnalysisStrategyTest {
 		builder.addInputValue(2);
 		builder.addInputValue(1);
 		builder.finishColumn();
-		
+
 		builder.startInputColumn(dummyInput2);
 		builder.addInputValue(1);
 		builder.addInputValue(2);
@@ -158,7 +188,6 @@ public class ScreeningAnalysisStrategyTest {
 		builder.addInputValue(1);
 		builder.addInputValue(2);
 		builder.finishColumn();
-
 
 		ArrayList<ParameterValueList> obsValueLists = new ArrayList<ParameterValueList>();
 		builder.startObservationColumn(dummyOutput);
@@ -186,15 +215,10 @@ public class ScreeningAnalysisStrategyTest {
 		obsValues6.add(50);
 		obsValueLists.add(new ParameterValueList(dummyOutput, obsValues6));
 
-		
 		builder.addObservationValueLists(obsValueLists);
 		builder.finishColumn();
 
 		return builder.createDataSet();
 	}
-	
-	
-	
-	
 
 }

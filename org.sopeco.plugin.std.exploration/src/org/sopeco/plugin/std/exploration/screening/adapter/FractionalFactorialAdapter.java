@@ -26,11 +26,11 @@
  */
 package org.sopeco.plugin.std.exploration.screening.adapter;
 
+import org.sopeco.analysis.wrapper.exception.AnalysisWrapperException;
 import org.sopeco.persistence.entities.definition.ExplorationStrategy;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.plugin.std.exploration.screening.config.ScreeningConfiguration;
 import org.sopeco.plugin.std.exploration.screening.container.ParameterRunLevels;
-import org.sopeco.plugin.std.exploration.screening.util.RAdapter;
 
 
 /**
@@ -99,21 +99,19 @@ public class FractionalFactorialAdapter extends AbstractScreeningAdapter {
 	}
 
 	@Override
-	protected void loadRLibraries() {
-		RAdapter.getWrapper().executeCommandString("library(FrF2);");	
-		RAdapter.shutDown();
+	protected void loadRLibraries() throws AnalysisWrapperException {
+		analysisWrapper.executeCommandString("library(FrF2);");	
 	}
 
 	@Override
-	protected void getAllRunLevelsFromR() {
+	protected void getAllRunLevelsFromR() throws AnalysisWrapperException {
 		int i = 0;
 		for (ParameterDefinition param : expDesign.getParameters()) {
 					
 			StringBuilder cmdBuilder = new StringBuilder();
 			cmdBuilder.append("desnum(curDesign)[," + (i + 1) + "]");
 
-			double[] factorLevelsOfParam = RAdapter.getWrapper().executeCommandDoubleArray(cmdBuilder.toString());
-			RAdapter.shutDown();
+			double[] factorLevelsOfParam = analysisWrapper.executeCommandDoubleArray(cmdBuilder.toString());
 			ParameterRunLevels runLevels = new ParameterRunLevels(param);
 			for (double value : factorLevelsOfParam) {
 				runLevels.addRunLevel(((Double) value).intValue());
@@ -170,11 +168,10 @@ public class FractionalFactorialAdapter extends AbstractScreeningAdapter {
 	}
 		
 	@Override
-	protected int getDesignResolutionFromR() {
+	protected int getDesignResolutionFromR() throws AnalysisWrapperException {
 		StringBuilder cmdBuilder = new StringBuilder();
 		cmdBuilder.append("print(as.character(design.info(curDesign)$catlg.entry))");
-		String result = RAdapter.getWrapper().executeCommandString(cmdBuilder.toString());
-		RAdapter.shutDown();
+		String result = analysisWrapper.executeCommandString(cmdBuilder.toString());
 		if (result.contains("STRING \"list(res = ")) {
 			result = result.substring(result.indexOf("STRING \"list(res = ") + 19);
 			result = result.substring(0, result.indexOf(","));

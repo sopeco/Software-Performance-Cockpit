@@ -63,6 +63,14 @@ public interface IConfiguration extends ISessionAwareObject {
 
 	String CONF_MEC_ACQUISITION_TIMEOUT = "sopeco.config.MECAcquisitionTimeout";
 
+
+	String CONF_MEC_SOCKET_RECONNECT_DELAY = "sopeco.config.mec.reconnectDelay";
+
+	String CONF_HTTP_PROXY_HOST = "sopeco.config.httpProxyHost";
+	
+	String CONF_HTTP_PROXY_PORT = "sopeco.config.httpProxyPort";
+
+	
 	String CONF_DEFINITION_CHANGE_HANDLING_MODE = "sopeco.config.definitionChangeHandlingMode";
 	String DCHM_ARCHIVE = "archive";
 	String DCHM_DISCARD = "discard";
@@ -85,6 +93,8 @@ public interface IConfiguration extends ISessionAwareObject {
 	String DEFAULT_CONFIG_FILE_NAME = "sopeco-defaults.conf";
 
 	String DIR_SEPARATOR = ":";
+	
+	String EXPERIMENT_RUN_ABORT = "org.sopeco.experiment.run.abort";
 
 	Map<String, Object> getProperties();
 	/**
@@ -154,6 +164,24 @@ public interface IConfiguration extends ISessionAwareObject {
 	long getPropertyAsLong(String key, long defaultValue);
 
 	/**
+	 * Returns the configured value of the given property as a Double value.
+	 * 
+	 * This method uses the {@link Double.#parseLong(String)} to interpret the
+	 * values. If the value of the given property is <code>null</code> it
+	 * returns the passed default value.
+	 * 
+	 * @param key
+	 *            property key
+	 * @param defaultValue
+	 *            the default value returned in case of a null property value
+	 * 
+	 * @return the value of the given property as a double
+	 * 
+	 * @see #getProperty(String)
+	 */
+	double getPropertyAsDouble(String key, double defaultValue);
+
+	/**
 	 * Returns the configured value of the given property as an Integer value.
 	 * 
 	 * This method uses the {@link Integer.#parseInt(String)} to interpret the
@@ -180,6 +208,14 @@ public interface IConfiguration extends ISessionAwareObject {
 	 *            property value
 	 */
 	void setProperty(String key, Object value);
+
+	/**
+	 * Clears the value of the given property in all layers of configuration,
+	 * including the system property environment.
+	 * 
+	 * @param key the property
+	 */
+	void clearProperty(String key);
 
 	/**
 	 * Returns the default value (ignoring the current runtime configuration)
@@ -483,4 +519,20 @@ public interface IConfiguration extends ISessionAwareObject {
 	 *            with the new values
 	 */
 	 void overwrite(Map<String, Object> properties);
+
+	 /**
+	  * Adds a new command-line extension to the configuration component. 
+	  * 
+	  * The same extension will not be added twice. 
+	  * 
+	  * @param extension a command-line extension
+	  */
+	 void addCommandLineExtension(ICommandLineArgumentsExtension extension);
+	 
+	 /**
+	  * Removes a new command-line extension from the configuration component. 
+	  * 
+	  * @param extension a command-line extension
+	  */
+	 void removeCommandLineExtension(ICommandLineArgumentsExtension extension);
 }

@@ -45,7 +45,7 @@ import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefiniti
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.util.Tools;
-
+/* CHECKSTYLE:OFF*/
 public class ModelRaedingTest {
 
 	private static final String SCENARIO_NAME = "unitTestScenario";
@@ -124,3 +124,4 @@ public class ModelRaedingTest {
 
 	}
 }
+/* CHECKSTYLE:ON*/

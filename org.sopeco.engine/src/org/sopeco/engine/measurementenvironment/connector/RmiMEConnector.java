@@ -28,8 +28,6 @@ package org.sopeco.engine.measurementenvironment.connector;
 
 import java.net.URI;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
 import org.sopeco.engine.measurementenvironment.rmi.RmiInterlayer;
 
@@ -47,9 +45,6 @@ public class RmiMEConnector implements IMEConnector {
 	RmiMEConnector() {
 	}
 
-	/** default logger */
-	private static Logger logger = LoggerFactory.getLogger(RmiMEConnector.class);
-
 	/**
 	 * Connects to a remote measurement environment controller (via RMI)
 	 * identified by the given URI and returns a local instance.
@@ -61,33 +56,6 @@ public class RmiMEConnector implements IMEConnector {
 	@Override
 	public IMeasurementEnvironmentController connectToMEController(URI meURI) {
 		return new RmiInterlayer(meURI);
-		// try {
-		// LocateRegistry.getRegistry(meURI.getHost(), meURI.getPort());
-		//
-		// logger.debug("Looking up {}", meURI);
-		//
-		// IMeasurementEnvironmentController meController =
-		// (IMeasurementEnvironmentController) Naming.lookup(meURI
-		// .toString());
-		//
-		// logger.info("Received SatelliteController instance from {}", meURI);
-		//
-		// return meController;
-		//
-		// } catch (RemoteException e) {
-		// logger.error("Cannot access remote controller. Error Message: '{}'",
-		// e.getMessage());
-		// throw new IllegalStateException("Cannot access remote controller.",
-		// e);
-		// } catch (MalformedURLException e) {
-		// logger.error("Malformed URI. Error Message: '{}'", e.getMessage());
-		// throw new IllegalStateException("Malformed URI.", e);
-		// } catch (NotBoundException e) {
-		// logger.error("Name not found in registry. Error Message: '{}'",
-		// e.getMessage());
-		// throw new IllegalStateException("Name not found in registry.", e);
-		// }
-
 	}
 
 }

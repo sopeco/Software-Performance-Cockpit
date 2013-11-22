@@ -10,30 +10,25 @@
 	<parent>
 		<artifactId>org.sopeco.core.parent</artifactId>
 		<groupId>org.sopeco.core</groupId>
-		<version>5.0.1-SNAPSHOT</version>
+		<version>5.0.2-SNAPSHOT</version>
 		<relativePath>../org.sopeco.core.parent</relativePath>
 	</parent>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-math3</artifactId>
-			<version>3.0</version>
-		</dependency>
-		<dependency>
 			<groupId>org.sopeco.core</groupId>
 			<artifactId>org.sopeco.util</artifactId>
-			<version>5.0.1-SNAPSHOT</version>
+			<version>5.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.sopeco.core</groupId>
 			<artifactId>org.sopeco.config</artifactId>
-			<version>5.0.1-SNAPSHOT</version>
+			<version>5.0.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>org.sopeco.core</groupId>
 			<artifactId>org.sopeco.persistence</artifactId>
-			<version>5.0.1-SNAPSHOT</version>
+			<version>5.0.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>

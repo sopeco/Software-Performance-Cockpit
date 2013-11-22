@@ -10,25 +10,9 @@
 	<parent>
 		<artifactId>org.sopeco.core.parent</artifactId>
 		<groupId>org.sopeco.core</groupId>
-		<version>5.0.1-SNAPSHOT</version>
+		<version>5.0.2-SNAPSHOT</version>
 		<relativePath>../org.sopeco.core.parent</relativePath>
 	</parent>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.hyperic</groupId>
-			<artifactId>com.hyperic.sigar</artifactId>
-			<version>1.6.3</version>
-		</dependency>
-
-		<!-- dependency>
-			<groupId>org.sopeco.thirdparty</groupId>
-			<artifactId>com.hyperic.sigar</artifactId>
-			<version>1.6.3</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/sigar.jar</systemPath>
-		</dependency -->
-
-	</dependencies>
 
 </project>

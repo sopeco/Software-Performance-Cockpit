@@ -31,19 +31,21 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import org.junit.AfterClass;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.sopeco.analysis.wrapper.exception.AnalysisWrapperException;
 import org.sopeco.engine.analysis.IPredictionFunctionResult;
 import org.sopeco.engine.analysis.IPredictionFunctionStrategy;
 import org.sopeco.persistence.EntityFactory;
@@ -56,7 +58,6 @@ import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.persistence.entities.definition.ScenarioDefinition;
 import org.sopeco.plugin.std.analysis.util.DummyScenarioDefinitionFactory;
-import org.sopeco.plugin.std.analysis.util.RAdapter;
 
 /**
  * Test class for implementations of the {@link IPredictionFunctionStrategy}
@@ -67,41 +68,48 @@ import org.sopeco.plugin.std.analysis.util.RAdapter;
  */
 @RunWith(Parameterized.class)
 public class PredictionFunctionAnalysisStrategyTest {
-
+	private static Logger LOGGER = LoggerFactory.getLogger(PredictionFunctionAnalysisStrategyTest.class);
 	private IPredictionFunctionStrategy strategy;
 	private AnalysisConfiguration analysisConfiguration;
 	private static ScenarioDefinition scenarioDefinition;
 	private DataSetAggregated dataset;
-	
-	private static boolean skipUnitTest = false;
-	
+	private volatile int numOfTests = 0;
+	private final int NUMBER_OF_TEST_METHODS = 2;
+	private static boolean skipTests = false;
+
 	@Parameters
 	public static Collection<Object[]> data() {
 		try {
-			skipUnitTest = false;
-			
+
 			Object[][] data = new Object[][] {
-					{ (IPredictionFunctionStrategy) new LinearRegressionStrategyExtension().createExtensionArtifact(), "Linear Regression", "Small" },
-					{ (IPredictionFunctionStrategy) new LinearRegressionStrategyExtension().createExtensionArtifact(), "Linear Regression", "Large" },
-					{ (IPredictionFunctionStrategy) new LinearRegressionStrategyExtension().createExtensionArtifact(), "Linear Regression", "NoVariation" },
-					{ (IPredictionFunctionStrategy) new MarsStrategyExtension().createExtensionArtifact(), "MARS", "Small" },
-					{ (IPredictionFunctionStrategy) new MarsStrategyExtension().createExtensionArtifact(), "MARS", "Large" },
-					{ (IPredictionFunctionStrategy) new MarsStrategyExtension().createExtensionArtifact(), "MARS", "NoVariation" },
-			};
-		
+					{ (IPredictionFunctionStrategy) new LinearRegressionStrategyExtension().createExtensionArtifact(),
+							"Linear Regression", "Small" },
+					{ (IPredictionFunctionStrategy) new LinearRegressionStrategyExtension().createExtensionArtifact(),
+							"Linear Regression", "Large" },
+					{ (IPredictionFunctionStrategy) new LinearRegressionStrategyExtension().createExtensionArtifact(),
+							"Linear Regression", "NoVariation" },
+					{ (IPredictionFunctionStrategy) new MarsStrategyExtension().createExtensionArtifact(), "MARS",
+							"Small" },
+					{ (IPredictionFunctionStrategy) new MarsStrategyExtension().createExtensionArtifact(), "MARS",
+							"Large" },
+					{ (IPredictionFunctionStrategy) new MarsStrategyExtension().createExtensionArtifact(), "MARS",
+							"NoVariation" }, };
+
 			return Arrays.asList(data);
-		} catch (RuntimeException x) {
-			if (x.getMessage().equals("failed calling R service")) {
-				skipUnitTest = true;
-				System.err.println("failed calling R service. skip tests.");
-				return Arrays.asList(new Object[0][0]);
+		} catch (RuntimeException e) {
+			if (e.getCause() instanceof AnalysisWrapperException) {
+				skipTests = true;
+				LOGGER.error("Can't connect to analysis server. Analysis related Unit tests will be skipped.");
+
+				return new ArrayList<Object[]>();
 			} else {
-				throw x;
+				throw new RuntimeException(e);
 			}
 		}
 	}
 
-	public PredictionFunctionAnalysisStrategyTest(IPredictionFunctionStrategy strategy, String name, String dataSet) throws IOException {
+	public PredictionFunctionAnalysisStrategyTest(IPredictionFunctionStrategy strategy, String name, String dataSet)
+			throws IOException {
 		this.strategy = strategy;
 		this.analysisConfiguration = EntityFactory.createAnalysisConfiguration(name, new HashMap<String, String>());
 		if (dataSet.equalsIgnoreCase("Small")) {
@@ -116,58 +124,70 @@ public class PredictionFunctionAnalysisStrategyTest {
 
 	@Before
 	public void setUp() throws Exception {
+		if (skipTests) {
+			return;
+		}
 		scenarioDefinition = loadScenarioDefinition();
 	}
 
+	@After
+	public void cleanUp() {
+		if (skipTests) {
+			return;
+		}
+		if (numOfTests == NUMBER_OF_TEST_METHODS) {
+			this.strategy.releaseAnalysisResources();
+		}
+
+	}
 
 	@Test
 	public void testAnalysis() {
-			if (skipUnitTest) {
-				return;
-			}
-		
-			assertTrue(strategy.supports(analysisConfiguration));
 
-			strategy.analyse(dataset, analysisConfiguration);
-
-			IPredictionFunctionResult result = strategy.getPredictionFunctionResult();
-
-			assertNotNull(result);
-			assertEquals(analysisConfiguration.getName(), result.getAnalysisStrategyConfiguration().getName());
-
-			assertNotNull(result.getFunctionAsString());
-			
-			assertTrue(!result.getFunctionAsString().contains("NA"));
-			
-			ParameterValue<?> inputParam = ParameterValueFactory.createParameterValue(
-					scenarioDefinition.getParameterDefinition("default.DummyInput"), 1);
-			ParameterValue<?> predParam1 = result.predictOutputParameter(inputParam);
-			assertNotNull(predParam1);
-			List<ParameterValue<?>> inputParamList = new ArrayList<ParameterValue<?>>();
-			inputParamList.add(inputParam);
-			ParameterValue<?> predParam2 = result.predictOutputParameter(inputParamList);
-			assertEquals(predParam1.getValue(), predParam2.getValue());
-
-			
-
-			System.out.println(result.getFunctionAsString());
-
-	}
-	
-	@Test
-	public void testAnalysisWithConfiguredDependentAndIndependentParameter() {
-		if (skipUnitTest) {
+		if (skipTests) {
 			return;
 		}
-		
-		this.analysisConfiguration.getDependentParameters().add(scenarioDefinition.getParameterDefinition("default.DummyOutput"));
-		this.analysisConfiguration.getIndependentParameters().add(scenarioDefinition.getParameterDefinition("default.DummyInput"));
-		
-		this.testAnalysis();
 
+		assertTrue(strategy.supports(analysisConfiguration));
+
+		strategy.analyse(dataset, analysisConfiguration);
+
+		IPredictionFunctionResult result = strategy.getPredictionFunctionResult();
+
+		assertNotNull(result);
+		assertEquals(analysisConfiguration.getName(), result.getAnalysisStrategyConfiguration().getName());
+
+		assertNotNull(result.getFunctionAsString());
+
+		assertTrue(!result.getFunctionAsString().contains("NA"));
+
+		ParameterValue<?> inputParam = ParameterValueFactory.createParameterValue(
+				scenarioDefinition.getParameterDefinition("default.DummyInput"), 1);
+		ParameterValue<?> predParam1 = result.predictOutputParameter(inputParam);
+		assertNotNull(predParam1);
+		List<ParameterValue<?>> inputParamList = new ArrayList<ParameterValue<?>>();
+		inputParamList.add(inputParam);
+		ParameterValue<?> predParam2 = result.predictOutputParameter(inputParamList);
+		assertEquals(predParam1.getValue(), predParam2.getValue());
+
+		System.out.println(result.getFunctionAsString());
+		numOfTests++;
 	}
-	
-	
+
+	@Test
+	public void testAnalysisWithConfiguredDependentAndIndependentParameter() {
+		if (skipTests) {
+			return;
+		}
+
+		this.analysisConfiguration.getDependentParameters().add(
+				scenarioDefinition.getParameterDefinition("default.DummyOutput"));
+		this.analysisConfiguration.getIndependentParameters().add(
+				scenarioDefinition.getParameterDefinition("default.DummyInput"));
+
+		this.testAnalysis();
+		numOfTests++;
+	}
 
 	private static ScenarioDefinition loadScenarioDefinition() throws IOException {
 
@@ -207,7 +227,7 @@ public class PredictionFunctionAnalysisStrategyTest {
 
 		return builder.createDataSet();
 	}
-	
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private static DataSetAggregated createSmallDummyDataSet() throws IOException {
 		if (scenarioDefinition == null)
@@ -235,10 +255,9 @@ public class PredictionFunctionAnalysisStrategyTest {
 
 		return builder.createDataSet();
 	}
-	
-	
+
 	private static DataSetAggregated createNoVariationDummyDataSet() throws IOException {
-	
+
 		if (scenarioDefinition == null)
 			scenarioDefinition = loadScenarioDefinition();
 
@@ -260,6 +279,5 @@ public class PredictionFunctionAnalysisStrategyTest {
 
 		return builder.createDataSet();
 	}
-	
 
 }

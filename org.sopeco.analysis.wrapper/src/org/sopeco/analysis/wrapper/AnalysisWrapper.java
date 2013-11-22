@@ -32,12 +32,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.URI;
 import java.net.URL;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sopeco.analysis.wrapper.exception.AnalysisWrapperException;
 import org.sopeco.config.Configuration;
+import org.sopeco.config.IConfiguration;
 
 import com.google.gson.Gson;
 
@@ -60,35 +64,20 @@ public class AnalysisWrapper {
 
 	private static final Logger logger = LoggerFactory.getLogger(AnalysisWrapper.class);
 
-	private static AnalysisWrapper instance;
-
-	/**
-	 * 
-	 * @return Returns the default instance of the analysis wrapper.
-	 */
-	public static AnalysisWrapper getDefaultWrapper() {
-		if (instance == null || !instance.isActive) {
-			instance = new AnalysisWrapper();
-		}
-		return instance;
-	}
-
 	private Gson gson;
 	private String baseUrl;
-	private boolean isActive = false;
+	private final String wrapperId;
 
 	/**
 	 * Constructor for creating an AnalysisWrapper.
+	 * 
+	 * @throws AnalysisWrapperException
 	 */
-	public AnalysisWrapper() {
+	public AnalysisWrapper() throws AnalysisWrapperException {
 		gson = new Gson();
 		baseUrl = getbaseUrl();
 		String result = executePOSTRequest(null, baseUrl + INIT);
-		boolean createdSuccessful = gson.fromJson(result, boolean.class);
-		if (!createdSuccessful) {
-			throw new RuntimeException("Failed to acquire analysisWrapper within given time frame!");
-		}
-		isActive = true;
+		wrapperId = gson.fromJson(result, String.class);
 
 	}
 
@@ -99,10 +88,14 @@ public class AnalysisWrapper {
 	 * @param command
 	 *            command string to be executed by the rEngine
 	 * @return Returns the result of the given command as string
+	 * @throws AnalysisWrapperException
 	 */
-	public String executeCommandString(String command) {
+	public String executeCommandString(String command) throws AnalysisWrapperException {
 		logger.debug(command);
-		String jsonString = gson.toJson(command);
+		String[] stringVector = new String[2];
+		stringVector[0] = gson.toJson(wrapperId);
+		stringVector[1] = gson.toJson(command);
+		String jsonString = gson.toJson(stringVector);
 
 		String result = executePOSTRequest(jsonString, baseUrl + EXECUTE_COMMAND_STRING);
 
@@ -116,15 +109,19 @@ public class AnalysisWrapper {
 	 * @param command
 	 *            command string to be executed by the rEngine
 	 * @return Returns the result of the given command as double
+	 * @throws AnalysisWrapperException
 	 */
-	public double executeCommandDouble(String command) {
+	public double executeCommandDouble(String command) throws AnalysisWrapperException {
 		logger.debug(command);
 
-		String jsonString = gson.toJson(command);
+		String[] stringVector = new String[2];
+		stringVector[0] = gson.toJson(wrapperId);
+		stringVector[1] = gson.toJson(command);
+		String jsonString = gson.toJson(stringVector);
 
 		String result = executePOSTRequest(jsonString, baseUrl + EXECUTE_COMMAND_DOUBLE);
-
-		return gson.fromJson(result, double.class);
+		String stringResult = gson.fromJson(result, String.class);
+		return Double.parseDouble(stringResult);
 	}
 
 	/**
@@ -134,12 +131,16 @@ public class AnalysisWrapper {
 	 * @param command
 	 *            command string to be executed by the rEngine
 	 * @return Returns the result of the given command as string array
+	 * @throws AnalysisWrapperException
 	 */
-	public String[] executeCommandStringArray(String command) {
+	public String[] executeCommandStringArray(String command) throws AnalysisWrapperException {
 
 		logger.debug(command);
-		
-		String jsonString = gson.toJson(command);
+
+		String[] stringVector = new String[2];
+		stringVector[0] = gson.toJson(wrapperId);
+		stringVector[1] = gson.toJson(command);
+		String jsonString = gson.toJson(stringVector);
 
 		String result = executePOSTRequest(jsonString, baseUrl + EXECUTE_COMMAND_STRING_ARRAY);
 
@@ -153,12 +154,15 @@ public class AnalysisWrapper {
 	 * @param command
 	 *            command string to be executed by the rEngine
 	 * @return Returns the result of the given command as double array
+	 * @throws AnalysisWrapperException
 	 */
-	public double[] executeCommandDoubleArray(String command) {
+	public double[] executeCommandDoubleArray(String command) throws AnalysisWrapperException {
 		logger.debug(command);
-		
-		String jsonString = gson.toJson(command);
 
+		String[] stringVector = new String[2];
+		stringVector[0] = gson.toJson(wrapperId);
+		stringVector[1] = gson.toJson(command);
+		String jsonString = gson.toJson(stringVector);
 		String result = executePOSTRequest(jsonString, baseUrl + EXECUTE_COMMAND_DOUBLE_ARRAY);
 
 		return gson.fromJson(result, double[].class);
@@ -171,32 +175,34 @@ public class AnalysisWrapper {
 	 *            prefix of each variable; e.g. 'X'
 	 * @param variablesValue
 	 *            The value of the variable
+	 * @throws AnalysisWrapperException
 	 */
-	public void initVariables(String varPrefix, double[] variablesValue) {
+	public void initVariables(String varPrefix, double[] variablesValue) throws AnalysisWrapperException {
 
-		String varPrefixString = gson.toJson(varPrefix);
-		String variablesValueString = gson.toJson(variablesValue);
-
-		String[] stringVector = new String[2];
-		stringVector[0] = varPrefixString;
-		stringVector[1] = variablesValueString;
+		String[] stringVector = new String[3];
+		stringVector[0] = gson.toJson(wrapperId);
+		stringVector[1] = gson.toJson(varPrefix);
+		stringVector[2] = gson.toJson(variablesValue);
 		String jsonString = gson.toJson(stringVector);
 		executePOSTRequest(jsonString, baseUrl + INIT_VARIABLES);
 	}
 
 	/**
 	 * Removes all objects from R's memory.
+	 * 
+	 * @throws AnalysisWrapperException
 	 */
-	public void deleteAllObjects() {
+	public void deleteAllObjects() throws AnalysisWrapperException {
 		executeCommandString("rm(list = ls())");
 	}
 
 	/**
 	 * Shuts down R.
+	 * 
+	 * @throws AnalysisWrapperException
 	 */
-	public void shutdown() {
-		isActive = false;
-		executePOSTRequest(null, baseUrl + SHUTDOWN);
+	public void shutdown() throws AnalysisWrapperException {
+		executePOSTRequest(gson.toJson(wrapperId), baseUrl + SHUTDOWN);
 	}
 
 	/**
@@ -207,8 +213,9 @@ public class AnalysisWrapper {
 	 * @param urlString
 	 *            target URL
 	 * @return returns output from the service as String
+	 * @throws AnalysisWrapperException
 	 */
-	private String executePOSTRequest(String input, String urlString) {
+	private String executePOSTRequest(String input, String urlString) throws AnalysisWrapperException {
 
 		try {
 			boolean inputExists = false;
@@ -216,8 +223,16 @@ public class AnalysisWrapper {
 				inputExists = true;
 			}
 
+			Proxy proxy = getProxy();
+
 			URL url = new URI(urlString).toURL();
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			HttpURLConnection connection = null;
+			if (proxy == null) {
+				connection = (HttpURLConnection) url.openConnection();
+			} else {
+				connection = (HttpURLConnection) url.openConnection(proxy);
+			}
+
 			connection.setRequestMethod("POST");
 			if (inputExists) {
 				connection.setRequestProperty("Content-Type", "text/plain");
@@ -240,9 +255,20 @@ public class AnalysisWrapper {
 			connection.disconnect();
 			return result;
 		} catch (Exception e) {
-			throw new RuntimeException("failed calling R service", e);
+			throw new AnalysisWrapperException("failed calling R service", e);
 		}
 
+	}
+
+	private Proxy getProxy() {
+		IConfiguration config = Configuration.getSessionSingleton(Configuration.getGlobalSessionId());
+		String proxyHost = config.getPropertyAsStr(IConfiguration.CONF_HTTP_PROXY_HOST);
+		int proxyPort = config.getPropertyAsInteger(IConfiguration.CONF_HTTP_PROXY_PORT, -1);
+		if (proxyHost == null || proxyPort == -1) {
+			return null;
+		}
+		Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
+		return proxy;
 	}
 
 	private String inputStreamToString(InputStream inStream) throws IOException {

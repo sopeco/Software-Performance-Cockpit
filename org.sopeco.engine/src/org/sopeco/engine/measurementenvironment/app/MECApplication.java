@@ -35,6 +35,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
+import org.sopeco.engine.measurementenvironment.socket.SocketApp;
 
 /**
  * 
@@ -51,6 +52,7 @@ public final class MECApplication {
 	/** The singleton instance of this class. */
 	private static MECApplication singleton;
 
+	private String socketIdentifier;
 	/**
 	 * Returns the singleton instance of this class.
 	 * 
@@ -177,5 +179,34 @@ public final class MECApplication {
 		String name = uri.getPath().replaceAll("/", "");
 		addMeasurementController(name, meController);
 		startRMI(uri.getPort());
+	}
+
+	public void socketConnect(String host, int port) {
+		SocketApp sApp = new SocketApp(host, port);
+		setSocketIdentifier(sApp.getIdentifier());
+		LOGGER.info("connecting to SoPeCo with the following identifier: {}", getSocketIdentifier());
+		sApp.start();
+
+	}
+
+	public void socketConnect(String host, int port, String identifier) {
+		SocketApp sApp = new SocketApp(host, port, identifier);
+		setSocketIdentifier(sApp.getIdentifier());
+		LOGGER.info("connecting to SoPeCo with the following identifier: {}", getSocketIdentifier());
+		sApp.start();
+	}
+
+	/**
+	 * @return the socketIdentifier
+	 */
+	public String getSocketIdentifier() {
+		return socketIdentifier;
+	}
+
+	/**
+	 * @param socketIdentifier the socketIdentifier to set
+	 */
+	public void setSocketIdentifier(String socketIdentifier) {
+		this.socketIdentifier = socketIdentifier;
 	}
 }

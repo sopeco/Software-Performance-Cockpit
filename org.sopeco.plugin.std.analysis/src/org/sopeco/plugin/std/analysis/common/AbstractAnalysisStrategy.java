@@ -32,6 +32,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.sopeco.analysis.wrapper.AnalysisWrapper;
+import org.sopeco.analysis.wrapper.common.AbstractRStrategy;
+import org.sopeco.analysis.wrapper.exception.AnalysisWrapperException;
 import org.sopeco.engine.analysis.IPredictionFunctionStrategy;
 import org.sopeco.engine.registry.ISoPeCoExtension;
 import org.sopeco.persistence.EntityFactory;
@@ -52,9 +57,16 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
  * 
  */
 public abstract class AbstractAnalysisStrategy extends AbstractRStrategy {
+	Logger logger = LoggerFactory.getLogger(AbstractAnalysisStrategy.class);
+	protected AnalysisWrapper analysisWrapper;
 
 	public AbstractAnalysisStrategy(ISoPeCoExtension<?> provider) {
 		super(provider);
+		try {
+			analysisWrapper = new AnalysisWrapper();
+		} catch (AnalysisWrapperException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	protected ParameterDefinition dependentParameterDefintion;
@@ -121,9 +133,10 @@ public abstract class AbstractAnalysisStrategy extends AbstractRStrategy {
 				builder.addColumn(col);
 			} else {
 				List<Integer> numericValues = mapValuesToInteger(col);
-				ParameterDefinition numericPD = EntityFactory.createParameterDefinition(pd.getName(), "INTEGER", pd.getRole());
+				ParameterDefinition numericPD = EntityFactory.createParameterDefinition(pd.getName(), "INTEGER",
+						pd.getRole());
 				numericPD.setNamespace(pd.getNamespace());
-				
+
 				switch (numericPD.getRole()) {
 				case INPUT:
 					builder.startInputColumn(numericPD);
@@ -223,6 +236,17 @@ public abstract class AbstractAnalysisStrategy extends AbstractRStrategy {
 
 	public boolean supports(AnalysisConfiguration strategyConf) {
 		return strategyConf.getName().equalsIgnoreCase(getProvider().getName());
+	}
+
+	public void releaseAnalysisResources() {
+		try {
+			if (analysisWrapper != null) {
+				analysisWrapper.shutdown();
+				analysisWrapper = null;
+			}
+		} catch (AnalysisWrapperException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 }

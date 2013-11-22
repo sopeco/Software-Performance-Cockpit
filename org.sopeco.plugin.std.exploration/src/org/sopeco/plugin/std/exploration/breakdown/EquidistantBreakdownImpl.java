@@ -77,7 +77,7 @@ public class EquidistantBreakdownImpl extends AbstractBreakdownExploration imple
 
 	@Override
 	public void finishWork() {
-		// TODO Auto-generated method stub
+		cachedEnvironmentAccess.cleanUp();
 
 	}
 

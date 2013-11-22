@@ -1,2 +1,0 @@
-scm:git:ssh://git.wdf.sap.corp:29418/Software-Performance-Cockpit.git
-scm:git:ssh://git.wdf.sap.corp:29418/SPC/sopeco.frontend.git

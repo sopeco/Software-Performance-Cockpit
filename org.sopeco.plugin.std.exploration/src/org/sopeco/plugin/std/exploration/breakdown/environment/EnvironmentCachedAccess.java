@@ -261,4 +261,12 @@ public class EnvironmentCachedAccess {
 		return environment.getSizeOfParameterSpace();
 	}
 
+	public void cleanUp() {
+		if(environment != null && environment.getAnalyser() != null){
+			environment.getAnalyser().releaseAnalysisResources();
+		}
+		
+		
+	}
+
 }

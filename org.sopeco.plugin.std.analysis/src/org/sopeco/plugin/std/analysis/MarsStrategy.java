@@ -30,7 +30,7 @@ import java.util.Random;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sopeco.analysis.wrapper.AnalysisWrapper;
+import org.sopeco.analysis.wrapper.exception.AnalysisWrapperException;
 import org.sopeco.engine.analysis.IPredictionFunctionResult;
 import org.sopeco.engine.analysis.IPredictionFunctionStrategy;
 import org.sopeco.engine.analysis.PredictionFunctionResult;
@@ -43,7 +43,6 @@ import org.sopeco.persistence.dataset.SimpleDataSetRowBuilder;
 import org.sopeco.persistence.entities.definition.AnalysisConfiguration;
 import org.sopeco.persistence.entities.definition.ParameterDefinition;
 import org.sopeco.plugin.std.analysis.common.AbstractAnalysisStrategy;
-import org.sopeco.plugin.std.analysis.util.RAdapter;
 import org.sopeco.util.Tools;
 
 /**
@@ -53,8 +52,7 @@ import org.sopeco.util.Tools;
  * @author Dennis Westermann, Jens Happe
  * 
  */
-public class MarsStrategy extends AbstractAnalysisStrategy implements
-		IPredictionFunctionStrategy {
+public class MarsStrategy extends AbstractAnalysisStrategy implements IPredictionFunctionStrategy {
 
 	Logger logger = LoggerFactory.getLogger(MarsStrategy.class);
 
@@ -65,50 +63,59 @@ public class MarsStrategy extends AbstractAnalysisStrategy implements
 		super(provider);
 		requireLibrary("leaps");
 		requireLibrary("earth");
-		loadLibraries();
+		try {
+			loadLibraries(analysisWrapper);
+		} catch (AnalysisWrapperException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
 	public void analyse(DataSetAggregated dataset, AnalysisConfiguration config) {
+		try {
+			logger.debug("Starting MARS analysis.");
 
-		logger.debug("Starting MARS analysis.");
+			deriveDependentAndIndependentParameters(dataset, config);
 
-		deriveDependentAndIndependentParameters(dataset, config);
+			DataSetAggregated analysisDataSet = extractAnalysisDataSet(dataset);
 
-		DataSetAggregated analysisDataSet = extractAnalysisDataSet(dataset);
+			DataSetAggregated numericAnalysisDataSet = createNumericDataSet(analysisDataSet);
 
-		DataSetAggregated numericAnalysisDataSet = createNumericDataSet(analysisDataSet);
+			loadDataSetInR(analysisWrapper, createValidSimpleDataSet(numericAnalysisDataSet));
 
-		loadDataSetInR(createValidSimpleDataSet(numericAnalysisDataSet));
-
-		StringBuilder cmdBuilder = new StringBuilder();
-		cmdBuilder.append(getId());
-		cmdBuilder.append(" <- earth(");
-		cmdBuilder.append(dependentParameterDefintion.getFullName("_"));
-		cmdBuilder.append(" ~ . , data =");
-		cmdBuilder.append(data.getId());
-		cmdBuilder.append(", penalty=-1,  fast.k=0, degree=2)");
-		logger.debug("Running R Command: {}", cmdBuilder.toString());
-		RAdapter.getWrapper().executeCommandString(cmdBuilder.toString());
-		RAdapter.shutDown();
+			StringBuilder cmdBuilder = new StringBuilder();
+			cmdBuilder.append(getId());
+			cmdBuilder.append(" <- earth(");
+			cmdBuilder.append(dependentParameterDefintion.getFullName("_"));
+			cmdBuilder.append(" ~ . , data =");
+			cmdBuilder.append(data.getId());
+			cmdBuilder.append(", penalty=-1,  fast.k=0, degree=2)");
+			logger.debug("Running R Command: {}", cmdBuilder.toString());
+			analysisWrapper.executeCommandString(cmdBuilder.toString());
+		} catch (AnalysisWrapperException e) {
+			throw new RuntimeException(e);
+		}
 
 	}
 
 	@Override
 	public IPredictionFunctionResult getPredictionFunctionResult() {
-		return new PredictionFunctionResult(getFunctionAsString(),
-				dependentParameterDefintion, config,
-				nonNumericParameterEncodings);
+		try {
+			return new PredictionFunctionResult(getFunctionAsString(), dependentParameterDefintion, config,
+					nonNumericParameterEncodings);
+		} catch (AnalysisWrapperException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	/**
 	 * @return the analysis result as a function string that conforms to the
 	 *         JavaScript syntax
+	 * @throws AnalysisWrapperException
 	 */
-	private String getFunctionAsString() {
-		String fs = RAdapter.getWrapper().executeCommandString(
-				"format(" + getId() + ", style=\"max\")");
-		RAdapter.shutDown();
+	private String getFunctionAsString() throws AnalysisWrapperException {
+		String fs = analysisWrapper.executeCommandString("format(" + getId() + ", style=\"max\")");
+
 		fs = fs.replace("\n ", "");
 		fs = fs.replace("+  ", "+ ");
 		fs = fs.replace("-  ", "- ");
@@ -146,25 +153,20 @@ public class MarsStrategy extends AbstractAnalysisStrategy implements
 						// "cannot scale y (values are all equal to ..)"
 						Object newValue;
 						Random r = new Random();
-						switch (Tools.SupportedTypes.get(pv.getParameter()
-								.getType())) {
+						switch (Tools.SupportedTypes.get(pv.getParameter().getType())) {
 						case Double:
-							newValue = pv.getValueAsDouble()
-									* (1.0001 + 0.0001 * r.nextDouble());
+							newValue = pv.getValueAsDouble() * (1.0001 + 0.0001 * r.nextDouble());
 							break;
 						case Integer:
 							if (r.nextBoolean()) {
-								newValue = pv.getValueAsInteger()
-										+ r.nextInt(2);
+								newValue = pv.getValueAsInteger() + r.nextInt(2);
 							} else {
-								newValue = pv.getValueAsInteger()
-										- r.nextInt(2);
+								newValue = pv.getValueAsInteger() - r.nextInt(2);
 							}
 							break;
 						default:
-							throw new IllegalArgumentException(
-									"Unsopported parameter type: "
-											+ pv.getParameter().getType());
+							throw new IllegalArgumentException("Unsopported parameter type: "
+									+ pv.getParameter().getType());
 						}
 						pv.setValue(newValue);
 					}

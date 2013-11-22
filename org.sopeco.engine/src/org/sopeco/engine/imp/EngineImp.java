@@ -42,17 +42,13 @@ import org.sopeco.config.IConfiguration;
 import org.sopeco.engine.IEngine;
 import org.sopeco.engine.experiment.IExperimentController;
 import org.sopeco.engine.experimentseries.IExperimentSeriesManager;
-import org.sopeco.engine.model.ScenarioDefinitionWriter;
-import org.sopeco.engine.measurementenvironment.status.StatusProvider;
 import org.sopeco.engine.registry.ExtensionRegistry;
 import org.sopeco.engine.registry.IExtensionRegistry;
 import org.sopeco.engine.util.EngineTools;
 import org.sopeco.persistence.EntityFactory;
 import org.sopeco.persistence.IPersistenceProvider;
 import org.sopeco.persistence.PersistenceProviderFactory;
-import org.sopeco.persistence.entities.ArchiveEntry;
 import org.sopeco.persistence.entities.ExperimentSeries;
-import org.sopeco.persistence.entities.ExperimentSeriesRun;
 import org.sopeco.persistence.entities.ScenarioInstance;
 import org.sopeco.persistence.entities.definition.ExperimentSeriesDefinition;
 import org.sopeco.persistence.entities.definition.MeasurementSpecification;
@@ -68,6 +64,9 @@ import org.sopeco.util.session.SessionAwareObject;
  * 
  */
 public class EngineImp extends SessionAwareObject implements IEngine {
+
+	/** * */
+	private static final long serialVersionUID = 1L;
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(EngineImp.class);
 
@@ -117,8 +116,10 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 	public ScenarioInstance run(ScenarioDefinition scenarioDefinition) {
 		List<String> experimentSeriesNames = new ArrayList<String>();
 
-		for (ExperimentSeriesDefinition esd : scenarioDefinition.getAllExperimentSeriesDefinitions()) {
-			experimentSeriesNames.add(esd.getName());
+		for (MeasurementSpecification ms : scenarioDefinition.getMeasurementSpecifications()) {
+			for (ExperimentSeriesDefinition esd : ms.getExperimentSeriesDefinitions()) {
+				experimentSeriesNames.add(ms.getName() + "." + esd.getName());
+			}
 		}
 
 		return run(scenarioDefinition, experimentSeriesNames);
@@ -130,16 +131,18 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 		if (experimentSeriesNames == null || experimentSeriesNames.isEmpty()) {
 			throw new RuntimeException("List of experiment series names is empty or null!");
 		}
-		ScenarioInstance scenarioInstance = retrieveScenarioInstance(scenarioDefinition);
 
+		ScenarioInstance scenarioInstance = retrieveScenarioInstance(scenarioDefinition);
 		scenarioInstance.getScenarioDefinition().getAllExperimentSeriesDefinitions();
+
 		Map<MeasurementSpecification, List<ExperimentSeriesDefinition>> experimentSeries = new HashMap<MeasurementSpecification, List<ExperimentSeriesDefinition>>();
 
 		for (MeasurementSpecification ms : scenarioDefinition.getMeasurementSpecifications()) {
 			List<ExperimentSeriesDefinition> currentExpSeriesList = new ArrayList<ExperimentSeriesDefinition>();
 			for (ExperimentSeriesDefinition esd : ms.getExperimentSeriesDefinitions()) {
+
 				for (String expSeriesName : experimentSeriesNames) {
-					if (esd.getName().equals(expSeriesName)) {
+					if ((ms.getName() + "." + esd.getName()).equals(expSeriesName)) {
 						currentExpSeriesList.add(esd);
 					}
 				}
@@ -175,6 +178,12 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 	@Override
 	public IPersistenceProvider getPersistenceProvider() {
 		return persistenceProvider;
+	}
+
+	@Override
+	public void abortExperimentRun() {
+		Configuration.getSessionSingleton(getSessionId()).setProperty(IConfiguration.EXPERIMENT_RUN_ABORT,
+				new Boolean(true));
 	}
 
 	private ScenarioInstance retrieveScenarioInstance(ScenarioDefinition scenarioDefinition) {
@@ -238,7 +247,5 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 			}
 		}
 	}
-
-	
 
 }
