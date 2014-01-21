@@ -145,7 +145,7 @@ public class SoPeCoRunner extends SessionAwareObject implements Runnable {
 	public synchronized void run() {
 		lastExecutedScenarioInstance = null;
 		IConfiguration config = Configuration.getSessionSingleton(getSessionId());
-		config.overwrite(executionProperties);
+		config.overwriteConfiguration(executionProperties);
 		// if the user has set any command-line arguments
 		if (args != null) {
 			try {

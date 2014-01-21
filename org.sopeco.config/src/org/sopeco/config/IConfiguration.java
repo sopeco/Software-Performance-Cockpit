@@ -32,7 +32,6 @@ package org.sopeco.config;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
-import java.util.Properties;
 
 import org.sopeco.config.exception.ConfigurationException;
 import org.sopeco.util.session.ISessionAwareObject;
@@ -96,7 +95,50 @@ public interface IConfiguration extends ISessionAwareObject {
 	
 	String EXPERIMENT_RUN_ABORT = "org.sopeco.experiment.run.abort";
 
-	Map<String, Object> getProperties();
+	/**
+	 * Exports the configuration as a key-value map. The default configuration and the ones
+	 * defined in the system environment are not included. 
+	 * 
+	 * @return a key-value representation of the configuration
+	 */
+	Map<String, Object> exportConfiguration();
+	
+	/**
+	 * Exports the default configuration as a key-value map. The actual configuration and the ones
+	 * defined in the system environment are not included. 
+	 * 
+	 * @return a key-value representation of the configuration
+	 */
+	Map<String, Object> exportDefaultConfiguration();
+	
+	/**
+	 * Imports the configuration as a key-value map.  
+	 * 
+	 * @param config a key-value map representation of the configuration
+	 */
+	void importConfiguration(Map<String, Object> config);
+	
+	/**
+	 * Imports the default configuration as a key-value map.  
+	 * 
+	 * @param config a key-value map representation of the configuration
+	 */
+	void importDefaultConfiguration(Map<String, Object> config);
+	
+	/**
+	 * Overwrites the configuration with the given configuration.  
+	 * 
+	 * @param config a key-value map representation of the configuration
+	 */
+	void overwriteConfiguration(Map<String, Object> config);
+	
+	/**
+	 * Overwrites the default configuration with the given configuration.  
+	 * 
+	 * @param config a key-value map representation of the default configuration
+	 */
+	void overwriteDefaultConfiguration(Map<String, Object> config);
+	
 	/**
 	 * Returns the configured value of the given property in SoPeCo.
 	 * 
@@ -509,16 +551,6 @@ public interface IConfiguration extends ISessionAwareObject {
 	 *            with the new values
 	 */
 	 void overwrite(IConfiguration configuration);
-
-	
-	/**
-	 * Overrides the custom values of this configuration with those of the given
-	 * properties object.
-	 * 
-	 * @param properties
-	 *            with the new values
-	 */
-	 void overwrite(Map<String, Object> properties);
 
 	 /**
 	  * Adds a new command-line extension to the configuration component. 

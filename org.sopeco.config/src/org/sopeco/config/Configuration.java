@@ -294,7 +294,7 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		// option: scenario definition
 		Option scenarioDef = OptionBuilder.withArgName("file").hasArg().withDescription("scenario definition file").create("sd");
 
-		// option
+		// option: log verbosity
 		Option logVerbosity = OptionBuilder.withArgName("level").hasArg().withDescription("logging verbosity level (overrides log config)").create("lv");
 
 		// option: set home folder
@@ -392,6 +392,7 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		for (ICommandLineArgumentsExtension ext: commandLineExtensions) {
 			ext.processOptions(line);
 		}
+		
 	}
 
 	/**
@@ -765,15 +766,10 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		return GLOBAL_SESSION_ID;
 	}
 
-	/**
-	 * Overrides the values of this configuration with those of the given
-	 * configuration.
-	 * 
-	 * @param configuration
-	 *            with the new values
-	 */
+	@Override
 	public void overwrite(IConfiguration configuration) {
-		this.properties.putAll(configuration.getProperties());
+		this.overwriteDefaultConfiguration(configuration.exportDefaultConfiguration());
+		this.overwriteConfiguration(configuration.exportConfiguration());
 	}
 
 	/**
@@ -788,14 +784,6 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	}
 
 	@Override
-	public Map<String, Object> getProperties() {
-		Map<String, Object> mergedProperties = new HashMap<String, Object>();
-		mergedProperties.putAll(this.defaultValues);
-		mergedProperties.putAll(this.properties);
-		return mergedProperties;
-	}
-
-	@Override
 	public void addCommandLineExtension(ICommandLineArgumentsExtension extension) {
 		commandLineExtensions.add(extension);
 	}
@@ -803,6 +791,42 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	@Override
 	public void removeCommandLineExtension(ICommandLineArgumentsExtension extension) {
 		commandLineExtensions.remove(extension);
+	}
+
+	@Override
+	public Map<String, Object> exportConfiguration() {
+		Map<String, Object> props = new HashMap<String, Object>();
+		props.putAll(this.properties);
+		return props;
+	}
+
+	@Override
+	public Map<String, Object> exportDefaultConfiguration() {
+		Map<String, Object> props = new HashMap<String, Object>();
+		props.putAll(this.defaultValues);
+		return props;
+	}
+
+	@Override
+	public void importConfiguration(Map<String, Object> config) {
+		properties.putAll(config);
+	}
+
+	@Override
+	public void importDefaultConfiguration(Map<String, Object>  config) {
+		defaultValues.putAll(config);
+	}
+
+	@Override
+	public void overwriteConfiguration(Map<String, Object> config) {
+		properties.clear();
+		importConfiguration(config);
+	}
+
+	@Override
+	public void overwriteDefaultConfiguration(Map<String, Object> config) {
+		defaultValues.clear();
+		importDefaultConfiguration(config);
 	}
 
 }
