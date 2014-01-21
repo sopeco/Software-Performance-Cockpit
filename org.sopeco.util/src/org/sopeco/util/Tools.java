@@ -49,8 +49,10 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.StringTokenizer;
 
 import org.apache.commons.math3.distribution.TDistribution;
@@ -732,6 +734,28 @@ public class Tools {
 		return getDefaultIQROutlierDetector().filterOutliers(values);
 	}
 
+	/**
+	 * Filters the outliers in the value set of the given map. Any key whose value
+	 * is an outlier is removed. 
+	 * 
+	 * @param data a mapping of any object to numeric values
+	 * @return the resulting filtered map
+	 */
+	public static <T> Map<T, Double> filterOutliersUsingIQR(Map<T, Double> data) {
+		Map<T, Double> results = new HashMap<T, Double>();
+		
+		List<Double> values = new ArrayList<Double>(data.values());
+		values = getDefaultIQROutlierDetector().filterOutliers(values);
+		
+		for (Entry<T, Double> e: data.entrySet()) {
+			if (values.contains(e.getValue())) {
+				results.put(e.getKey(), e.getValue());
+			}
+		}
+		
+		return results;
+	}
+	
 	/**
 	 * Marks the outliers in the given list of values using the 1.5*IQR method.
 	 * 
