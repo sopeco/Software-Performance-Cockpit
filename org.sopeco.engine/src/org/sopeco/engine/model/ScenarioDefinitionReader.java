@@ -140,7 +140,7 @@ public class ScenarioDefinitionReader extends SessionAwareObject {
 			FileReader fileReader = new FileReader(pathToFile);
 			return readFromReader(fileReader);
 		} catch (FileNotFoundException e) {
-			throw new RuntimeException("Could not find scenario definition xml file.", e);
+			throw new RuntimeException("Could not find scenario definition XML file ('" + pathToFile + "').", e);
 		}
 	}
 

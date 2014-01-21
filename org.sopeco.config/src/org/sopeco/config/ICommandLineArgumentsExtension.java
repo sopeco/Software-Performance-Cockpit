@@ -33,6 +33,7 @@ import java.util.Collection;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
+import org.sopeco.config.exception.ConfigurationException;
 
 /**
  * This interface has to be implemented by SoPeCo extensions that provide new
@@ -54,6 +55,8 @@ public interface ICommandLineArgumentsExtension {
 	 * 
 	 * @param line
 	 *            the command line to be processed
+	 *            
+	 * @throws ConfigurationException if there is an error in processing commandline options
 	 */
-	void processOptions(CommandLine line);
+	void processOptions(CommandLine line) throws ConfigurationException;
 }
