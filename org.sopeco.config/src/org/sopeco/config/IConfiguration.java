@@ -397,11 +397,6 @@ public interface IConfiguration extends ISessionAwareObject {
 	void applyConfiguration();
 
 	/**
-	 * Forces the (re-)configuration of the logger. 
-	 */
-	void applyLoggerConfiguration();
-
-	/**
 	 * Sets the value of scenario description file name.
 	 * 
 	 * @param fileName
