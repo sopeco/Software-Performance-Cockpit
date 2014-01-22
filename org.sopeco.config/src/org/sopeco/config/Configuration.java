@@ -56,10 +56,6 @@ import org.sopeco.config.exception.ConfigurationException;
 import org.sopeco.util.Tools;
 import org.sopeco.util.session.SessionAwareObject;
 
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.joran.JoranConfigurator;
-import ch.qos.logback.core.joran.spi.JoranException;
-
 /**
  * This class is the access point to all SoPeCo global configuration.
  * 
@@ -423,9 +419,14 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		formatter.printHelp(getApplicationName(), options, true);
 	}
 
+	/**
+	 * In this implementation, this method does nothing.
+	 * 
+	 * @see IConfiguration#applyConfiguration()
+	 */
 	@Override
 	public void applyConfiguration() {
-		configureLogger(false);
+		// does nothing
 	}
 
 	@Override
@@ -533,75 +534,73 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 		setProperty(CONF_LOGGER_CONFIG_FILE_NAME, fileName);
 	}
 
-	@Override
-	public void applyLoggerConfiguration() {
-		configureLogger(true);
-	}
-
-	/**
-	 * Configures the logging system with the provided logger configuration
-	 * file. The configuration will be applied only if the same configuration
-	 * has not been applied before.
-	 * 
-	 * @param forceConfiguration
-	 *            if true, the configuration will be done regardless of whether
-	 *            the configuration has been applied before or not.
-	 */
-	private void configureLogger(boolean forceConfiguration) {
-		// The following code loads the logback config file using
-		// JoranConfigurator.
-		// Alternatively, you can specify the location of the config file using
-		// the system property 'logback.configurationFile'
-		// e.g.,
-		// $ java -Dlogback.configurationFile=/path/to/config.xml ...
-
-		String fileName = getPropertyAsStr(CONF_LOGGER_CONFIG_FILE_NAME);
-		// if (fileName != null) &&
-		// !fileName.equals(lastLogbackConfigurationFileName)) { // This was a
-		// bad idea.
-
-		if (fileName != null) {
-
-			String logConfig = "";
-
-			// check to see if we should apply this configuration
-			if (!forceConfiguration) {
-				try {
-					logConfig = Tools.readFromInputStream(findConfigFileAsInputStream(ClassLoader.getSystemClassLoader(), null, fileName));
-					if (previousLogConfigs.contains(logConfig)) {
-						logger.debug("Logging configuration (from '{}') will not be re-applied.", fileName);
-						return;
-					}
-				} catch (Exception e1) {
-					logger.error("Cannot read from logback configuration file '{}'. Logging configuration will not change.", fileName);
-					return;
-				}
-			}
-
-			LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
-			try {
-				logger.debug("Configuring logback using '{}'...", fileName);
-
-				JoranConfigurator configurator = new JoranConfigurator();
-				configurator.setContext(lc);
-				// the context was probably already configured by default
-				// configuration
-				// rules
-				lc.reset();
-
-				configurator.doConfigure(findConfigFileAsInputStream(ClassLoader.getSystemClassLoader(), null, fileName));
-
-				previousLogConfigs.add(logConfig);
-
-			} catch (JoranException je) {
-				logger.warn("Failed loading the logback configuration file. Using default configuration. Error message: {}", je.getMessage());
-			} catch (FileNotFoundException e) {
-				logger.warn("Failed loading the logback configuration file. Configuration file cannot be opened. ('{}')", fileName);
-			}
-
-			logger.debug("Logback configured.");
-		}
-	}
+	// The following method 'configureLogger' is removed as there should be no 
+	// dependency to a particular logging implementation. 
+	
+//	/**
+//	 * Configures the logging system with the provided logger configuration
+//	 * file. The configuration will be applied only if the same configuration
+//	 * has not been applied before.
+//	 * 
+//	 * @param forceConfiguration
+//	 *            if true, the configuration will be done regardless of whether
+//	 *            the configuration has been applied before or not.
+//	 */
+//	private void configureLogger(boolean forceConfiguration) {
+//		// The following code loads the logback config file using
+//		// JoranConfigurator.
+//		// Alternatively, you can specify the location of the config file using
+//		// the system property 'logback.configurationFile'
+//		// e.g.,
+//		// $ java -Dlogback.configurationFile=/path/to/config.xml ...
+//
+//		String fileName = getPropertyAsStr(CONF_LOGGER_CONFIG_FILE_NAME);
+//		// if (fileName != null) &&
+//		// !fileName.equals(lastLogbackConfigurationFileName)) { // This was a
+//		// bad idea.
+//
+//		if (fileName != null) {
+//
+//			String logConfig = "";
+//
+//			// check to see if we should apply this configuration
+//			if (!forceConfiguration) {
+//				try {
+//					logConfig = Tools.readFromInputStream(findConfigFileAsInputStream(ClassLoader.getSystemClassLoader(), null, fileName));
+//					if (previousLogConfigs.contains(logConfig)) {
+//						logger.debug("Logging configuration (from '{}') will not be re-applied.", fileName);
+//						return;
+//					}
+//				} catch (Exception e1) {
+//					logger.error("Cannot read from logback configuration file '{}'. Logging configuration will not change.", fileName);
+//					return;
+//				}
+//			}
+//
+//			LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
+//			try {
+//				logger.debug("Configuring logback using '{}'...", fileName);
+//
+//				JoranConfigurator configurator = new JoranConfigurator();
+//				configurator.setContext(lc);
+//				// the context was probably already configured by default
+//				// configuration
+//				// rules
+//				lc.reset();
+//
+//				configurator.doConfigure(findConfigFileAsInputStream(ClassLoader.getSystemClassLoader(), null, fileName));
+//
+//				previousLogConfigs.add(logConfig);
+//
+//			} catch (JoranException je) {
+//				logger.warn("Failed loading the logback configuration file. Using default configuration. Error message: {}", je.getMessage());
+//			} catch (FileNotFoundException e) {
+//				logger.warn("Failed loading the logback configuration file. Configuration file cannot be opened. ('{}')", fileName);
+//			}
+//
+//			logger.debug("Logback configured.");
+//		}
+//	}
 
 	@Override
 	public void writeConfiguration(String fileName) throws IOException {
