@@ -793,6 +793,13 @@ public final class Configuration extends SessionAwareObject implements IConfigur
 	}
 
 	@Override
+	public Map<String, Object> getProperties() {
+		Map<String, Object> props = exportDefaultConfiguration();
+		props.putAll(exportConfiguration());
+		return props;
+	}
+	
+	@Override
 	public Map<String, Object> exportConfiguration() {
 		Map<String, Object> props = new HashMap<String, Object>();
 		props.putAll(this.properties);

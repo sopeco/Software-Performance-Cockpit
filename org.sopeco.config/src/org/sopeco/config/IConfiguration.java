@@ -96,6 +96,17 @@ public interface IConfiguration extends ISessionAwareObject {
 	String EXPERIMENT_RUN_ABORT = "org.sopeco.experiment.run.abort";
 
 	/**
+	 * Export the configuration as a key-value map. Both, the default ones and the ones in the
+	 * system environment are included.
+	 * 
+	 * @return a key-value representation of the configuration
+	 * 
+	 * @deprecated Use {@code exportConfiguration()} and {@code exportDefaultConfiguration}.
+	 */
+	@Deprecated
+	Map<String, Object> getProperties();
+	
+	/**
 	 * Exports the configuration as a key-value map. The default configuration and the ones
 	 * defined in the system environment are not included. 
 	 * 
