@@ -71,7 +71,7 @@ public class CorrelationAnalysisStrategyTest {
 	private AnalysisConfiguration analysisConfiguration;
 	private static ScenarioDefinition scenarioDefinition;
 	private DataSetAggregated dataset;
-	private static boolean skipTests = false;
+	private static boolean skipTests = true;
 
 	@Parameters
 	public static Collection<Object[]> data() {
