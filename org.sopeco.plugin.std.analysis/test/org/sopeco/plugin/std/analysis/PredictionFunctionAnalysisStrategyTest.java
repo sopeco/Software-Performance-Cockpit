@@ -75,7 +75,7 @@ public class PredictionFunctionAnalysisStrategyTest {
 	private DataSetAggregated dataset;
 	private volatile int numOfTests = 0;
 	private final int NUMBER_OF_TEST_METHODS = 2;
-	private static boolean skipTests = false;
+	private static boolean skipTests = true;
 
 	@Parameters
 	public static Collection<Object[]> data() {
