@@ -27,13 +27,14 @@
 package org.sopeco.engine.measurementenvironment.app;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
+import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.glassfish.jersey.server.ResourceConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.jersey.api.container.httpserver.HttpServerFactory;
-import com.sun.jersey.api.core.PackagesResourceConfig;
-import com.sun.net.httpserver.HttpServer;
 
 /**
  * 
@@ -62,8 +63,12 @@ final class RESTServer {
 				return;
 			}
 
-			PackagesResourceConfig rescConfig = new PackagesResourceConfig(REST_SERVICE_PACKAGE);
-			server = HttpServerFactory.create("http://localhost:" + pPort + "/", rescConfig);
+			ResourceConfig resourceConfig = new ResourceConfig();
+			resourceConfig.packages(REST_SERVICE_PACKAGE);
+			
+			URI uri = new URI("http://localhost:" + pPort + "/");
+			
+			server = GrizzlyHttpServerFactory.createHttpServer(uri, resourceConfig);
 			server.start();
 
 			LOGGER.info("Available MEController:");
@@ -73,6 +78,8 @@ final class RESTServer {
 
 			running = true;
 			LOGGER.debug("Server started.", pPort);
+		} catch (URISyntaxException e) {
+			LOGGER.error("URI is invalid.");
 		} catch (IOException e) {
 			LOGGER.error("Server start on port {} has failed: {}", pPort, e.getLocalizedMessage());
 		}
