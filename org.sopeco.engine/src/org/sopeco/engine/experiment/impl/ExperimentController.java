@@ -73,7 +73,9 @@ public class ExperimentController extends SessionAwareObject implements IExperim
 	private static final String USE_CACHE_PROPERTY = "sopeco.config.engine.useExperimentResultCache";
 
 	/**
-	 * Constructor.
+	 * Constructor.<br />
+	 * Opens a connection to the persistence provider with the configuration data fetched via the
+	 * given session ID.
 	 * 
 	 * @param sessionId
 	 *            Session id to be used for this experiment controller.
