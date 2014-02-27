@@ -38,7 +38,7 @@ public class WrapperTest {
 
 	private AnalysisWrapper wrapper;
 
-	private boolean skipUnitTest = false;
+	private boolean skipUnitTest = true;
 
 	@Before
 	public void initAnalysisWrapper() {

@@ -78,7 +78,7 @@ public class ScreeningAnalysisStrategyTest {
 	private ParameterDefinition dummyInput2;
 	private ParameterDefinition dummyOutput;
 
-	private static boolean skipTests = false;
+	private static boolean skipTests = true;
 
 	@Parameters
 	public static Collection<Object[]> data() {
