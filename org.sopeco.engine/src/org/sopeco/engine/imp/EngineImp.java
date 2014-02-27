@@ -80,6 +80,8 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 
 	/**
 	 * Constructor.
+	 * Opens a connection to the persistence provider with the configuration data fetched via the
+	 * given session ID.
 	 * 
 	 * @param sessionId
 	 *            Session id to be used by this session aware object
@@ -133,7 +135,7 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 		}
 
 		ScenarioInstance scenarioInstance = retrieveScenarioInstance(scenarioDefinition);
-		scenarioInstance.getScenarioDefinition().getAllExperimentSeriesDefinitions();
+		scenarioInstance.getScenarioDefinition().getAllExperimentSeriesDefinitions(); 
 
 		Map<MeasurementSpecification, List<ExperimentSeriesDefinition>> experimentSeries = new HashMap<MeasurementSpecification, List<ExperimentSeriesDefinition>>();
 
@@ -186,6 +188,15 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 				new Boolean(true));
 	}
 
+	/**
+	 * Tries to fetch the {@link ScenarioInstance} for the given {@link ScenarioDefinition}
+	 * out of the database.<br />
+	 * If the <code>ScenarioInstance</code> does not exist yet, it's created from the information
+	 * in the <code>ScenarioDefinition</code>. See more <code>createNewScenarioInstance()</code>.
+	 * 
+	 * @param scenarioDefinition the {@link ScenarioDefinition}
+	 * @return the {@link ScenarioInstance} corresponding to the given definiton
+	 */
 	private ScenarioInstance retrieveScenarioInstance(ScenarioDefinition scenarioDefinition) {
 		ScenarioInstance scenarioInstance = null;
 
@@ -195,8 +206,9 @@ public class EngineImp extends SessionAwareObject implements IEngine {
 					getConfiguration().getMeasurementControllerURIAsStr());
 			LOGGER.debug("Loaded ScenarioInstance {} from database", scenarioInstance);
 			LOGGER.debug("Compare Scenario definition defined in the specification with the one loaded from database");
-
+			
 		} catch (DataNotFoundException e) {
+			LOGGER.debug("No ScenarioInstance for the given ScenarioDefinition found in the database.");
 			scenarioInstance = createNewScenarioInstance(scenarioDefinition);
 		}
 		if (scenarioInstance == null) {
