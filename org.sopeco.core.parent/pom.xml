@@ -6,7 +6,7 @@
 
 	<groupId>org.sopeco.core</groupId>
 	<artifactId>org.sopeco.core.parent</artifactId>
-	<version>5.0.2</version>
+	<version>5.0.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>Software Performance Cockpit - Core</name>
 
