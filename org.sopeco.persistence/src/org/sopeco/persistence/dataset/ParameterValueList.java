@@ -48,19 +48,19 @@ import org.sopeco.persistence.entities.definition.ParameterDefinition;
 public class ParameterValueList<T> implements Serializable {
 
 	private static final long serialVersionUID = -6730179918476230975L;
-	private ParameterDefinition parameterDefinition;
-	private List<T> valueList;
+	private ParameterDefinition parameter;
+	private List<T> values;
 
 	public ParameterValueList(ParameterDefinition parameter) {
 		super();
-		this.parameterDefinition = parameter;
-		valueList = new ArrayList<T>();
+		this.parameter = parameter;
+		values = new ArrayList<T>();
 	}
 
 	public ParameterValueList(ParameterDefinition parameter, List<T> values) {
 		super();
-		this.parameterDefinition = parameter;
-		this.valueList = values;
+		this.parameter = parameter;
+		this.values = values;
 	}
 
 	/**
@@ -71,26 +71,26 @@ public class ParameterValueList<T> implements Serializable {
 	 */
 	public ParameterValueList(ParameterValue<T> singleParameterValue) {
 		super();
-		this.parameterDefinition = singleParameterValue.getParameter();
-		this.valueList = new ArrayList<T>();
-		this.valueList.add(singleParameterValue.getValue());
+		this.parameter = singleParameterValue.getParameter();
+		this.values = new ArrayList<T>();
+		this.values.add(singleParameterValue.getValue());
 	}
 
 	public ParameterDefinition getParameter() {
-		return parameterDefinition;
+		return parameter;
 	}
 
 	public List<T> getValues() {
-		return valueList;
+		return values;
 	}
 
 	public double getMean() {
 		double mean = 0.0;
 		if (getValues().size() > 0) {
 			for (T value : getValues()) {
-				if (ParameterUtil.getTypeEnumeration(parameterDefinition.getType()).equals(ParameterType.DOUBLE)) {
+				if (ParameterUtil.getTypeEnumeration(parameter.getType()).equals(ParameterType.DOUBLE)) {
 					mean += (Double) value;
-				} else if (ParameterUtil.getTypeEnumeration(parameterDefinition.getType())
+				} else if (ParameterUtil.getTypeEnumeration(parameter.getType())
 						.equals(ParameterType.INTEGER)) {
 					mean += ((Integer) value).doubleValue();
 				} else {
@@ -104,20 +104,20 @@ public class ParameterValueList<T> implements Serializable {
 	}
 
 	public ParameterValue<?> getMeanAsParameterValue() {
-		return ParameterValueFactory.createParameterValue(parameterDefinition, getMean());
+		return ParameterValueFactory.createParameterValue(parameter, getMean());
 	}
 
 	public void merge(ParameterValueList other) {
-		if (!parameterDefinition.equals(other.getParameter())) {
+		if (!parameter.equals(other.getParameter())) {
 			throw new IllegalArgumentException("Cannot merge ParameterValueLists of different ParameterDefinitions!");
 		}
-		this.valueList.addAll(other.getValues());
+		this.values.addAll(other.getValues());
 	}
 
 	public void addValue(Object value) {
 		T convertedValue = (T) ParameterValueFactory.convertValue(value,
-				ParameterUtil.getTypeEnumeration(parameterDefinition.getType()));
-		this.valueList.add(convertedValue);
+				ParameterUtil.getTypeEnumeration(parameter.getType()));
+		this.values.add(convertedValue);
 	}
 
 	public void addValues(List<Object> values) {
@@ -128,7 +128,7 @@ public class ParameterValueList<T> implements Serializable {
 
 	public List<String> getValueStrings() {
 		List<String> result = new ArrayList<String>();
-		for (Object value : valueList) {
+		for (Object value : values) {
 			if (value instanceof Double) {
 				result.add(Double.toString((Double) value));
 			} else if (value instanceof Integer) {
@@ -145,7 +145,7 @@ public class ParameterValueList<T> implements Serializable {
 
 	public List<Double> getValuesAsDouble() {
 		List<Double> result = new ArrayList<Double>();
-		for (Object value : valueList) {
+		for (Object value : values) {
 			if (value instanceof Double) {
 				result.add((Double) value);
 			} else if (value instanceof Integer) {
@@ -160,7 +160,7 @@ public class ParameterValueList<T> implements Serializable {
 
 	public List<Integer> getValuesAsInteger() {
 		List<Integer> result = new ArrayList<Integer>();
-		for (Object value : valueList) {
+		for (Object value : values) {
 			if (value instanceof Double) {
 				result.add(((Double) value).intValue());
 			} else if (value instanceof Integer) {
@@ -175,6 +175,6 @@ public class ParameterValueList<T> implements Serializable {
 	}
 
 	public int getSize() {
-		return valueList.size();
+		return values.size();
 	}
 }

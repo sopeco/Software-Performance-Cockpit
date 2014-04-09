@@ -53,28 +53,28 @@ public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T> implem
 	/**
 	 * Values associated to the parameter.
 	 */
-	private List<ParameterValueList<T>> valueList;
+	private List<ParameterValueList<T>> valueLists;
 
 	/**
 	 * Constructor. To be used by builders & factories only.
 	 * 
 	 * @param parameter
-	 * @param values
+	 * @param valueLists
 	 */
-	protected DataSetObservationColumn(ParameterDefinition parameter, List<ParameterValueList<T>> values) {
+	protected DataSetObservationColumn(ParameterDefinition parameter, List<ParameterValueList<T>> valueLists) {
 		super();
 		if (!parameter.getRole().equals(ParameterRole.OBSERVATION)) {
 			throw new IllegalArgumentException("Cannot create a DataSetInputColumn for a non observation parameter.");
 		}
 		setParameter(parameter);
-		this.valueList = values;
+		this.valueLists = valueLists;
 	}
 
 	/**
 	 * @return Values of the column associated to the parameter.
 	 */
 	public List<ParameterValueList<T>> getValueLists() {
-		return valueList;
+		return valueLists;
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T> implem
 	 */
 	public List<T> getAllValues() {
 		List<T> result = new ArrayList<T>();
-		for (ParameterValueList<T> pvl : valueList) {
+		for (ParameterValueList<T> pvl : valueLists) {
 			result.addAll(pvl.getValues());
 		}
 		return result;
@@ -93,7 +93,7 @@ public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T> implem
 	 */
 	private List<ParameterValue<?>> getAllValuesAsParameterValues() {
 		List<ParameterValue<?>> result = new ArrayList<ParameterValue<?>>();
-		for (ParameterValueList<T> pvl : valueList) {
+		for (ParameterValueList<T> pvl : valueLists) {
 			for (Object value : pvl.getValues()) {
 
 				result.add(ParameterValueFactory.createParameterValue(getParameter(), value));
@@ -107,8 +107,8 @@ public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T> implem
 	 * @return Number of values of the column.
 	 */
 	public int size() {
-		if (valueList != null) {
-			return valueList.size();
+		if (valueLists != null) {
+			return valueLists.size();
 		} else {
 			return 0;
 		}
@@ -164,11 +164,11 @@ public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T> implem
 	 * @return Value at the given row.
 	 */
 	public ParameterValueList<T> getParameterValues(int row) {
-		if (row >= this.valueList.size()) {
+		if (row >= this.valueLists.size()) {
 			throw new IllegalArgumentException("Index exceeds row length. Index: " + row + " row length: "
-					+ valueList.size());
+					+ valueLists.size());
 		}
-		ParameterValueList<T> values = valueList.get(row);
+		ParameterValueList<T> values = valueLists.get(row);
 		return values;
 	}
 
@@ -200,12 +200,12 @@ public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T> implem
 	protected void addValues(List<T> values) {
 
 		ParameterValueList<T> pvl = new ParameterValueList<T>(getParameter(), values);
-		valueList.add(pvl);
+		valueLists.add(pvl);
 	}
 
 	protected void addValues(ParameterValueList<T> values) {
 
-		valueList.add(values);
+		valueLists.add(values);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -213,7 +213,7 @@ public class DataSetObservationColumn<T> extends AbstractDataSetColumn<T> implem
 		List list = new ArrayList();
 		list.add(value);
 		ParameterValueList<T> pvl = new ParameterValueList<T>(getParameter(), list);
-		valueList.add(pvl);
+		valueLists.add(pvl);
 	}
 
 	@Override
