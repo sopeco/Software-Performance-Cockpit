@@ -38,15 +38,19 @@ public class SocketMEConnector implements IMEConnector {
 	@Override
 	public IMeasurementEnvironmentController connectToMEController(URI meURI) {
 		SocketAppWrapper app = SocketManager.getSocketApp(getIdentifier(meURI));
+		
 		if (app == null) {
 			throw new RuntimeException("No MECApplication is registred by " + meURI.getHost());
 		}
 
 		String controllerName = getControllerName(meURI);
+
 		SocketMECWrapper mec = app.getMECWrapper(controllerName);
+		
 		if (mec == null) {
 			throw new RuntimeException("No MEController '" + controllerName + "' is registered with identifier " + getIdentifier(meURI));
 		}
+
 		return mec;
 	}
 

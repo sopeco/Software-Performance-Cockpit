@@ -31,7 +31,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.Invocation.Builder;
+import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,12 +53,6 @@ import org.sopeco.persistence.entities.definition.ExperimentTerminationCondition
 import org.sopeco.persistence.entities.definition.MeasurementEnvironmentDefinition;
 import org.sopeco.persistence.entities.exceptions.ExperimentFailedException;
 import org.sopeco.persistence.util.ParameterCollection;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.ClientResponse.Status;
-import com.sun.jersey.api.client.WebResource;
-import com.sun.jersey.api.client.WebResource.Builder;
 
 /**
  * 
@@ -107,23 +107,23 @@ public class RestMECWrapper implements IMeasurementEnvironmentController {
 
 	private TransferPackage request(TransferPackage putPackage, String... paths) throws RemoteException {
 
-		WebResource resource = Client.create().resource(getFullUrl());
+		WebTarget resource = ClientBuilder.newClient().target(getFullUrl());
 		for (String path : paths) {
 			resource = resource.path(path);
 		}
 
-		Builder requestBuilder = resource.accept(MediaType.APPLICATION_XML);
-		ClientResponse response;
+		Builder requestBuilder = resource.request(MediaType.APPLICATION_XML);
+		Response response = ClientBuilder.newClient().target(url).request().get();
 		if (putPackage == null) {
 			// Do GET request
-			response = requestBuilder.get(ClientResponse.class);
+			response = requestBuilder.get();
 		} else {
 			// Do PUT request
-			response = requestBuilder.type(MediaType.APPLICATION_XML).put(ClientResponse.class, putPackage);
+			response = requestBuilder.put(Entity.entity(putPackage, MediaType.APPLICATION_XML));
 		}
 
 		if (response.getStatus() == Status.OK.getStatusCode() && response.hasEntity()) {
-			return response.getEntity(TransferPackage.class);
+			return response.readEntity(TransferPackage.class);
 		} else if (response.getStatus() == Status.NO_CONTENT.getStatusCode()) {
 			return null;
 		} else {

@@ -77,6 +77,7 @@ public final class SocketAcception extends Thread {
 				incoming = serverSocket.accept();
 				cleanUpConnections();
 				handleSocket(incoming);
+				LOGGER.debug("New connection established.");
 
 			} catch (SocketTimeoutException ste) {
 				// clean up dead connections and retry
@@ -93,7 +94,7 @@ public final class SocketAcception extends Thread {
 	}
 
 	private void handleSocket(Socket socket) {
-		LOGGER.debug("New connection from " + socket.getInetAddress().toString());
+		LOGGER.debug("New connection from " + socket.getInetAddress().getHostAddress().toString());
 
 		// TODO: maybe security check like IP-white list...
 

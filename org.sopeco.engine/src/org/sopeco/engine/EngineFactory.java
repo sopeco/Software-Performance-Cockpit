@@ -96,6 +96,19 @@ public final class EngineFactory {
 		return engine;
 	}
 
+	/**
+	 * Retrieves a MEC via the configurations with the passed session ID. <br />
+	 * First, the configuration is checked for the <code>CONF_MEASUREMENT_CONTROLLER_CLASS_NAME</code>.
+	 * If the name is available, it's tried to instantiate the MEC. Only if the name is
+	 * <code>null</code>, it's tried to directly connect to the MEC via the {@link MEConnectorFactory}
+	 * and the given URI in the configuration property <code>CONF_MEASUREMENT_CONTROLLER_URI</code>.
+	 * 
+	 * @param sessionId 
+	 * 			the session ID
+	 * @return
+	 * 			the {@link IMeasurementEnvironmentController} retrieved via
+	 * 			name or URI
+	 */
 	public IMeasurementEnvironmentController retrieveMEController(String sessionId) {
 		final IConfiguration config = Configuration.getSessionSingleton(sessionId);
 

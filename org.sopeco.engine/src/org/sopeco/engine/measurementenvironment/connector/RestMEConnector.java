@@ -29,18 +29,16 @@ package org.sopeco.engine.measurementenvironment.connector;
 import java.net.URI;
 import java.util.Arrays;
 
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sopeco.engine.measurementenvironment.IMeasurementEnvironmentController;
 import org.sopeco.engine.measurementenvironment.rest.RestMECWrapper;
 import org.sopeco.engine.measurementenvironment.rest.RestServices;
 import org.sopeco.engine.measurementenvironment.rest.TransferPackage;
-
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.api.client.ClientHandlerException;
-import com.sun.jersey.api.client.ClientResponse;
-import com.sun.jersey.api.client.ClientResponse.Status;
-import com.sun.jersey.api.client.UniformInterfaceException;
 
 /**
  * 
@@ -64,20 +62,12 @@ public final class RestMEConnector implements IMEConnector {
 	public static boolean isMECApplicationRunning(String url) {
 		url += ALIVE_PREFIX;
 
-		ClientResponse response = null;
-		try {
-			response = Client.create().resource(url).get(ClientResponse.class);
-		} catch (ClientHandlerException e) {
-			LOGGER.error(e.getLocalizedMessage() + " - URL: " + url);
-			return false;
-		} catch (UniformInterfaceException e) {
-			LOGGER.error(e.getLocalizedMessage() + " - URL: " + url);
-			return false;
-		}
+		Response response = ClientBuilder.newClient().target(url).request().get();
+
 		if (response.getStatus() != Status.OK.getStatusCode()) {
 			LOGGER.error("Request was not successful. Server returned: " + response.getStatus());
 			return false;
-		} else if (!response.hasEntity() || !response.getEntity(String.class).equals(RestServices.ALIVE_MESSAGE)) {
+		} else if (!response.hasEntity() || !response.readEntity(String.class).equals(RestServices.ALIVE_MESSAGE)) {
 			LOGGER.error("The host is probably not a valid MEController.");
 			return false;
 		}
@@ -94,19 +84,12 @@ public final class RestMEConnector implements IMEConnector {
 	public static String[] getAvailableMEController(String url) {
 		url += AVAILABLE_CONTROLLER_PREFIX;
 
-		ClientResponse response = null;
-		try {
-			response = Client.create().resource(url).get(ClientResponse.class);
-		} catch (ClientHandlerException e) {
-			throw e;
-		} catch (UniformInterfaceException e) {
-			throw e;
-		}
+		Response response = ClientBuilder.newClient().target(url).request().get();
 
 		if (response.getStatus() != Status.OK.getStatusCode()) {
 			LOGGER.info("Request was not successful. Server returned: " + response.getStatus());
 		} else if (response.hasEntity()) {
-			TransferPackage result = response.getEntity(TransferPackage.class);
+			TransferPackage result = response.readEntity(TransferPackage.class);
 			return result.getA( String[].class);
 		}
 		return new String[0];

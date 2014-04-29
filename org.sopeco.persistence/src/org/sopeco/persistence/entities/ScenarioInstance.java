@@ -65,7 +65,7 @@ public class ScenarioInstance implements Serializable {
 	private String description;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "scenarioInstance", orphanRemoval = true, fetch = FetchType.EAGER)
-	private List<ExperimentSeries> experimentSeries = new ArrayList<ExperimentSeries>();
+	private List<ExperimentSeries> experimentSeriesList = new ArrayList<ExperimentSeries>();
 
 	@ManyToOne(cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
 	private ScenarioDefinition scenarioDefinition;
@@ -103,7 +103,7 @@ public class ScenarioInstance implements Serializable {
 	}
 
 	public List<ExperimentSeries> getExperimentSeriesList() {
-		return experimentSeries;
+		return experimentSeriesList;
 	}
 
 	public ScenarioInstancePK getPrimaryKey() {
